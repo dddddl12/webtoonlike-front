@@ -1,31 +1,30 @@
 import { NextResponse } from "next/server";
-import { authMiddleware } from "@clerk/nextjs";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import createMiddleware from "next-intl/middleware";
-import { locales, localePrefix } from "./navigation";
+import { routing } from "@/i18n/routing";
 
+const intlMiddleware = createMiddleware(routing);
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/(api|trpc)(.*)", "/(ko|en)/:path*", "/"],
+  // Match only internationalized pathnames
+  matcher: ["/", "/(en|ko)/:path*"]
 };
 
-const intlMiddleware = createMiddleware({
-  defaultLocale: "ko",
-  localePrefix,
-  locales
-});
+// const requireAuth = createRouteMatcher(
+//   ["/", "/sign-in", "/sign-up", "/:locale", "/:locale/sign-in", "/:locale/sign-up"]);
+//
+const requireAuth = createRouteMatcher(
+  ["/aaa"]);
+// TODO 로그인 프롬프트 타이밍 확인
 
-export default authMiddleware({
-  beforeAuth(request) {
-    return intlMiddleware(request);
-  },
-  afterAuth: (auth, req) => {
-    const { origin, pathname } = req.nextUrl;
-
+export default clerkMiddleware((auth, request) => {
+  if (requireAuth(request)) {
+    const { origin, pathname } = request.nextUrl;
     if (pathname == "/admin") {
       return NextResponse.redirect(new URL("/admin/dashboard", origin));
     }
+    // TODO auth 사용 여부 확인
     return NextResponse.next();
-  },
-  publicRoutes: ["/", "/sign-in", "/sign-up", "/:locale", "/:locale/sign-in", "/:locale/sign-up"],
+  }
+  return intlMiddleware(request);
 });
-

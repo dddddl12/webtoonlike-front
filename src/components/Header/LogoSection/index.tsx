@@ -7,9 +7,9 @@ import { KenazLogo } from "@/components/svgs/KenazLogo";
 import { NotificationDropdown } from "../NotificationDropdown";
 import { TranslationDropdown } from "../TranslationDropdown";
 import { useLocale, useTranslations } from "next-intl";
-import { locales } from "@/navigation";
 import { useRouter } from "next/navigation";
 import { SelectItem } from "@/ui/shadcn/Select";
+import { routing } from "@/i18n/routing";
 
 export function LogoSection() {
   const router = useRouter();
@@ -25,7 +25,7 @@ export function LogoSection() {
       </Row>
       <Row>
         <TranslationDropdown defaultValue={locale}>
-          {locales.map((cur) => (
+          {routing.locales.map((cur) => (
             <SelectItem key={cur} value={cur}>
               {t("locale", { locale: cur })}
             </SelectItem>

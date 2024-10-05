@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "@/navigation";
+import { usePathname, useRouter } from "@/i18n/routing";
 import { Select, SelectContent, SelectGroup, SelectTrigger, SelectValue } from "@/ui/shadcn/Select";
 import { ReactNode } from "react";
 
@@ -14,8 +14,7 @@ export function TranslationDropdown({ children, defaultValue }: Props) {
   const pathname = usePathname();
 
   function onSelectChange(value: any) {
-    const nextLocale = value;
-    router.replace(pathname, { locale: nextLocale });
+    router.replace(pathname, { locale: value });
   }
 
   return (

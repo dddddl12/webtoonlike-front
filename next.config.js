@@ -24,10 +24,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withNextIntl({
-  ...nextConfig,
-  intl: {
-    locales: ["ko", "en"],
-    defaultLocale: "ko",
-  }
-});
+module.exports = withNextIntl(nextConfig);
