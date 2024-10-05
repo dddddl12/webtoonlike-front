@@ -21,15 +21,15 @@ export function PerGenreCarouselItem({ webtoon }: PropT) {
     <Col>
       <Col className="w-[210px] h-[330px] justify-center bg-gray-darker rounded-md overflow-hidden">
         <div
-          className="w-[210px] h-[330px] cursor-pointer"
+          className="w-[210px] h-[330px] cursor-pointer relative"
           onClick={() => {router.push(`/webtoons/${webtoon?.id}`);}}>
           <Image
             src={buildImgUrl(null, webtoon.thumbPath == null ? "" : webtoon.thumbPath, { size: "sm" })}
-            alt="put the image name or desc here"
-            width={210}
-            height={330}
-            className="w-full h-full object-cover transition ease-in-out delay-50 hover:border-2 rounded-md border-red duration-300"
+            alt="Item thumbnail"
+            fill={true}
+            className="object-cover transition ease-in-out delay-50 hover:border-2 rounded-md border-red duration-300"
           />
+          {/* TODO: 클래스 필요한지 확인 */}
         </div>
       </Col>
       <Gap y={2} />

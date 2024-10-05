@@ -82,8 +82,8 @@ export function ArtistCarouselBox() {
         className="mySwiper-artist w-full"
       >
         {artists && artists.length > 0 ?
-          artists.map((artist) =>
-            <SwiperSlide key={artist.name}>
+          artists.map((artist, i) =>
+            <SwiperSlide key={i}>
               <ArtistCarouselItem artist={artist} />
             </SwiperSlide>) :
           <Row className="justify-center items-center">

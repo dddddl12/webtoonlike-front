@@ -98,13 +98,11 @@ export function PopularCarouselItem({
           {webtoon.thumbPath == null ? (
             <div className='w-[260px] h-[390px] rounded-md bg-gray' />
           ) : (
-            <div className="w-[260px] h-[390px] overflow-hidden rounded-md">
+            <div className="w-[260px] h-[390px] overflow-hidden rounded-md relative">
               <Image
                 src={buildImgUrl(null, webtoon.thumbPath, { size: "md" })}
-                alt="put the image name or desc here"
-                className="w-full h-full object-cover"
-                width={260}
-                height={390}
+                alt="Item thumbnail"
+                fill={true}
               />
             </div>
           )}

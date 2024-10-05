@@ -19,9 +19,9 @@ export function RecommendCarouselItem({ webtoon }: PropT) {
 
   return (
     <Col>
-      <Col className="w-[210px] h-[330px] justify-center bg-gray-darker rounded-md overflow-hidden border">
+      <Col className="w-[210px] h-[330px] justify-center bg-gray-darker rounded-md overflow-hidden border relative">
         <div
-          className="w-[210px] h-[330px] cursor-pointer"
+          className="w-[210px] h-[330px] cursor-pointer relative"
           onClick={() => {router.push(`/webtoons/${webtoon?.id}`);}}
         >
           <Image
@@ -30,10 +30,9 @@ export function RecommendCarouselItem({ webtoon }: PropT) {
               webtoon.thumbPath == null ? "" : webtoon.thumbPath,
               { size: "sm" },
             )}
-            alt="put the image name or desc here"
-            width={210}
-            height={330}
-            className="w-full h-full object-cover transition ease-in-out delay-50 hover:border-2 rounded-md border-red duration-300"
+            alt="Item thumbnail"
+            fill={true}
+            className="object-cover transition ease-in-out delay-50 hover:border-2 rounded-md border-red duration-300"
           />
         </div>
       </Col>
