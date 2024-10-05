@@ -1,0 +1,24 @@
+import { BuyerNegotiationDetailPage } from "@/$pages/buyers/BuyerNegotiationDetailPage";
+import { tokenHolder } from "@/system/token_holder";
+import { cookies } from "next/headers";
+import * as BidRequestApi from "@/apis/bid_request";
+import { ErrorComponent } from "@/components/ErrorComponent";
+
+export default async function NegotiationDetail({ params }: { params: { bidRequestId: string }}) {
+  const bidRequestId = params.bidRequestId;
+  try {
+    const { data: bidRequestDetail } = await tokenHolder.serverFetchWithCredential(cookies, async () => {
+      return BidRequestApi.get(parseInt(bidRequestId), { $webtoon: true, $round: true, $buyer: true, $creator: true });
+    });
+    return (
+      <div className="bg-[#121212] min-h-screen">
+        <BuyerNegotiationDetailPage bidRequest={bidRequestDetail} />
+      </div>
+    );
+  } catch (e){
+    console.log(e);
+    return (
+      <ErrorComponent />
+    );
+  }
+}

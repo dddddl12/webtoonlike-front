@@ -1,0 +1,21 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "semi": "warn",
+    "indent": ["warn", 2, {"flatTernaryExpressions": true}],
+    "quotes": ["warn", "double"],
+    "no-multiple-empty-lines": ["warn", {"max": 2}],
+    "no-multi-spaces": "warn",
+    "no-trailing-spaces": "warn",
+    "key-spacing": "warn",
+    "space-infix-ops": "warn",
+    "object-curly-spacing": ["warn", "always"],
+    "prefer-const": ["warn"],
+    "@next/next/no-img-element": ["off"],
+    "react/jsx-indent": ["warn", 2, { "indentLogicalExpressions": true }],
+    "react/react-in-jsx-scope": ["off"],
+    "react-hooks/rules-of-hooks": "warn", // Checks rules of Hooks
+    "react-hooks/exhaustive-deps": "off", // Checks effect dependencies
+    "react/display-name": ["off"]
+  }
+}

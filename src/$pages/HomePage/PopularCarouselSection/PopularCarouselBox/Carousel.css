@@ -1,0 +1,28 @@
+.mySwiper-popular .swiper-button-prev,
+.mySwiper-popular .swiper-button-next {
+  opacity: 0.6;
+  color: white !important;
+}
+
+.mySwiper-popular .swiper-button-prev {
+  margin-left: 40px;
+}
+
+.mySwiper-popular .swiper-button-next {
+  margin-right: 40px;
+}
+
+.mySwiper-popular .swiper-button-prev:after,
+.mySwiper-popular .swiper-button-next:after {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+}
+
+.mySwiper-popular .swiper-pagination .swiper-pagination-bullet {
+  /* opacity: 1; */
+  background-color: white;
+}
+
+.mySwiper-popular .swiper-pagination .swiper-pagination-bullet-active {
+  background-color: #0AADA2;
+}
