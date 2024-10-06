@@ -10,7 +10,7 @@ import { IconCross } from "@/components/svgs/IconCross";
 import type { WebtoonT } from "@/types";
 import { useTranslations } from "next-intl";
 import { ContractRangeData } from "./ContractRangeData";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 type WebtoonDetailPageProps = {
   webtoon: WebtoonT,
@@ -44,7 +44,9 @@ export function WebtoonDetailPage({
 
       <Gap y={10} />
       {
-        me?.creator?.userId === webtoon.authorId || me?.buyer ?
+        // TODO: Move to the server side
+        // me?.creator?.userId === webtoon.authorId || me?.buyer ?
+        1 == 1 ?
           <>
             <Row className="justify-between">
               <p className='text-2xl font-bold'>{t("episodePreview")}</p>

@@ -13,7 +13,7 @@ import { ListView } from "@/ui/tools/ListView";
 import { useListData } from "@/hooks/ListData";
 import type { ListNotificationOptionT, NotificationT } from "@/types";
 import Spinner from "@/components/Spinner";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function NotificationDropdown() {
   const router = useRouter();

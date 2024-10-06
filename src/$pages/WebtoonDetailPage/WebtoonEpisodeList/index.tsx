@@ -11,7 +11,7 @@ import { useMe } from "@/states/UserState";
 import Spinner from "@/components/Spinner";
 import { useTranslations, useLocale } from "next-intl";
 import { ErrorComponent } from "@/components/ErrorComponent";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 type WebtoonEpisodeListProps = {
   webtoon: WebtoonT;

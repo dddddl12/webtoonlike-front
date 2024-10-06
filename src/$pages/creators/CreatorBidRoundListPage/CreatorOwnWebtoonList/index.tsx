@@ -16,7 +16,7 @@ import type { ListWebtoonOptionT, WebtoonT } from "@/types";
 import { useLocale, useTranslations } from "next-intl";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function CreatorOwnWebtoonList() {
   const router = useRouter();

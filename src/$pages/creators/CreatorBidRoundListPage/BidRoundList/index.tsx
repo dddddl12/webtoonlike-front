@@ -14,7 +14,7 @@ import { Pagenator } from "@/ui/tools/Pagenator";
 import { useLocale, useTranslations } from "next-intl";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { convertBidRoundStatus, convertBidRoundStatusEn } from "@/utils/bidRoundStatusConverter";
 
 export function BidRoundList() {
@@ -89,8 +89,8 @@ export function BidRoundList() {
               src={
                 bidRound.webtoon?.thumbPath
                   ? buildImgUrl(null, bidRound.webtoon.thumbPath, {
-                      size: "sm",
-                    })
+                    size: "sm",
+                  })
                   : "/img/webtoon_default_image_small.svg"
               }
               alt={`${bidRound.webtoon?.thumbPath}`}

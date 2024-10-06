@@ -7,7 +7,7 @@ import { CreatorT } from "@/types";
 import { buildImgUrl } from "@/utils/media";
 import { useLocale, useTranslations } from "next-intl";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 type ArtistCarouselItemT = {
   artist: CreatorT

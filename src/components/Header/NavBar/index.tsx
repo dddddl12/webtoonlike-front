@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
 import { useAdmin, useMe } from "@/states/UserState";
@@ -116,41 +117,43 @@ export function NavBar() {
     return { token };
   };
 
-  useEffect(() => {
-    const fetchTokenAndUser = async () => {
-      const { token } = await authApi(getToken);
-      if (!token) {
-        if (
-          pathName.includes("/sign-in")
-          || pathName.includes("/sign-up")
-          || pathName === "/ko"
-          || pathName === "/en"
-        ) {
-          return;
-        }
-        enqueueSnackbar("로그인이 필요한 페이지입니다.", { variant: "error" });
-        router.replace("/sign-in");
-      }
-    };
-    fetchTokenAndUser();
-  }, [pathName]);
+  // TODO
+  // useEffect(() => {
+  //   const fetchTokenAndUser = async () => {
+  //     const { token } = await authApi(getToken);
+  //     if (!token) {
+  //       if (
+  //         pathName.includes("/sign-in")
+  //         || pathName.includes("/sign-up")
+  //         || pathName === "/ko"
+  //         || pathName === "/en"
+  //       ) {
+  //         return;
+  //       }
+  //       // TODO
+  //       enqueueSnackbar("로그인이 필요한 페이지입니다.", { variant: "error" });
+  //       router.replace("/sign-in");
+  //     }
+  //   };
+  //   fetchTokenAndUser();
+  // }, [pathName]);
 
-  useEffect(() => {
-    if (!me?.userType) {
-      setNav(NAV_ARR["guest"] as NavArrT);
-    } else {
-      if (admin) {
-        if (NAV_ARR[me?.userType].find((item) => item.name === "관리")) {
-          setNav(NAV_ARR[me?.userType] as NavArrT);
-        } else {
-          NAV_ARR[me?.userType] = [...NAV_ARR[me?.userType], ADMIN_TAB];
-          setNav(NAV_ARR[me?.userType] as NavArrT);
-        }
-      } else {
-        setNav(NAV_ARR[me?.userType] as NavArrT);
-      }
-    }
-  }, [me, admin]);
+  // useEffect(() => {
+  //   if (!me?.userType) {
+  //     setNav(NAV_ARR["guest"] as NavArrT);
+  //   } else {
+  //     if (admin) {
+  //       if (NAV_ARR[me?.userType].find((item) => item.name === "관리")) {
+  //         setNav(NAV_ARR[me?.userType] as NavArrT);
+  //       } else {
+  //         NAV_ARR[me?.userType] = [...NAV_ARR[me?.userType], ADMIN_TAB];
+  //         setNav(NAV_ARR[me?.userType] as NavArrT);
+  //       }
+  //     } else {
+  //       setNav(NAV_ARR[me?.userType] as NavArrT);
+  //     }
+  //   }
+  // }, [me, admin]);
 
   return (
     <Row className="w-full h-[48px]">

@@ -12,7 +12,7 @@ import { BidRoundT } from "@/types";
 import Link from "next/link";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 
 type BidRoundListProps = {

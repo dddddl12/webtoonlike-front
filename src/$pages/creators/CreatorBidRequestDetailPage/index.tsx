@@ -15,7 +15,7 @@ import { convertBidRequestStatus, convertBidRequestStatusEn } from "@/utils/bidR
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useLocale } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT }) {
   const router = useRouter();
@@ -88,8 +88,8 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
               src={
                 bidRequests.buyer?.companyInfo.thumbPath
                   ? buildImgUrl(null, bidRequests.buyer.companyInfo.thumbPath, {
-                      size: "xxs",
-                    })
+                    size: "xxs",
+                  })
                   : "/img/webtoon_default_image_small.svg"
               }
               alt={`${bidRequests.buyer?.companyInfo.thumbPath}`}
@@ -113,11 +113,11 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
           {bidRequests.contractRange.data[0].businessField
             ? locale === "en"
               ? businessFieldConverterToEn(
-                  bidRequests.contractRange.data[0].businessField
-                )
+                bidRequests.contractRange.data[0].businessField
+              )
               : businessFieldConverterToKr(
-                  bidRequests.contractRange.data[0].businessField
-                )
+                bidRequests.contractRange.data[0].businessField
+              )
             : "-"}
         </div>
 

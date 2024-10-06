@@ -7,7 +7,7 @@ import { BidRoundT } from "@/types";
 import { Heading, Text } from "@/ui/texts";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useSnackbar } from "notistack";
 
 type BidRoundDetailPropsT = {

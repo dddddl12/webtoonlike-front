@@ -5,7 +5,7 @@ import { KenazLogo } from "../svgs/KenazLogo";
 import { Text } from "@/ui/texts";
 import React, { Fragment } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function Footer() {
   const router = useRouter();

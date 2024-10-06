@@ -10,7 +10,7 @@ import type { WebtoonEpisodeT, WebtoonT } from "@/types";
 import { DownloadEpisodeImage } from "./DownloadEpisodeImage";
 import { AddEnglishEpisodeUrl } from "./AddEnglishEpisodeUrl";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useAdmin, useMe } from "@/states/UserState";
 
 type EpisodeDetailProps = {

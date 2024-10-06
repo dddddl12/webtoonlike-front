@@ -14,7 +14,7 @@ import { ListCreatorOptionT } from "@/types";
 import { useEffect } from "react";
 import Spinner from "@/components/Spinner";
 import { useAlertDialog } from "@/hooks/ConfirmDialog";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";
 

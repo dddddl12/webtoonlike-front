@@ -1,7 +1,7 @@
 import React from "react";
 import { SignIn } from "@clerk/nextjs";
 
-export function SignInPage(): JSX.Element {
+export function SignInPage({ locale }: { locale: string }): JSX.Element {
   return (
     <div className='h-screen w-screen'>
       <div className='absolute left-1/2 top-1/2 w-fit -translate-x-1/2 -translate-y-1/2'>
@@ -21,7 +21,7 @@ export function SignInPage(): JSX.Element {
                 "bg-transparent outline-none border-transparent border-b-2 border-b-mint rounded-none focus:ring-0 focus:outline-none text-black caret-mint rounded-md",
             },
           }}
-          signUpUrl='/sign-up'
+          signUpUrl={`/${locale}/sign-up`}
         />
       </div>
     </div>

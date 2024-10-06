@@ -7,7 +7,7 @@ import { KenazLogo } from "@/components/svgs/KenazLogo";
 import { NotificationDropdown } from "../NotificationDropdown";
 import { TranslationDropdown } from "../TranslationDropdown";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { SelectItem } from "@/ui/shadcn/Select";
 import { routing } from "@/i18n/routing";
 

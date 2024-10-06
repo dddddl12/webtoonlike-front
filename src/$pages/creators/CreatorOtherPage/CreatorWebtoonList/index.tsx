@@ -11,7 +11,7 @@ import { Fragment, useEffect } from "react";
 import * as WebtoonApi from "@/apis/webtoons";
 import { useMe } from "@/states/UserState";
 import Spinner from "@/components/Spinner";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { Text } from "@/ui/texts";
 import { ErrorComponent } from "@/components/ErrorComponent";
 

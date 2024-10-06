@@ -20,7 +20,7 @@ import { enqueueSnackbar } from "notistack";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { IssuanceInvoiceSubmit } from "./IssuanceInvoiceSubmit";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function IssuanceInvoice() {
   const router = useRouter();

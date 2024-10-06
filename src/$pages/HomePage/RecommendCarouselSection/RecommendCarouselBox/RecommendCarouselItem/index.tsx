@@ -7,7 +7,7 @@ import { buildImgUrl } from "@/utils/media";
 import { Text } from "@/ui/texts";
 import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
 import { useLocale } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 type PropT = {
   webtoon: WebtoonT;

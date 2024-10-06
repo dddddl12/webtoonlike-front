@@ -7,7 +7,7 @@ import { Text } from "@/ui/texts";
 import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
 import { WebtoonT } from "@/types";
 import { useLocale } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 type PropT = {
   webtoon: WebtoonT

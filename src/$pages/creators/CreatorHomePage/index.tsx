@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/ui/shadcn/Button";
 import { Container, Row, Gap } from "@/ui/layouts";
 import { MyWebtooonList } from "./MyWebtoonList";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function CreatorHomePage(): JSX.Element {
   const router = useRouter();

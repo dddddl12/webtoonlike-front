@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { CreatorProfileForm } from "@/components/CreatorProfileForm";
 import { useMe, useUserActions } from "@/states/UserState";
 import * as CreatorApi from "@/apis/creators";

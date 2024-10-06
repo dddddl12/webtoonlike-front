@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { BuyerProfileForm } from "@/components/BuyerProfileForm";
 import { useMe, useUserActions } from "@/states/UserState";
 import * as BuyerApi from "@/apis/buyers";

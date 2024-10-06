@@ -9,7 +9,7 @@ import { useMemo } from "react";
 import { convertBidRoundStatus, convertBidRoundStatusEn } from "@/utils/bidRoundStatusConverter";
 import { useAlertDialog } from "@/hooks/ConfirmDialog";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 type WebtoonDetailBtnsProps = {
   webtoon: WebtoonT;

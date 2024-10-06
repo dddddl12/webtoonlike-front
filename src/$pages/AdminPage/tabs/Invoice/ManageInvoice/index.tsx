@@ -16,7 +16,7 @@ import { downloadAsPDF } from "@/utils/downloadAsPDF";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { PreviewInvoiceAdmin } from "./PreviewInvoiceAdmin";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function ManageInvoice() {
   const router = useRouter();

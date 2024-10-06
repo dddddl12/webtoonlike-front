@@ -7,7 +7,7 @@ import { Text } from "@/ui/texts";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { IconClose } from "@/components/svgs/IconClose";
 import { convertTimeAbsolute } from "@/utils/time";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { ListBidRoundOptionT } from "@/types";
 import { useListData } from "@/hooks/ListData";
 import { convertBidRoundStatus } from "@/utils/bidRoundStatusConverter";

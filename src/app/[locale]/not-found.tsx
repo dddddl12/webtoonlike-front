@@ -2,7 +2,6 @@ import { Col } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { Heading, Text } from "@/ui/texts";
 import { headers } from "next/headers";
-import { useRouter } from "next/navigation";
 
 export default async function NotFound() {
   const headersList = headers();

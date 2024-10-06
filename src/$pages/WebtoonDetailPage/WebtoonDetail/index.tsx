@@ -12,7 +12,7 @@ import { WebtoonDetailBtns } from "./WebtoonDetailBtns";
 import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
 import type { WebtoonT } from "@/types";
 import { intervalToDuration ,format as dfFormat } from "date-fns";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 type WebtoonDetailProps = {
   webtoon: WebtoonT;

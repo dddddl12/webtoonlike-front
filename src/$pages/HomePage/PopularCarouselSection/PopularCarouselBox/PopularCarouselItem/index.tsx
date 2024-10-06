@@ -17,7 +17,7 @@ import { useMe } from "@/states/UserState";
 import * as WebtoonLike from "@/apis/webtoon_likes";
 import type { WebtoonLikeFormT, WebtoonT } from "@/types";
 import { intervalToDuration ,format as dfFormat } from "date-fns";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 
 type PopularCarouselItemProps = {

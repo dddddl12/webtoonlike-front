@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { ErrorComponent } from "@/components/ErrorComponent";

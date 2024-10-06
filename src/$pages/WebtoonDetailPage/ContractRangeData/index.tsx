@@ -15,7 +15,7 @@ import { Text } from "@/ui/texts";
 import { nationConverter, nationConverterToKr } from "@/utils/nationConverter";
 import { RadioGroup } from "@radix-ui/react-radio-group";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { Fragment, useEffect } from "react";
 import * as WebtoonEpisodeApi from "@/apis/webtoon_episodes";
 import Spinner from "@/components/Spinner";

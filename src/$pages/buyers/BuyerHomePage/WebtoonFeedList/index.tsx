@@ -13,7 +13,7 @@ import { sleep } from "@/utils/misc";
 import type { ListWebtoonOptionT, GenreT } from "@/types";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { Pagenator } from "@/ui/tools/Pagenator";
 
 type WebtoonFeedListProps = {

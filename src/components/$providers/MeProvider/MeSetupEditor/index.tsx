@@ -1,6 +1,6 @@
 "use client";
 import { useState, ChangeEvent, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import {
   Select,
   SelectContent,

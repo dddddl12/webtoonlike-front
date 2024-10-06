@@ -35,7 +35,7 @@ import { generateRandomString } from "@/utils/randomString";
 import { useLocale, useTranslations } from "next-intl";
 import * as BidRoundApi from "@/apis/bid_rounds";
 import Spinner from "@/components/Spinner";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 const OFFER_TABLE_HEADER = [
   { ko: "No.", en: "No." },

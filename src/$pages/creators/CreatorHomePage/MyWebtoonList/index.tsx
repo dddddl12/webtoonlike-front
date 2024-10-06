@@ -13,7 +13,7 @@ import type { ListWebtoonOptionT } from "@/types";
 import { ListView } from "@/ui/tools/ListView";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function MyWebtooonList() {
   const router = useRouter();

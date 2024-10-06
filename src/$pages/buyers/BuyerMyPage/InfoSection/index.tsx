@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import * as UserApi from "@/apis/users";
 import { useAlertDialog } from "@/hooks/ConfirmDialog";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function InfoSection() {
   const me = useMe();

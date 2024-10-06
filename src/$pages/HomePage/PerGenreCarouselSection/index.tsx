@@ -6,10 +6,10 @@ import { Col, Gap, Row } from "@/ui/layouts";
 
 import { IconRightArrow } from "@/components/svgs/IconRightArrow";
 import { PerGenreCarouselBox } from "./PerGenreCarouselBox";
-import { GenreSelector } from "../../../components/GenreSelector";
+import { GenreSelector } from "@/components/GenreSelector";
 import type { GenreT } from "@/types";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export default function PerGenreCarouselSection() {
   const [selectedGenre, setSelectedGenre] = useState<GenreT | null>(null);

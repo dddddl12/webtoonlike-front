@@ -7,7 +7,7 @@ import { Input } from "@/ui/shadcn/Input";
 import { Label } from "@/ui/shadcn/Label";
 import { Text } from "@/ui/texts";
 import { useSnackbar } from "@/hooks/Snackbar";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import * as WebtoonEpisodeApi from "@/apis/webtoon_episodes";
 import { WebtoonEpisodeT, WebtoonT } from "@/types";
 import { useEffect, useState } from "react";

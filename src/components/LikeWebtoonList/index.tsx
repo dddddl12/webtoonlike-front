@@ -13,7 +13,7 @@ import Spinner from "@/components/Spinner";
 import { useLocale } from "next-intl";
 import { Text } from "@/ui/texts";
 import { ErrorComponent } from "../ErrorComponent";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function LikeWebtoonList() {
   const router = useRouter();

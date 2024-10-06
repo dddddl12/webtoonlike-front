@@ -17,7 +17,7 @@ import { BidRoundT, ListBidRoundOptionT } from "@/types";
 import { useSnackbar } from "notistack";
 import { convertBidRoundStatus } from "@/utils/bidRoundStatusConverter";
 import { ErrorComponent } from "@/components/ErrorComponent";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function ManageSubmitTab() {
   const router = useRouter();

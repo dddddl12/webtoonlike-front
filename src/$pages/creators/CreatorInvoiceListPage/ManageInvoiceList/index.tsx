@@ -16,7 +16,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { PreviewInvoiceUser } from "@/components/PreviewInvoiceUser";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function ManageInvoiceList() {
   const router = useRouter();

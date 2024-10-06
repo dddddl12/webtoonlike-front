@@ -5,7 +5,7 @@ import { Col, Gap, Row } from "@/ui/layouts";
 import { IconRightArrow } from "@/components/svgs/IconRightArrow";
 import { RecommendCarouselBox } from "./RecommendCarouselBox";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export default function RecommendCarouselSection() {
   const router = useRouter();

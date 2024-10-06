@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import * as BidRequestApi from "@/apis/bid_request";
 import { Button } from "@/ui/shadcn/Button";
 import { enqueueSnackbar } from "notistack";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import { useMe } from "@/states/UserState";
 import * as BidRequestMessagesApi from "@/apis/bid_request_message";
@@ -553,11 +553,11 @@ export function BuyerNegotiationDetailPage({
                           <TableCell className="text-center border">
                             {locale === "en"
                               ? businessFieldConverterToEn(data.businessField) :
-                            businessFieldConverterToKr(data.businessField)}
+                              businessFieldConverterToKr(data.businessField)}
                           </TableCell>
                           <TableCell className="text-center border">
                             {locale === "en" ? nationConverter(data.country) :
-                              nationConverterToKr(data.country)}
+                            nationConverterToKr(data.country)}
                           </TableCell>
                           <TableCell className="text-center border">
                             {data.message}

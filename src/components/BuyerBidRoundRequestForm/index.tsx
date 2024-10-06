@@ -30,7 +30,7 @@ import { Textarea } from "@/ui/shadcn/Textarea";
 import { IconRightBrackets } from "../svgs/IconRightBrackets";
 import { BidRequestFormT, BidRoundT, WebtoonT } from "@/types";
 import { IconDelete } from "../svgs/IconDelete";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { businessFieldConverterToEn } from "@/utils/businessFieldConverter";
 

@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/ui/shadcn/RadioGroup";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { useSnackbar } from "@/hooks/Snackbar";
 import { useMe } from "@/states/UserState";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { IconExclamation } from "@/components/svgs/IconExclamation";
 import {
   Table,
@@ -129,12 +129,12 @@ function ContractTypeField({
 
         if (key === "contractType") {
           switch (value) {
-            case "웹툰 연재권":
-              updatedRow.businessField = "webtoon";
-              break;
-            case "2차 사업권":
-              updatedRow.businessField = "";
-              break;
+          case "웹툰 연재권":
+            updatedRow.businessField = "webtoon";
+            break;
+          case "2차 사업권":
+            updatedRow.businessField = "";
+            break;
           }
         }
 

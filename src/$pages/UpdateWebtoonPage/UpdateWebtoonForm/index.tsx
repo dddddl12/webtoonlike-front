@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useSnackbar } from "@/hooks/Snackbar";
 import { WebtoonForm } from "@/components/WebtoonForm";
 import * as WebtoonApi from "@/apis/webtoons";

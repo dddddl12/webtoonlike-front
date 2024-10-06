@@ -4,7 +4,7 @@ import { Button } from "@/ui/shadcn/Button";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { Container, Row, Gap } from "@/ui/layouts";
 import { CreateWebtoonEpisodeForm } from "./CreateWebtoonEpisodeForm";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 type CreateWebtoonEpisodePageProps = {
   webtoonId: idT

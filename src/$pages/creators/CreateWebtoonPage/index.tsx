@@ -5,7 +5,7 @@ import { Container, Row, Gap } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { CreateWebtoonForm } from "./CreateWebtoonForm";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 
 export function CreateWebtoonPage() {

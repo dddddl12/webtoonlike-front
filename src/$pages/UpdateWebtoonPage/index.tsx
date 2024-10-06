@@ -6,7 +6,7 @@ import { Button } from "@/ui/shadcn/Button";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { UpdateWebtoonForm } from "./UpdateWebtoonForm";
 import type { WebtoonT } from "@/types";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useLocale } from "next-intl";
 
 type UpdateWebtoonPageProps = {

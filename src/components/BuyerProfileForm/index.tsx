@@ -453,7 +453,7 @@ export function BuyerProfileForm({
       <Select defaultValue={prevBuyer ? `${prevBuyer.purpose}` : ""} onValueChange={handlePurposeChange}>
         <SelectTrigger className="bg-white border-gray text-[#94A4B8] rounded-sm">
           <SelectValue placeholder={prevBuyer ? `${Tpurpose(prevBuyer.purpose || "")}` : `${t("goals")}`}>
-            {Tpurpose(purpose ?? "")}
+            {purpose ? Tpurpose(purpose) : ""}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
