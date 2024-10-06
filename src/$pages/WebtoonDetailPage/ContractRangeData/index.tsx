@@ -126,7 +126,7 @@ export function ContractRangeData({ webtoon }: ContractRangeDataProps) {
               <>
                   <Input
                     placeholder="_"
-                    value={
+                    defaultValue={
                       webtoon.bidRounds && webtoon.bidRounds[0]?.nowEpisode
                         ? webtoon.bidRounds[0]?.nowEpisode
                         : 0
@@ -142,7 +142,7 @@ export function ContractRangeData({ webtoon }: ContractRangeDataProps) {
             <Gap x={2} />
             <Input
               placeholder="_"
-              value={
+              defaultValue={
                 webtoon.bidRounds && webtoon.bidRounds[0]?.numEpisode
                   ? webtoon.bidRounds[0]?.numEpisode
                   : 0
@@ -166,7 +166,7 @@ export function ContractRangeData({ webtoon }: ContractRangeDataProps) {
                 <Row>
                   <Input
                     placeholder="_"
-                    value={
+                    defaultValue={
                       webtoon.bidRounds && webtoon.bidRounds[0]?.monthlyNumEpisode
                         ? webtoon.bidRounds[0]?.monthlyNumEpisode
                         : 0

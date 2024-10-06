@@ -50,17 +50,18 @@ export function WebtoonDetail({ webtoon, editable }: WebtoonDetailProps) {
   return (
     <Col className="justify-center items-center md:items-start md:flex-row md:justify-start">
       <Col className="rounded-sm min-w-[300px] min-h-[450px] justify-center bg-gray-darker">
-        {webtoon.thumbPath == null ? (
-          <div className="w-[300px] h-[450px] rounded-md bg-gray" />
-        ) : (
+        {webtoon.thumbPath ? (
           <div className="w-[300px] h-[450px] overflow-hidden relative rounded-sm">
             <Image
               src={webtoon.thumbPath ? buildImgUrl(null, webtoon.thumbPath, { size: "md" }) : "/img/webtoon_default_image.svg"}
               alt={`${webtoon?.thumbPath}`}
               style={{ objectFit: "cover" }}
               fill
+              priority={true}
             />
           </div>
+        ) : (
+          <div className="w-[300px] h-[450px] rounded-md bg-gray" />
         )}
       </Col>
 
