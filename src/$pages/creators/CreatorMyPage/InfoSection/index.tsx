@@ -20,7 +20,7 @@ import { IconHeartFill } from "@/components/svgs/IconHeartFill";
 
 export function InfoSection() {
   const me = useMe();
-  const TeditProfile = useTranslations("editProfilePage");
+  const TeditProfile = useTranslations("profilePage");
   const { showAlertDialog } = useAlertDialog();
   const router = useRouter();
 

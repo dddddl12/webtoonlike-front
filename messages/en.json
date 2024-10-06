@@ -32,23 +32,6 @@
         "태국": "Thailand",
         "기타": "Other"
     },
-    "setupPageNext": {
-        "businessInfoHeader": "Please enter business and employment information",
-        "insertBusinessNumber": "Insert Business Number",
-        "insertBusinessField": "Business Field",
-        "occupation": "Occupation",
-        "uploadBusinessRegistration": "Upload Business Registration",
-        "insertCompanyName": "Insert Company Name",
-        "insertCompanyLogo": "Attach image file of your company's main logo (1:1)",
-        "insertBusinessUnit": "Insert the title of your business unit",
-        "insertBusinessPosition": "Insert your position in business",
-        "insertInChargeOf": "In charge of",
-        "attachEmploymentCert": "Attach file of your employment certificate or business card",
-        "selectFile": "Select File",
-        "goals": "Sign up for",
-        "submit": "Submit",
-        "edit": "Edit"
-    },
     "setupPageNextForCreators": {
         "uploadProfilePic": "Upload Profile Picture(1:1)",
         "selectFile": "Select File",
@@ -324,7 +307,7 @@
         "연령 무관": "Any age",
         "19세 이상": "Mature"
     },
-    "editProfilePage": {
+    "profilePage": {
         "editProfile": "Edit Profile",
         "withdrawal": "Withdrawal",
         "withdrawalDesc": "Are you sure you want to leave?",

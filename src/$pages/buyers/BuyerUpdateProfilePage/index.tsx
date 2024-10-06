@@ -5,7 +5,7 @@ import { Heading } from "@/ui/texts";
 import { useTranslations } from "next-intl";
 
 export function BuyerUpdateProfilePage(): JSX.Element {
-  const t = useTranslations("editProfilePage");
+  const t = useTranslations("profilePage");
   return (
     <Container>
       <Gap y={20} />

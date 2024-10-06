@@ -32,23 +32,6 @@
         "태국": "태국",
         "기타": "기타"
     },
-    "setupPageNext": {
-        "businessInfoHeader": "사업자 정보 및 재직 정보를 입력해 주세요",
-        "insertBusinessNumber": "사업자등록번호 입력",
-        "insertBusinessField": "업체 분야",
-        "occupation": "직종",
-        "uploadBusinessRegistration": "사업자등록증 업로드",
-        "insertCompanyName": "회사명 입력",
-        "insertCompanyLogo": "회사 대표이미지 첨부 (1:1)",
-        "insertBusinessUnit": "부서명 입력",
-        "insertBusinessPosition": "직위 입력",
-        "insertInChargeOf": "담당업무 입력",
-        "attachEmploymentCert": "재직증명서, 명함 중 택 1 첨부",
-        "selectFile": "파일 선택",
-        "goals": "가입 목적",
-        "submit": "제출",
-        "edit": "수정"
-    },
     "setupPageNextForCreators": {
         "uploadProfilePic": "프로필 사진 업로드(1:1)",
         "selectFile": "파일 선택",
@@ -325,7 +308,7 @@
         "연령 무관": "연령 무관",
         "19세 이상": "19세 이상"
     },
-    "editProfilePage": {
+    "profilePage": {
         "editProfile": "프로필 수정",
         "withdrawal": "회원 탈퇴",
         "withdrawalDesc": "정말 탈퇴하시겠습니까?",

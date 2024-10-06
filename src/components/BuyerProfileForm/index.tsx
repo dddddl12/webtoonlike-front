@@ -90,7 +90,7 @@ export function BuyerProfileForm({
   const [purpose, setPurpose] = useState<string | null>(null);
 
   const me = useMe();
-  const t = useTranslations("editProfilePage");
+  const t = useTranslations("profilePage");
   const Tpurpose = useTranslations("purpose");
 
   useEffect(() => {
