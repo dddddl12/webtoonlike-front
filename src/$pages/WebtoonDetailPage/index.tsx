@@ -46,30 +46,29 @@ export function WebtoonDetailPage({
       {
         // TODO: Move to the server side
         // me?.creator?.userId === webtoon.authorId || me?.buyer ?
-        1 == 1 ?
-          <>
-            <Row className="justify-between">
-              <p className='text-2xl font-bold'>{t("episodePreview")}</p>
+        1 == 1 && <>
+          <Row className="justify-between">
+            <p className='text-2xl font-bold'>{t("episodePreview")}</p>
 
-              <Gap x={4} />
+            <Gap x={4} />
 
-              {editable && (
-                <Row className="cursor-pointer" onClick={() => {router.push(`/webtoons/${webtoon.id}/episodes/create`);}}>
-                  <IconCross className="fill-mint" />
-                  <Text className="text-mint">{t("addEpisode")}</Text>
-                </Row>
-              )}
+            {editable && (
+              <Row className="cursor-pointer" onClick={() => {router.push(`/webtoons/${webtoon.id}/episodes/create`);}}>
+                <IconCross className="fill-mint" />
+                <Text className="text-mint">{t("addEpisode")}</Text>
+              </Row>
+            )}
 
-            </Row>
+          </Row>
 
-            <Gap y={4} />
+          <Gap y={4} />
 
-            <WebtoonEpisodeList
-              webtoon={webtoon}
-              editable={editable}
-            />
-            <Gap y={20} />
-          </> : null
+          <WebtoonEpisodeList
+            webtoon={webtoon}
+            editable={editable}
+          />
+          <Gap y={20} />
+        </>
       }
     </Container>
   );

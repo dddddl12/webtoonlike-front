@@ -240,6 +240,7 @@
     },
     "detailedInfoPage": {
         "episodePreview": "회차 미리보기",
+        "episodeSeq": "{number}화",
         "addEpisode": "회차 추가하기",
         "goEdit": "수정하기",
         "editEpisode": "회차 수정하기",

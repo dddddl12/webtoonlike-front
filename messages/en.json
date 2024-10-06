@@ -239,6 +239,7 @@
     },
     "detailedInfoPage": {
         "episodePreview": "Episode Preview",
+        "episodeSeq": "Episode {number}",
         "addEpisode": "Add Episode",
         "goEdit": "Edit",
         "editEpisode": "Edit Episode",
