@@ -2,7 +2,8 @@
 
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { Fragment, cloneElement } from "react";
 import { IconDashboard } from "../svgs/IconDashboard";
 import { IconUser } from "../svgs/IconUser";

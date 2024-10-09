@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useListData } from "@/hooks/ListData";
 import * as WebtoonApi from "@/apis/webtoons";
 import { Pagenator } from "@/ui/tools/Pagenator";
-import { useMe } from "@/states/UserState";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Heading, Text } from "@/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
@@ -17,10 +16,11 @@ import { useLocale, useTranslations } from "next-intl";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useRouter } from "@/i18n/routing";
+import { getUserInfo } from "@/utils/authedUser";
 
 export function CreatorOwnWebtoonList() {
   const router = useRouter();
-  const me = useMe();
+  const user = getUserInfo();
   const t = useTranslations("manageContents");
   const locale = useLocale();
 
@@ -46,16 +46,13 @@ export function CreatorOwnWebtoonList() {
   const totalNumData = filteredWebtoons.length || 0;
 
   const webtoonListOpt: ListWebtoonOptionT = {
-    meId: me?.id,
+    meId: user.id,
     $bidRounds: true,
     mine: "only",
     $episodes: true,
   };
 
-  useEffect(() => {
-    if (!me) return;
-    webtoonsAct.load(webtoonListOpt);
-  }, [me, page]);
+  webtoonsAct.load(webtoonListOpt);
 
   if (webtoonStatus == "idle" || webtoonStatus == "loading") {
     return <Spinner />;
@@ -164,7 +161,7 @@ export function CreatorOwnWebtoonList() {
         </Row>
       ) : (
         <>
-          {me?.userType === "creator" ? (
+          {user.type === "creator" ? (
             <div
               className="flex justify-end flex-row min-w-[120px] h-10 px-4 py-2 text-mint rounded-sm hover:bg-gray-darker cursor-pointer"
               onClick={() => {

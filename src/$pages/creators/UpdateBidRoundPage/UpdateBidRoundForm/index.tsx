@@ -8,7 +8,6 @@ import { Button } from "@/ui/shadcn/Button";
 import { RadioGroup, RadioGroupItem } from "@/ui/shadcn/RadioGroup";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { useSnackbar } from "@/hooks/Snackbar";
-import { useMe } from "@/states/UserState";
 import { useRouter } from "@/i18n/routing";
 import { IconExclamation } from "@/components/svgs/IconExclamation";
 import {
@@ -35,6 +34,7 @@ import * as BidRoundApi from "@/apis/bid_rounds";
 import type { BidRoundFormT, WebtoonT } from "@/types";
 import { Checkbox } from "@/ui/shadcn/CheckBox";
 import { useLocale, useTranslations } from "next-intl";
+import { getUserInfo } from "@/utils/authedUser";
 
 const BRAND_NEW = [
   { element: "신작", value: "true", elementEnglish: "New Work" },
@@ -450,7 +450,7 @@ function PossibleToMakeField({
 
 export function UpdateBidRoundForm({ webtoon }: CreateBidRoundFormProps) {
   const router = useRouter();
-  const me = useMe();
+  const user = getUserInfo();
   const { enqueueSnackbar } = useSnackbar();
   const t = useTranslations("updateOrCreateBidRoundsPage");
   const [isBrandNew, setIsBrandNew] = useState<string>("");
@@ -557,8 +557,8 @@ export function UpdateBidRoundForm({ webtoon }: CreateBidRoundFormProps) {
         }));
 
         const insertForm: BidRoundFormT = {
-          isBrandNew: isBrandNew === "true" ? true : false,
-          userId: me!.id,
+          isBrandNew: isBrandNew === "true",
+          userId: user.id,
           webtoonId: webtoon.id,
           status: "idle",
           originality: originality as "original" | "notOriginal",
@@ -580,7 +580,7 @@ export function UpdateBidRoundForm({ webtoon }: CreateBidRoundFormProps) {
       } else {
         const insertForm: BidRoundFormT = {
           isBrandNew: isBrandNew === "true" ? true : false,
-          userId: me!.id,
+          userId: user.id,
           webtoonId: webtoon.id,
           status: "idle",
           originality: originality as "original" | "notOriginal",

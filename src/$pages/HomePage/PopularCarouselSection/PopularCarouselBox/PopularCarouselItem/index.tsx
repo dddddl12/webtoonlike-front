@@ -13,10 +13,9 @@ import { IconHeartFill } from "@/components/svgs/IconHeartFill";
 import { buildImgUrl } from "@/utils/media";
 import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
 import { useSnackbar } from "@/hooks/Snackbar";
-import { useMe } from "@/states/UserState";
 import * as WebtoonLike from "@/apis/webtoon_likes";
-import type { WebtoonLikeFormT, WebtoonT } from "@/types";
-import { intervalToDuration ,format as dfFormat } from "date-fns";
+import type { WebtoonT } from "@/types";
+import { intervalToDuration } from "date-fns";
 import { useRouter } from "@/i18n/routing";
 
 
@@ -31,21 +30,19 @@ export function PopularCarouselItem({
 }: PopularCarouselItemProps) {
   const router = useRouter();
   const t = useTranslations("homeMain");
-  const me = useMe();
   const { enqueueSnackbar } = useSnackbar();
   const locale = useLocale();
 
   async function handleClickLike(): Promise<void> {
-    if (!me) {
-      enqueueSnackbar("로그인이 필요합니다.", { variant: "warning" });
-      return;
-    }
+    // TODO
+    // if (!me) {
+    //   enqueueSnackbar("로그인이 필요합니다.", { variant: "warning" });
+    //   return;
+    // }
     try {
-      const form: WebtoonLikeFormT = {
-        userId: me.id,
+      const created = await WebtoonLike.create({
         webtoonId: webtoon.id
-      };
-      const created = await WebtoonLike.create(form);
+      });
       const newWebtoon: WebtoonT = { ...webtoon, myLike: created };
       onUpdateSuccess(newWebtoon);
     } catch (e){
@@ -54,10 +51,11 @@ export function PopularCarouselItem({
   }
 
   async function handleClickUnlike(): Promise<void> {
-    if (!me) {
-      enqueueSnackbar("로그인이 필요합니다.", { variant: "warning" });
-      return;
-    }
+    // TODO
+    // if (!me) {
+    //   enqueueSnackbar("로그인이 필요합니다.", { variant: "warning" });
+    //   return;
+    // }
     try {
       if (webtoon.myLike) {
         await WebtoonLike.remove(webtoon.myLike.id);

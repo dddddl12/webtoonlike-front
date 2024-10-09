@@ -6,14 +6,11 @@ import { Text } from "@/ui/texts";
 import { Label } from "@/ui/shadcn/Label";
 import { Input } from "@/ui/shadcn/Input";
 import { Button } from "@/ui/shadcn/Button";
-import { useMe } from "@/states/UserState";
 import * as BuyerApi from "@/apis/buyers";
 import { uploadToS3 } from "@/utils/s3";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
-import { IconUpload } from "../svgs/IconUpload";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/shadcn/Select";
-import { nationConverter } from "@/utils/nationConverter";
 import MultipleSelector from "@/ui/shadcn/MultipleSelector";
 import type { BuyerT, BuyerFormT } from "@/types";
 import { useTranslations } from "next-intl";
@@ -89,7 +86,6 @@ export function BuyerProfileForm({
   const [thumbnail, setThumbnail] = useState<File | string | null>();
   const [purpose, setPurpose] = useState<string | null>(null);
 
-  const me = useMe();
   const t = useTranslations("profilePage");
   const Tpurpose = useTranslations("purpose");
 
@@ -193,10 +189,6 @@ export function BuyerProfileForm({
   }
 
   async function handleSubmitClick() {
-    if (!me) {
-      return;
-    }
-
     let thumbPath: string|null = null;
     if (thumbnail instanceof File) {
       const { putUrl, key } = await BuyerApi.getThumbnailPresignedUrl(thumbnail.type);
@@ -225,8 +217,6 @@ export function BuyerProfileForm({
     }
 
     const form: BuyerFormT = {
-      userId: me.id,
-      name: me.fullName,
       companyInfo: {
         thumbPath: thumbPath ?? "", // 프로필 이미지
         fieldType: companyType?.map((item) => item.value) as ("webtoon" | "game" | "movie" | "drama" | "webDrama" | "video" | "book" | "performance" | "etc")[], // 업체 분야

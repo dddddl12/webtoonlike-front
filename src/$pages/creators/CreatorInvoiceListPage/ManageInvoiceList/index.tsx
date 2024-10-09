@@ -1,11 +1,9 @@
 "use client";
 
-import React, { Fragment, useEffect, useState, useMemo } from "react";
+import React, { useState } from "react";
 import { useListData } from "@/hooks/ListData";
 import { Pagenator } from "@/ui/tools/Pagenator";
-import { useMe } from "@/states/UserState";
 import { Col, Gap, Row } from "@/ui/layouts";
-import Link from "next/link";
 import { Heading, Text } from "@/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
 import { buildImgUrl } from "@/utils/media";
@@ -17,10 +15,11 @@ import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { PreviewInvoiceUser } from "@/components/PreviewInvoiceUser";
 import { useRouter } from "@/i18n/routing";
+import { getUserInfo } from "@/utils/authedUser";
 
 export function ManageInvoiceList() {
   const router = useRouter();
-  const me = useMe();
+  const user = getUserInfo();
   const t = useTranslations("invoiceManagement");
   const locale = useLocale();
 
@@ -38,7 +37,7 @@ export function ManageInvoiceList() {
 
 
   const invoiceListOpt: ListInvoiceOptionT = {
-    meId: me?.id,
+    meId: user.id,
     $webtoon: true,
     $creator: true,
     $buyer: true,
@@ -46,13 +45,10 @@ export function ManageInvoiceList() {
     $numData: true,
     offset: page * itemPerPage,
     limit: itemPerPage,
-    creatorUid: me?.id,
+    creatorUid: user.id,
   };
 
-  useEffect(() => {
-    if(!me) return;
-    invoicesAct.load(invoiceListOpt);
-  }, [me, page]);
+  invoicesAct.load(invoiceListOpt);
 
   const { status: invoicesStatus, data: invoices } = invoices$;
 

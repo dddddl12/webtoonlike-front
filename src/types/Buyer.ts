@@ -1,6 +1,4 @@
 export type BuyerFormT = {
-    userId: number;
-    name: string;
     companyInfo: {
         name: string;
         /** 대표이미지 */

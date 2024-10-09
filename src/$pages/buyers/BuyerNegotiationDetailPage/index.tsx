@@ -18,13 +18,12 @@ import { businessFieldConverterToEn, businessFieldConverterToKr } from "@/utils/
 import { buildImgUrl } from "@/utils/media";
 import { nationConverter, nationConverterToKr } from "@/utils/nationConverter";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import * as BidRequestApi from "@/apis/bid_request";
 import { Button } from "@/ui/shadcn/Button";
 import { enqueueSnackbar } from "notistack";
 import { useRouter } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
-import { useMe } from "@/states/UserState";
 import * as BidRequestMessagesApi from "@/apis/bid_request_message";
 import { useListData } from "@/hooks/ListData";
 import Spinner from "@/components/Spinner";
@@ -34,6 +33,8 @@ import {
   BidRequestT,
   ListBidRequestMessageOptionT,
 } from "@/types";
+import { MeContext } from "@/components/$providers/MeProvider";
+import { getUserInfo } from "@/utils/authedUser";
 
 type BuyerNegotiationDetailPageProps = {
   bidRequest: BidRequestT;
@@ -50,7 +51,7 @@ export function BuyerNegotiationDetailPage({
   const t = useTranslations("buyerNegotiationDetailPage");
   const TcontractRangeData = useTranslations("contractRangeData");
   const Tbusiness = useTranslations("businessFieldENG");
-  const me = useMe();
+  const user = getUserInfo();
   const [messageContent, setMessageContent] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -70,7 +71,7 @@ export function BuyerNegotiationDetailPage({
       if (!messageContent || messageContent === "") return;
       const payload: BidRequestMessageFormT = {
         bidRequestId: bidRequest.id,
-        userId: me?.id ?? 0,
+        userId: user.id,
         content: messageContent,
       };
 
@@ -414,14 +415,14 @@ export function BuyerNegotiationDetailPage({
                 <Row
                   key={message.id}
                   className={`${
-                    me?.id === message.userId
+                    user.id === message.userId
                       ? "justify-end mr-5"
                       : "justify-start ml-5"
                   }`}
                 >
                   <p
                     className={`${
-                      me?.id === message.userId
+                      user.id === message.userId
                         ? "bg-mint text-white px-5 py-2 my-1 rounded-full"
                         : "bg-white text-black px-5 py-2 my-1 rounded-full"
                     }`}
@@ -436,7 +437,7 @@ export function BuyerNegotiationDetailPage({
               </Text>
             )}
           </Col>
-          {me?.id === bidRequest.buyer?.userId && (
+          {user.id === bidRequest.buyer?.userId && (
             <Row className="mt-5">
               <Input
                 type="text"
@@ -579,7 +580,7 @@ export function BuyerNegotiationDetailPage({
           </Row>
 
           <Gap y={20} />
-          {me?.id === bidRequest.buyer?.userId ? (
+          {user.id === bidRequest.buyer?.userId ? (
             <Row className=" justify-center">
               {!bidRequest.cancelledAt &&
               !bidRequest.rejectedAt &&

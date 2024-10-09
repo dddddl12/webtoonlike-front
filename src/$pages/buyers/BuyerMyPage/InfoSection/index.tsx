@@ -1,19 +1,22 @@
 "use client";
 
-import { useMe } from "@/states/UserState";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { Text } from "@/ui/texts";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import * as UserApi from "@/apis/users";
 import { useAlertDialog } from "@/hooks/ConfirmDialog";
 import { useRouter } from "@/i18n/routing";
+import { useContext } from "react";
+import { MeContext } from "@/components/$providers/MeProvider";
+import assert from "node:assert";
 
 export function InfoSection() {
-  const me = useMe();
+  const { me } = useContext(MeContext);
+  const buyer = me.user?.buyer;
+  assert(buyer, "Buyer not found");
   const t = useTranslations("myInfoPage");
   const { showAlertDialog } = useAlertDialog();
   const router = useRouter();
@@ -42,7 +45,7 @@ export function InfoSection() {
         <Col className="w-full justify-center items-center sm:flex-row">
           <div className="w-[160px] h-[160px] overflow-hidden relative rounded-full">
             <Image
-              src={me?.buyer?.companyInfo.thumbPath ? buildImgUrl(null, me?.buyer?.companyInfo.thumbPath, { size: "md" } ) : "/img/mock_profile_image.png"}
+              src={buyer.companyInfo.thumbPath ? buildImgUrl(null, buyer.companyInfo.thumbPath, { size: "md" } ) : "/img/mock_profile_image.png"}
               alt="profile_image"
               style={{ objectFit: "cover" }}
               fill
@@ -51,9 +54,9 @@ export function InfoSection() {
           <Gap x={15} />
           <Gap y={5} />
           <Col className="items-center justify-center w-full sm:items-start">
-            {me?.buyer ? (
+            {buyer ? (
               <Text className="text-white font-bold text-[26pt]">
-                {me.buyer.name}
+                {buyer.name}
               </Text>
             ) : (
               <Text className="font-bold text-[26pt]">

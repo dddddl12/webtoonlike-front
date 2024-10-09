@@ -1,16 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { useContext } from "react";
 import { Container, Row, Gap } from "@/ui/layouts";
 import { WebtoonDetail } from "./WebtoonDetail";
 import { WebtoonEpisodeList } from "./WebtoonEpisodeList";
-import { useMe } from "@/states/UserState";
 import { Text } from "@/ui/texts";
 import { IconCross } from "@/components/svgs/IconCross";
 import type { WebtoonT } from "@/types";
 import { useTranslations } from "next-intl";
 import { ContractRangeData } from "./ContractRangeData";
 import { useRouter } from "@/i18n/routing";
+import { getUserInfo } from "@/utils/authedUser";
 
 type WebtoonDetailPageProps = {
   webtoon: WebtoonT,
@@ -20,8 +20,8 @@ export function WebtoonDetailPage({
   webtoon
 }: WebtoonDetailPageProps) {
   const router = useRouter();
-  const me = useMe();
-  const editable = webtoon.authorId == me?.id;
+  const user = getUserInfo();
+  const editable = webtoon.authorId == user.id;
   const t = useTranslations("detailedInfoPage");
 
   return (
@@ -33,7 +33,7 @@ export function WebtoonDetailPage({
       />
 
       {
-        me?.creator?.userId === webtoon.authorId || me?.buyer ?
+        user.id === webtoon.authorId || user.type === "buyer" ?
           webtoon.bidRounds
         && webtoon.bidRounds.length > 0
         && <ContractRangeData webtoon={webtoon} /> : null

@@ -4,7 +4,7 @@ import type { UserT, UserFormT, GetUserOptionT, ListUserOptionT } from "@/types"
 
 const root = "/users";
 
-export async function getMe(getOpt: GetUserOptionT ): Promise<R.GetMeRsp> {
+export async function getMe(getOpt: GetUserOptionT = {} ): Promise<R.GetMeRsp> {
   const params: R.GetMeRqs = getOpt;
   const rsp = await server.get(`${root}/me`, { params });
   return rsp.data;

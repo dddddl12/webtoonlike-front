@@ -7,7 +7,6 @@ import { Clickable } from "@/ui/tools/Clickable";
 import { WebtoonPreview } from "@/components/WebtoonPreview";
 import * as WebtoonApi from "@/apis/webtoons";
 import { useListData } from "@/hooks/ListData";
-import { useMe } from "@/states/UserState";
 import { ListView } from "@/ui/tools/ListView";
 import { sleep } from "@/utils/misc";
 import type { ListWebtoonOptionT, GenreT } from "@/types";

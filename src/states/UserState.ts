@@ -24,11 +24,6 @@ export function useUser$(): UserStateT {
   return useRecoilValue(userState);
 }
 
-export function useMe(): UserT|null {
-  const { data } = useUser$();
-  return data?.me ?? null;
-}
-
 export function useAdmin(): AdminT|null {
   const { data } = useUser$();
   return data?.admin ?? null;

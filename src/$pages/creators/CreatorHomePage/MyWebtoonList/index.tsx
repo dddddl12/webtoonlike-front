@@ -1,23 +1,21 @@
 "use client";
 
-import { useEffect, Fragment } from "react";
-import Link from "next/link";
+import { useEffect, Fragment, useContext } from "react";
 import { Grid } from "@/ui/layouts";
 import { Clickable } from "@/ui/tools/Clickable";
 import { WebtoonPreview } from "@/components/WebtoonPreview";
 import * as WebtoonApi from "@/apis/webtoons";
 import { useListData } from "@/hooks/ListData";
-import { useMe } from "@/states/UserState";
-import { sleep } from "@/utils/misc";
 import type { ListWebtoonOptionT } from "@/types";
 import { ListView } from "@/ui/tools/ListView";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useRouter } from "@/i18n/routing";
+import { getUserInfo } from "@/utils/authedUser";
 
 export function MyWebtooonList() {
   const router = useRouter();
-  const me = useMe();
+  const user = getUserInfo();
 
   const { data: webtoons$, actions: webtoonsAct } = useListData({
     listFn: async (listOpt) => {
@@ -26,14 +24,12 @@ export function MyWebtooonList() {
   });
 
   const listOpt: ListWebtoonOptionT = {
-    authorId: me?.id,
+    authorId: user.id,
     limit: 10,
   };
 
-  useEffect(() => {
-    if (!me) return;
-    webtoonsAct.load(listOpt);
-  }, [me]);
+  // TODO 발생 불가
+  webtoonsAct.load(listOpt);
 
   function handleLoaderDetect(): void {
     webtoonsAct.refill();

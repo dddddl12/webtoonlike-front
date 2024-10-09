@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useListData } from "@/hooks/ListData";
 import * as BidRoundApi from "@/apis/bid_rounds";
-import { useMe } from "@/states/UserState";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Heading, Text } from "@/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
@@ -16,10 +15,11 @@ import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useRouter } from "@/i18n/routing";
 import { convertBidRoundStatus, convertBidRoundStatusEn } from "@/utils/bidRoundStatusConverter";
+import { getUserInfo } from "@/utils/authedUser";
 
 export function BidRoundList() {
   const router = useRouter();
-  const me = useMe();
+  const user = getUserInfo();
   const t = useTranslations("manageContents");
   const locale = useLocale();
 
@@ -37,17 +37,14 @@ export function BidRoundList() {
 
   const listOpt: ListBidRoundOptionT = {
     $webtoon: true,
-    userId: me?.id,
+    userId: user.id,
     status: "waiting, bidding, negotiating, done",
     $numData: true,
     offset: page * itemPerPage,
     limit: itemPerPage,
   };
 
-  useEffect(() => {
-    if (!me) return;
-    bidRoundsAct.load(listOpt);
-  }, [me, page]);
+  bidRoundsAct.load(listOpt);
 
   const { status, data: bidRounds } = bidRounds$;
 

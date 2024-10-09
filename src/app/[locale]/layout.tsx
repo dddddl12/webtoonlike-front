@@ -1,18 +1,17 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, Suspense } from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { MeProvider } from "@/components/$providers/MeProvider";
 import { RecoilProvider } from "@/components/$providers/RecoilProvider";
 import { SnackbarProvider } from "@/hooks/Snackbar";
 import { ConfirmDialogShared } from "@/hooks/ConfirmDialog";
-import { DarkModeProvider } from "../../components/$providers/DarkModeProvider";
 import { Header } from "@/components/Header";
 import "./globals.css";
 import { AOSInit } from "@/ui/AOS";
 import { Footer } from "@/components/Footer";
 import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
 import { enUS, koKR } from "@clerk/localizations";
+import { Authenticate } from "@/components/Authenticate";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,18 +34,18 @@ export default function RootLayout({
       <RecoilProvider>
         <html lang={locale} className="h-[100%]">
           <AOSInit />
-          <NextIntlClientProvider messages={messages}>
+          <NextIntlClientProvider messages={messages} timeZone="Asia/Seoul">
             <body className={`h-[100%] ${inter.className}`}>
               <main className="h-[100%]">
                 <ConfirmDialogShared />
                 <SnackbarProvider>
-                  <MeProvider>
-                    <Header />
+                  <Authenticate>
+                    <Header/>
                     <div className="h-auto min-h-[100%]">
                       {children}
                     </div>
                     <Footer />
-                  </MeProvider>
+                  </Authenticate>
                 </SnackbarProvider>
               </main>
             </body>
