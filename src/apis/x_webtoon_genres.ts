@@ -1,6 +1,6 @@
 import { server } from "@/system/axios";
-import type * as R from "@/types/XWebtoonGenre.api";
-import type { XWebtoonGenreFormT } from "@/types/XWebtoonGenre";
+import type * as R from "@backend/types/XWebtoonGenre.api";
+import type { XWebtoonGenreFormT } from "@backend/types/XWebtoonGenre";
 
 const root = "/x-webtoon-genres";
 

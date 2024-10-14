@@ -1,8 +1,8 @@
 "use server";
 
 import { server } from "@/system/axios";
-import type * as R from "@/types/Webtoon.api";
-import type { WebtoonFormT, WebtoonT, GetWebtoonOptionT, ListWebtoonOptionT } from "@/types/Webtoon";
+import type * as R from "@backend/types/Webtoon.api";
+import type { WebtoonFormT, WebtoonT, GetWebtoonOptionT, ListWebtoonOptionT } from "@backend/types/Webtoon";
 
 const root = "/webtoons";
 

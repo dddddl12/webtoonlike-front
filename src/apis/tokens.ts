@@ -1,5 +1,5 @@
 import { server } from "@/system/axios";
-import { CreateTokenOptionT, TokenRsp } from "@/types/Token";
+import { CreateTokenOptionT, TokenRsp } from "@backend/types/Token";
 
 const root = "/tokens";
 

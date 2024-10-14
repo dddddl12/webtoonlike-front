@@ -1,6 +1,6 @@
 import { server } from "@/system/axios";
-import type * as R from "@/types/WebtoonLike.api";
-import type { WebtoonLikeFormT, WebtoonLikeT } from "@/types/WebtoonLike";
+import type * as R from "@backend/types/WebtoonLike.api";
+import type { WebtoonLikeFormT, WebtoonLikeT } from "@backend/types/WebtoonLike";
 
 const root = "/webtoon-likes";
 

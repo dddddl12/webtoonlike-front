@@ -1,6 +1,6 @@
 import { server } from "@/system/axios";
-import type * as R from "@/types/Buyer.api";
-import type { BuyerFormT } from "@/types/Buyer";
+import type * as R from "@backend/types/Buyer.api";
+import type { BuyerFormT } from "@backend/types/Buyer";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
 const root = "/buyers";

@@ -1,7 +1,7 @@
 "use server";
 import { server } from "@/system/axios";
-import type * as R from "@/types/Creator.api";
-import type { CreatorFormT, GetCreatorOptionT } from "@/types/Creator";
+import type * as R from "@backend/types/Creator.api";
+import type { CreatorFormT, GetCreatorOptionT } from "@backend/types/Creator";
 
 const root = "/creators";
 

@@ -1,6 +1,6 @@
 import { server } from "@/system/axios";
-import type * as R from "@/types/Notification.api";
-import type { NotificationFormT, NotificationT, ListNotificationOptionT } from "@/types/Notification";
+import type * as R from "@backend/types/Notification.api";
+import type { NotificationFormT, NotificationT, ListNotificationOptionT } from "@backend/types/Notification";
 
 const root = "/notifications";
 

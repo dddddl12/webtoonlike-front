@@ -1,5 +1,5 @@
 import { server } from "@/system/axios";
-import type * as R from "@/types/BidRound.api";
+import type * as R from "@backend/types/BidRound.api";
 import type { BidRoundT, BidRoundFormT, GetBidRoundOptionT, ListBidRoundOptionT } from "@/types";
 
 const root = "/bid-rounds";

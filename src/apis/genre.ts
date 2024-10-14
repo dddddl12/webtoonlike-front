@@ -1,5 +1,5 @@
 import { server } from "@/system/axios";
-import type * as R from "@/types/Genre.api";
+import type * as R from "@backend/types/Genre.api";
 import { GenreFormT, GetGenreOptionT } from "@/types";
 
 const root = "/genres";

@@ -1,5 +1,5 @@
 import { server } from "@/system/axios";
-import type * as R from "@/types/BidRequest.api";
+import type * as R from "@backend/types/BidRequest.api";
 import type {
   BidRequestT, BidRequestFormT, GetBidRequestOptionT, ListBidRequestOptionT, InvoiceT,
 } from "@/types";

@@ -1,10 +1,10 @@
 import { server } from "@/system/axios";
-import type * as R from "@/types/WebtoonEpisode.api";
+import type * as R from "@backend/types/WebtoonEpisode.api";
 import type {
   WebtoonEpisodeT, WebtoonEpisodeFormT,
   GetWebtoonEpisodeOptionT, ListWebtoonEpisodeOptionT
-} from "@/types/WebtoonEpisode";
-import type { WebtoonEpisodeImageFormT } from "@/types/WebtoonEpisodeImage";
+} from "@backend/types/WebtoonEpisode";
+import type { WebtoonEpisodeImageFormT } from "@backend/types/WebtoonEpisodeImage";
 
 const root = "/webtoon-episodes";
 

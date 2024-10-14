@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Gap } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
-import type { NotificationT } from "@/types/Notification";
+import type { NotificationT } from "@backend/types/Notification";
 
 type NotificationItemProps = {
   item: NotificationT

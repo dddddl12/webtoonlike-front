@@ -1,5 +1,5 @@
 import { server } from "@/system/axios";
-import type * as R from "@/types/Admin.api";
+import type * as R from "@backend/types/Admin.api";
 
 const root = "/admins";
 
