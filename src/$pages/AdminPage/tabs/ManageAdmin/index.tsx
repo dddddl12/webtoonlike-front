@@ -1,27 +1,25 @@
-import { AdminSheet } from "@/components/AdminSheet";
-import { AdminProtector } from "../../AdminProtector";
-import { Col, Container, Gap, Row } from "@/ui/layouts";
-import { useMe } from "@/states/UserState";
+import { Container, Gap, Row } from "@/ui/layouts";
 import { useListData } from "@/hooks/ListData";
 import * as AdminApi from "@/apis/admins";
 import { AdminT, ListAdminOptionT } from "@/types";
-import { Fragment, useEffect } from "react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/ui/shadcn/Table";
+import { useContext, useEffect } from "react";
+import { TableHeader, TableRow } from "@/ui/shadcn/Table";
 import { convertTimeAbsolute } from "@/utils/time";
-import { Heading, Text } from "@/ui/texts";
+import { Heading } from "@/ui/texts";
 import { Button } from "@/ui/shadcn/Button";
 import { IconDelete } from "@/components/svgs/IconDelete";
-import { useAlertDialog, useConfirmDialog } from "@/hooks/ConfirmDialog";
-import axios, { AxiosError } from "axios";
+import { useAlertDialog } from "@/hooks/ConfirmDialog";
+import axios from "axios";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 export function ManageAdmin() {
-  const me = useMe();
+  const user = getServerUserInfo();
   const { showAlertDialog } = useAlertDialog();
 
   const adminListOpt: ListAdminOptionT = {
-    meId: me?.id,
+    meId: user.id,
     $user: true,
   };
 

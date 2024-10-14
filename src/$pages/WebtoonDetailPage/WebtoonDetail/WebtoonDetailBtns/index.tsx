@@ -4,12 +4,12 @@ import { Col, Gap } from "@/ui/layouts";
 import { WebtoonDetailLikeButton } from "../WebtoonDetailLikeButton";
 import { Button } from "@/ui/shadcn/Button";
 import { WebtoonT } from "@/types";
-import { useMe } from "@/states/UserState";
 import { useMemo } from "react";
 import { convertBidRoundStatus, convertBidRoundStatusEn } from "@/utils/bidRoundStatusConverter";
 import { useAlertDialog } from "@/hooks/ConfirmDialog";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 type WebtoonDetailBtnsProps = {
   webtoon: WebtoonT;
@@ -17,7 +17,7 @@ type WebtoonDetailBtnsProps = {
 
 export function WebtoonDetailBtns({ webtoon }: WebtoonDetailBtnsProps) {
   const router = useRouter();
-  const me = useMe();
+  const user = getServerUserInfo();
   const locale = useLocale();
   const { showAlertDialog } = useAlertDialog();
   const { bidRounds } = webtoon;
@@ -29,11 +29,9 @@ export function WebtoonDetailBtns({ webtoon }: WebtoonDetailBtnsProps) {
     return sortedBidRounds[0];
   }, [webtoon.bidRounds]);
 
-  const isBuyer = me?.userType === "buyer";
-  const isCreator = me?.userType === "creator";
   const isBidRoundEmpty = !webtoon.bidRounds?.length;
   const isDone = latestBidRound?.status === "done";
-  const isOwner = webtoon.authorId === me?.id && isCreator;
+  const isOwner = webtoon.authorId === user.id && user.type === "creator";
   const isDisapproved = latestBidRound?.disapprovedAt;
   const TofferPage = useTranslations("offerPage");
   const TseriesManagement = useTranslations("seriesManagement");
@@ -92,7 +90,7 @@ export function WebtoonDetailBtns({ webtoon }: WebtoonDetailBtnsProps) {
   };
 
   const renderOfferButton = () => {
-    if (isBuyer && !isBidRoundEmpty) {
+    if (user.type === "buyer" && !isBidRoundEmpty) {
       return (
         isPossibleToOffer() ?
           <div
@@ -111,7 +109,7 @@ export function WebtoonDetailBtns({ webtoon }: WebtoonDetailBtnsProps) {
 
       );
     }
-    if (isBuyer && isBidRoundEmpty) {
+    if (user.type === "buyer" && isBidRoundEmpty) {
       return (
         <Button
           disabled

@@ -1,7 +1,6 @@
 "use client";
 
 import { useListData } from "@/hooks/ListData";
-import { useMe } from "@/states/UserState";
 import * as BidRequestApi from "@/apis/bid_request";
 import { useEffect, useState } from "react";
 import { Col, Gap, Row } from "@/ui/layouts";
@@ -10,7 +9,6 @@ import { Heading, Text } from "@/ui/texts";
 import { ListView } from "@/ui/tools/ListView";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
-import Link from "next/link";
 import { convertTimeAbsolute } from "@/utils/time";
 import {
   convertBidRequestStatus,
@@ -36,6 +34,7 @@ import { useLocale, useTranslations } from "next-intl";
 import * as BidRoundApi from "@/apis/bid_rounds";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "@/i18n/routing";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 const OFFER_TABLE_HEADER = [
   { ko: "No.", en: "No." },
@@ -47,7 +46,7 @@ const OFFER_TABLE_HEADER = [
 export function BuyerBidRoundList() {
   const router = useRouter();
   const t = useTranslations("offerPage");
-  const me = useMe();
+  const user = getServerUserInfo();
   const [filteredBidRounds, setFilteredBidRounds] = useState<BidRoundT[]>([]);
   const locale = useLocale();
 
@@ -72,8 +71,8 @@ export function BuyerBidRoundList() {
   });
 
   const listOpt: ListBidRequestOptionT = {
-    meId: me?.id,
-    userId: me?.id,
+    meId: user.id,
+    userId: user.id,
     $webtoon: true,
     $round: true,
     $buyer: true,
@@ -82,11 +81,8 @@ export function BuyerBidRoundList() {
     mine: "only",
   };
 
-  useEffect(() => {
-    if (!me) return;
-    bidRoundsAct.load(bidRoundListOpt);
-    bidRequesetAct.load(listOpt);
-  }, [me]);
+  bidRoundsAct.load(bidRoundListOpt);
+  bidRequesetAct.load(listOpt);
 
   function handleLoaderDetect(): void {
     bidRoundsAct.refill();
@@ -215,7 +211,7 @@ export function BuyerBidRoundList() {
                       <TableBody>
                         {bidRound.requests && bidRound.requests.length > 0 ? (
                           bidRound.requests
-                            .filter((item) => item.userId === me?.id)
+                            .filter((item) => item.userId === user.id)
                             .map((item, idx) => (
                               <TableRow key={generateRandomString()}>
                                 <TableCell className="text-center">

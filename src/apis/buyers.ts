@@ -1,13 +1,17 @@
 import { server } from "@/system/axios";
 import type * as R from "@/types/Buyer.api";
 import type { BuyerFormT } from "@/types/Buyer";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 const root = "/buyers";
 
-export async function create(form: BuyerFormT): Promise<R.CreateRsp> {
-  const body: R.CreateRqs = { form };
-  const rsp = await server.post(`${root}`, body);
-  return rsp.data;
+export async function create(form: BuyerFormT) {
+  const { userId } = auth();
+  await clerkClient.users.updateUserMetadata(userId!, {
+    publicMetadata: {
+      form,
+    },
+  });
 }
 
 export async function getThumbnailPresignedUrl(mimeType: string): Promise<R.ThumbnailPresignedUrlRsp> {

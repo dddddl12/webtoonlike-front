@@ -1,3 +1,5 @@
+"use server";
+
 import { server } from "@/system/axios";
 import type * as R from "@/types/Webtoon.api";
 import type { WebtoonFormT, WebtoonT, GetWebtoonOptionT, ListWebtoonOptionT } from "@/types/Webtoon";
@@ -32,5 +34,10 @@ export async function update(id: idT, form: Partial<WebtoonFormT>): Promise<R.Up
 export async function getThumbnailPresignedUrl(mimeType: string): Promise<R.ThumbnailPresignedUrlRsp> {
   const body: R.ThumbnailPresignedUrlRqs = { mimeType };
   const rsp = await server.post(`${root}/thumbnail/presigned-url`, body);
+  return rsp.data;
+}
+
+export async function homeItems(): Promise<R.HomeItems> {
+  const rsp = await server.get(`${root}/homeItems`);
   return rsp.data;
 }

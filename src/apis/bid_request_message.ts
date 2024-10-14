@@ -8,8 +8,7 @@ const root = "/bid-request-messages";
 
 // (POST) /
 export async function create(form: R.CreateRqs): Promise<R.CreateRsp> {
-  const body: R.CreateRqs = form;
-  const rsp = await server.post(`${root}/`, body);
+  const rsp = await server.post(`${root}/`, form);
   return rsp.data;
 }
 

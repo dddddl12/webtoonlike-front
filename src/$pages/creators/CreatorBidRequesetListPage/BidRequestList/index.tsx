@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useListData } from "@/hooks/ListData";
 import { Pagenator } from "@/ui/tools/Pagenator";
-import { useMe } from "@/states/UserState";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Heading, Text } from "@/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
@@ -16,10 +15,11 @@ import { useLocale, useTranslations } from "next-intl";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useRouter } from "@/i18n/routing";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 export function BidRequestList() {
   const router = useRouter();
-  const me = useMe();
+  const user = getServerUserInfo();
   const t = useTranslations("manageOffers");
   const locale = useLocale();
 
@@ -33,7 +33,7 @@ export function BidRequestList() {
 
   const myBidRounds = useMemo(() => {
     return bidRounds?.
-      filter((bidRound) => bidRound.userId === me?.id).
+      filter((bidRound) => bidRound.userId === user.id).
       filter((bidRound) => bidRound.status === "idle" || bidRound.status === "waiting");
   }, [bidRounds]);
 
@@ -44,7 +44,7 @@ export function BidRequestList() {
   const totalNumData = myBidRounds.length || 0;
 
   const bidRoundListOpt: ListBidRoundOptionT = {
-    meId: me?.id,
+    meId: user.id,
     $webtoon: true,
     $user: true,
     $numData: true,
@@ -52,10 +52,7 @@ export function BidRequestList() {
     limit: itemPerPage,
   };
 
-  useEffect(() => {
-    if(!me) return;
-    bidRoundsAct.load(bidRoundListOpt);
-  }, [me, page]);
+  bidRoundsAct.load(bidRoundListOpt);
 
   if (bidRoundStatus == "idle" || bidRoundStatus == "loading") {
     return <Spinner />;
@@ -139,7 +136,7 @@ export function BidRequestList() {
           <Pagenator
             page={page}
             numData={totalNumData}
-            itemPerPage={itemPerPage}
+            itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}
             onPageChange={handlePageClick}
           />

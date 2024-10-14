@@ -1,5 +1,4 @@
 export type WebtoonLikeFormT = {
-    userId: number | null;
     webtoonId: number;
 }
 

@@ -4,9 +4,9 @@ import React, { Fragment } from "react";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { WebtoonEpisodePreview } from "./WebtoonEpisodePreview";
 import type { WebtoonT } from "@/types";
-import { useMe } from "@/states/UserState";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 type WebtoonEpisodeListProps = {
   webtoon: WebtoonT;
@@ -18,7 +18,7 @@ export function WebtoonEpisodeList({
   editable,
 }: WebtoonEpisodeListProps) {
   const router = useRouter();
-  const me = useMe();
+  const user = getServerUserInfo();
   const t = useTranslations("episodePreviewDesc");
   const locale = useLocale();
   const episodes = (webtoon.episodes || [])
@@ -26,12 +26,12 @@ export function WebtoonEpisodeList({
 
   return (
     <div>
-      {episodes.length == 0 && webtoon.authorId == me?.id && (
+      {episodes.length == 0 && webtoon.authorId == user.id && (
         <Row className="justify-center bg-gray-darker p-3 rounded-sm">
           {t("pressAddEps")}
         </Row>
       )}
-      {episodes.length == 0 && webtoon.authorId != me?.id && (
+      {episodes.length == 0 && webtoon.authorId != user.id && (
         <Row className="justify-center bg-gray-darker p-3 rounded-sm">
           {t("noEps")}
         </Row>

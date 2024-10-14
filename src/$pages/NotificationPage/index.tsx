@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Col, Container, Gap, Row } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { Text } from "@/ui/texts";
-import Link from "next/link";
 import { useListData } from "@/hooks/ListData";
-import { useMe } from "@/states/UserState";
 import * as NotificationApi from "@/apis/notifications";
 import { ListView } from "@/ui/tools/ListView";
 import { NotificationItem } from "@/components/NotificationItem";
@@ -14,7 +12,6 @@ import { NotificationT, ListNotificationOptionT } from "@/types";
 import Spinner from "@/components/Spinner";
 
 export function NotificationPage() {
-  const me = useMe();
 
   const { data: notifications$, actions: notificationsAct } = useListData({
     listFn: NotificationApi.list,
@@ -23,11 +20,8 @@ export function NotificationPage() {
   const listOpt: ListNotificationOptionT = {
   };
 
-  useEffect(() => {
-    if (me) {
-      notificationsAct.load(listOpt);
-    }
-  }, [me?.id]);
+  // TODO
+  notificationsAct.load(listOpt);
 
   const [notificationStatus, setNotificationStatue] = useState<string>("all");
 

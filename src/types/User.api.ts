@@ -8,7 +8,7 @@ export type CreateMeRsp = UserT
 
 // (GET) /me
 export type GetMeRqs = GetUserOptionT
-export type GetMeRsp = GetData<UserT|null>
+export type GetMeRsp = UserT
 
 // (DELETE) /me
 export type DeleteMeRqs = null

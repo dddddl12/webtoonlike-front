@@ -49,19 +49,17 @@ const PaginationLink = ({
   size = "icon",
   ...props
 }: PaginationLinkProps) => (
-  <PaginationItem>
-    <span
-      aria-current={isActive ? "page" : undefined}
-      className={cn(isActive ? "bg-white border border-black/20" : "bg-gray/40 text-black",
-        buttonVariants({
-          variant: isActive ? "secondary" : "ghost",
-          size,
-        }),
-        className
-      )}
-      {...props}
-    />
-  </PaginationItem>
+  <span
+    aria-current={isActive ? "page" : undefined}
+    className={cn(isActive ? "bg-white border border-black/20" : "bg-gray/40 text-black",
+      buttonVariants({
+        variant: isActive ? "secondary" : "ghost",
+        size,
+      }),
+      className
+    )}
+    {...props}
+  />
 );
 PaginationLink.displayName = "PaginationLink";
 

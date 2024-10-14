@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { Col, Gap, Row } from "@/ui/layouts";
@@ -13,57 +13,38 @@ import { IconHeartFill } from "@/components/svgs/IconHeartFill";
 import { buildImgUrl } from "@/utils/media";
 import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
 import { useSnackbar } from "@/hooks/Snackbar";
-import { useMe } from "@/states/UserState";
 import * as WebtoonLike from "@/apis/webtoon_likes";
-import type { WebtoonLikeFormT, WebtoonT } from "@/types";
-import { intervalToDuration ,format as dfFormat } from "date-fns";
+import type { WebtoonT } from "@/types";
+import { intervalToDuration } from "date-fns";
 import { useRouter } from "@/i18n/routing";
+import clsx from "clsx";
 
 
 type PopularCarouselItemProps = {
-  webtoon: WebtoonT,
-  onUpdateSuccess: (newWebtoon: WebtoonT) => void,
+  webtoon: WebtoonT
 }
 
 export function PopularCarouselItem({
   webtoon,
-  onUpdateSuccess,
 }: PopularCarouselItemProps) {
   const router = useRouter();
   const t = useTranslations("homeMain");
-  const me = useMe();
   const { enqueueSnackbar } = useSnackbar();
   const locale = useLocale();
+  const [isLiked, setIsLiked] = useState(!!webtoon.myLike);
+  // TODO mylike 들어오지 않고 있음
 
   async function handleClickLike(): Promise<void> {
-    if (!me) {
-      enqueueSnackbar("로그인이 필요합니다.", { variant: "warning" });
-      return;
-    }
+    // TODO
+    // if (!me) {
+    //   enqueueSnackbar("로그인이 필요합니다.", { variant: "warning" });
+    //   return;
+    // }
     try {
-      const form: WebtoonLikeFormT = {
-        userId: me.id,
-        webtoonId: webtoon.id
-      };
-      const created = await WebtoonLike.create(form);
-      const newWebtoon: WebtoonT = { ...webtoon, myLike: created };
-      onUpdateSuccess(newWebtoon);
-    } catch (e){
-      enqueueSnackbar("알 수 없는 에러가 발생했습니다.", { variant: "warning" });
-    }
-  }
-
-  async function handleClickUnlike(): Promise<void> {
-    if (!me) {
-      enqueueSnackbar("로그인이 필요합니다.", { variant: "warning" });
-      return;
-    }
-    try {
-      if (webtoon.myLike) {
-        await WebtoonLike.remove(webtoon.myLike.id);
-        const newWebtoon: WebtoonT = { ...webtoon, myLike: undefined };
-        onUpdateSuccess(newWebtoon);
-      }
+      isLiked
+        ? await WebtoonLike.remove(webtoon.id)
+        : await WebtoonLike.create(webtoon.id); //TODO webtoons API로 통합
+      setIsLiked(!isLiked);
     } catch (e){
       enqueueSnackbar("알 수 없는 에러가 발생했습니다.", { variant: "warning" });
     }
@@ -150,15 +131,13 @@ export function PopularCarouselItem({
             onClick={() => {router.push(`/webtoons/${webtoon.id}`);}}>
             {t("viewContent")}
           </div>
-          {webtoon.myLike
-            ? <Button onClick={handleClickUnlike} className="w-[48px] h-[48px] bg-gray-dark text-white px-0 py-0 rounded-[4px]">
-              {/* {webtoon.numLike} */}
-              <IconHeartFill fill="red"/>
-            </Button>
-            : <Button onClick={handleClickLike} className="w-[48px] h-[48px] bg-gray-dark text-white px-0 py-0 rounded-[4px] hover:bg-red">
-              {/* {webtoon.numLike} */}
-              <IconHeart fill="white" />
-            </Button>}
+          <Button onClick={handleClickLike}
+            className={clsx("w-[48px] h-[48px] bg-gray-dark text-white px-0 py-0 rounded-[4px]", !isLiked && "hover:bg-red")}
+          >
+            {isLiked
+              ? <IconHeartFill fill="red"/>
+              : <IconHeart fill="white"/>}
+          </Button>
         </Row>
       </Col>
     </Col>

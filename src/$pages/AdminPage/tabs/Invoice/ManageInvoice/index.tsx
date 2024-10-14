@@ -123,7 +123,7 @@ export function ManageInvoice() {
           <Pagenator
             page={page}
             numData={totalNumData}
-            itemPerPage={itemPerPage}
+            itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}
             onPageChange={handlePageClick}
           />

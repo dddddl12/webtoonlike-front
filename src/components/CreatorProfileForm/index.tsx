@@ -6,7 +6,6 @@ import { Text } from "@/ui/texts";
 import { Label } from "@/ui/shadcn/Label";
 import { Input } from "@/ui/shadcn/Input";
 import { Button } from "@/ui/shadcn/Button";
-import { useMe } from "@/states/UserState";
 import * as CreatorApi from "@/apis/creators";
 import type { CreatorT, CreatorFormT } from "@/types";
 import { uploadToS3 } from "@/utils/s3";
@@ -20,6 +19,7 @@ import {
   SelectValue,
 } from "@/ui/shadcn/Select";
 import { useTranslations } from "next-intl";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 type CreatorProfileFormProps = {
   creator?: CreatorT;
@@ -36,9 +36,9 @@ export function CreatorProfileForm({
   const [name_en, setName_en] = useState<string>("");
   const [thumbnail, setThumbnail] = useState<File | string | null>();
 
-  const me = useMe();
+  const user = getServerUserInfo();
   const t = useTranslations("setupPageNextForCreators");
-  const tMyInfoPage = useTranslations("myInfoPage")
+  const tMyInfoPage = useTranslations("myInfoPage");
 
   useEffect(() => {
     if (prevCreator) {
@@ -46,9 +46,9 @@ export function CreatorProfileForm({
       setAgency(prevCreator.agencyName);
       setName(prevCreator.name);
       setName_en(prevCreator.name_en ?? "");
-      if (prevCreator.isNew === true) {
+      if (prevCreator.isNew) {
         setIsNew("신인");
-      } else if (prevCreator.isNew === false) {
+      } else if (prevCreator.isNew) {
         setIsNew("경력");
       }
     }
@@ -84,10 +84,6 @@ export function CreatorProfileForm({
   }
 
   async function handleSubmitClick() {
-    if (!me) {
-      return;
-    }
-
     let thumbPath: string | null = null;
     if (thumbnail instanceof File) {
       const { putUrl, key } = await CreatorApi.getThumbnailPresignedUrl(
@@ -100,7 +96,7 @@ export function CreatorProfileForm({
     }
 
     const form: CreatorFormT = {
-      userId: me.id,
+      userId: user.id,
       name,
       name_en,
       thumbPath,

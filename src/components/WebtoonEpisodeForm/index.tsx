@@ -17,7 +17,6 @@ import { useSnackbar } from "@/hooks/Snackbar";
 import { useAlertDialog, useConfirmDialog } from "@/hooks/ConfirmDialog";
 import { WebtoonImageItem } from "./WebtoonImageItem";
 // logic
-import { useMe } from "@/states/UserState";
 import * as WebtoonApi from "@/apis/webtoons";
 import * as WebtoonEpisodeApi from "@/apis/webtoon_episodes";
 import * as WebtoonEpisodeImageApi from "@/apis/webtoon_episode_images";
@@ -33,6 +32,7 @@ import type {
   WebtoonEpisodeImageFormT,
 } from "@/types";
 import { useLocale, useTranslations } from "next-intl";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 type WebtoonEpisodeFormProps = {
   webtoonId: number;
@@ -66,7 +66,7 @@ export function WebtoonEpisodeForm({
     episodeImages.map(() => false)
   );
   const locale = useLocale();
-  const me = useMe();
+  const user = getServerUserInfo();
   const submitDisabled = isSubmitting || episodeNo === null || episodeNo === "" || episodeImages.length == 0;
   const t = useTranslations("detailedInfoPage");
   useEffect(() => {
@@ -189,7 +189,7 @@ export function WebtoonEpisodeForm({
       );
 
       const form: WebtoonEpisodeFormT = {
-        authorId: me!.id,
+        authorId: user.id,
         webtoonId: webtoonId,
         // title,
         // title_en,

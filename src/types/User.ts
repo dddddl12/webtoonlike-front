@@ -1,6 +1,9 @@
-export type UserTypeT = "creator" | "buyer"
+export type UserTypeT = "creator" | "buyer";
+export type AdminLevel = 0 | 1 | 2;
+//     0: 비관리자, 1: 일반 관리자, 2: 수퍼 관리자
 
 export type UserFormT = {
+    // TODO sub 없앨 것(보안을 위해 토큰으로 id 판단해야 함)
     sub: string;
     email: string;
     fullName: string;
@@ -28,7 +31,6 @@ type _UserT = {
 }
 
 export type GetUserOptionT = {
-    meId?: (number | undefined) | undefined;
     $buyer?: boolean | undefined;
     $creator?: boolean | undefined;
 }
@@ -50,6 +52,23 @@ import type { CreatorT } from "./Creator";
 import type { BuyerT } from "./Buyer";
 
 export interface UserT extends _UserT {
-  creator?: CreatorT | null;
-  buyer?: BuyerT | null;
+  creator: CreatorT | null;
+  buyer: BuyerT | null;
+}
+
+export interface UserWithBuyerT extends UserT {
+  creator: null;
+  buyer: BuyerT;
+}
+
+export interface UserWithCreatorT extends UserT {
+  creator: CreatorT;
+  buyer: null;
+}
+
+// Clerk
+export type ClerkUserMetadata = {
+    webtoonLikeId: number;
+    type: UserTypeT;
+    adminLevel: AdminLevel;
 }

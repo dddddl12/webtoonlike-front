@@ -1,6 +1,5 @@
 "use client";
 
-import { useMe } from "@/states/UserState";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { Text } from "@/ui/texts";
@@ -11,19 +10,22 @@ import { useListData } from "@/hooks/ListData";
 import * as CreatorApi from "@/apis/creators";
 import * as UserApi from "@/apis/users";
 import { ListCreatorOptionT } from "@/types";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import Spinner from "@/components/Spinner";
 import { useAlertDialog } from "@/hooks/ConfirmDialog";
 import { useRouter } from "@/i18n/routing";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";
+import { MeContext } from "@/components/$providers/MeProvider";
 
 export function InfoSection() {
-  const me = useMe();
+  const { me } = useContext(MeContext);
+  const creator = me.user?.creator!;
   const TeditProfile = useTranslations("profilePage");
   const { showAlertDialog } = useAlertDialog();
   const router = useRouter();
 
+  // TODO
   const { data: Creators$, actions: CreatorsAct } = useListData({
     listFn: async (listOpt) => {
       return await CreatorApi.list(listOpt);
@@ -72,7 +74,7 @@ export function InfoSection() {
         <Col className="w-full justify-center items-center sm:flex-row">
           <div className="w-[160px] h-[160px] overflow-hidden relative rounded-full">
             <Image
-              src={me?.creator?.thumbPath ? buildImgUrl(null, me.creator.thumbPath, { size: "sm" } ) : "/img/mock_profile_image.png"}
+              src={creator.thumbPath ? buildImgUrl(null, creator.thumbPath, { size: "sm" } ) : "/img/mock_profile_image.png"}
               alt="profile_image"
               style={{ objectFit: "cover" }}
               fill
@@ -81,9 +83,9 @@ export function InfoSection() {
           <Gap x={15} />
           <Gap y={5} />
           <Col className="items-center justify-center w-full sm:items-start">
-            {me?.creator ? (
+            {creator ? (
               <Text className="text-white font-bold text-[26pt]">
-                {me.creator.name}
+                {creator.name}
               </Text>
             ) : (
               <Text className="font-bold text-[26pt]">
@@ -94,7 +96,7 @@ export function InfoSection() {
             <Col className="w-full justify-between sm:flex-row">
               <Col className="sm:flex-row">
                 <Row className="bg-white/10 px-3 py-2 text-white rounded-sm cursor-default">
-                  {creators.filter((item) => item.id === me?.creator?.id)[0]?.numWebtoonLike || 0}
+                  {creators.filter((item) => item.id === creator?.id)[0]?.numWebtoonLike || 0}
                   <Gap x={1} />
                   <IconHeartFill fill="red" />
                 </Row>

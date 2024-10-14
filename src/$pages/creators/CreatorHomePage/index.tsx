@@ -1,12 +1,11 @@
-"use client";
-
-import Link from "next/link";
 import { Button } from "@/ui/shadcn/Button";
 import { Container, Row, Gap } from "@/ui/layouts";
 import { MyWebtooonList } from "./MyWebtoonList";
 import { useRouter } from "@/i18n/routing";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 export function CreatorHomePage(): JSX.Element {
+  const user = getServerUserInfo();
   const router = useRouter();
   return (
     <Container>
@@ -21,7 +20,7 @@ export function CreatorHomePage(): JSX.Element {
 
       <Gap y={4} />
 
-      <MyWebtooonList />
+      <MyWebtooonList userId={user.id} />
 
     </Container>
   );

@@ -16,7 +16,3 @@ export type GenreT = {
 export type GetGenreOptionT = {
     meId?: number | undefined;
 }
-
-export type ListGenreOptionT = {
-    meId?: number | undefined;
-}

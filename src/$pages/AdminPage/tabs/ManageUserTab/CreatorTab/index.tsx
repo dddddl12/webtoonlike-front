@@ -1,7 +1,6 @@
 "use client";
 
 import { Container, Gap, Row } from "@/ui/layouts";
-import { useMe } from "@/states/UserState";
 import { useListData } from "@/hooks/ListData";
 import * as CreatorApi from "@/apis/creators";
 import { useEffect, useState } from "react";
@@ -47,8 +46,6 @@ export function ToggleButton({ defaultChecked, onChange }: ToggleButtonProps): J
 };
 
 export function ManageCreatorTab() {
-  const me = useMe();
-
   const { data: creators$, actions: CreatorsAct } = useListData({
     listFn: async (listOpt) => {
       return await CreatorApi.list(listOpt);
@@ -69,10 +66,11 @@ export function ManageCreatorTab() {
     sort: "recent",
   };
 
-  useEffect(() => {
-    if(!me) return;
-    CreatorsAct.load(listOpt);
-  }, [me, page]);
+  // TODO
+  // useEffect(() => {
+  //   if(!me) return;
+  //   CreatorsAct.load(listOpt);
+  // }, [me, page]);
 
   const { status, data: creators } = creators$;
 
@@ -147,7 +145,7 @@ export function ManageCreatorTab() {
       <Pagenator
         page={page}
         numData={totalNumData}
-        itemPerPage={itemPerPage}
+        itemsPerPage={itemPerPage}
         pageWindowLen={pageWindowLen}
         onPageChange={handlePageClick}
       />

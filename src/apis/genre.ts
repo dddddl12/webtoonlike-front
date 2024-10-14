@@ -1,6 +1,6 @@
 import { server } from "@/system/axios";
 import type * as R from "@/types/Genre.api";
-import { GenreFormT, GetGenreOptionT, ListGenreOptionT } from "@/types";
+import { GenreFormT, GetGenreOptionT } from "@/types";
 
 const root = "/genres";
 
@@ -12,9 +12,8 @@ export async function create(form: GenreFormT): Promise<R.CreateRsp> {
 }
 
 // (GET) /
-export async function list(listOpt: ListGenreOptionT): Promise<R.ListRsp> {
-  const params: R.ListRqs = listOpt;
-  const rsp = await server.get(`${root}/`, { params });
+export async function list(): Promise<R.ListRsp> {
+  const rsp = await server.get(`${root}/`);
   return rsp.data;
 }
 

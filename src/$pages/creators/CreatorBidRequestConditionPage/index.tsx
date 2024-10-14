@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "@/i18n/routing";
 import Image from "next/image";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import Spinner from "@/components/Spinner";
 import { useAlertDialog } from "@/hooks/ConfirmDialog";
 import { useListData } from "@/hooks/ListData";
-import { useMe } from "@/states/UserState";
 import { useSnackbar } from "notistack";
 import {
   Table,
@@ -32,6 +31,7 @@ import {
   ListBidRequestMessageOptionT,
 } from "@/types";
 import { useLocale, useTranslations } from "next-intl";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 type CreatorBidRequestConditionPageProps = {
   bidRequestDetail: BidRequestT;
@@ -43,7 +43,7 @@ export function CreatorBidRequestConditionPage({
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const { showAlertDialog } = useAlertDialog();
-  const me = useMe();
+  const user = getServerUserInfo();
   const [messageContent, setMessageContent] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const t = useTranslations("creatorBidRequestConditionPage");
@@ -65,7 +65,7 @@ export function CreatorBidRequestConditionPage({
       if (!messageContent || messageContent === "") return;
       const payload: BidRequestMessageFormT = {
         bidRequestId: bidRequestDetail.id,
-        userId: me?.id ?? 0,
+        userId: user.id,
         content: messageContent,
       };
 
@@ -208,7 +208,7 @@ export function CreatorBidRequestConditionPage({
               </Text>
             </Col>
           </Row>
-          {me?.id === bidRequestDetail.round?.userId &&
+          {user.id === bidRequestDetail.round?.userId &&
           !bidRequestDetail.acceptedAt &&
           !bidRequestDetail.rejectedAt &&
           !bidRequestDetail.cancelledAt ? (
@@ -223,7 +223,7 @@ export function CreatorBidRequestConditionPage({
               </Row>
             ) : null}
 
-          {me?.id === bidRequestDetail.round?.userId &&
+          {user.id === bidRequestDetail.round?.userId &&
           bidRequestDetail.rejectedAt &&
           !bidRequestDetail.cancelledAt ? (
             <Row className="m-auto w-[30%] justify-evenly">
@@ -233,7 +233,7 @@ export function CreatorBidRequestConditionPage({
               </Row>
             ) : null}
 
-          {me?.id === bidRequestDetail.round?.userId &&
+          {user.id === bidRequestDetail.round?.userId &&
           bidRequestDetail.acceptedAt ? (
             <Row className="m-auto w-[30%] justify-evenly">
                 <Button disabled className="w-[120px] bg-mint">
@@ -242,7 +242,7 @@ export function CreatorBidRequestConditionPage({
               </Row>
             ) : null}
 
-          {me?.id === bidRequestDetail.round?.userId &&
+          {user.id === bidRequestDetail.round?.userId &&
           bidRequestDetail.cancelledAt ? (
             <Row className="m-auto w-[30%] justify-evenly">
                 <Button disabled className="w-[120px] bg-red">
@@ -268,14 +268,14 @@ export function CreatorBidRequestConditionPage({
               <Row
                 key={message.id}
                 className={`${
-                  me?.id === message.userId
+                  user.id === message.userId
                     ? "justify-end mr-5"
                     : "justify-start ml-5"
                 }`}
               >
                 <p
                   className={`${
-                    me?.id === message.userId
+                    user.id === message.userId
                       ? "bg-mint text-white px-5 py-2 my-1 rounded-full"
                       : "bg-white text-black px-5 py-2 my-1 rounded-full"
                   }`}
@@ -290,7 +290,7 @@ export function CreatorBidRequestConditionPage({
             </Text>
           )}
         </Col>
-        {me?.id === bidRequestDetail.round?.userId && (
+        {user.id === bidRequestDetail.round?.userId && (
           <Row className="">
             <Input
               type="text"

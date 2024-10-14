@@ -1,17 +1,16 @@
 "use client";
 
-import { useAdmin, useMe } from "@/states/UserState";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { Input } from "@/ui/shadcn/Input";
 import { Label } from "@/ui/shadcn/Label";
 import { Text } from "@/ui/texts";
 import { useSnackbar } from "@/hooks/Snackbar";
-import { useRouter } from "@/i18n/routing";
 import * as WebtoonEpisodeApi from "@/apis/webtoon_episodes";
 import { WebtoonEpisodeT, WebtoonT } from "@/types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 type AddEnglishEpisodeUrlProps = {
   webtoon: WebtoonT;
@@ -19,7 +18,7 @@ type AddEnglishEpisodeUrlProps = {
 };
 
 export function AddEnglishEpisodeUrl({ webtoon, episode }: AddEnglishEpisodeUrlProps) {
-  const admin = useAdmin();
+  const user = getServerUserInfo();
   const { enqueueSnackbar } = useSnackbar();
   const [editEnglishUrl, setEditEnglishUrl] = useState<string>("");
   const t = useTranslations("administratorFeatures");
@@ -37,7 +36,7 @@ export function AddEnglishEpisodeUrl({ webtoon, episode }: AddEnglishEpisodeUrlP
   }
 
   return (
-    admin
+    user.adminLevel > 0
       ? <Col>
         <Text className="text-xl text-white font-bold">{t("administratorFeatures")}</Text>
         <Gap y={5} />

@@ -6,7 +6,6 @@ import { use, useEffect, useState } from "react";
 import { Col, Container, Gap, Row } from "@/ui/layouts";
 import { Heading, Text } from "@/ui/texts";
 import Link from "next/link";
-import { useMe } from "@/states/UserState";
 import { getUsersStats } from "@/apis/users";
 
 const MOCK_DATA_LIST = [
@@ -17,7 +16,6 @@ const MOCK_DATA_LIST = [
 ];
 
 export function Dashboard() {
-  // const me = useMe();
   // const bidRoundListOpt: ListBidRoundOptionT = {
   //   $webtoon: true,
   //   $user: true,

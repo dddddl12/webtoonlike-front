@@ -7,7 +7,6 @@ import { Textarea } from "@/ui/shadcn/Textarea";
 import { uploadToS3 } from "@/utils/s3";
 import { buildImgUrl } from "@/utils/media";
 import { useSnackbar } from "@/hooks/Snackbar";
-import { useMe } from "@/states/UserState";
 import * as WebtoonApi from "@/apis/webtoons";
 import { Label } from "@/ui/shadcn/Label";
 import { Col, Gap, Row } from "@/ui/layouts";
@@ -23,6 +22,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useListData } from "@/hooks/ListData";
 import Spinner from "../Spinner";
 import { ErrorComponent } from "../ErrorComponent";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 type LabelValueT<ValueT> = { label: string; value: ValueT };
 
@@ -37,7 +37,7 @@ export function WebtoonForm({
 }: WebtoonFormProps) {
   const { enqueueSnackbar } = useSnackbar();
   const locale = useLocale();
-  const me = useMe();
+  const user = getServerUserInfo();
 
   const TaddSeries = useTranslations("addSeries");
   const Tgender = useTranslations("targetGender");
@@ -222,12 +222,9 @@ export function WebtoonForm({
   }
 
   async function handleSubmitClick(): Promise<void> {
-    if (me == null) {
-      return;
-    }
     setIsSubmitting(true);
     const form: WebtoonFormT = {
-      authorId: me.id,
+      authorId: user.id,
       title,
       title_en,
       authorDetail,

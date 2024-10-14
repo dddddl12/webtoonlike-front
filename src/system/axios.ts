@@ -1,10 +1,8 @@
+"use server";
+
 import axios from "axios";
 import { API_URL } from "@/config";
-import { tokenHolder } from "./token_holder";
-
-export type AxiosOptions = {
-  headers?: { [key: string]: string };
-};
+import { auth } from "@clerk/nextjs/server";
 
 export const server = axios.create({
   baseURL: API_URL,
@@ -14,20 +12,13 @@ export const server = axios.create({
 
 server.interceptors.request.use(
   async (req) => {
-
-    if (typeof document !== "undefined") {
-      const sessionCookie = tokenHolder.getTokenFromDocument(document.cookie ?? "");
-
-      if (sessionCookie) {
-        req.headers["Authorization"] = `${sessionCookie}`;
-      }
-    } else {
-      if (tokenHolder.token) {
-        req.headers["Authorization"] = `${tokenHolder.token}`;
-      }
-    }
+    req.headers["Authorization"] = await auth().getToken(); //TODO delay 검증
     return req;
   },
-  (err) => err,
+  (err) => console.log("Request failed", err),
 );
 
+server.interceptors.response.use(
+  async (res) => res,
+  (err) => console.log("Request failed", err)
+);

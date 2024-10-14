@@ -13,7 +13,7 @@ import {
 
 type PagenatorProps = {
   page: number;
-  itemPerPage: number;
+  itemsPerPage: number;
   numData: number;
   // totalPage: number;
   pageWindowLen?: number;
@@ -22,12 +22,12 @@ type PagenatorProps = {
 
 export function Pagenator({
   page,
-  itemPerPage,
+  itemsPerPage,
   numData,
   pageWindowLen = 3,
   onPageChange
 }: PagenatorProps) {
-  const totalPage = Math.ceil(numData / itemPerPage);
+  const totalPage = Math.ceil(numData / itemsPerPage);
 
   const pageArray = useMemo(() => {
     const arr = [];

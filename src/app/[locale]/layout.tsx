@@ -2,11 +2,9 @@ import React, { ReactNode } from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { MeProvider } from "@/components/$providers/MeProvider";
 import { RecoilProvider } from "@/components/$providers/RecoilProvider";
 import { SnackbarProvider } from "@/hooks/Snackbar";
 import { ConfirmDialogShared } from "@/hooks/ConfirmDialog";
-import { DarkModeProvider } from "../../components/$providers/DarkModeProvider";
 import { Header } from "@/components/Header";
 import "./globals.css";
 import { AOSInit } from "@/ui/AOS";
@@ -40,13 +38,11 @@ export default function RootLayout({
               <main className="h-[100%]">
                 <ConfirmDialogShared />
                 <SnackbarProvider>
-                  <MeProvider>
-                    <Header />
-                    <div className="h-auto min-h-[100%]">
-                      {children}
-                    </div>
-                    <Footer />
-                  </MeProvider>
+                  <Header/>
+                  <div className="h-auto min-h-[100%]">
+                    {children}
+                  </div>
+                  <Footer />
                 </SnackbarProvider>
               </main>
             </body>

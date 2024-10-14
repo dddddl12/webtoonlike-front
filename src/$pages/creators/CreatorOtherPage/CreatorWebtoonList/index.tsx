@@ -6,10 +6,8 @@ import { CreatorT, ListWebtoonOptionT } from "@/types";
 import { Grid, Row } from "@/ui/layouts";
 import { Clickable } from "@/ui/tools/Clickable";
 import { ListView } from "@/ui/tools/ListView";
-import Link from "next/link";
 import { Fragment, useEffect } from "react";
 import * as WebtoonApi from "@/apis/webtoons";
-import { useMe } from "@/states/UserState";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "@/i18n/routing";
 import { Text } from "@/ui/texts";
@@ -42,8 +40,6 @@ export default function CreatorWebtoonList({
   function handleLoaderDetect(): void {
     webtoonsAct.refill();
   }
-
-  const me = useMe();
 
   const isLoading = (status: string) => status === "idle" || status === "loading";
   const isError = (status: string) => status === "error";

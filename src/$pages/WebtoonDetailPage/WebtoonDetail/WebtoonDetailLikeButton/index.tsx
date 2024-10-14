@@ -7,7 +7,6 @@ import { Button } from "@/ui/shadcn/Button";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import * as WebtoonLike from "@/apis/webtoon_likes";
-import { useMe } from "@/states/UserState";
 import type { GetWebtoonOptionT, WebtoonLikeFormT, WebtoonT } from "@/types";
 import * as WebtoonApi from "@/apis/webtoons";
 
@@ -18,7 +17,6 @@ type WebtoonDetailProps = {
 export function WebtoonDetailLikeButton({
   webtoon: initWebtoon,
 }: WebtoonDetailProps) {
-  const me = useMe();
   const [webtoon, setWebtoon] = useState(initWebtoon);
 
   const getOpt: GetWebtoonOptionT = {
@@ -43,13 +41,8 @@ export function WebtoonDetailLikeButton({
     }
   }
   async function handleClickLike(): Promise<void> {
-    if (!me) {
-      enqueueSnackbar("로그인이 필요합니다.", { variant: "warning" });
-      return;
-    }
     try {
       const form: WebtoonLikeFormT = {
-        userId: me.id,
         webtoonId: webtoon.id
       };
       const created = await WebtoonLike.create(form);
@@ -62,10 +55,6 @@ export function WebtoonDetailLikeButton({
   }
 
   async function handleClickUnlike(): Promise<void> {
-    if (!me) {
-      enqueueSnackbar("로그인이 필요합니다.", { variant: "warning" });
-      return;
-    }
     try {
       if (webtoon.myLike) {
         await WebtoonLike.remove(webtoon.myLike.id);

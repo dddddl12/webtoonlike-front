@@ -1,3 +1,4 @@
+"use server";
 import { server } from "@/system/axios";
 import type * as R from "@/types/Creator.api";
 import type { CreatorFormT, GetCreatorOptionT } from "@/types/Creator";

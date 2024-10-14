@@ -2,11 +2,9 @@
 
 import { IconExclamation } from "@/components/svgs/IconExclamation";
 import { useListData } from "@/hooks/ListData";
-import { useMe } from "@/states/UserState";
 import { ListWebtoonEpisodeOptionT, WebtoonT } from "@/types";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
-import { Checkbox } from "@/ui/shadcn/CheckBox";
 import { Input } from "@/ui/shadcn/Input";
 import { Label } from "@/ui/shadcn/Label";
 import { RadioGroupItem } from "@/ui/shadcn/RadioGroup";
@@ -20,6 +18,7 @@ import { Fragment, useEffect } from "react";
 import * as WebtoonEpisodeApi from "@/apis/webtoon_episodes";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
+import { useAuth } from "@clerk/nextjs";
 
 type ContractRangeDataProps = {
   webtoon: WebtoonT;
@@ -28,7 +27,10 @@ type ContractRangeDataProps = {
 export function ContractRangeData({ webtoon }: ContractRangeDataProps) {
   const locale = useLocale();
   const router = useRouter();
-  const me = useMe();
+  const auth = useAuth();
+  const userType = "creator";
+  const userId = 1234; // TODO
+
   const t = useTranslations("contractRangeData");
   const Tbusiness = useTranslations("businessFieldENG");
 
@@ -63,7 +65,7 @@ export function ContractRangeData({ webtoon }: ContractRangeDataProps) {
       <Gap y={10} />
       <Row>
         <p className="text-2xl font-bold">{t("detailedInformation")}</p>
-        {me?.creator?.userId === webtoon.authorId && (
+        {userId === webtoon.authorId && (
           <>
             <Gap x={4} />
             <Button

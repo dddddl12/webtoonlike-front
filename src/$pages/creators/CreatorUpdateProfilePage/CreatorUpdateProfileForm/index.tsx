@@ -1,16 +1,15 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 import { useRouter } from "@/i18n/routing";
 import { CreatorProfileForm } from "@/components/CreatorProfileForm";
-import { useMe, useUserActions } from "@/states/UserState";
 import * as CreatorApi from "@/apis/creators";
 import { useSnackbar } from "@/hooks/Snackbar";
 import type { CreatorFormT } from "@/types";
+import { MeContext } from "@/components/$providers/MeProvider";
 
 export function CreatorUpdateProfileForm(): JSX.Element {
   const router = useRouter();
-  const me = useMe();
-  const userAct = useUserActions();
+  const { me, setMe } = useContext(MeContext);
   const { enqueueSnackbar } = useSnackbar();
 
   async function handleSubmit(form: CreatorFormT) {
@@ -18,8 +17,11 @@ export function CreatorUpdateProfileForm(): JSX.Element {
       return;
     }
     try {
-      const created = await CreatorApi.create(form);
-      userAct.patchData({ me: { ...me, creator: created } });
+      const creatorUpdated = await CreatorApi.create(form);
+      setMe(me => {
+        me.user!.creator = creatorUpdated;
+        return me;
+      });
       enqueueSnackbar("creator successfully updated!", { variant: "success" });
       router.push("/creator/my");
     } catch (e) {
@@ -29,7 +31,7 @@ export function CreatorUpdateProfileForm(): JSX.Element {
 
   return (
     <CreatorProfileForm
-      creator={me?.creator ?? undefined}
+      creator={me?.user?.creator ?? undefined}
       onSubmit={handleSubmit}
     />
   );

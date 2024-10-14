@@ -151,7 +151,7 @@ export function ManageSubmitTab() {
           <Pagenator
             page={waitPage}
             numData={waitTotalNumData}
-            itemPerPage={itemPerPage}
+            itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}
             onPageChange={handleWaitPageClick}
           />
@@ -170,7 +170,7 @@ export function ManageSubmitTab() {
           <Pagenator
             page={page}
             numData={totalNumData}
-            itemPerPage={itemPerPage}
+            itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}
             onPageChange={handlePageClick}
           />

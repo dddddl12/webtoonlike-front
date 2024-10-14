@@ -199,7 +199,7 @@ export function ManageBidRoundRequestTab() {
           <Pagenator
             page={page}
             numData={totalNumData}
-            itemPerPage={itemPerPage}
+            itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}
             onPageChange={handlePageClick}
           />

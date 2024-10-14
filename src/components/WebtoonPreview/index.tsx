@@ -1,19 +1,19 @@
-"use client";
-
 import Image from "next/image";
 import { Gap, Row } from "@/ui/layouts";
 import { buildImgUrl } from "@/utils/media";
-import { useMe } from "@/states/UserState";
 import type { WebtoonT } from "@/types";
 import { Text } from "@/ui/texts";
 import { useLocale } from "next-intl";
+import { getClientUserInfo } from "@/utils/auth/client";
+import { useUser } from "@clerk/nextjs";
 
 type WebtoonPreviewProps = {
   webtoon: WebtoonT;
 };
 
 export function WebtoonPreview({ webtoon }: WebtoonPreviewProps) {
-  const me = useMe();
+  const clerkUseUserReturn = useUser();
+  const user = getClientUserInfo(clerkUseUserReturn);
   const locale = useLocale();
 
   return (
@@ -39,7 +39,7 @@ export function WebtoonPreview({ webtoon }: WebtoonPreviewProps) {
       <Text className='text-[12pt] text-gray-text line-clamp-2'>{locale === "ko" ? webtoon.description : webtoon.description_en ?? webtoon.description}</Text>
 
       <Gap y={2} />
-      {webtoon.authorId == me?.id && (
+      {webtoon.authorId == user.id && (
         <Row>
           <Text className="text-white bg-mint px-1 rounded-sm">{locale === "ko" ? "내 작품" : "My work" }</Text>
         </Row>

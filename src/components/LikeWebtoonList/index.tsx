@@ -1,12 +1,9 @@
-"use client";
-
-import { useEffect, Fragment } from "react";
+import { Fragment } from "react";
 import { Col, Gap, Grid, Row } from "@/ui/layouts";
 import { Clickable } from "@/ui/tools/Clickable";
 import { WebtoonPreview } from "@/components/WebtoonPreview";
 import * as WebtoonApi from "@/apis/webtoons";
 import { useListData } from "@/hooks/ListData";
-import { useMe } from "@/states/UserState";
 import type { ListWebtoonOptionT } from "@/types";
 import { ListView } from "@/ui/tools/ListView";
 import Spinner from "@/components/Spinner";
@@ -17,7 +14,6 @@ import { useRouter } from "@/i18n/routing";
 
 export function LikeWebtoonList() {
   const router = useRouter();
-  const me = useMe();
   const locale = useLocale();
 
   const { data: webtoons$, actions: webtoonsAct } = useListData({
@@ -31,10 +27,7 @@ export function LikeWebtoonList() {
     like: "only"
   };
 
-  useEffect(() => {
-    if (!me) return;
-    webtoonsAct.load(listOpt);
-  }, [me]);
+  webtoonsAct.load(listOpt);
 
   function handleLoaderDetect(): void {
     webtoonsAct.refill();

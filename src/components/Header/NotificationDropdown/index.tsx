@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IconBell } from "@/components/svgs/IconBell";
 import { NotificationItem } from "@/components/NotificationItem";
-import { useMe } from "@/states/UserState";
 import * as NotificationApi from "@/apis/notifications";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
@@ -14,10 +13,11 @@ import { useListData } from "@/hooks/ListData";
 import type { ListNotificationOptionT, NotificationT } from "@/types";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "@/i18n/routing";
+// import { getUserInfo } from "@/utils/authedUser";
 
 export function NotificationDropdown() {
   const router = useRouter();
-  const me = useMe();
+  // const user = getUserInfo();
   const [notificationStatus, setNotificationStatue] = useState<string>("all");
 
 
@@ -26,14 +26,11 @@ export function NotificationDropdown() {
   });
 
   const listOpt: ListNotificationOptionT = {
-    userId: me?.id
+    // TODO
+    userId: 1// user.id
   };
 
-  useEffect(() => {
-    if (me) {
-      notificationsAct.load(listOpt);
-    }
-  }, [me?.id]);
+  notificationsAct.load(listOpt);
 
   function handleNotificationStatus(status: string) {
     setNotificationStatue(status);
@@ -42,8 +39,6 @@ export function NotificationDropdown() {
   function handleLoaderDetect(): void {
     notificationsAct.refill();
   }
-
-  if(!me) return null;
 
   return (
     <DropdownMenu>

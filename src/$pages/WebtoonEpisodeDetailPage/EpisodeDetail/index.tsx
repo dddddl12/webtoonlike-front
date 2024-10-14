@@ -11,7 +11,7 @@ import { DownloadEpisodeImage } from "./DownloadEpisodeImage";
 import { AddEnglishEpisodeUrl } from "./AddEnglishEpisodeUrl";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
-import { useAdmin, useMe } from "@/states/UserState";
+import { useAuth } from "@clerk/nextjs";
 
 type EpisodeDetailProps = {
   webtoon: WebtoonT;
@@ -22,8 +22,10 @@ export function EpisodeDetail({ webtoon, episode }: EpisodeDetailProps) {
   const router = useRouter();
   const t = useTranslations("detailedInfoPage");
   const locale = useLocale();
-  const me = useMe();
-  const admin = useAdmin();
+  const auth = useAuth();
+  const userType = "creator";
+  const userId = 1234; // TODO
+  const adminLevel = 0;
 
   return (
     <Col className="text-white max-w-[800px] m-auto">
@@ -40,7 +42,9 @@ export function EpisodeDetail({ webtoon, episode }: EpisodeDetailProps) {
         <Text className="text-3xl font-bold text-white">
           {locale === "ko"
             ? `${webtoon.title} _ ${episode.episodeNo}화`
-            : `${webtoon.title_en} _ Episode ${episode.episodeNo}` ?? webtoon.title}
+            : `${webtoon.title_en} _ Episode ${episode.episodeNo}`}
+          {/*?? webtoon.title}*/}
+          {/*    TODO*/}
         </Text>
       </Row>
 
@@ -53,7 +57,7 @@ export function EpisodeDetail({ webtoon, episode }: EpisodeDetailProps) {
 
       <Row className="justify-between">
         <p className="text-xl font-bold">{episode.title}</p>
-        {((me?.creator && webtoon.authorId === me.id) || admin) && (
+        {(webtoon.authorId === userId || adminLevel > 0) && (
           <Row
             className="cursor-pointer"
             onClick={() => {

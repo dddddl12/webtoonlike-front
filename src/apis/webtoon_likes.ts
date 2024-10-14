@@ -4,13 +4,12 @@ import type { WebtoonLikeFormT, WebtoonLikeT } from "@/types/WebtoonLike";
 
 const root = "/webtoon-likes";
 
-export async function create(form: WebtoonLikeFormT): Promise<R.CreateRsp> {
-  const body: R.CreateRqs = { form };
-  const rsp = await server.post(root + "/", body);
+export async function create(webtoonId: idT): Promise<R.CreateRsp> {
+  const rsp = await server.post(root + `/${webtoonId}`);
   return rsp.data;
 }
 
-export async function remove(id: idT): Promise<R.DeleteRsp> {
-  const rsp = await server.delete(root + `/${id}`);
+export async function remove(webtoonId: idT): Promise<R.DeleteRsp> {
+  const rsp = await server.delete(root + `/${webtoonId}`);
   return rsp.data;
 }

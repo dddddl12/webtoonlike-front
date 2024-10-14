@@ -1,6 +1,5 @@
 export type BidRequestMessageFormT = {
     bidRequestId: number;
-    userId: number;
     content: string;
 }
 

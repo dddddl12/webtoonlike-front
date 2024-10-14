@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useContext } from "react";
 import { useListData } from "@/hooks/ListData";
 import { Pagenator } from "@/ui/tools/Pagenator";
-import { useMe } from "@/states/UserState";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Heading, Text } from "@/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
@@ -16,10 +15,11 @@ import { useLocale, useTranslations } from "next-intl";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useRouter } from "@/i18n/routing";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 export function OfferList() {
   const router = useRouter();
-  const me = useMe();
+  const user = getServerUserInfo();
   const t = useTranslations("manageOffers");
   const locale = useLocale();
 
@@ -43,7 +43,7 @@ export function OfferList() {
   const totalNumData = myBidRounds.length || 0;
 
   const bidRoundListOpt: ListBidRoundOptionT = {
-    userId: me?.id,
+    userId: user.id,
     $webtoon: true,
     $user: true,
     $numData: true,
@@ -52,10 +52,7 @@ export function OfferList() {
     $requests: true,
   };
 
-  useEffect(() => {
-    if(!me) return;
-    bidRoundsAct.load(bidRoundListOpt);
-  }, [me, page]);
+  bidRoundsAct.load(bidRoundListOpt);
 
   if (bidRoundStatus == "idle" || bidRoundStatus == "loading") {
     return <Spinner />;
@@ -148,7 +145,7 @@ export function OfferList() {
           <Pagenator
             page={page}
             numData={totalNumData}
-            itemPerPage={itemPerPage}
+            itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}
             onPageChange={handlePageClick}
           />

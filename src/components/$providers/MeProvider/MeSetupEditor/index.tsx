@@ -1,5 +1,5 @@
 "use client";
-import { useState, ChangeEvent, useCallback } from "react";
+import { useState, ChangeEvent, useCallback, useContext } from "react";
 import { useRouter } from "@/i18n/routing";
 import {
   Select,
@@ -25,6 +25,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import TermsOfUseKo from "@/common/TermsOfUseKo";
 import TermsOfUseEn from "@/common/TermsOfUseEn";
+import { MeContext } from "@/components/$providers/MeProvider";
 
 const NATION_DATA = [
   { label: "대한민국", value: "ko" },
@@ -41,11 +42,9 @@ const NATION_DATA = [
 ];
 
 export function MeSetupEditor() {
-  const router = useRouter();
   const authUser = useAuthUser();
 
-  const user$ = useUser$();
-  const userAct = useUserActions();
+  const { setMe } = useContext(MeContext);
   const { enqueueSnackbar } = useSnackbar();
 
   const [userType, setUserType] = useState<UserTypeT | null>(null);
@@ -68,7 +67,7 @@ export function MeSetupEditor() {
     zipCode == "" ||
     addressPart1 == "" ||
     addressPart2 == "" ||
-    isConfirm == false;
+    !isConfirm;
 
   function handleUserTypeChange(value: UserTypeT | null): void {
     setUserType(value);
@@ -134,8 +133,11 @@ export function MeSetupEditor() {
     };
 
     try {
-      const created = await UserApi.createMe(form);
-      userAct.patch({ status: "loaded", data: { me: created, admin: null } });
+      const userCreated = await UserApi.createMe(form);
+      setMe(me => {
+        me.user = userCreated;
+        return me;
+      });
       enqueueSnackbar("user successfully created", { variant: "success" });
     } catch (e) {
       console.warn(e);

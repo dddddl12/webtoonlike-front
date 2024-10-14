@@ -100,7 +100,7 @@ export interface WebtoonT extends _WebtoonT {
   episodes?: WebtoonEpisodeT[]
   numEpisode?: number
   numRequest?: number
-  myLike?: WebtoonLikeT
+  myLike?: boolean
   bidRounds?: BidRoundT[]
   genres?: GenreT[]
 }

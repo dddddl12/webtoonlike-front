@@ -1,6 +1,5 @@
 "use client";
 
-import { useMe } from "@/states/UserState";
 import { Col, Gap } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { Input } from "@/ui/shadcn/Input";
@@ -32,7 +31,7 @@ import { BidRequestFormT, BidRoundT, WebtoonT } from "@/types";
 import { IconDelete } from "../svgs/IconDelete";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import { businessFieldConverterToEn } from "@/utils/businessFieldConverter";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 type BuyerBidRoundRequestFormPropsT = {
   bidRound: BidRoundT;
@@ -83,7 +82,7 @@ const COUNTRY_OPTIONS = [
 export function BuyerBidRoundRequestForm({
   bidRound,
 }: BuyerBidRoundRequestFormPropsT) {
-  const me = useMe();
+  const user = getServerUserInfo();
   const router = useRouter();
   const [offerRow, setOfferRow] = useState<OfferRowT[]>([
     {
@@ -190,10 +189,6 @@ export function BuyerBidRoundRequestForm({
   }
 
   async function handleSubmitClick() {
-    if (!me?.buyer) {
-      return;
-    }
-
     const settedInvalidFields = validateOfferRow(offerRow);
     setInvalidFields(settedInvalidFields);
 
@@ -211,7 +206,7 @@ export function BuyerBidRoundRequestForm({
     }));
 
     const form:BidRequestFormT = {
-      userId: me.id,
+      userId: user.id,
       roundId: bidRound.id,
       contractRange: {
         data: filteredOfferRow

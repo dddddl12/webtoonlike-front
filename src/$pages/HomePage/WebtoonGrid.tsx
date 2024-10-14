@@ -1,19 +1,41 @@
 "use client";
 
-import Image from "next/image";
-import { Col, Gap } from "@/ui/layouts";
-import { WebtoonT } from "@/types";
-import { buildImgUrl } from "@/utils/media";
+import { Col, Gap, Grid, Row } from "@/ui/layouts";
+import type { GenreT, WebtoonT } from "@/types";
 import { Text } from "@/ui/texts";
-import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
-import { useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
+import { useLocale } from "next-intl";
+import Image from "next/image";
+import { buildImgUrl } from "@/utils/media";
+import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
+import { useState } from "react";
 
-type PropT = {
+export default function WebtoonGrid({ webtoons }: {
+    webtoons: WebtoonT[]
+}) {
+  const [selectedGenre, setSelectedGenre] = useState<GenreT | undefined>(undefined);
+  return <>
+    {/*  TODO*/}
+    {/*<GenreSelector*/}
+    {/*  withAll*/}
+    {/*  selected={selectedGenre ? [selectedGenre] : []}*/}
+    {/*  onGenreSelect={(genre) => setSelectedGenre(genre)}*/}
+    {/*/>*/}
+    <Gap y="36px" />
+    <Row className="justify-center items-center">
+      {webtoons.length > 0
+        ? <Grid className="grid grid-cols-5 gap-4">{
+          webtoons.map((webtoon) =>
+            <WebtoonItem key={webtoon.id} webtoon={webtoon}/>)
+        }</Grid>
+        : <Text className="text-gray-shade">등록된 웹툰이 없습니다.</Text>}
+    </Row>
+  </>;
+}
+
+function WebtoonItem({ webtoon }: {
   webtoon: WebtoonT;
-};
-
-export function RecommendCarouselItem({ webtoon }: PropT) {
+}) {
   const router = useRouter();
   const locale = useLocale();
 

@@ -1,10 +1,9 @@
 "use client";
 
 import { Container, Gap, Row } from "@/ui/layouts";
-import { useMe } from "@/states/UserState";
 import { useListData } from "@/hooks/ListData";
 import * as UserApi from "@/apis/users";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { convertTimeAbsolute } from "@/utils/time";
 import { Heading } from "@/ui/texts";
 import { Pagenator } from "@/ui/tools/Pagenator";
@@ -12,9 +11,10 @@ import { ListUserOptionT, UserT } from "@/types";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { ManageCreatorTab } from "./\bCreatorTab";
+import { getServerUserInfo } from "@/utils/auth/server";
 
 export function ManageUserTab() {
-  const me = useMe();
+  const user = getServerUserInfo();
 
   const { data: userList$, actions: userListAct } = useListData({
     listFn: async (listOpt) => {
@@ -29,7 +29,7 @@ export function ManageUserTab() {
   const totalNumData = userList$.numData || 0;
 
   const listOpt: ListUserOptionT = {
-    meId: me?.id,
+    meId: user.id,
     $buyer: true,
     $creator: true,
     $numData: true,
@@ -37,10 +37,7 @@ export function ManageUserTab() {
     limit: itemPerPage,
   };
 
-  useEffect(() => {
-    if(!me) return;
-    userListAct.load(listOpt);
-  }, [me, page]);
+  userListAct.load(listOpt);
 
   const { status, data: userList } = userList$;
 
@@ -106,7 +103,7 @@ export function ManageUserTab() {
       <Pagenator
         page={page}
         numData={totalNumData}
-        itemPerPage={itemPerPage}
+        itemsPerPage={itemPerPage}
         pageWindowLen={pageWindowLen}
         onPageChange={handlePageClick}
       />

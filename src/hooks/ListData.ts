@@ -100,7 +100,9 @@ export function useListDataLogic<ModelT extends BaseModelT, ListDataArgT extends
         loadOpt.onSuccess();
       }
     } catch (e) {
-      patch({ status: "error" });
+      console.error(1234);
+      // TODO 401 retry 정의
+      // patch({ status: "error" });
     }
   }
 

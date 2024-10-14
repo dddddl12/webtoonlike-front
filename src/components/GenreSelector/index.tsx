@@ -1,11 +1,10 @@
 "use client";
 import React, { useEffect, Fragment } from "react";
 import { useListData } from "@/hooks/ListData";
-import { Row, Gap } from "@/ui/layouts";
-import { Text } from "@/ui/texts";
+import { Row } from "@/ui/layouts";
 import { Badge } from "@/ui/shadcn/Badge";
 import * as GenreApi from "@/apis/genre";
-import type { GenreT, ListGenreOptionT } from "@/types";
+import type { GenreT } from "@/types";
 import Spinner from "../Spinner";
 import { ErrorComponent } from "../ErrorComponent";
 import { useLocale } from "next-intl";
@@ -13,7 +12,7 @@ import { useLocale } from "next-intl";
 type GenreSelectorProps = {
   withAll?: boolean
   selected: GenreT[];
-  onGenreSelect: (genre: GenreT|null) => void;
+  onGenreSelect: (genre?: GenreT) => void;
 }
 
 export function GenreSelector({
@@ -26,14 +25,11 @@ export function GenreSelector({
     listFn: GenreApi.list
   });
 
-  const listOpt: ListGenreOptionT = {};
-
-
   useEffect(() => {
-    genresAct.load(listOpt);
+    genresAct.load({});
   }, []);
 
-  function handleClickGenre(genre: GenreT|null) {
+  function handleClickGenre(genre?: GenreT) {
     onGenreSelect(genre);
   }
 
@@ -53,7 +49,7 @@ export function GenreSelector({
       <Row className="w-[1200px] flex-wrap gap-x-2">
         {withAll && (
           <Badge
-            onClick={() => handleClickGenre(null)}
+            onClick={() => handleClickGenre()}
             style={{ backgroundColor: selected == null ? "white" : "transparent", color: selected == null ? "black" : "white" }}
             className=" my-1 cursor-pointer rounded-full bg-transparent text-white border border-white hover:text-black"
           >
