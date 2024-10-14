@@ -1,6 +1,6 @@
 import { server } from "@/system/axios";
 import type * as R from "@backend/types/User.api";
-import { UserT, UserFormT, ListUserOptionT, UserWithBuyerT, UserWithCreatorT } from "@/types";
+import type { ListUserOptionT, UserFormT, UserT, UserWithBuyerT, UserWithCreatorT } from "@backend/types/User";
 
 const root = "/users";
 

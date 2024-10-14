@@ -3,12 +3,12 @@
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import * as BidRoundsApi from "@/apis/bid_rounds";
-import { BidRoundT } from "@/types";
 import { Heading, Text } from "@/ui/texts";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import { useRouter } from "@/i18n/routing";
 import { useSnackbar } from "notistack";
+import type { BidRoundT } from "@backend/types/BidRound";
 
 type BidRoundDetailPropsT = {
   bidRound: BidRoundT;

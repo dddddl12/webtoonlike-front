@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
-import { ClerkUserMetadata } from "@/types";
 import { getUserInfo, UserInfo } from "@/utils/auth/base";
+import { ClerkUserMetadata } from "@backend/types/User";
 
 export const getServerUserInfo = (): UserInfo => {
   const authedUser = auth();

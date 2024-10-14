@@ -1,7 +1,6 @@
 "use client";
 
 import { Col, Gap, Grid, Row } from "@/ui/layouts";
-import type { GenreT, WebtoonT } from "@/types";
 import { Text } from "@/ui/texts";
 import { useRouter } from "@/i18n/routing";
 import { useLocale } from "next-intl";
@@ -9,6 +8,8 @@ import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
 import { useState } from "react";
+import type { WebtoonT } from "@backend/types/Webtoon";
+import type { GenreT } from "@backend/types/Genre";
 
 export default function WebtoonGrid({ webtoons }: {
     webtoons: WebtoonT[]

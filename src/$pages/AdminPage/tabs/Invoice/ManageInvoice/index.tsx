@@ -7,16 +7,14 @@ import { generateRandomString } from "@/utils/randomString";
 import { Col, Container, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
 import { Pagenator } from "@/ui/tools/Pagenator";
-import { InvoiceT, ListInvoiceOptionT } from "@/types";
 import { convertTimeAbsolute } from "@/utils/time";
-import Link from "next/link";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
-import { downloadAsPDF } from "@/utils/downloadAsPDF";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { PreviewInvoiceAdmin } from "./PreviewInvoiceAdmin";
 import { useRouter } from "@/i18n/routing";
+import type { InvoiceT, ListInvoiceOptionT } from "@backend/types/Invoice";
 
 export function ManageInvoice() {
   const router = useRouter();

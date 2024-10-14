@@ -5,7 +5,8 @@ import { useSnackbar } from "notistack";
 import { WebtoonForm } from "@/components/WebtoonForm";
 import * as WebtoonApi from "@/apis/webtoons";
 import * as XWebttonGenreApi from "@/apis/x_webtoon_genres";
-import type { WebtoonFormT, GenreT } from "@/types";
+import type { WebtoonFormT } from "@backend/types/Webtoon";
+import type { GenreT } from "@backend/types/Genre";
 
 export function CreateWebtoonForm() {
   const router = useRouter();

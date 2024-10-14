@@ -1,8 +1,9 @@
 import React, { Suspense } from "react";
 import { Container } from "@/ui/layouts";
 import { EpisodeDetail } from "./EpisodeDetail";
-import { WebtoonT, WebtoonEpisodeT } from "@/types";
 import Spinner from "@/components/Spinner";
+import type { WebtoonT } from "@backend/types/Webtoon";
+import type { WebtoonEpisodeT } from "@backend/types/WebtoonEpisode";
 
 type WebtoonEpisodeDetailPageProps = {
   webtoon: WebtoonT

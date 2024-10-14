@@ -1,4 +1,4 @@
-import { AdminLevel, ClerkUserMetadata, UserTypeT } from "@/types";
+import type { AdminLevel, ClerkUserMetadata, UserTypeT } from "@backend/types/User";
 
 export type UserInfo = {
     id: number;

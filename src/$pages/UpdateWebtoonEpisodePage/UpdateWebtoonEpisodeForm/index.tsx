@@ -4,10 +4,8 @@ import { useRouter } from "@/i18n/routing";
 import { WebtoonEpisodeForm } from "@/components/WebtoonEpisodeForm";
 import { useSnackbar } from "@/hooks/Snackbar";
 import * as WebtoonEpisodeApi from "@/apis/webtoon_episodes";
-import type {
-  WebtoonEpisodeT, WebtoonEpisodeFormT,
-  WebtoonEpisodeImageFormT,
-} from "@/types";
+import type { WebtoonEpisodeFormT, WebtoonEpisodeT } from "@backend/types/WebtoonEpisode";
+import type { WebtoonEpisodeImageFormT } from "@backend/types/WebtoonEpisodeImage";
 
 type UpdateWebtoonPostFormProps = {
   episode: WebtoonEpisodeT;

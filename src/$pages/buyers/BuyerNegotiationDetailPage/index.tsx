@@ -18,7 +18,7 @@ import { businessFieldConverterToEn, businessFieldConverterToKr } from "@/utils/
 import { buildImgUrl } from "@/utils/media";
 import { nationConverter, nationConverterToKr } from "@/utils/nationConverter";
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as BidRequestApi from "@/apis/bid_request";
 import { Button } from "@/ui/shadcn/Button";
 import { enqueueSnackbar } from "notistack";
@@ -28,11 +28,11 @@ import * as BidRequestMessagesApi from "@/apis/bid_request_message";
 import { useListData } from "@/hooks/ListData";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
-import {
-  BidRequestMessageFormT,
-  BidRequestT,
-  ListBidRequestMessageOptionT,
-} from "@/types";
+import type { BidRequestMessageFormT, ListBidRequestMessageOptionT } from "@backend/types/BidRequestMessage";
+import type { BidRequestT } from "@backend/types/BidRequest";
+import { useUser } from "@clerk/nextjs";
+import { getClientUserInfo } from "@/utils/auth/client";
+
 
 type BuyerNegotiationDetailPageProps = {
   bidRequest: BidRequestT;
@@ -52,6 +52,9 @@ export function BuyerNegotiationDetailPage({
   const [messageContent, setMessageContent] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const clerkUseUserReturn = useUser();
+  const user = getClientUserInfo(clerkUseUserReturn);
+
   function handleContentChange(e: React.ChangeEvent<HTMLInputElement>) {
     setMessageContent(e.target.value);
   }
@@ -67,6 +70,7 @@ export function BuyerNegotiationDetailPage({
     try {
       if (!messageContent || messageContent === "") return;
       const payload: BidRequestMessageFormT = {
+        userId: user.id,
         bidRequestId: bidRequest.id,
         content: messageContent,
       };

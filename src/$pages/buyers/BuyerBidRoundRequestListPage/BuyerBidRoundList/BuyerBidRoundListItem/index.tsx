@@ -1,6 +1,4 @@
-import { Row } from "@/ui/layouts";
 import Link from "next/link";
-import { BidRoundT, WebtoonT } from "@/types";
 
 type BuyerBidRoundListItemPropsT = {
   // webtoon: WebtoonT;

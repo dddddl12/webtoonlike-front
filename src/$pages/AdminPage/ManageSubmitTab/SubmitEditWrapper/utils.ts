@@ -1,4 +1,4 @@
-import type { BidRoundT } from "@/types";
+import type { BidRoundT } from "@backend/types/BidRound";
 
 export function checkBidRoundValidity(round: BidRoundT): BidRoundT {
   const now = new Date();

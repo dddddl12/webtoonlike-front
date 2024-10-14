@@ -3,13 +3,13 @@
 import { Col, Gap } from "@/ui/layouts";
 import { WebtoonDetailLikeButton } from "../WebtoonDetailLikeButton";
 import { Button } from "@/ui/shadcn/Button";
-import { WebtoonT } from "@/types";
 import { useMemo } from "react";
 import { convertBidRoundStatus, convertBidRoundStatusEn } from "@/utils/bidRoundStatusConverter";
 import { useAlertDialog } from "@/hooks/ConfirmDialog";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { getServerUserInfo } from "@/utils/auth/server";
+import type { WebtoonT } from "@backend/types/Webtoon";
 
 type WebtoonDetailBtnsProps = {
   webtoon: WebtoonT;

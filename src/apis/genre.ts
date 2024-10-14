@@ -1,6 +1,6 @@
 import { server } from "@/system/axios";
 import type * as R from "@backend/types/Genre.api";
-import { GenreFormT, GetGenreOptionT } from "@/types";
+import type { GenreFormT, GetGenreOptionT } from "@backend/types/Genre";
 
 const root = "/genres";
 
@@ -18,7 +18,7 @@ export async function list(): Promise<R.ListRsp> {
 }
 
 // (GET) /:id
-export async function get(id: idT, getOpt: GetGenreOptionT = {}): Promise<R.GetRsp> {
+export async function get(id: number, getOpt: GetGenreOptionT = {}): Promise<R.GetRsp> {
   const params: GetGenreOptionT = getOpt;
   const rsp = await server.get(`${root}/${id}`, { params });
   return rsp.data;
@@ -32,7 +32,7 @@ export async function update(id: number, form: Partial<GenreFormT>): Promise<R.U
 }
 
 // *ADMIN (DELETE) /:id
-export async function remove(id: idT): Promise<R.DeleteRsp> {
+export async function remove(id: number): Promise<R.DeleteRsp> {
   const rsp = await server.delete(`${root}/${id}`);
   return rsp.data;
 }

@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/ui/shadcn/Dialog";
 import { Button } from "@/ui/shadcn/Button";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { downloadAsPDF } from "@/utils/downloadAsPDF";
-import { InvoiceT } from "@/types";
+import type { InvoiceT } from "@backend/types/Invoice";
 
 type IssuanceInvoiceSubmitProps = {
   invoice: InvoiceT;

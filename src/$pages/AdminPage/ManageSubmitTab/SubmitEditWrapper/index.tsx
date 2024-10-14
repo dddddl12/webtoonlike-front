@@ -11,13 +11,13 @@ import { Button } from "@/ui/shadcn/Button";
 import { Col, Gap, Row } from "@/ui/layouts";
 import * as BidRoundApi from "@/apis/bid_rounds";
 import { useSnackbar } from "@/hooks/Snackbar";
-import type { BidRoundT } from "@/types";
 import { Text } from "@/ui/texts";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/ui/shadcn/Select";
 import { Calendar } from "@/ui/shadcn/Calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/shadcn/Popover";
 import { convertBidRoundStatus } from "@/utils/bidRoundStatusConverter";
 import { checkBidRoundValidity } from "./utils";
+import type { BidRoundT } from "@backend/types/BidRound";
 
 type BidRequestEditWrapperProps = {
   bidRound: BidRoundT

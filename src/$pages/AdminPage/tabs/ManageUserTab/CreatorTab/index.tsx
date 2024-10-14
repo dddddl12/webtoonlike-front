@@ -3,14 +3,14 @@
 import { Container, Gap, Row } from "@/ui/layouts";
 import { useListData } from "@/hooks/ListData";
 import * as CreatorApi from "@/apis/creators";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { convertTimeAbsolute } from "@/utils/time";
 import { Heading } from "@/ui/texts";
 import { Pagenator } from "@/ui/tools/Pagenator";
-import { ListCreatorOptionT, CreatorT } from "@/types";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { enqueueSnackbar } from "notistack";
+import type { CreatorT, ListCreatorOptionT } from "@backend/types/Creator";
 
 
 type ToggleButtonProps = {

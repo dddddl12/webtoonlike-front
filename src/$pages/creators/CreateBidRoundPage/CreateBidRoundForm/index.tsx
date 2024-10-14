@@ -31,10 +31,11 @@ import { IconDelete } from "@/components/svgs/IconDelete";
 import { IconCross } from "@/components/svgs/IconCross";
 import { Label } from "@/ui/shadcn/Label";
 import * as BidRoundApi from "@/apis/bid_rounds";
-import type { BidRoundFormT, WebtoonT } from "@/types";
 import { Checkbox } from "@/ui/shadcn/CheckBox";
 import { useLocale, useTranslations } from "next-intl";
 import { getServerUserInfo } from "@/utils/auth/server";
+import type { WebtoonT } from "@backend/types/Webtoon";
+import type { BidRoundFormT } from "@backend/types/BidRound";
 
 const BRAND_NEW = [
   { element: "신작", value: "true", elementEnglish: "New Work" },

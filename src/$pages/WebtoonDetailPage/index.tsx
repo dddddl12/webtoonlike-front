@@ -6,11 +6,11 @@ import { WebtoonDetail } from "./WebtoonDetail";
 import { WebtoonEpisodeList } from "./WebtoonEpisodeList";
 import { Text } from "@/ui/texts";
 import { IconCross } from "@/components/svgs/IconCross";
-import type { WebtoonT } from "@/types";
 import { useTranslations } from "next-intl";
 import { ContractRangeData } from "./ContractRangeData";
 import { useRouter } from "@/i18n/routing";
 import { getServerUserInfo } from "@/utils/auth/server";
+import type { WebtoonT } from "@backend/types/Webtoon";
 
 type WebtoonDetailPageProps = {
   webtoon: WebtoonT,

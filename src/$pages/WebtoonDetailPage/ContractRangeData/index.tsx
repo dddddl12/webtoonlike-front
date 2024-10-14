@@ -2,7 +2,6 @@
 
 import { IconExclamation } from "@/components/svgs/IconExclamation";
 import { useListData } from "@/hooks/ListData";
-import { ListWebtoonEpisodeOptionT, WebtoonT } from "@/types";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { Input } from "@/ui/shadcn/Input";
@@ -19,6 +18,8 @@ import * as WebtoonEpisodeApi from "@/apis/webtoon_episodes";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useAuth } from "@clerk/nextjs";
+import type { WebtoonT } from "@backend/types/Webtoon";
+import type { ListWebtoonEpisodeOptionT } from "@backend/types/WebtoonEpisode";
 
 type ContractRangeDataProps = {
   webtoon: WebtoonT;

@@ -1,8 +1,8 @@
 "use client";
 
 import { Row, Col } from "@/ui/layouts";
-import type { WebtoonEpisodeT } from "@/types";
 import { useLocale, useTranslations } from "next-intl";
+import type { WebtoonEpisodeT } from "@backend/types/WebtoonEpisode";
 
 type WebtoonEpisodePreview = {
   episode: WebtoonEpisodeT;

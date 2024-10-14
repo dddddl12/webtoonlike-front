@@ -8,8 +8,8 @@ import { Button } from "@/ui/shadcn/Button";
 import { buildImgUrl } from "@/utils/media";
 import { IconClose } from "@/components/svgs/IconClose";
 import { useAlertDialog, useConfirmDialog } from "@/hooks/ConfirmDialog";
-import { WebtoonEpisodeImageT, WebtoonEpisodeImageFormT } from "@/types";
 import { useTranslations } from "next-intl";
+import type { WebtoonEpisodeImageFormT, WebtoonEpisodeImageT } from "@backend/types/WebtoonEpisodeImage";
 
 type WebtoonImageItemProps = {
   image: File | WebtoonEpisodeImageT | WebtoonEpisodeImageFormT;

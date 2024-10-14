@@ -27,11 +27,12 @@ import {
 } from "@/ui/shadcn/Select";
 import { Textarea } from "@/ui/shadcn/Textarea";
 import { IconRightBrackets } from "../svgs/IconRightBrackets";
-import { BidRequestFormT, BidRoundT, WebtoonT } from "@/types";
 import { IconDelete } from "../svgs/IconDelete";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { getServerUserInfo } from "@/utils/auth/server";
+import { BidRoundT } from "@backend/types/BidRound";
+import { BidRequestFormT } from "@backend/types/BidRequest";
 
 type BuyerBidRoundRequestFormPropsT = {
   bidRound: BidRoundT;

@@ -1,8 +1,8 @@
-import { Box, Container, Gap } from "@/ui/layouts";
+import { Container, Gap } from "@/ui/layouts";
 import { Heading } from "@/ui/texts";
 import { CreateBidRoundForm } from "./CreateBidRoundForm";
-import type { WebtoonT } from "@/types";
 import { useTranslations } from "next-intl";
+import type { WebtoonT } from "@backend/types/Webtoon";
 
 type CreateBidRoundPageProps = {
   webtoon: WebtoonT

@@ -8,8 +8,8 @@ import { useListData } from "@/hooks/ListData";
 import * as NotificationApi from "@/apis/notifications";
 import { ListView } from "@/ui/tools/ListView";
 import { NotificationItem } from "@/components/NotificationItem";
-import { NotificationT, ListNotificationOptionT } from "@/types";
 import Spinner from "@/components/Spinner";
+import type { ListNotificationOptionT } from "@backend/types/Notification";
 
 export function NotificationPage() {
 

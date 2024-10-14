@@ -1,6 +1,6 @@
 import { server } from "@/system/axios";
 import type * as R from "@backend/types/Invoice.api";
-import type { InvoiceT, ListInvoiceOptionT } from "@/types";
+import type { ListInvoiceOptionT } from "@backend/types/Invoice";
 
 const root = "/invoices";
 

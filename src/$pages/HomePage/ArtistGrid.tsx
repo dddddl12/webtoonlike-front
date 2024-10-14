@@ -1,12 +1,12 @@
 "use client";
 
 import { Col, Gap, Grid, Row } from "@/ui/layouts";
-import type { CreatorT } from "@/types";
 import { Text } from "@/ui/texts";
 import { useRouter } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import { buildImgUrl } from "@/utils/media";
 import { Avatar, AvatarFallback, AvatarImage } from "@/ui/shadcn/Avatar";
+import type { CreatorT } from "@backend/types/Creator";
 
 export default function ArtistGrid({ artists }: {
     artists: CreatorT[]

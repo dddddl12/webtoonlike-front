@@ -6,11 +6,11 @@ import { Clickable } from "@/ui/tools/Clickable";
 import { WebtoonPreview } from "@/components/WebtoonPreview";
 import * as WebtoonApi from "@/apis/webtoons";
 import { useListData } from "@/hooks/ListData";
-import type { ListWebtoonOptionT } from "@/types";
 import { ListView } from "@/ui/tools/ListView";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useRouter } from "@/i18n/routing";
+import type { ListWebtoonOptionT } from "@backend/types/Webtoon";
 
 export function MyWebtooonList({ userId }: {
   userId: number;

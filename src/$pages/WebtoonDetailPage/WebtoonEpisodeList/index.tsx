@@ -3,10 +3,10 @@
 import React, { Fragment } from "react";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { WebtoonEpisodePreview } from "./WebtoonEpisodePreview";
-import type { WebtoonT } from "@/types";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { getServerUserInfo } from "@/utils/auth/server";
+import type { WebtoonT } from "@backend/types/Webtoon";
 
 type WebtoonEpisodeListProps = {
   webtoon: WebtoonT;

@@ -4,15 +4,13 @@ import React, { useEffect, useState } from "react";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
-import { ListBidRoundOptionT } from "@/types";
 import { useListData } from "@/hooks/ListData";
 import { Pagenator } from "@/ui/tools/Pagenator";
 import * as BidRoundsApi from "@/apis/bid_rounds";
-import { BidRoundT } from "@/types";
-import Link from "next/link";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useRouter } from "@/i18n/routing";
+import type { BidRoundT, ListBidRoundOptionT } from "@backend/types/BidRound";
 
 
 type BidRoundListProps = {

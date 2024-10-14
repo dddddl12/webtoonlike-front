@@ -5,9 +5,9 @@ import { Container, Row, Gap } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { UpdateWebtoonForm } from "./UpdateWebtoonForm";
-import type { WebtoonT } from "@/types";
 import { useRouter } from "@/i18n/routing";
 import { useLocale } from "next-intl";
+import type { WebtoonT } from "@backend/types/Webtoon";
 
 type UpdateWebtoonPageProps = {
   webtoon: WebtoonT;

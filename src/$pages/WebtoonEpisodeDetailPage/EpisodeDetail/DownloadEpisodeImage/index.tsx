@@ -1,11 +1,11 @@
 "use client";
 
-import { RESOURCE_HOST } from "@/config";
 import { useAdmin } from "@/states/UserState";
-import { WebtoonEpisodeT, WebtoonT } from "@/types";
 import { Col } from "@/ui/layouts";
 import { downloadImage } from "@/utils/downloadImage";
 import { useLocale } from "next-intl";
+import type { WebtoonT } from "@backend/types/Webtoon";
+import type { WebtoonEpisodeT } from "@backend/types/WebtoonEpisode";
 
 type EpisodeDetailProps = {
   webtoon: WebtoonT;

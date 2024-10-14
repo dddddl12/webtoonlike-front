@@ -4,7 +4,6 @@ import { useListData } from "@/hooks/ListData";
 import * as BidRequestApi from "@/apis/bid_request";
 import { useEffect, useState } from "react";
 import { Col, Gap, Row } from "@/ui/layouts";
-import { BidRoundT, ListBidRequestOptionT, ListBidRoundOptionT } from "@/types";
 import { Heading, Text } from "@/ui/texts";
 import { ListView } from "@/ui/tools/ListView";
 import Image from "next/image";
@@ -35,6 +34,8 @@ import * as BidRoundApi from "@/apis/bid_rounds";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "@/i18n/routing";
 import { getServerUserInfo } from "@/utils/auth/server";
+import type { BidRoundT, ListBidRoundOptionT } from "@backend/types/BidRound";
+import type { ListBidRequestOptionT } from "@backend/types/BidRequest";
 
 const OFFER_TABLE_HEADER = [
   { ko: "No.", en: "No." },

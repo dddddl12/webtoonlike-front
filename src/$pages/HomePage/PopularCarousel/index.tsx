@@ -1,7 +1,6 @@
 "use client";
 
 import { Row } from "@/ui/layouts";
-import type { WebtoonT } from "@/types";
 import { PopularCarouselItem } from "./PopularCarouselItem";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectCoverflow } from "swiper/modules";
@@ -9,6 +8,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+import type { WebtoonT } from "@backend/types/Webtoon";
 
 export function PopularCarousel({ webtoons }: {
     webtoons: WebtoonT[]

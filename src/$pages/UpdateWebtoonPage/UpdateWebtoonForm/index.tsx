@@ -5,7 +5,8 @@ import { useSnackbar } from "@/hooks/Snackbar";
 import { WebtoonForm } from "@/components/WebtoonForm";
 import * as WebtoonApi from "@/apis/webtoons";
 import * as XWebttonGenreApi from "@/apis/x_webtoon_genres";
-import type { WebtoonFormT, WebtoonT, GenreT } from "@/types";
+import type { WebtoonFormT, WebtoonT } from "@backend/types/Webtoon";
+import type { GenreT } from "@backend/types/Genre";
 
 
 type UpdateWebtoonProps = {

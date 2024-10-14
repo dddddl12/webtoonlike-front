@@ -9,10 +9,9 @@ import { useSnackbar } from "@/hooks/Snackbar";
 import { GenreAdder } from "./GenreAdder";
 import { GenreItem } from "@/components/GenreItem";
 import { IconDelete } from "@/components/svgs/IconDelete";
-import { Pencil1Icon } from "@radix-ui/react-icons";
 import Spinner from "@/components/Spinner";
-import type { GenreT, ListGenreOptionT } from "@/types";
 import { GenreEditor } from "./GenreEditor";
+import type { GenreT } from "@backend/types/Genre";
 
 
 export function ManageGenre(): JSX.Element {
@@ -24,15 +23,12 @@ export function ManageGenre(): JSX.Element {
     listFn: GenreApi.list,
   });
 
-  const listOpt: ListGenreOptionT = {
-  };
-
   useEffect(() => {
-    genresAct.load(listOpt);
+    genresAct.load({});
   }, []);
 
   function handleGenreCreateSuccess(genre: GenreT): void {
-    genresAct.load(listOpt, { force: true });
+    genresAct.load({}, { force: true });
   }
 
   async function handleGenreDeleteClick(genre: GenreT): Promise<void> {
@@ -49,7 +45,7 @@ export function ManageGenre(): JSX.Element {
 
     try {
       await GenreApi.remove(genre.id);
-      genresAct.load(listOpt, { force: true });
+      genresAct.load({}, { force: true });
       enqueueSnackbar("장르가 삭제되었습니다.", { variant: "success" });
     } catch (e) {
       enqueueSnackbar("장르 삭제에 실패했습니다.", { variant: "error" });

@@ -6,12 +6,13 @@ import { Col, Gap, Row } from "@/ui/layouts";
 import { buildImgUrl } from "@/utils/media";
 import { IconLeftBrackets } from "@/components/svgs/IconLeftBrackets";
 import { Text } from "@/ui/texts";
-import type { WebtoonEpisodeT, WebtoonT } from "@/types";
 import { DownloadEpisodeImage } from "./DownloadEpisodeImage";
 import { AddEnglishEpisodeUrl } from "./AddEnglishEpisodeUrl";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { useAuth } from "@clerk/nextjs";
+import type { WebtoonEpisodeT } from "@backend/types/WebtoonEpisode";
+import type { WebtoonT } from "@backend/types/Webtoon";
 
 type EpisodeDetailProps = {
   webtoon: WebtoonT;

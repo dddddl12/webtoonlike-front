@@ -14,7 +14,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { businessFieldConverterToEn, businessFieldConverterToKr } from "@/utils/businessFieldConverter";
 import { nationConverter, nationConverterToKr } from "@/utils/nationConverter";
 import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
-import { BidRoundT, WebtoonT } from "@/types";
+import type { BidRoundT } from "@backend/types/BidRound";
+import type { WebtoonT } from "@backend/types/Webtoon";
 
 type BuyerBidRoundItemDetailPropsT = {
   bidRound: BidRoundT;
@@ -156,14 +157,14 @@ export function BuyerBidRoundItemDetail({
               (item) => item.businessField === "webtoon"
             ).length > 0 ? (
               <Row className="w-[48%]">
-                <Col className="w-full">
+                  <Col className="w-full">
                   <Row className="justify-between">
-                    <Text className="text-white text-[14pt] font-bold">
+                      <Text className="text-white text-[14pt] font-bold">
                       {tcontractRangeData("webtoonServiceRegion")}
                     </Text>
-                    <Row>
+                      <Row>
                       <RadioGroup disabled value={"1"}>
-                        <Row>
+                          <Row>
                           <RadioGroupItem value="1" className="border-mint" />
                           <Gap x={1} />
                           <Label>{tcontractRangeData("exclusive")}</Label>
@@ -172,59 +173,59 @@ export function BuyerBidRoundItemDetail({
                           <Gap x={1} />
                           <Label>{tcontractRangeData("nonExclusive")}</Label>
                         </Row>
-                      </RadioGroup>
+                        </RadioGroup>
                     </Row>
-                  </Row>
+                    </Row>
                   <Gap y={5} />
                   <Table className="text-white">
-                    <TableHeader>
+                      <TableHeader>
                       <TableRow>
-                        <TableHead className="text-white w-[33%] text-center border">
+                          <TableHead className="text-white w-[33%] text-center border">
                           {tcontractRangeData("serviceCountry")}
                         </TableHead>
-                        <TableHead className="text-white w-[33%] text-center border">
+                          <TableHead className="text-white w-[33%] text-center border">
                           {tcontractRangeData("exclusiveOrNon")}
                         </TableHead>
-                      </TableRow>
+                        </TableRow>
                     </TableHeader>
-                    <TableBody>
+                      <TableBody>
                       {bidRound.contractRange.data
-                        .filter((item) => item.businessField === "webtoon")
-                        .map((data, index) => (
-                          <TableRow key={index}>
-                            <TableCell className="text-center border">
-                              {locale === "ko"
-                                ? nationConverterToKr(data.country)
-                                : nationConverter(data.country)}
-                            </TableCell>
-                            <TableCell className="text-center border">
-                              <RadioGroup disabled>
-                                <RadioGroupItem
-                                  value="exclusive"
-                                  className="border-mint m-auto"
-                                  checked={data.contract === "exclusive"}
-                                />
-                              </RadioGroup>
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                          .filter((item) => item.businessField === "webtoon")
+                          .map((data, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="text-center border">
+                                {locale === "ko"
+                                  ? nationConverterToKr(data.country)
+                                  : nationConverter(data.country)}
+                              </TableCell>
+                              <TableCell className="text-center border">
+                                <RadioGroup disabled>
+                                  <RadioGroupItem
+                                    value="exclusive"
+                                    className="border-mint m-auto"
+                                    checked={data.contract === "exclusive"}
+                                  />
+                                </RadioGroup>
+                              </TableCell>
+                            </TableRow>
+                          ))}
                     </TableBody>
-                  </Table>
+                    </Table>
                 </Col>
-              </Row>
-            ) : null}
+                </Row>
+              ) : null}
             {bidRound.contractRange.data.filter(
               (item) => item.businessField !== "webtoon"
             ).length > 0 ? (
               <Row className="w-[48%]">
-                <Col className="w-full">
+                  <Col className="w-full">
                   <Row className="justify-between">
-                    <Text className="text-white text-[14pt] font-bold">
+                      <Text className="text-white text-[14pt] font-bold">
                       {tcontractRangeData("secondaryCopyrightSalesStatus")}
                     </Text>
-                    <Row>
+                      <Row>
                       <RadioGroup disabled value={"1"}>
-                        <Row>
+                          <Row>
                           <RadioGroupItem value="1" className="border-mint" />
                           <Gap x={1} />
                           <Label>{tcontractRangeData("exclusive")}</Label>
@@ -233,57 +234,57 @@ export function BuyerBidRoundItemDetail({
                           <Gap x={1} />
                           <Label>{tcontractRangeData("nonExclusive")}</Label>
                         </Row>
-                      </RadioGroup>
+                        </RadioGroup>
                     </Row>
-                  </Row>
+                    </Row>
                   <Gap y={5} />
                   <Table className="text-white">
-                    <TableHeader>
+                      <TableHeader>
                       <TableRow>
-                        <TableHead className="text-white w-[33%] text-center border">
+                          <TableHead className="text-white w-[33%] text-center border">
                           {tcontractRangeData("secondaryCopyright")}
                         </TableHead>
-                        <TableHead className="text-white w-[33%] text-center border">
+                          <TableHead className="text-white w-[33%] text-center border">
                           {tcontractRangeData("serviceCountry")}
                         </TableHead>
-                        <TableHead className="text-white w-[33%] text-center border">
+                          <TableHead className="text-white w-[33%] text-center border">
                           {tcontractRangeData("exclusiveOrNon")}
                         </TableHead>
-                      </TableRow>
+                        </TableRow>
                     </TableHeader>
-                    <TableBody>
+                      <TableBody>
                       {bidRound.contractRange.data
-                        .filter((item) => item.businessField !== "webtoon")
-                        .map((data, index) => (
-                          <TableRow key={index}>
-                            <TableCell className="text-center border">
-                              {locale === "en"
-                                ? businessFieldConverterToEn(data.businessField)
-                                : businessFieldConverterToKr(
+                          .filter((item) => item.businessField !== "webtoon")
+                          .map((data, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="text-center border">
+                                {locale === "en"
+                                  ? businessFieldConverterToEn(data.businessField)
+                                  : businessFieldConverterToKr(
                                     data.businessField
                                   )}
-                            </TableCell>
-                            <TableCell className="text-center border">
-                              {locale === "ko"
-                                ? nationConverterToKr(data.country)
-                                : nationConverter(data.country)}
-                            </TableCell>
-                            <TableCell className="text-center border">
-                              <RadioGroup disabled>
-                                <RadioGroupItem
-                                  value="exclusive"
-                                  className="border-mint m-auto"
-                                  checked={data.contract === "exclusive"}
-                                />
-                              </RadioGroup>
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                              </TableCell>
+                              <TableCell className="text-center border">
+                                {locale === "ko"
+                                  ? nationConverterToKr(data.country)
+                                  : nationConverter(data.country)}
+                              </TableCell>
+                              <TableCell className="text-center border">
+                                <RadioGroup disabled>
+                                  <RadioGroupItem
+                                    value="exclusive"
+                                    className="border-mint m-auto"
+                                    checked={data.contract === "exclusive"}
+                                  />
+                                </RadioGroup>
+                              </TableCell>
+                            </TableRow>
+                          ))}
                     </TableBody>
-                  </Table>
+                    </Table>
                 </Col>
-              </Row>
-            ) : null}
+                </Row>
+              ) : null}
           </Row>
         ) : null}
         <Gap y={10} />

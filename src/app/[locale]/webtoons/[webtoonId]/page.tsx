@@ -3,8 +3,8 @@ import { cookies } from "next/headers";
 import { WebtoonDetailPage } from "@/$pages/WebtoonDetailPage";
 import * as WebtoonApi from "@/apis/webtoons";
 import { tokenHolder } from "@/system/token_holder";
-import type { GetWebtoonOptionT } from "@/types";
 import { ErrorComponent } from "@/components/ErrorComponent";
+import type { GetWebtoonOptionT } from "@backend/types/Webtoon";
 
 export default async function WebtoonDetail({ params }: { params: { webtoonId: string } }) {
   try {

@@ -14,10 +14,10 @@ import { buildImgUrl } from "@/utils/media";
 import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
 import { useSnackbar } from "@/hooks/Snackbar";
 import * as WebtoonLike from "@/apis/webtoon_likes";
-import type { WebtoonT } from "@/types";
 import { intervalToDuration } from "date-fns";
 import { useRouter } from "@/i18n/routing";
 import clsx from "clsx";
+import type { WebtoonT } from "@backend/types/Webtoon";
 
 
 type PopularCarouselItemProps = {

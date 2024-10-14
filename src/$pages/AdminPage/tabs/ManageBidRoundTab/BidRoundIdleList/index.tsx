@@ -5,17 +5,15 @@ import { Col, Container, Gap, Row } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { Text } from "@/ui/texts";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import { IconClose } from "@/components/svgs/IconClose";
 import { convertTimeAbsolute } from "@/utils/time";
 import { useRouter } from "@/i18n/routing";
-import { ListBidRoundOptionT } from "@/types";
 import { useListData } from "@/hooks/ListData";
 import { convertBidRoundStatus } from "@/utils/bidRoundStatusConverter";
 import { Pagenator } from "@/ui/tools/Pagenator";
 import * as BidRoundsApi from "@/apis/bid_rounds";
-import { BidRoundT } from "@/types";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
+import type { BidRoundT, ListBidRoundOptionT } from "@backend/types/BidRound";
 
 type BidRoundListProps = {
   onDetailClick: (bidRound: BidRoundT) => void;

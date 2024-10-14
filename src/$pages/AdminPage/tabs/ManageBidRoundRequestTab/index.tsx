@@ -10,16 +10,16 @@ import { useListData } from "@/hooks/ListData";
 import { Pagenator } from "@/ui/tools/Pagenator";
 import { Col, Container, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
-import { convertBidRequestStatus, convertBidRequestStatusEn } from "@/utils/bidRequestStatusConverter";
 import { convertTimeAbsolute } from "@/utils/time";
 import { buildImgUrl } from "@/utils/media";
 import * as BidRequestApi from "@/apis/bid_request";
 import * as BidRoundApi from "@/apis/bid_rounds";
-import { BidRequestT, BidRoundT, ListBidRequestOptionT, ListBidRoundOptionT } from "@/types";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/shadcn/Accordion";
 import { businessFieldConverterToKr } from "@/utils/businessFieldConverter";
 import { nationConverterToKr } from "@/utils/nationConverter";
 import { Button } from "@/ui/shadcn/Button";
+import type { BidRoundT, ListBidRoundOptionT } from "@backend/types/BidRound";
+import type { ListBidRequestOptionT } from "@backend/types/BidRequest";
 
 export function ManageBidRoundRequestTab() {
   const router = useRouter();
@@ -154,11 +154,12 @@ export function ManageBidRoundRequestTab() {
                     <div className="w-[20%] p-2 flex justify-center">{convertTimeAbsolute(item.createdAt)}</div>
                     <div className="w-[15%] p-2 flex justify-center">{priorityStatus}</div>
                     <div className="w-[40%] p-2 flex justify-center">
-                      {item.contractRange.data.map((item) =>
-                        item.businessField === "webtoon" ?
-                          `${businessFieldConverterToKr(item.businessField)}(${nationConverterToKr(item.country)}), ` :
-                          `2차(${businessFieldConverterToKr(item.businessField)}), `
-                      )}
+                      {/*TODO*/}
+                      {/*{item.contractRange.data.map((item) =>*/}
+                      {/*  item.businessField === "webtoon" ?*/}
+                      {/*    `${businessFieldConverterToKr(item.businessField)}(${nationConverterToKr(item.country)}), ` :*/}
+                      {/*    `2차(${businessFieldConverterToKr(item.businessField)}), `*/}
+                      {/*)}*/}
                     </div>
                     <div className="w-[15%] p-2 flex justify-center">
                       <Button

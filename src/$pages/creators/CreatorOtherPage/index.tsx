@@ -1,10 +1,9 @@
 import React from "react";
 import { Col, Container, Gap } from "@/ui/layouts";
-import { Text } from "@/ui/texts";
 import OtherCreatorInfoSection from "./OtherCreatorInfoSection";
 import CreatorWebtoonList from "@/$pages/creators/CreatorOtherPage/CreatorWebtoonList";
+import type { CreatorT } from "@backend/types/Creator";
 
-import { CreatorT } from "@/types";
 
 type CreatorOtherPageProps = {
   creator: CreatorT;

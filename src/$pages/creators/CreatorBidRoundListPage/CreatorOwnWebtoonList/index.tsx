@@ -11,12 +11,12 @@ import { buildImgUrl } from "@/utils/media";
 import { convertBidRoundStatus, convertBidRoundStatusEn } from "@/utils/bidRoundStatusConverter";
 import Image from "next/image";
 import { IconCross } from "@/components/svgs/IconCross";
-import type { ListWebtoonOptionT, WebtoonT } from "@/types";
 import { useLocale, useTranslations } from "next-intl";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useRouter } from "@/i18n/routing";
 import { getServerUserInfo } from "@/utils/auth/server";
+import type { ListWebtoonOptionT, WebtoonT } from "@backend/types/Webtoon";
 
 export function CreatorOwnWebtoonList() {
   const router = useRouter();

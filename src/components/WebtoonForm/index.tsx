@@ -17,12 +17,13 @@ import { GenreSelector } from "@/components/GenreSelector";
 import { IconRightBrackets } from "../svgs/IconRightBrackets";
 import { IconUpload } from "../svgs/IconUpload";
 import * as GenreApi from "@/apis/genre";
-import type { WebtoonT, WebtoonFormT, GenreT, ListGenreOptionT } from "@/types";
 import { useLocale, useTranslations } from "next-intl";
 import { useListData } from "@/hooks/ListData";
 import Spinner from "../Spinner";
 import { ErrorComponent } from "../ErrorComponent";
 import { getServerUserInfo } from "@/utils/auth/server";
+import { WebtoonFormT, WebtoonT } from "@backend/types/Webtoon";
+import { GenreT } from "@backend/types/Genre";
 
 type LabelValueT<ValueT> = { label: string; value: ValueT };
 
@@ -88,11 +89,8 @@ export function WebtoonForm({
     listFn: GenreApi.list
   });
 
-  const listOpt: ListGenreOptionT = {};
-
-
   useEffect(() => {
-    genresAct.load(listOpt);
+    genresAct.load({});
   }, []);
 
   useEffect(() => {
@@ -401,10 +399,11 @@ export function WebtoonForm({
             {locale === "ko" ? "작품 장르(최대 2개) : " : "Webtoon Genre (Max 2) : "}
           </Label>
           <Gap y={3} />
-          <GenreSelector
-            selected={genres}
-            onGenreSelect={handleGenreSelect}
-          />
+          {/*    TODO */}
+          {/*<GenreSelector*/}
+          {/*  selected={genres}*/}
+          {/*  onGenreSelect={handleGenreSelect}*/}
+          {/*/>*/}
           <Gap y={10} />
         </> : null}
 

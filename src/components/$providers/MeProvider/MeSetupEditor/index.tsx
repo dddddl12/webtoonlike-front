@@ -1,6 +1,5 @@
 "use client";
 import { useState, ChangeEvent, useCallback, useContext } from "react";
-import { useRouter } from "@/i18n/routing";
 import {
   Select,
   SelectContent,
@@ -11,22 +10,20 @@ import {
 import { useUser as useAuthUser } from "@clerk/nextjs";
 import { Button } from "@/ui/shadcn/Button";
 import { Input } from "@/ui/shadcn/Input";
-import { useUser$, useUserActions } from "@/states/UserState";
 import { useSnackbar } from "@/hooks/Snackbar";
 import * as UserApi from "@/apis/users";
-import { UserFormT, UserT, UserTypeT } from "@/types";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { IconSignupCreator } from "@/components/svgs/IconSignupCreatori";
 import { IconSignupBuyer } from "@/components/svgs/IconSignupBuyer";
 import { Text } from "@/ui/texts";
 import { Checkbox } from "@/ui/shadcn/CheckBox";
-import { nationConverter, nationConverterToKr } from "@/utils/nationConverter";
+import { nationConverterToKr } from "@/utils/nationConverter";
 import { useTranslations, useLocale } from "next-intl";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import TermsOfUseKo from "@/common/TermsOfUseKo";
 import TermsOfUseEn from "@/common/TermsOfUseEn";
 import { MeContext } from "@/components/$providers/MeProvider";
-
+import type { UserFormT, UserTypeT } from "@backend/types/User";
 const NATION_DATA = [
   { label: "대한민국", value: "ko" },
   { label: "미국", value: "en" },

@@ -4,7 +4,7 @@ import { useUserActions } from "@/states/UserState";
 import { useSnackbar } from "@/hooks/Snackbar";
 import { CreatorProfileForm } from "@/components/CreatorProfileForm";
 import * as CreatorApi from "@/apis/creators";
-import type { CreatorFormT } from "@/types";
+import type { CreatorFormT } from "@backend/types/Creator";
 
 export function CreatorSetupEditor(): JSX.Element {
   const userAct = useUserActions(); // TODO

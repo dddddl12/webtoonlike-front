@@ -9,13 +9,13 @@ import { convertTimeAbsolute } from "@/utils/time";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import * as InvoiceApi from "@/apis/invoices";
-import type { InvoiceT, ListInvoiceOptionT } from "@/types";
 import { useLocale, useTranslations } from "next-intl";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { PreviewInvoiceUser } from "@/components/PreviewInvoiceUser";
 import { useRouter } from "@/i18n/routing";
 import { getServerUserInfo } from "@/utils/auth/server";
+import type { InvoiceT, ListInvoiceOptionT } from "@backend/types/Invoice";
 
 export function ManageInvoiceList() {
   const router = useRouter();

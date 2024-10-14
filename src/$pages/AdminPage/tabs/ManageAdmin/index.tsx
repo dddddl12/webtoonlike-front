@@ -1,8 +1,7 @@
 import { Container, Gap, Row } from "@/ui/layouts";
 import { useListData } from "@/hooks/ListData";
 import * as AdminApi from "@/apis/admins";
-import { AdminT, ListAdminOptionT } from "@/types";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { TableHeader, TableRow } from "@/ui/shadcn/Table";
 import { convertTimeAbsolute } from "@/utils/time";
 import { Heading } from "@/ui/texts";
@@ -13,6 +12,7 @@ import axios from "axios";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { getServerUserInfo } from "@/utils/auth/server";
+import type { AdminT, ListAdminOptionT } from "@backend/types/Admin";
 
 export function ManageAdmin() {
   const user = getServerUserInfo();

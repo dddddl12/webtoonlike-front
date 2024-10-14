@@ -7,7 +7,6 @@ import { Label } from "@/ui/shadcn/Label";
 import { Input } from "@/ui/shadcn/Input";
 import { Button } from "@/ui/shadcn/Button";
 import * as CreatorApi from "@/apis/creators";
-import type { CreatorT, CreatorFormT } from "@/types";
 import { uploadToS3 } from "@/utils/s3";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
@@ -20,6 +19,7 @@ import {
 } from "@/ui/shadcn/Select";
 import { useTranslations } from "next-intl";
 import { getServerUserInfo } from "@/utils/auth/server";
+import type { CreatorFormT, CreatorT } from "@backend/types/Creator";
 
 type CreatorProfileFormProps = {
   creator?: CreatorT;

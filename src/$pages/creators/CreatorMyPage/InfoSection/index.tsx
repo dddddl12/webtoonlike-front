@@ -9,7 +9,6 @@ import { useTranslations } from "next-intl";
 import { useListData } from "@/hooks/ListData";
 import * as CreatorApi from "@/apis/creators";
 import * as UserApi from "@/apis/users";
-import { ListCreatorOptionT } from "@/types";
 import { useContext, useEffect } from "react";
 import Spinner from "@/components/Spinner";
 import { useAlertDialog } from "@/hooks/ConfirmDialog";
@@ -17,6 +16,7 @@ import { useRouter } from "@/i18n/routing";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";
 import { MeContext } from "@/components/$providers/MeProvider";
+import type { ListCreatorOptionT } from "@backend/types/Creator";
 
 export function InfoSection() {
   const { me } = useContext(MeContext);

@@ -1,10 +1,7 @@
 import React from "react";
-import { Box } from "@/ui/layouts";
-import { Text } from "@/ui/texts";
 import { Badge } from "@/ui/shadcn/Badge";
-import type { GenreT } from "@/types";
-import { draftMode } from "next/headers";
 import { useLocale } from "next-intl";
+import { GenreT } from "@backend/types/Genre";
 
 type GenreItemProps = {
   selected?: boolean

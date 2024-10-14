@@ -10,10 +10,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Text } from "@/ui/texts";
 import { ListView } from "@/ui/tools/ListView";
 import { useListData } from "@/hooks/ListData";
-import type { ListNotificationOptionT, NotificationT } from "@/types";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "@/i18n/routing";
-// import { getUserInfo } from "@/utils/authedUser";
+import type { ListNotificationOptionT, NotificationT } from "@backend/types/Notification";
 
 export function NotificationDropdown() {
   const router = useRouter();

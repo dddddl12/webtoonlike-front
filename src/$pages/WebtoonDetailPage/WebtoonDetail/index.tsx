@@ -10,9 +10,9 @@ import { LeftTimeInfo } from "@/components/LeftTimeInfo";
 import { Badge } from "@/ui/shadcn/Badge";
 import { WebtoonDetailBtns } from "./WebtoonDetailBtns";
 import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
-import type { WebtoonT } from "@/types";
 import { intervalToDuration ,format as dfFormat } from "date-fns";
 import { useRouter } from "@/i18n/routing";
+import type { WebtoonT } from "@backend/types/Webtoon";
 
 type WebtoonDetailProps = {
   webtoon: WebtoonT;

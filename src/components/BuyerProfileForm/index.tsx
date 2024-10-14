@@ -12,8 +12,8 @@ import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/shadcn/Select";
 import MultipleSelector from "@/ui/shadcn/MultipleSelector";
-import type { BuyerT, BuyerFormT } from "@/types";
 import { useTranslations } from "next-intl";
+import type { BuyerFormT, BuyerT } from "@backend/types/Buyer";
 
 
 type BuyerProfileFormProps = {

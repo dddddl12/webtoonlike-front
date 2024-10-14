@@ -4,9 +4,9 @@ import { Container, Row, Gap } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { UpdateWebtoonPostForm } from "./UpdateWebtoonEpisodeForm";
-import type { WebtoonEpisodeT } from "@/types";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
+import type { WebtoonEpisodeT } from "@backend/types/WebtoonEpisode";
 
 type UpdateWebtoonEpisodePageProps = {
   episode: WebtoonEpisodeT

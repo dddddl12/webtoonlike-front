@@ -1,8 +1,6 @@
 import { server } from "@/system/axios";
 import type * as R from "@backend/types/BidRequest.api";
-import type {
-  BidRequestT, BidRequestFormT, GetBidRequestOptionT, ListBidRequestOptionT, InvoiceT,
-} from "@/types";
+import type { BidRequestFormT, GetBidRequestOptionT, ListBidRequestOptionT } from "@backend/types/BidRequest";
 
 const root = "/bid-requests";
 
@@ -14,7 +12,7 @@ export async function create(form: BidRequestFormT): Promise<R.CreateRsp> {
 }
 
 // (GET) /:id
-export async function get(id: idT, getOpt: GetBidRequestOptionT): Promise<R.GetRsp> {
+export async function get(id: number, getOpt: GetBidRequestOptionT): Promise<R.GetRsp> {
   const params: GetBidRequestOptionT = getOpt;
   const rsp = await server.get(`${root}/${id}`, { params });
   return rsp.data;
@@ -59,14 +57,14 @@ export async function cancel(rqs: R.CancelRqs): Promise<R.CancelRsp> {
 }
 
 // *ADMIN (POST) /publish-invoice
-export async function publishInvoice(requestId: idT): Promise<R.PublishInvoiceRsp> {
+export async function publishInvoice(requestId: number): Promise<R.PublishInvoiceRsp> {
   const body: R.PublishInvoiceRqs = { requestId };
   const rsp = await server.post(`${root}/publish-invoice`, body);
   return rsp.data;
 }
 
 // *ADMIN (POST) /confirm-invoice
-export async function confirmInvoice(requestId: idT, base64data: string): Promise<R.ConfirmInvoiceRsp> {
+export async function confirmInvoice(requestId: number, base64data: string): Promise<R.ConfirmInvoiceRsp> {
   const body: R.ConfirmInvoiceRqs = { requestId, base64data };
   const rsp = await server.post(`${root}/confirm-invoice`, body);
   return rsp.data;

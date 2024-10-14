@@ -1,6 +1,6 @@
 import { server } from "@/system/axios";
 import type * as R from "@backend/types/BidRound.api";
-import type { BidRoundT, BidRoundFormT, GetBidRoundOptionT, ListBidRoundOptionT } from "@/types";
+import type { BidRoundFormT, GetBidRoundOptionT, ListBidRoundOptionT } from "@backend/types/BidRound";
 
 const root = "/bid-rounds";
 
@@ -19,28 +19,28 @@ export async function list(listOpt: ListBidRoundOptionT ): Promise<R.ListRsp> {
 }
 
 // (GET) /:id
-export async function get(id: idT, getOpt: GetBidRoundOptionT): Promise<R.GetRsp> {
+export async function get(id: number, getOpt: GetBidRoundOptionT): Promise<R.GetRsp> {
   const params: R.GetRqs = getOpt;
   const rsp = await server.get(`${root}/${id}`, { params });
   return rsp.data;
 }
 
 // (PATCH) /:id
-export async function update(id: idT, form: Partial<BidRoundFormT>): Promise<R.UpdateRsp> {
+export async function update(id: number, form: Partial<BidRoundFormT>): Promise<R.UpdateRsp> {
   const body: R.UpdateRqs = { form };
   const rsp = await server.patch(`${root}/${id}`, body);
   return rsp.data;
 }
 
 // *ADMIN (POST) /approve
-export async function approve(id: idT): Promise<R.ApproveRsp> {
+export async function approve(id: number): Promise<R.ApproveRsp> {
   const body: R.ApproveRqs = { id };
   const rsp = await server.post(`${root}/approve`, body);
   return rsp.data;
 }
 
 // *ADMIN (POST) /disapprove
-export async function disapprove(id: idT, adminMemo: string): Promise<R.DisapproveRsp> {
+export async function disapprove(id: number, adminMemo: string): Promise<R.DisapproveRsp> {
   const body: R.DisapproveRqs = { id, adminMemo };
   const rsp = await server.post(`${root}/disapprove`, body);
   return rsp.data;

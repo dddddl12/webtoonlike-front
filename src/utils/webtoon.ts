@@ -1,4 +1,4 @@
-import type { WebtoonT } from "@/types";
+import type { WebtoonT } from "@backend/types/Webtoon";
 
 export function extractAuthorName(webtoon: WebtoonT): string | null | undefined {
   return webtoon.authorDetail ?? webtoon.creator?.name;

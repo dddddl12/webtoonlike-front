@@ -4,7 +4,6 @@ import { Fragment, useState } from "react";
 import { Gap, Grid, Row } from "@/ui/layouts";
 import { Clickable } from "@/ui/tools/Clickable";
 import { WebtoonPreview } from "@/components/WebtoonPreview";
-import type { ListWebtoonOptionT, GenreT, WebtoonT } from "@/types";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "@/i18n/routing";
 import { Pagenator } from "@/ui/tools/Pagenator";
@@ -19,6 +18,8 @@ import {
 } from "@/ui/shadcn/Select";
 import { useLocale, useTranslations } from "next-intl";
 import * as WebtoonApi from "@/apis/webtoons";
+import type { ListWebtoonOptionT, WebtoonT } from "@backend/types/Webtoon";
+import type { GenreT } from "@backend/types/Genre";
 
 export type WebtoonList = {
   items: WebtoonT[];

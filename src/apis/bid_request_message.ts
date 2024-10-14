@@ -1,8 +1,5 @@
 import { server } from "@/system/axios";
 import type * as R from "@backend/types/BidRequestMessage.api";
-import type {
-
-} from "@/types";
 
 const root = "/bid-request-messages";
 

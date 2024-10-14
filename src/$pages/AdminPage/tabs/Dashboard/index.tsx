@@ -1,11 +1,6 @@
-import { useListData } from "@/hooks/ListData";
-import * as BidRoundsApi from "@/apis/bid_rounds";
-import * as AdminApi from "@/apis/admins";
-import { ListAdminOptionT, ListBidRoundOptionT } from "@/types";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Col, Container, Gap, Row } from "@/ui/layouts";
 import { Heading, Text } from "@/ui/texts";
-import Link from "next/link";
 import { getUsersStats } from "@/apis/users";
 
 const MOCK_DATA_LIST = [

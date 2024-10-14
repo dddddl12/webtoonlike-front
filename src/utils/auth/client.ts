@@ -1,6 +1,6 @@
-import { ClerkUserMetadata } from "@/types";
 import { getUserInfo, UserInfo } from "@/utils/auth/base";
 import { UserResource } from "@clerk/types";
+import type { ClerkUserMetadata } from "@backend/types/User";
 
 type ClerkUseUserReturn = {
     isLoaded: false;

@@ -1,6 +1,7 @@
 import { atom, useRecoilValue } from "recoil";
 import { BaseStateT, useBaseActions } from "./molds/base";
-import type { UserT, AdminT } from "@/types";
+import type { UserT } from "@backend/types/User";
+import type { AdminT } from "@backend/types/Admin";
 
 
 interface UserStateT extends BaseStateT<{

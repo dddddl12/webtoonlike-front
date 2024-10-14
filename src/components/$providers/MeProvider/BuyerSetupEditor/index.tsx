@@ -2,7 +2,7 @@ import React from "react";
 import { useSnackbar } from "@/hooks/Snackbar";
 import { BuyerProfileForm } from "@/components/BuyerProfileForm";
 import * as BuyerApi from "@/apis/buyers";
-import type { BuyerFormT } from "@/types";
+import type { BuyerFormT } from "@backend/types/Buyer";
 
 export function BuyerSetupEditor(): JSX.Element {
   const { enqueueSnackbar } = useSnackbar();

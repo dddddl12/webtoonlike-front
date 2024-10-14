@@ -10,7 +10,8 @@ import { Heading } from "@/ui/texts";
 import { LogoSection } from "@/components/Header/LogoSection";
 import { useTranslations, useLocale } from "next-intl";
 import { NextIntlClientProvider, useMessages } from "next-intl";
-import { AdminT, UserT } from "@/types";
+import type { UserT } from "@backend/types/User";
+import type { AdminT } from "@backend/types/Admin";
 
 type MeState = {
   user?: UserT;

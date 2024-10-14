@@ -7,8 +7,9 @@ import { Button } from "@/ui/shadcn/Button";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import * as WebtoonLike from "@/apis/webtoon_likes";
-import type { GetWebtoonOptionT, WebtoonLikeFormT, WebtoonT } from "@/types";
 import * as WebtoonApi from "@/apis/webtoons";
+import type { GetWebtoonOptionT, WebtoonT } from "@backend/types/Webtoon";
+import type { WebtoonLikeFormT } from "@backend/types/WebtoonLike";
 
 type WebtoonDetailProps = {
   webtoon: WebtoonT;
@@ -45,8 +46,8 @@ export function WebtoonDetailLikeButton({
       const form: WebtoonLikeFormT = {
         webtoonId: webtoon.id
       };
-      const created = await WebtoonLike.create(form);
-      const newWebtoon: WebtoonT = { ...webtoon, myLike: created, numLike: webtoon.numLike + 1 };
+      await WebtoonLike.create(form);
+      const newWebtoon: WebtoonT = { ...webtoon, myLike: true, numLike: webtoon.numLike + 1 };
       setWebtoon(newWebtoon);
       await fetchWebtoon();
     } catch (e){
@@ -57,8 +58,8 @@ export function WebtoonDetailLikeButton({
   async function handleClickUnlike(): Promise<void> {
     try {
       if (webtoon.myLike) {
-        await WebtoonLike.remove(webtoon.myLike.id);
-        const newWebtoon: WebtoonT = { ...webtoon, myLike: undefined, numLike: webtoon.numLike - 1 };
+        await WebtoonLike.remove(webtoon.id);
+        const newWebtoon: WebtoonT = { ...webtoon, myLike: false, numLike: webtoon.numLike - 1 };
         setWebtoon(newWebtoon);
         await fetchWebtoon();
       }

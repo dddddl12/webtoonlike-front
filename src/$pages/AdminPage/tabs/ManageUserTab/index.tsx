@@ -3,15 +3,15 @@
 import { Container, Gap, Row } from "@/ui/layouts";
 import { useListData } from "@/hooks/ListData";
 import * as UserApi from "@/apis/users";
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { convertTimeAbsolute } from "@/utils/time";
 import { Heading } from "@/ui/texts";
 import { Pagenator } from "@/ui/tools/Pagenator";
-import { ListUserOptionT, UserT } from "@/types";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { ManageCreatorTab } from "./\bCreatorTab";
 import { getServerUserInfo } from "@/utils/auth/server";
+import type { ListUserOptionT, UserT } from "@backend/types/User";
 
 export function ManageUserTab() {
   const user = getServerUserInfo();

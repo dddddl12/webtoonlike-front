@@ -6,11 +6,9 @@ import Image from "next/image";
 import * as CreatorApi from "@/apis/creators";
 import { useListData } from "@/hooks/ListData";
 import { useEffect } from "react";
-import { ListCreatorOptionT } from "@/types";
 import { buildImgUrl } from "@/utils/media";
-import { Button } from "@/ui/shadcn/Button";
-import type { CreatorT } from "@/types";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";
+import type { CreatorT, ListCreatorOptionT } from "@backend/types/Creator";
 
 export default function OtherCreatorInfoSection({ creator }: { creator: CreatorT }) : JSX.Element {
   const { data: Creators$, actions: CreatorAct } = useListData({

@@ -5,9 +5,9 @@ import { Col, Row, Container, Gap } from "@/ui/layouts";
 import { Heading } from "@/ui/texts";
 import { BidRoundList } from "./BidRoundList";
 import { BidRoundDetail } from "./BidRoundDetail";
-import { BidRoundT } from "@/types";
 import { BidRoundIdleList } from "./BidRoundIdleList";
 import { Button } from "@/ui/shadcn/Button";
+import type { BidRoundT } from "@backend/types/BidRound";
 
 
 export function ManageBidRoundTab() {

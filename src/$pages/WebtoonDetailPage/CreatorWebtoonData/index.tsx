@@ -1,5 +1,4 @@
 import { IconExclamation } from "@/components/svgs/IconExclamation";
-import { WebtoonT } from "@/types";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/shadcn/Accordion";
 import { Input } from "@/ui/shadcn/Input";
@@ -9,6 +8,7 @@ import { Text } from "@/ui/texts";
 import { RadioGroup } from "@radix-ui/react-radio-group";
 import { ChevronDownIcon } from "lucide-react";
 import { Fragment } from "react";
+import type { WebtoonT } from "@backend/types/Webtoon";
 
 type CreatorWebtoonDataProps = {
   webtoon: WebtoonT;
