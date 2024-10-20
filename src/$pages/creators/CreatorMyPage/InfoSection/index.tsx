@@ -15,7 +15,7 @@ import { useAlertDialog } from "@/hooks/ConfirmDialog";
 import { useRouter } from "@/i18n/routing";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";
-import { MeContext } from "@/components/$providers/MeProvider";
+import { MeContext } from "../../../../components/MeProvider";
 import type { ListCreatorOptionT } from "@backend/types/Creator";
 
 export function InfoSection() {

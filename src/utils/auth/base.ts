@@ -1,23 +1,27 @@
-import type { AdminLevel, ClerkUserMetadata, UserTypeT } from "@backend/types/User";
+import { ClerkUserMetadataSchema } from "@backend/types/Token";
+import z from "zod";
 
-export type UserInfo = {
-    id: number;
-    type: UserTypeT | "guest";
-    adminLevel: AdminLevel;
-}
+const UserInfoSchema = z.object({
+  id: ClerkUserMetadataSchema.shape.webtoonLikeId,
+  type: ClerkUserMetadataSchema.shape.type.optional(),
+  // 로그인을 안한 경우 type 없음
+  adminLevel: ClerkUserMetadataSchema.shape.adminLevel,
+});
+export type UserInfo = z.infer<typeof UserInfoSchema>;
 
-export const getUserInfo = (clerkUserMetadata?: ClerkUserMetadata): UserInfo => {
-  if(clerkUserMetadata) {
-    // TODO validation 포함 후 맞지 않으면 강제 로그아웃
+export const getUserInfo = (
+  metadataBeforeVerified: any
+): UserInfo => {
+  const { data: metadata, success } = ClerkUserMetadataSchema.safeParse(metadataBeforeVerified);
+  if (success) {
     return {
-      id: clerkUserMetadata.webtoonLikeId,
-      type: clerkUserMetadata.type,
-      adminLevel: clerkUserMetadata.adminLevel,
+      id: metadata.webtoonLikeId,
+      type: metadata.type,
+      adminLevel: metadata.adminLevel,
     };
   } else {
     return {
       id: -1,
-      type: "guest",
       adminLevel: 0
     };
   }

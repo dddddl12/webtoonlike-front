@@ -1,6 +1,7 @@
 import { server } from "@/system/axios";
 import type * as R from "@backend/types/User.api";
 import type { ListUserOptionT, UserFormT, UserT, UserWithBuyerT, UserWithCreatorT } from "@backend/types/User";
+import { ValidateAuthRsp } from "@backend/types/User.api";
 
 const root = "/users";
 
@@ -43,5 +44,10 @@ export async function list(getOpt: ListUserOptionT): Promise<R.ListRsp> {
 
 export async function getUsersStats() {
   const rsp = await server.get(`${root}/stats`);
+  return rsp.data;
+}
+
+export async function validateAuth(): Promise<ValidateAuthRsp> {
+  const rsp = await server.get(`${root}/validateAuth`);
   return rsp.data;
 }

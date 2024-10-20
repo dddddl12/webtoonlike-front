@@ -4,12 +4,10 @@ import { useRouter } from "@/i18n/routing";
 import { CreatorProfileForm } from "@/components/CreatorProfileForm";
 import * as CreatorApi from "@/apis/creators";
 import { useSnackbar } from "@/hooks/Snackbar";
-import { MeContext } from "@/components/$providers/MeProvider";
 import type { CreatorFormT } from "@backend/types/Creator";
 
 export function CreatorUpdateProfileForm(): JSX.Element {
   const router = useRouter();
-  const { me, setMe } = useContext(MeContext);
   const { enqueueSnackbar } = useSnackbar();
 
   async function handleSubmit(form: CreatorFormT) {

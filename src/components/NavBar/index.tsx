@@ -16,7 +16,6 @@ export type NavArrT = {
 
 export function NavBar() {
   const user = getServerUserInfo();
-  console.log(123, user);
   const t = useTranslations("inquiryMenu");
   const nav: NavArrT = [
     {
@@ -86,7 +85,6 @@ export function NavBar() {
                   {item.name}
                 </NavigationLink>
               ))}
-              {/* <SubNavBar nav={nav} /> */}
             </NavigationMenuTrigger>
           </NavigationMenuItem>
         </NavigationMenuList>

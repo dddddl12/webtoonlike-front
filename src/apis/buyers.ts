@@ -6,12 +6,9 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 const root = "/buyers";
 
 export async function create(form: BuyerFormT) {
-  const { userId } = auth();
-  await clerkClient.users.updateUserMetadata(userId!, {
-    publicMetadata: {
-      form,
-    },
-  });
+  const body: R.CreateRqs = { form };
+  const rsp = await server.post(`${root}`, body);
+  return rsp.data;
 }
 
 export async function getThumbnailPresignedUrl(mimeType: string): Promise<R.ThumbnailPresignedUrlRsp> {

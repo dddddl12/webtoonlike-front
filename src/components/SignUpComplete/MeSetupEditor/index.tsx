@@ -1,5 +1,5 @@
 "use client";
-import { useState, ChangeEvent, useCallback, useContext } from "react";
+import { useState, ChangeEvent, useCallback } from "react";
 import {
   Select,
   SelectContent,
@@ -22,8 +22,8 @@ import { useTranslations, useLocale } from "next-intl";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import TermsOfUseKo from "@/common/TermsOfUseKo";
 import TermsOfUseEn from "@/common/TermsOfUseEn";
-import { MeContext } from "@/components/$providers/MeProvider";
 import type { UserFormT, UserTypeT } from "@backend/types/User";
+import { createUser } from "@/utils/account";
 const NATION_DATA = [
   { label: "대한민국", value: "ko" },
   { label: "미국", value: "en" },
@@ -40,8 +40,6 @@ const NATION_DATA = [
 
 export function MeSetupEditor() {
   const authUser = useAuthUser();
-
-  const { setMe } = useContext(MeContext);
   const { enqueueSnackbar } = useSnackbar();
 
   const [userType, setUserType] = useState<UserTypeT | null>(null);
@@ -128,18 +126,8 @@ export function MeSetupEditor() {
       addressDetail: addressPart2,
       email: authUser.user?.emailAddresses[0].emailAddress ?? "",
     };
-
-    try {
-      const userCreated = await UserApi.createMe(form);
-      setMe(me => {
-        me.user = userCreated;
-        return me;
-      });
-      enqueueSnackbar("user successfully created", { variant: "success" });
-    } catch (e) {
-      console.warn(e);
-      enqueueSnackbar("user create failed", { variant: "error" });
-    }
+    await createUser(form);
+    enqueueSnackbar("user successfully created", { variant: "success" });
   }, [submitDisabled]);
 
   return (
