@@ -6,10 +6,10 @@ import { useRouter } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import { buildImgUrl } from "@/utils/media";
 import { Avatar, AvatarFallback, AvatarImage } from "@/ui/shadcn/Avatar";
-import type { CreatorT } from "@backend/types/Creator";
+import { HomeArtistItem } from "@/resources/webtoons/webtoon.types";
 
 export default function ArtistGrid({ artists }: {
-    artists: CreatorT[]
+    artists: HomeArtistItem[]
 }) {
   return <>
     <Gap y="36px" />
@@ -25,7 +25,7 @@ export default function ArtistGrid({ artists }: {
 }
 
 export function ArtistItem({ artist }: {
-  artist: CreatorT
+  artist: HomeArtistItem
 }) {
   const router = useRouter();
   const t = useTranslations("howMany");
@@ -41,7 +41,7 @@ export function ArtistItem({ artist }: {
           <AvatarFallback>{artist.thumbPath}</AvatarFallback>
         </Avatar>
         <Gap y="10px" />
-        <Text className="text-white">{artist.numWebtoon ?? 0} {t("howMany")}</Text>
+        <Text className="text-white">{artist.numOfWebtoons} {t("howMany")}</Text>
         <Gap y="10px" />
         <Text className="text-white">{locale === "ko" ? artist.name : artist.name_en ?? artist.name}</Text>
       </Col>

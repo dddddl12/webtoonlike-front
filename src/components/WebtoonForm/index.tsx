@@ -396,7 +396,7 @@ export function WebtoonForm({
       {genres$.data.length > 0
         ? <>
           <Label htmlFor="genre">
-            {locale === "ko" ? "작품 장르(최대 2개) : " : "Webtoon Genre (Max 2) : "}
+            {locale === "ko" ? "작품 장르(최대 2개) : " : "webtoons genres (Max 2) : "}
           </Label>
           <Gap y={3} />
           {/*    TODO */}

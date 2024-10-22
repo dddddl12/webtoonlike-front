@@ -6,13 +6,12 @@ import { useRouter } from "@/i18n/routing";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
-import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
 import { useState } from "react";
-import type { WebtoonT } from "@backend/types/Webtoon";
-import type { GenreT } from "@backend/types/Genre";
+import { HomeWebtoonItem } from "@/resources/webtoons/webtoon.types";
+import { GenreT } from "@/resources/genres/genre.types";
 
 export default function WebtoonGrid({ webtoons }: {
-    webtoons: WebtoonT[]
+    webtoons: HomeWebtoonItem[]
 }) {
   const [selectedGenre, setSelectedGenre] = useState<GenreT | undefined>(undefined);
   return <>
@@ -35,7 +34,7 @@ export default function WebtoonGrid({ webtoons }: {
 }
 
 function WebtoonItem({ webtoon }: {
-  webtoon: WebtoonT;
+  webtoon: HomeWebtoonItem;
 }) {
   const router = useRouter();
   const locale = useLocale();
@@ -62,7 +61,7 @@ function WebtoonItem({ webtoon }: {
       <Gap y={2} />
       <Text className="text-white text-[18px] font-bold">{locale === "ko" ? webtoon.title : webtoon.title_en ?? webtoon.title}</Text>
       <Text className="text-white text-[14px]">
-        {locale === "ko" ? extractAuthorName(webtoon) ?? "알 수 없음" : extractAuthorNameEn(webtoon) ?? "Unknown"}
+        {locale === "ko" ? webtoon.creatorName : webtoon.creatorName_en ?? webtoon.creatorName}
       </Text>
     </Col>
   );

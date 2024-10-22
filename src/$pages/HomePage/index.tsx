@@ -1,48 +1,35 @@
-import { PopularCarousel } from "./PopularCarousel";
 import { Gap } from "@/ui/layouts";
-import * as WebtoonApi from "@/apis/webtoons";
-import * as CreatorApi from "@/apis/creators";
 import { getTranslations } from "next-intl/server";
 import SectionHeading from "@/$pages/HomePage/SectionHeading";
 import WebtoonGrid from "@/$pages/HomePage/WebtoonGrid";
 import ArtistGrid from "@/$pages/HomePage/ArtistGrid";
+import BannerSection from "@/$pages/HomePage/BannerSection";
+import { homeItems } from "@/resources/webtoons/webtoon.service";
 
 
 export async function HomePage() {
   const t = await getTranslations("homeMain");
 
-  const [homeWebtoonItems, { data: artists }] = await Promise.all([
-    WebtoonApi.homeItems(),
-    CreatorApi.list({
-      $numWebtoon: true,
-      exposed: "only", // TODO 보안 체크
-      limit: 5
-    })
-  ]);
+  const { popular, brandNew, perGenre, artists } = await homeItems();
 
   return (
     <main className='flex min-h-screen flex-col items-center justify-start'>
       <Gap y="36px"/>
-      {/* <BannerSection />
-      <Gap y={40} /> */}
-      {/*  TODO 디자인 미세조정 */}
-      <section className="w-full">
-        <PopularCarousel webtoons={homeWebtoonItems.popular}/>
-      </section>
-      <Gap y={40}/>
+      <BannerSection />
+      <Gap y={40} />
       <section className="w-full">
         <SectionHeading path="/webtoons" title={t("recommendedPopularSeries")}/>
-        <WebtoonGrid webtoons={homeWebtoonItems.recommendations}/>
+        <WebtoonGrid webtoons={popular}/>
       </section>
       <Gap y={40}/>
       <section className="w-full">
         <SectionHeading path="/webtoons" title={t("recommendedNewSeries")}/>
-        <WebtoonGrid webtoons={homeWebtoonItems.brandNew}/>
+        <WebtoonGrid webtoons={brandNew}/>
       </section>
       <Gap y={40}/>
       <section className="w-full">
         <SectionHeading path="/webtoons" title={t("organizedByGenre")}/>
-        <WebtoonGrid webtoons={homeWebtoonItems.perGenre}/>
+        <WebtoonGrid webtoons={perGenre}/>
       </section>
       <Gap y={40}/>
       <section className="w-full">

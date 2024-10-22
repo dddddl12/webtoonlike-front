@@ -1,6 +1,5 @@
 import { RESOURCE_HOST } from "@/config";
 import P from "path";
-import * as BuyerApi from "@/apis/buyers";
 import { uploadToS3 } from "@/utils/s3";
 
 // TODO 이미지 보안
@@ -41,7 +40,7 @@ function getResizeW(size: ImageSizeT): number{
 }
 
 export class ImageData {
-  private _fileOrPath: File | string;
+  private readonly _fileOrPath: File | string;
 
   constructor(fileOrPath: File | string) {
     this._fileOrPath = fileOrPath;
@@ -53,15 +52,5 @@ export class ImageData {
     } else {
       return buildImgUrl(null, this._fileOrPath);
     }
-  }
-
-  async uploadFileAndGetStoragePath(): Promise<string> {
-    if (this._fileOrPath instanceof File) {
-      const file = this._fileOrPath;
-      const { putUrl, key } = await BuyerApi.getThumbnailPresignedUrl(file.type);
-      await uploadToS3(putUrl, file);
-      this._fileOrPath = key;
-    }
-    return this._fileOrPath;
   }
 }

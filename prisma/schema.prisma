@@ -1,0 +1,325 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// TODO join 삭제 시 로직 재조정
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int      @unique
+  isSuper   Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admins")
+}
+
+model BidRequestMessage {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  bidRequestId Int
+  userId       Int
+  content      String
+
+  bidRequest BidRequest @relation(fields: [bidRequestId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("bid_request_messages")
+}
+
+model BidRequest {
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  userId        Int?
+  roundId       Int
+  message       String?
+  contractRange Json?
+  acceptedAt    DateTime?
+  rejectedAt    DateTime?
+  approvedAt    DateTime?
+  cancelledAt   DateTime?
+
+  user              User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  round             BidRound            @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  BidRequestMessage BidRequestMessage[]
+  Invoice           Invoice[]
+
+  @@map("bid_requests")
+}
+
+model BidRound {
+  id                Int       @id @default(autoincrement())
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  userId            Int?
+  webtoonId         Int
+  isWebtoon         Boolean?
+  isSecondary       Boolean?
+  contractRange     Json?
+  // TODO enum
+  status            String
+  originality       String
+  isBrandNew        Boolean
+  numEpisode        Int?
+  bidStartAt        DateTime?
+  negoStartAt       DateTime?
+  processEndAt      DateTime?
+  approvedAt        DateTime?
+  disapprovedAt     DateTime?
+  adminMemo         String?
+  nowEpisode        Int?
+  monthlyNumEpisode Int?
+
+  user       User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  webtoon    Webtoon      @relation(fields: [webtoonId], references: [id], onDelete: Cascade)
+  BidRequest BidRequest[]
+
+  @@map("bid_rounds")
+}
+
+model Buyer {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      Int      @unique
+  companyInfo Json
+  purpose     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("buyers")
+}
+
+model Creator {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  userId     Int      @unique
+  // TODO 데이터 타입 최적화
+  name       String
+  name_en    String?
+  thumbPath  String?
+  agencyName String?
+  isNew      Boolean  @default(false)
+  isExposed  Boolean  @default(false)
+
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Webtoon Webtoon[]
+
+  @@map("creators")
+}
+
+model Genre {
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  label         String          @unique
+  label_en      String?         @unique
+  rank          Int?
+  XWebtoonGenre XWebtoonGenre[]
+
+  @@map("genres")
+}
+
+model Invoice {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  requestId Int
+  creatorId Int?
+  buyerId   Int?
+  // TODO 무모한 데이터 저장
+  dataUri   String
+
+  request BidRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  creator User?      @relation(name: "CreatorRelation", fields: [creatorId], references: [id], onDelete: SetNull)
+  buyer   User?      @relation(name: "BuyerRelation", fields: [buyerId], references: [id], onDelete: SetNull)
+  User    User?      @relation(fields: [userId], references: [id])
+  userId  Int?
+
+  @@map("invoices")
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  type      String
+  message   String
+  isRead    Boolean  @default(false)
+  arg       Boolean?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+// TODO clerk과 데이터 중복
+model User {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  sub           String   @unique
+  email         String
+  phone         String
+  userType      UserType
+  country       String?
+  postCode      String?
+  address       String?
+  addressDetail String?
+
+  Admin             Admin?
+  BidRequestMessage BidRequestMessage[]
+  BidRequest        BidRequest[]
+  BidRound          BidRound[]
+  Buyer             Buyer?
+  Creator           Creator?
+  Notification      Notification[]
+  WebtoonEpisode    WebtoonEpisode[]
+  WebtoonLike       WebtoonLike[]
+
+  // Define relations with unique names for Invoice model
+  invoicesAsCreator Invoice[] @relation(name: "CreatorRelation")
+  invoicesAsBuyer   Invoice[] @relation(name: "BuyerRelation")
+  Invoice           Invoice[]
+
+  @@map("users")
+}
+
+enum UserType {
+  CREATOR
+  BUYER
+}
+
+model WebtoonEpisodeImage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  episodeId Int
+  host      String?
+  path      String
+  mimeType  String
+  width     Int?
+  height    Int?
+  rank      Int?
+
+  episode WebtoonEpisode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+
+  @@map("webtoon_episode_images")
+}
+
+model WebtoonEpisode {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  authorId    Int?
+  webtoonId   Int
+  englishUrl  String?
+  episodeNo   Int
+  title       String?
+  title_en    String?
+  description String?
+  thumbPath   String?
+  modifiedAt  DateTime?
+  publishedAt DateTime?
+
+  author              User?                 @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  webtoon             Webtoon               @relation(fields: [webtoonId], references: [id], onDelete: Cascade)
+  WebtoonEpisodeImage WebtoonEpisodeImage[]
+
+  @@unique([webtoonId, episodeNo])
+  @@map("webtoon_episodes")
+}
+
+model WebtoonLike {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int?
+  webtoonId Int?
+
+  user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  webtoon Webtoon? @relation(fields: [webtoonId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, webtoonId])
+  @@map("webtoon_likes")
+}
+
+enum TargetGender {
+  MALE
+  FEMALE
+}
+
+enum AgeLimit {
+  ALL
+  TWELVE
+  FIFTEEN
+  EIGHTEEN
+}
+
+enum TargetAge {
+  ALL
+  TEENS
+  TWENTIES
+  THIRTIES
+  FORTIES
+  FIFTIES
+}
+
+model Webtoon {
+  id             Int           @id @default(autoincrement())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  authorId       Int?
+  title          String
+  title_en       String?
+  // TODO string 길이 조정
+  description    String?
+  description_en String?
+  thumbPath      String?
+  externalUrl    String?
+  englishUrl     String?
+  adultOnly      Boolean       @default(false)
+  targetAge      TargetAge[]
+  ageLimit       AgeLimit
+  targetGender   TargetGender?
+  publishedAt    DateTime?
+  likes          Int           @default(0)
+
+  author         Creator?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  BidRound       BidRound[]
+  WebtoonEpisode WebtoonEpisode[]
+  WebtoonLike    WebtoonLike[]
+  XWebtoonGenre  XWebtoonGenre[]
+
+  @@map("webtoons")
+}
+
+model XWebtoonGenre {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  webtoonId Int
+  genreId   Int
+
+  webtoon Webtoon @relation(fields: [webtoonId], references: [id], onDelete: Cascade)
+  genre   Genre   @relation(fields: [genreId], references: [id], onDelete: Cascade)
+
+  @@map("x_webtoon_genres")
+}

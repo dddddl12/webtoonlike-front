@@ -1,15 +1,26 @@
 import createMiddleware from "next-intl/middleware";
 import { routing } from "@/i18n/routing";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { ClerkUserMetadataSchema } from "@/utils/auth/base";
 
 
 const intlMiddleware = createMiddleware(routing);
 
 const isProtectedRoute = createRouteMatcher([
-  "creator/(.*)", "buyer/(.*)", "admin/(.*)"]);
+  "/creator/(.*)", "/buyer/(.*)", "/admin/(.*)"]);
+const isAuthRelatedRoute = createRouteMatcher([
+  "/sign-in(.*)", "/sign-up(.*)", "/(.*)/sign-up-complete"]);
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) auth().protect();
+
+  const { userId, sessionClaims } = auth();
+  if (!isAuthRelatedRoute(req) && userId) {
+    const { data: userInfo } = await ClerkUserMetadataSchema.safeParseAsync(sessionClaims.metadata);
+    if (!userInfo || !userInfo.signUpComplete) {
+      req.nextUrl.pathname = "/sign-up-complete";
+    }
+  }
 
   return intlMiddleware(req);
 });

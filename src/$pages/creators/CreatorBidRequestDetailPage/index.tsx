@@ -65,7 +65,7 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
         <div className="w-[20%] p-2 flex justify-center text-gray-shade">
           {locale === "ko"
             ? "콘텐츠 서비스 - 웹툰"
-            : "Content Service - Webtoon"}
+            : "Content Service - webtoons"}
         </div>
         <div className="w-[20%] p-2 flex justify-center text-gray-shade">
           {locale === "ko" ? "2차 사업권" : "Secondary Business Right"}

@@ -1,28 +1,17 @@
-import { ClerkUserMetadataSchema } from "@backend/types/Token";
 import z from "zod";
+import { UserTypeT } from "@/resources/users/user.types";
 
-const UserInfoSchema = z.object({
-  id: ClerkUserMetadataSchema.shape.webtoonLikeId,
-  type: ClerkUserMetadataSchema.shape.type.optional(),
-  // 로그인을 안한 경우 type 없음
-  adminLevel: ClerkUserMetadataSchema.shape.adminLevel,
+export enum AdminLevel {
+  None = 0,
+  Admin = 1,
+  SuperAdmin = 2,
+}
+
+export const ClerkUserMetadataSchema = z.object({
+  id: z.number(),
+  type: z.nativeEnum(UserTypeT),
+  adminLevel: z.nativeEnum(AdminLevel),
+  signUpComplete: z.boolean().default(false),
 });
-export type UserInfo = z.infer<typeof UserInfoSchema>;
 
-export const getUserInfo = (
-  metadataBeforeVerified: any
-): UserInfo => {
-  const { data: metadata, success } = ClerkUserMetadataSchema.safeParse(metadataBeforeVerified);
-  if (success) {
-    return {
-      id: metadata.webtoonLikeId,
-      type: metadata.type,
-      adminLevel: metadata.adminLevel,
-    };
-  } else {
-    return {
-      id: -1,
-      adminLevel: 0
-    };
-  }
-};
+export type ClerkUserMetadata = z.infer<typeof ClerkUserMetadataSchema>;

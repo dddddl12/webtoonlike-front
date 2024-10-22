@@ -28,7 +28,7 @@ export function UpdateWebtoonPage({ webtoon }: UpdateWebtoonPageProps) {
         <Gap x={2}/>
 
         <h1 className='text-xl'>
-          {locale === "en" ? "Edit Webtoon" : "작품 수정하기"}
+          {locale === "en" ? "Edit webtoons" : "작품 수정하기"}
         </h1>
       </Row>
 
