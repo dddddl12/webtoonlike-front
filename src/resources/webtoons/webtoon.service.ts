@@ -20,13 +20,13 @@ const mapToDTO = (record: WebtoonRecord): WebtoonT => ({
   targetGender: TargetGender[record.ageLimit as keyof typeof TargetGender],
 });
 
-export async function createWebtoon(form: WebtoonFormT): Promise<WebtoonT> {
-  const created = await webtoonM.create(form);
-  if (!created) {
-    throw new err.NotAppliedE();
-  }
-  return created;
-}
+// export async function createWebtoon(form: WebtoonFormT): Promise<WebtoonT> {
+//   const created = await webtoonM.create(form);
+//   if (!created) {
+//     throw new err.NotAppliedE();
+//   }
+//   return created;
+// }
 
 export async function getWebtoon(id: number): Promise<WebtoonT> {
   // TODO 에러 핸들링
@@ -35,13 +35,13 @@ export async function getWebtoon(id: number): Promise<WebtoonT> {
   }).then(mapToDTO);
 }
 
-export async function updateWebtoon(id: number, form: Partial<WebtoonFormT>): Promise<WebtoonT> {
-  const updated = await webtoonM.updateOne({ id }, form);
-  if (!updated) {
-    throw new err.NotAppliedE();
-  }
-  return updated;
-}
+// export async function updateWebtoon(id: number, form: Partial<WebtoonFormT>): Promise<WebtoonT> {
+//   const updated = await webtoonM.updateOne({ id }, form);
+//   if (!updated) {
+//     throw new err.NotAppliedE();
+//   }
+//   return updated;
+// }
 
 export async function listWebtoons({ status, genreId, ageLimit, page }: {
   status?: BidRoundStatus;
@@ -82,12 +82,12 @@ export async function listWebtoons({ status, genreId, ageLimit, page }: {
   };
 }
 
-export async function getThumbnailPresignedUrl(mimeType: string) {
-  let key = `webtoons/thumbnails/thumbnail_${new Date().getTime()}.${mime.extension(mimeType)}`;
-  key = putDevPrefix(key);
-  const putUrl = await createSignedUrl(key, mimeType);
-  return { putUrl, key };
-}
+// export async function getThumbnailPresignedUrl(mimeType: string) {
+//   let key = `webtoons/thumbnails/thumbnail_${new Date().getTime()}.${mime.extension(mimeType)}`;
+//   key = putDevPrefix(key);
+//   const putUrl = await createSignedUrl(key, mimeType);
+//   return { putUrl, key };
+// }
 
 
 export async function homeItems() {

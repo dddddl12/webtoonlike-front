@@ -30,28 +30,28 @@ export async function createUser(form: UserFormT) {
   });
 }
 
-async function getMe(id: number, getOpt: GetUserOptionT): Promise<UserT> {
-  return userM.findById(id, {
-    builder: (qb, select) => {
-      lookupBuilder(select, getOpt);
-    },
-  });
-}
-
-async function list(opt: ListUserOptionT): Promise<ListData<UserT>> {
-  return await listUser(opt);
-}
-async function listStats() {
-  return await listUsersStat();
-}
-
-async function deleteMe(id: number): Promise<UserT> {
-  const deleted = await userM.deleteOne({ id });
-  if (!deleted) {
-    throw new err.NotAppliedE();
-  }
-  return deleted;
-}
+// async function getMe(id: number, getOpt: GetUserOptionT): Promise<UserT> {
+//   return userM.findById(id, {
+//     builder: (qb, select) => {
+//       lookupBuilder(select, getOpt);
+//     },
+//   });
+// }
+//
+// async function list(opt: ListUserOptionT): Promise<ListData<UserT>> {
+//   return await listUser(opt);
+// }
+// async function listStats() {
+//   return await listUsersStat();
+// }
+//
+// async function deleteMe(id: number): Promise<UserT> {
+//   const deleted = await userM.deleteOne({ id });
+//   if (!deleted) {
+//     throw new err.NotAppliedE();
+//   }
+//   return deleted;
+// }
 
 export async function updateClerkUser(tx: PrismaTransaction) {
   const { userId: clerkUserId } = await getClerkUser();
