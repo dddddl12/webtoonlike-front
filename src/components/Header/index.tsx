@@ -17,40 +17,34 @@ export function Header() {
 
   return (
     <header
-      className='sticky top-0 w-full flex flex-col bg-black z-50'>
-      <Col className="w-[1280px] items-center">
-        <Row className="w-full h-[60px] justify-between">
-          <Row>
-            <Gap x={5}/>
-            <Link href="/">
-              <KenazLogo className="fill-white cursor-pointer" />
-            </Link>
-          </Row>
-          <Row>
-            <TranslationDropdown defaultValue={locale}>
-              {routing.locales.map((cur) => (
-                <SelectItem key={cur} value={cur}>
-                  {t("locale", { locale: cur })}
-                </SelectItem>
-              ))}
-            </TranslationDropdown>
-            {/*<NotificationDropdown />*/}
-            <Gap x={3}/>
-            <SignedOut>
-              <Link className="bg-white text-black font-bold p-2 rounded-[4px] cursor-pointer" href={"/sign-in"}>
-                {Tinquiry("login")}
-              </Link>
-            </SignedOut>
-            <SignedIn>
-              <UserButton afterSignOutUrl={`/${locale}`}/>
-            </SignedIn>
-          </Row>
+      className='sticky top-0 w-full flex flex-col bg-black z-50 border-b border-gray-darker items-center px-10'>
+      <Row className="w-full h-[60px] justify-between">
+        <Row>
+          <Link href="/">
+            <KenazLogo className="fill-white cursor-pointer" />
+          </Link>
         </Row>
-      </Col>
-      {/*{includeNavBar && <NavBar/>}*/}
+        <Row>
+          <TranslationDropdown defaultValue={locale}>
+            {routing.locales.map((cur) => (
+              <SelectItem key={cur} value={cur}>
+                {t("locale", { locale: cur })}
+              </SelectItem>
+            ))}
+          </TranslationDropdown>
+          {/*<NotificationDropdown />*/}
+          <Gap x={3}/>
+          <SignedOut>
+            <Link className="bg-white text-black font-bold p-2 rounded-[4px] cursor-pointer" href={"/sign-in"}>
+              {Tinquiry("login")}
+            </Link>
+          </SignedOut>
+          <SignedIn>
+            <UserButton afterSignOutUrl={`/${locale}`}/>
+          </SignedIn>
+        </Row>
+      </Row>
       <NavBar/>
-      {/*<Gap y="10px"/>*/}
-
     </header>
   );
 }

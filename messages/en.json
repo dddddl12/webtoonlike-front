@@ -74,9 +74,9 @@
         "investment": "Investment"
     },
     "homeMain": {
-        "days": "days",
-        "hours": "hours",
-        "minutes": "minutes",
+        "days": " days",
+        "hours": " hours",
+        "minutes": " minutes",
         "numberOfOffers": " Offers",
         "viewContent": "View Content",
         "recommendedPopularSeries": "Popular",
@@ -351,17 +351,17 @@
         "계약 완료": "Contract Done"
     },
     "ageRestriction": {
-        "전체이용가": "ALL",
-        "12+": "12+",
-        "15+": "15+",
-        "18+": "18+"
+        "ALL": "ALL",
+        "TWELVE": "12+",
+        "FIFTEEN": "15+",
+        "EIGHTEEN": "18+"
     },
     "episodePreviewDesc": {
         "pressAddEps": "Register by pressing Add Episode",
         "noEps": "No Registered Episodes"
     },
     "howMany": {
-        "howMany": "Series"
+        "howMany": "{number} series"
     },
     "localeSwitcher": {
         "label": "Change language",

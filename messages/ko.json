@@ -79,10 +79,10 @@
         "minutes": "분",
         "numberOfOffers": "명 오퍼중",
         "viewContent": "작품 보기",
-        "recommendedPopularSeries": "추천 콘텐츠",
+        "recommendedPopularSeries": "인기 작품 추천",
         "seeMorePopularSeries": "더보기",
         "contentNearingDeadline": "마감 임박 작품들",
-        "recommendedNewSeries": "최신 콘텐츠",
+        "recommendedNewSeries": "신규 작품 추천",
         "seeMoreNewSeries": "더보기",
         "organizedByGenre": "장르별 모아보기",
         "seeMoreSeries": "더보기",
@@ -352,17 +352,17 @@
         "계약 완료": "계약 완료"
     },
     "ageRestriction": {
-        "전체이용가": "전체이용가",
-        "12+": "12+",
-        "15+": "15+",
-        "18+": "18+"
+        "ALL": "전체이용가",
+        "TWELVE": "12+",
+        "FIFTEEN": "15+",
+        "EIGHTEEN": "18+"
     },
     "episodePreviewDesc": {
         "pressAddEps": "회차 추가하기 버튼을 클릭하여 회차를 등록해보세요.",
         "noEps": "등록된 회차가 없습니다."
     },
     "howMany": {
-        "howMany": "개 작품"
+        "howMany": "{number}개 작품"
     },
     "localeSwitcher": {
         "label": "언어 변경",

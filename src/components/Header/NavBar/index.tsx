@@ -85,23 +85,15 @@ export function NavBar() {
   // TODO 해당사항 없을 때 마스킹 처리
 
   return (
-    <Row className="sticky w-full h-[48px] bg-black">
-      <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className="p-0">
-              {nav.map((item) => (
-                <NavigationLink
-                  href={item.path}
-                  key={item.name}
-                >
-                  {item.name}
-                </NavigationLink>
-              ))}
-            </NavigationMenuTrigger>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
+    <Row className="w-full max-w-screen-xl h-[60px]">
+      {nav.map((item) => (
+        <NavigationLink
+          href={item.path}
+          key={item.name}
+        >
+          {item.name}
+        </NavigationLink>
+      ))}
     </Row>
   );
 }

@@ -1,11 +1,12 @@
-import { Gap } from "@/ui/layouts";
 import { getTranslations } from "next-intl/server";
 import SectionHeading from "@/$pages/HomePage/SectionHeading";
 import WebtoonGrid from "@/$pages/HomePage/WebtoonGrid";
 import ArtistGrid from "@/$pages/HomePage/ArtistGrid";
 import BannerSection from "@/$pages/HomePage/BannerSection";
 import { homeItems } from "@/resources/webtoons/webtoon.service";
-
+import PageLayout from "@/components/PageLayout";
+import Image from "next/image";
+import LezhinBannerImage from "./images/lezhin_banner.png";
 
 export async function HomePage() {
   const t = await getTranslations("homeMain");
@@ -13,38 +14,34 @@ export async function HomePage() {
   const { popular, brandNew, perGenre, artists } = await homeItems();
 
   return (
-    <main className='flex min-h-screen flex-col items-center justify-start'>
-      <Gap y="36px"/>
-      <BannerSection />
-      <Gap y={40} />
+    <PageLayout className="flex flex-col gap-20">
+      <section className="w-full">
+        <SectionHeading title={t("contentNearingDeadline")}/>
+        <BannerSection/>
+      </section>
       <section className="w-full">
         <SectionHeading path="/webtoons" title={t("recommendedPopularSeries")}/>
-        <WebtoonGrid webtoons={popular}/>
+        <WebtoonGrid webtoons={popular} numbered={true} cols={4} height={420}/>
       </section>
-      <Gap y={40}/>
       <section className="w-full">
         <SectionHeading path="/webtoons" title={t("recommendedNewSeries")}/>
-        <WebtoonGrid webtoons={brandNew}/>
+        <WebtoonGrid webtoons={brandNew} cols={5} height={330}/>
       </section>
-      <Gap y={40}/>
+      <section className="w-full relative">
+        <Image
+          src={LezhinBannerImage}
+          alt="LezhinBanner image"
+          className="w-full"
+        />
+      </section>
       <section className="w-full">
         <SectionHeading path="/webtoons" title={t("organizedByGenre")}/>
-        <WebtoonGrid webtoons={perGenre}/>
+        <WebtoonGrid webtoons={perGenre} cols={5} height={220}/>
       </section>
-      <Gap y={40}/>
       <section className="w-full">
-        {/* TODO 작가 페이지 있는지 확인*/}
-        <SectionHeading path="/artists" title={t("recommendedCreators")}/>
+        <SectionHeading title={t("recommendedCreators")}/>
         <ArtistGrid artists={artists}/>
       </section>
-      <Gap y={40}/>
-      {/* <SignedIn>
-        <Row>
-          Render after signed in section
-        </Row>
-      </SignedIn> */}
-
-      {/* <ClientTest/> */}
-    </main>
+    </PageLayout>
   );
 }

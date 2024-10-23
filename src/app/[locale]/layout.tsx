@@ -41,9 +41,7 @@ export default function RootLayout({
               <SnackbarProvider>
                 <Header/>
                 <main className="h-auto min-h-[100%] flex justify-center">
-                  <div className="max-w-screen-xl">
-                    {children}
-                  </div>
+                  {children}
                 </main>
                 <Footer/>
               </SnackbarProvider>

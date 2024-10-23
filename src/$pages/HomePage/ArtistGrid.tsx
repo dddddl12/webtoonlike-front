@@ -2,7 +2,7 @@
 
 import { Col, Gap, Grid, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
-import { useRouter } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import { buildImgUrl } from "@/utils/media";
 import { Avatar, AvatarFallback, AvatarImage } from "@/ui/shadcn/Avatar";
@@ -11,17 +11,14 @@ import { HomeArtistItem } from "@/resources/webtoons/webtoon.types";
 export default function ArtistGrid({ artists }: {
     artists: HomeArtistItem[]
 }) {
-  return <>
-    <Gap y="36px" />
-    <Row className="justify-center items-center">
-      {artists.length > 0
-        ? <Grid className="grid grid-cols-5 gap-4">{
-          artists.map((artist) =>
-            <ArtistItem key={artist.id} artist={artist}/>)
-        }</Grid>
-        : <Text className="text-gray-shade">등록된 작가가 없습니다.</Text>}
-    </Row>
-  </>;
+  return <Row className="w-full">
+    {artists.length > 0
+      ? <Grid className="grid grid-cols-5 gap-7 w-full">{
+        artists.map((artist) =>
+          <ArtistItem key={artist.id} artist={artist}/>)
+      }</Grid>
+      : <Text className="text-gray-shade">등록된 작가가 없습니다.</Text>}
+  </Row>;
 }
 
 export function ArtistItem({ artist }: {
@@ -32,19 +29,24 @@ export function ArtistItem({ artist }: {
   const locale = useLocale();
 
   return (
-    <div
+    <Link
       className="cursor-pointer"
-      onClick={() => {router.push(`/creator/${artist.id}`);}}>
-      <Col className="bg-black-texts w-full h-[320px] rounded-md items-center justify-center transition ease-in-out delay-50 hover:bg-mint duration-300">
+      href={`/creator/${artist.id}`}
+    >
+      <Col className="text-white bg-black-texts w-full h-[320px] rounded-md items-center justify-center transition ease-in-out delay-50 hover:bg-mint duration-300">
         <Avatar className="w-[100px] h-[100px]">
           <AvatarImage src={buildImgUrl(null, artist?.thumbPath || "", { size: "sm" })} />
           <AvatarFallback>{artist.thumbPath}</AvatarFallback>
         </Avatar>
-        <Gap y="10px" />
-        <Text className="text-white">{artist.numOfWebtoons} {t("howMany")}</Text>
-        <Gap y="10px" />
-        <Text className="text-white">{locale === "ko" ? artist.name : artist.name_en ?? artist.name}</Text>
+        <span className="text-base font-bold mt-10">
+          {locale === "ko" ? artist.name : artist.name_en ?? artist.name}
+        </span>
+        <span className="text-sm">
+          {t("howMany", {
+            number: artist.numOfWebtoons
+          })}
+        </span>
       </Col>
-    </div>
+    </Link>
   );
 }

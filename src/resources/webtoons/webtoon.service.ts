@@ -78,7 +78,7 @@ export async function homeItems() {
           { likes: "desc" },
           { createdAt: "desc" },
         ],
-        take: 5
+        take: 4
       }),
 
       // 최신
