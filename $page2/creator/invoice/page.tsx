@@ -1,4 +1,4 @@
-import { CreatorInvoiceListPage } from "@/$pages/creators/CreatorInvoiceListPage";
+import { CreatorInvoiceListPage } from "../../../$pages/creators/CreatorInvoiceListPage";
 import React from "react";
 
 

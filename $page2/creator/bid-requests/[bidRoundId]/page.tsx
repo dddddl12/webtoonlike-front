@@ -1,6 +1,6 @@
 import { tokenHolder } from "@/system/token_holder";
 import { cookies } from "next/headers";
-import { CreatorBidRequestDetailPage } from "@/$pages/creators/CreatorBidRequestDetailPage";
+import { CreatorBidRequestDetailPage } from "../../../../$pages/creators/CreatorBidRequestDetailPage";
 import { ErrorComponent } from "@/components/ErrorComponent";
 
 export default async function BidRequest({ params }: { params: { bidRoundId: string } }) {

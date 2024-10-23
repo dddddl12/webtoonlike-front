@@ -1,4 +1,4 @@
-import { CreatorBidRequestConditionPage } from "@/$pages/creators/CreatorBidRequestConditionPage";
+import { CreatorBidRequestConditionPage } from "../../../../../../$pages/creators/CreatorBidRequestConditionPage";
 import { tokenHolder } from "@/system/token_holder";
 import { Container } from "@/ui/layouts";
 import { cookies } from "next/headers";

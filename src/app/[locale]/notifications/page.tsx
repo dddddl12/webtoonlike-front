@@ -1,7 +1,8 @@
 import React from "react";
-import { NotificationPage } from "@/$pages/NotificationPage";
+// import { NotificationPage } from "../../../../$pages/NotificationPage";
 
 
 export default function Notification() {
-  return <NotificationPage />;
+  return <></>;
+  // return <NotificationPage />;
 }

@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { tokenHolder } from "@/system/token_holder";
-import { CreatorOtherPage } from "@/$pages/creators/CreatorOtherPage";
+import { CreatorOtherPage } from "../../../$pages/creators/CreatorOtherPage";
 
 export default async function CreatorOther({
   params,

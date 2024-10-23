@@ -1,4 +1,4 @@
-import { CreatorMyPage } from "@/$pages/creators/CreatorMyPage";
+import { CreatorMyPage } from "../../../$pages/creators/CreatorMyPage";
 
 export default function CreatorMy() {
   return (

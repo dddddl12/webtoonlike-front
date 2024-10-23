@@ -1,4 +1,4 @@
-import { CreateBidRoundPage } from "@/$pages/creators/CreateBidRoundPage";
+import { CreateBidRoundPage } from "../../../../../$pages/creators/CreateBidRoundPage";
 import { cookies } from "next/headers";
 import { tokenHolder } from "@/system/token_holder";
 import { ErrorComponent } from "@/components/ErrorComponent";

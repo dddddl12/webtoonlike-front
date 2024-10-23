@@ -1,4 +1,4 @@
-import { CreatorUpdateProfilePage } from "@/$pages/creators/CreatorUpdateProfilePage";
+import { CreatorUpdateProfilePage } from "../../../../$pages/creators/CreatorUpdateProfilePage";
 
 export default function CreatorUpdateProfile() {
 
