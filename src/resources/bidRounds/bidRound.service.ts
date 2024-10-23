@@ -1,19 +1,19 @@
-// // on every 24 hours
-// // @Cron("0 0 * * * *")
-// import { BidRoundStatus, BidRoundT } from "@/resources/bidRounds/bidRound.types";
-// import { BidRound as BidRoundRecord } from "@prisma/client";
-// import prisma from "@/utils/prisma";
-// import { getUserInfo } from "@/utils/auth/server";
-//
-// const mapToDTO = (record: BidRoundRecord): BidRoundT => ({
-//   ...record,
-//   contractRange: {
-//     // TODO contractRange json 검토
-//     data: []
-//   },
-//   status: BidRoundStatus[record.status as keyof typeof BidRoundStatus]
-// });
-//
+// on every 24 hours
+// @Cron("0 0 * * * *")
+import { BidRoundStatus, BidRoundT } from "@/resources/bidRounds/bidRound.types";
+import { BidRound as BidRoundRecord } from "@prisma/client";
+import prisma from "@/utils/prisma";
+import { getUserInfo } from "@/utils/auth/server";
+
+const mapToDTO = (record: BidRoundRecord): BidRoundT => ({
+  ...record,
+  contractRange: {
+    // TODO contractRange json 검토
+    data: []
+  },
+  status: BidRoundStatus[record.status as keyof typeof BidRoundStatus]
+});
+
 // export async function handleCron() {
 //   console.log("running cron job for bid round");
 //
@@ -64,19 +64,19 @@
 //     }
 //   });
 // }
-//
-// export async function listBidRounds(): Promise<{
-//   items: BidRoundT[]
-// }> {
-//   const { id: userId } = await getUserInfo();
-//   const records = await prisma.bidRound.findMany({
-//     where: { userId }
-//   });
-//   return {
-//     items: records.map(mapToDTO)
-//   };
-// }
-//
+
+export async function listBidRounds(): Promise<{
+  items: BidRoundT[]
+}> {
+  const { id: userId } = await getUserInfo();
+  const records = await prisma.bidRound.findMany({
+    where: { userId }
+  });
+  return {
+    items: records.map(mapToDTO)
+  };
+}
+
 // export async function create(form: BidRoundFormT): Promise<BidRoundT> {
 //   const item = await bidRoundM.findOne({ webtoonId: form.webtoonId }, {
 //     builder: (qb) => {

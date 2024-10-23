@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "@/i18n/routing";
-import { WebtoonEpisodeForm } from "@/components/WebtoonEpisodeForm";
+// import { WebtoonEpisodeForm } from "@/components/WebtoonEpisodeForm";
 import { useSnackbar } from "@/hooks/Snackbar";
 import { WebtoonEpisodeFormT, WebtoonEpisodeT } from "@/resources/webtoonEpisodes/webtoonEpisode.types";
 import { WebtoonEpisodeImageFormT } from "@/resources/webtoonEpisodeImages/webtoonEpisodeImage.types";
@@ -26,10 +26,11 @@ export function UpdateWebtoonPostForm({ episode }: {
   }
 
   return (
-    <WebtoonEpisodeForm
-      webtoonId={episode.webtoonId}
-      episode={episode}
-      onSubmit={handleSubmit}
-    />
+    <></>
+    // <WebtoonEpisodeForm
+    //   webtoonId={episode.webtoonId}
+    //   episode={episode}
+    //   onSubmit={handleSubmit}
+    // />
   );
 }

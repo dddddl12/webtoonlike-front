@@ -9,7 +9,10 @@ import { buildImgUrl } from "@/utils/media";
 import { IconClose } from "@/components/svgs/IconClose";
 import { useAlertDialog, useConfirmDialog } from "@/hooks/ConfirmDialog";
 import { useTranslations } from "next-intl";
-import type { WebtoonEpisodeImageFormT, WebtoonEpisodeImageT } from "@backend/types/WebtoonEpisodeImage";
+import {
+  WebtoonEpisodeImageFormT,
+  WebtoonEpisodeImageT
+} from "@/resources/webtoonEpisodeImages/webtoonEpisodeImage.types";
 
 type WebtoonImageItemProps = {
   image: File | WebtoonEpisodeImageT | WebtoonEpisodeImageFormT;

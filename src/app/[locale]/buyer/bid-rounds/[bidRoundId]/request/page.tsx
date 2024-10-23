@@ -1,7 +1,9 @@
 // import { BuyerBidRoundItemDetail } from "@/$pages/buyers/BuyerBidRoundRequestListPage/BuyerBidRoundList/BuyerBidRoundListItem/BuyerBidRoundItemDetail";
 import { cookies } from "next/headers";
 
-export default async function CreateBidRoundRequestPage({ params }: { params: { bidRoundId: string } }) {
+export default async function CreateBidRoundRequestPage({ params }: {
+  params: Promise<{ bidRoundId: string }>
+}) {
   return <></>;
   // try {
   //   const { data: bidRound } = await tokenHolder.serverFetchWithCredential(cookies, async () => {

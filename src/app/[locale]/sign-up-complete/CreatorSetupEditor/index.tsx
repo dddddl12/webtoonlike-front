@@ -1,12 +1,11 @@
 "use client";
 import React from "react";
-import { useUserActions } from "@/states/UserState";
 import { useSnackbar } from "@/hooks/Snackbar";
 import { CreatorProfileForm } from "@/components/CreatorProfileForm";
 import { CreatorFormT } from "@/resources/creators/creator.types";
 
 export function CreatorSetupEditor(): JSX.Element {
-  const userAct = useUserActions(); // TODO
+  // const userAct = useUserActions(); // TODO
 
   const { enqueueSnackbar } = useSnackbar();
 

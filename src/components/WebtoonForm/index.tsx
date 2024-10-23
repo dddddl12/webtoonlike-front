@@ -16,7 +16,7 @@ import { GenreSelector } from "@/components/GenreSelector";
 import { IconRightBrackets } from "../svgs/IconRightBrackets";
 import { IconUpload } from "../svgs/IconUpload";
 import { useLocale, useTranslations } from "next-intl";
-import { useListData } from "@/hooks/ListData";
+// import { useListData } from "@/hooks/ListData";
 import Spinner from "../Spinner";
 import { ErrorComponent } from "../ErrorComponent";
 import { WebtoonFormT, WebtoonT } from "@/resources/webtoons/webtoon.types";

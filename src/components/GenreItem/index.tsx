@@ -1,7 +1,7 @@
 import React from "react";
 import { Badge } from "@/ui/shadcn/Badge";
 import { useLocale } from "next-intl";
-import { GenreT } from "@backend/types/Genre";
+import { GenreT } from "@/resources/genres/genre.types";
 
 type GenreItemProps = {
   selected?: boolean

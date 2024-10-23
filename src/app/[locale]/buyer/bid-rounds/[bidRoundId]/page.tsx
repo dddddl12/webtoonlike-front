@@ -2,7 +2,9 @@
 import { cookies } from "next/headers";
 import { ErrorComponent } from "@/components/ErrorComponent";
 
-export default async function BidRoundDetailPage({ params }: { params: { bidRoundId: string } }) {
+export default async function BidRoundDetailPage({ params }: {
+  params: Promise<{ bidRoundId: string }>
+}) {
   return <></>;
   // try {
   //   const { data: bidRound } = await tokenHolder.serverFetchWithCredential(cookies, async () => {

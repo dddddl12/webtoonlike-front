@@ -2,7 +2,8 @@
 import { cookies } from "next/headers";
 import { ErrorComponent } from "@/components/ErrorComponent";
 
-export default async function NegotiationDetail({ params }: { params: { bidRequestId: string }}) {
+export default async function NegotiationDetail({ params }: { params: Promise<{ bidRequestId: string }>}) {
+  const { bidRequestId } = await params;
   return <></>;
   // const bidRequestId = params.bidRequestId;
   // try {

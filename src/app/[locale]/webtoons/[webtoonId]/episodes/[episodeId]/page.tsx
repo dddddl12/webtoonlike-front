@@ -14,7 +14,7 @@ import { getUserInfo } from "@/utils/auth/server";
 
 export default async function WebtoonEpisodeDetail(
   { params }:
-  {params: {webtoonId: string, episodeId: string}},
+  {params: Promise<{webtoonId: string, episodeId: string}>},
 ) {
   const { episodeId } = await params;
   const episode = await getEpisodeWidthWebtoonInfo(Number(episodeId));

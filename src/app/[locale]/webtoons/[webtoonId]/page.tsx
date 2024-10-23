@@ -13,7 +13,7 @@ import WebtoonDetails from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetails";
 import PageLayout from "@/components/PageLayout";
 
 export default async function WebtoonInfo({ params }:
-{ params: { webtoonId: string } }) {
+{ params: Promise<{ webtoonId: string }> }) {
   const { webtoonId } = await params;
   const webtoon = await getWebtoon(Number(webtoonId));
   const user = await getUserInfo();

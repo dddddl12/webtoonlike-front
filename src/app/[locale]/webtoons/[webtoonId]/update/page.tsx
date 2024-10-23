@@ -9,7 +9,9 @@ import { getWebtoon } from "@/resources/webtoons/webtoon.service";
 import { Link } from "@/i18n/routing";
 
 
-export default async function UpdateWebtoon({ params }: {params: {webtoonId: string}}) {
+export default async function UpdateWebtoon({ params }: {
+  params: Promise<{webtoonId: string}>
+}) {
 
   const { webtoonId } = await params;
   const webtoon = await getWebtoon(Number(webtoonId));
