@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { useListData } from "@/hooks/ListData";
-import { Pagenator } from "@/ui/tools/Pagenator";
+import { Paginator } from "@/ui/tools/Paginator";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Heading, Text } from "@/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
@@ -130,8 +130,8 @@ export function BidRequestList() {
         </Row>
         : <>
           {WebtoonTable(myBidRounds)}
-          <Pagenator
-            page={page}
+          <Paginator
+            currentPage={page}
             numData={totalNumData}
             itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}

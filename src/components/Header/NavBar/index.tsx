@@ -1,32 +1,23 @@
-"use client";
-
 import { Row } from "@/ui/layouts";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/ui/shadcn/NavigationMenu";
-import { useTranslations } from "next-intl";
 import NavigationLink from "./NavigationLink";
 import { UserTypeT } from "@/resources/users/user.types";
-import { useUser } from "@clerk/nextjs";
-import { AdminLevel, ClerkUserMetadataSchema } from "@/utils/auth/base";
+import { AdminLevel } from "@/utils/auth/base";
+import { getTranslations } from "next-intl/server";
+import { getUserInfo } from "@/utils/auth/server";
 
 export type NavArrT = {
-    name: string;
-    path: string;
-  }[];
+  name: string;
+  path: string;
+}[];
 
-export function NavBar() {
-  const t = useTranslations("inquiryMenu");
-  const clerkUser = useUser();
-  const { data: userInfo } = ClerkUserMetadataSchema.safeParse(clerkUser.user?.publicMetadata);
-  const userType = userInfo?.type;
-  const adminLevel = userInfo?.adminLevel || AdminLevel.None;
+export async function NavBar() {
+  const t = await getTranslations("inquiryMenu");
+  const user = await getUserInfo().catch(() => undefined);
+  const userType = user?.type;
+  const adminLevel = user?.adminLevel || AdminLevel.None;
 
   if (!userType) {
-    return <></>;
+    return null;
   }
 
   const nav: NavArrT = [

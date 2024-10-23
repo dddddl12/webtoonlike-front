@@ -6,7 +6,7 @@ export type BidRequestMessageFormT = {
 export type BidRequestMessageT = {
     id: number;
     createdAt: Date;
-    updatedAt?: Date | undefined;
+    updatedAt: Date;
     bidRequestId: number;
     content: string;
 }

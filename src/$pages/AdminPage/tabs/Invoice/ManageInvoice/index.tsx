@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { generateRandomString } from "@/utils/randomString";
 import { Col, Container, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
-import { Pagenator } from "@/ui/tools/Pagenator";
+import { Paginator } from "@/ui/tools/Paginator";
 import { convertTimeAbsolute } from "@/utils/time";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
@@ -117,8 +117,8 @@ export function ManageInvoice() {
       {manageInvoice.length > 0
         ? <>
           {ManageInvoiceTable(manageInvoice)}
-          <Pagenator
-            page={page}
+          <Paginator
+            currentPage={page}
             numData={totalNumData}
             itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}

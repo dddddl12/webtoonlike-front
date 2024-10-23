@@ -7,7 +7,7 @@ import Image from "next/image";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import Spinner from "@/components/Spinner";
 import { useListData } from "@/hooks/ListData";
-import { Pagenator } from "@/ui/tools/Pagenator";
+import { Paginator } from "@/ui/tools/Paginator";
 import { Col, Container, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
@@ -193,8 +193,8 @@ export function ManageBidRoundRequestTab() {
       {filteredBidRound.length > 0 ? (
         <>
           {BidRoundTable(filteredBidRound)}
-          <Pagenator
-            page={page}
+          <Paginator
+            currentPage={page}
             numData={totalNumData}
             itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}

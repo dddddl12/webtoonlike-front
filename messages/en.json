@@ -345,10 +345,9 @@
         "ageRestriction": "Age Restriction"
     },
     "statusData": {
-        "전체보기": "All",
-        "오퍼중": "Offer",
-        "협상중": "Negotiation",
-        "계약 완료": "Contract Done"
+        "BIDDING": "Offer",
+        "NEGOTIATING": "Negotiation",
+        "DONE": "Contract Done"
     },
     "ageRestriction": {
         "ALL": "ALL",

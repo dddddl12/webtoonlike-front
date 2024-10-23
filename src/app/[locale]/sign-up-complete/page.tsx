@@ -27,14 +27,14 @@ export default async function SignUpComplete() {
 
 async function SignUpCompleteForm () {
   const clerkUser = await getClerkUser();
-  const { data: userInfo } = ClerkUserMetadataSchema.safeParse(clerkUser.sessionClaims.metadata);
+  const { data: user } = ClerkUserMetadataSchema.safeParse(clerkUser.sessionClaims.metadata);
 
-  switch (userInfo?.type) {
+  switch (user?.type) {
   // case UserTypeT.Creator:
   //   return <CreatorProfileForm />;
-  case UserTypeT.Buyer:
-    return <BuyerProfileForm />;
-  default:
-    return <MeSetupEditor />;
+    case UserTypeT.Buyer:
+      return <BuyerProfileForm />;
+    default:
+      return <MeSetupEditor />;
   }
 }

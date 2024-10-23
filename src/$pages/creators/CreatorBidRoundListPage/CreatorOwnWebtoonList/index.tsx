@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useListData } from "@/hooks/ListData";
-import { Pagenator } from "@/ui/tools/Pagenator";
+import { Paginator } from "@/ui/tools/Paginator";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Heading, Text } from "@/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
@@ -106,7 +106,7 @@ export function CreatorOwnWebtoonList() {
         <div className="w-[20%] p-2 flex justify-center">
           {webtoon.bidRounds && webtoon.bidRounds?.length > 0
             ? webtoon.bidRounds[0].disapprovedAt ? (locale === "ko" ? "반려" : "Disapproved")
-            : (locale === "ko" ? convertBidRoundStatus(webtoon.bidRounds[0].status) : convertBidRoundStatusEn(webtoon.bidRounds[0].status))
+              : (locale === "ko" ? convertBidRoundStatus(webtoon.bidRounds[0].status) : convertBidRoundStatusEn(webtoon.bidRounds[0].status))
             : webtoon.episodes?.length && webtoon.episodes?.length >= 3 ? (
               <div
                 className="text-mint underline cursor-pointer"
@@ -170,8 +170,8 @@ export function CreatorOwnWebtoonList() {
             </div>
           ) : null}
           <WebtoonTable />
-          <Pagenator
-            page={page}
+          <Paginator
+            currentPage={page}
             numData={totalNumData}
             itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}

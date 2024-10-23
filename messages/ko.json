@@ -346,10 +346,9 @@
         "ageRestriction": "이용 등급"
     },
     "statusData": {
-        "전체보기": "전체보기",
-        "오퍼중": "오퍼중",
-        "협상중": "협상중",
-        "계약 완료": "계약 완료"
+        "BIDDING": "오퍼중",
+        "NEGOTIATING": "협상중",
+        "DONE": "계약 완료"
     },
     "ageRestriction": {
         "ALL": "전체이용가",

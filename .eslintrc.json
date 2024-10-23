@@ -9,7 +9,6 @@
   ],
   "rules": {
     "semi": "warn",
-    "indent": ["warn", 2, { "flatTernaryExpressions": true }],
     "quotes": ["warn", "double"],
     "no-multiple-empty-lines": ["warn", { "max": 2 }],
     "no-multi-spaces": "warn",

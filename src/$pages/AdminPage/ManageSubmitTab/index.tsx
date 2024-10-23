@@ -8,7 +8,7 @@ import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import { convertTimeAbsolute } from "@/utils/time";
 import { Text } from "@/ui/texts";
-import { Pagenator } from "@/ui/tools/Pagenator";
+import { Paginator } from "@/ui/tools/Paginator";
 import { Button } from "@/ui/shadcn/Button";
 import { SubmitEditWrapper } from "./SubmitEditWrapper";
 import { convertBidRoundStatus } from "@/utils/bidRoundStatusConverter";
@@ -144,8 +144,8 @@ export function ManageSubmitTab() {
       {waitBidRounds.length > 0 ? (
         <>
           {BidRoundTable(waitBidRounds)}
-          <Pagenator
-            page={waitPage}
+          <Paginator
+            currentPage={waitPage}
             numData={waitTotalNumData}
             itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}
@@ -163,8 +163,8 @@ export function ManageSubmitTab() {
       {bidRounds.length > 0 ? (
         <>
           {BidRoundTable(bidRounds)}
-          <Pagenator
-            page={page}
+          <Paginator
+            currentPage={page}
             numData={totalNumData}
             itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}

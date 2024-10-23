@@ -6,7 +6,7 @@ export type XWebtoonGenreFormT = {
 export type XWebtoonGenreT = {
     id: number;
     createdAt: Date;
-    updatedAt?: Date | undefined;
+    updatedAt: Date;
     webtoonId: number;
     genreId: number;
 }

@@ -9,7 +9,7 @@ import { convertTimeAbsolute } from "@/utils/time";
 import { useRouter } from "@/i18n/routing";
 import { useListData } from "@/hooks/ListData";
 import { convertBidRoundStatus } from "@/utils/bidRoundStatusConverter";
-import { Pagenator } from "@/ui/tools/Pagenator";
+import { Paginator } from "@/ui/tools/Paginator";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 
@@ -112,8 +112,8 @@ export function BidRoundIdleList({
       {bodyData.length > 0
         ? <>
           {BidRoundTable(bodyData)}
-          <Pagenator
-            page={page}
+          <Paginator
+            currentPage={page}
             numData={totalNumData}
             itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}

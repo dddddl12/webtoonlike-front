@@ -1,12 +1,24 @@
 "use server";
 
 import prisma from "@/utils/prisma";
-import { Prisma } from "@prisma/client";
-import { HomeArtistItem, HomeWebtoonItem, WebtoonFormT, WebtoonT } from "@/resources/webtoons/webtoon.types";
+import { Prisma, Webtoon as WebtoonRecord } from "@prisma/client";
+import {
+  AgeLimit,
+  HomeArtistItem,
+  HomeWebtoonItem,
+  TargetAge, TargetGender,
+  WebtoonFormT,
+  WebtoonT
+} from "@/resources/webtoons/webtoon.types";
+import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 
-// export async function updateAggr(id: idT, opt: WebtoonAggrOptionT = {}): Promise<void> {
-//   return await updateAggr(id, opt);
-// }
+const mapToDTO = (record: WebtoonRecord) => ({
+  ...record,
+  targetAge: record.targetAge
+    .map(a => TargetAge[a as keyof typeof TargetAge]),
+  ageLimit: AgeLimit[record.ageLimit as keyof typeof AgeLimit],
+  targetGender: TargetGender[record.ageLimit as keyof typeof TargetGender],
+});
 
 export async function createWebtoon(form: WebtoonFormT): Promise<WebtoonT> {
   const created = await webtoonM.create(form);
@@ -32,8 +44,43 @@ export async function updateWebtoon(id: number, form: Partial<WebtoonFormT>): Pr
   return updated;
 }
 
-export async function listWebtoons(listOpt: ListWebtoonOptionT): Promise<ListData<WebtoonT>> {
-  return await listWebtoon(listOpt);
+export async function listWebtoons({ status, genreId, ageLimit, page }: {
+  status?: BidRoundStatus;
+  genreId?: number;
+  ageLimit?: AgeLimit;
+  page?: number;
+} = {}): Promise<{
+    items: WebtoonT[];
+    totalPages: number;
+  }> {
+  const where: Prisma.WebtoonWhereInput = {
+    ageLimit: ageLimit,
+    BidRound: status ? {
+      some: {
+        status: {
+          in: [status]
+        },
+      },
+    } : undefined,
+    XWebtoonGenre: genreId ? {
+      some: { genreId }
+    } : undefined,
+  };
+  const limit = 10;
+  page ??= 1;
+
+  const [records, totalRecords] = await prisma.$transaction([
+    prisma.webtoon.findMany({
+      where,
+      take: limit,
+      skip: (page - 1) * limit,
+    }),
+    prisma.webtoon.count({ where })
+  ]);
+  return {
+    items: records.map(mapToDTO),
+    totalPages: Math.ceil(totalRecords / limit),
+  };
 }
 
 export async function getThumbnailPresignedUrl(mimeType: string) {
@@ -46,16 +93,16 @@ export async function getThumbnailPresignedUrl(mimeType: string) {
 
 export async function homeItems() {
   // Using Prisma's transaction to run all queries concurrently
-  const where = {
+  const where: Prisma.WebtoonWhereInput = {
     BidRound: {
       some: {
         status: {
-          in: ["bidding", "negotiating"], // Filters webtoons where bidStatus is "bidding" or "negotiating"
+          in: [BidRoundStatus.Bidding, BidRoundStatus.Negotiating]
         },
       },
     },
   };
-  const select = {
+  const select: Prisma.WebtoonSelect = {
     id: true,
     title: true,
     title_en: true,

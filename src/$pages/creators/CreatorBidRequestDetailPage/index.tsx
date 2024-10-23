@@ -6,7 +6,7 @@ import { Heading, Text } from "@/ui/texts";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Pagenator } from "@/ui/tools/Pagenator";
+import { Paginator } from "@/ui/tools/Paginator";
 import { nationConverter, nationConverterToKr } from "@/utils/nationConverter";
 import { businessFieldConverterToEn, businessFieldConverterToKr } from "@/utils/businessFieldConverter";
 import { convertBidRequestStatus, convertBidRequestStatusEn } from "@/utils/bidRequestStatusConverter";
@@ -192,8 +192,8 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
             {locale === "ko" ? "받은 오퍼" : "Offers"}</Heading>
         </Col>
         {BidRequestTable(bidRequests)}
-        <Pagenator
-          page={page}
+        <Paginator
+          currentPage={page}
           numData={totalNumData}
           itemsPerPage={itemPerPage}
           pageWindowLen={pageWindowLen}

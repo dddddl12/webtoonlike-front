@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { generateRandomString } from "@/utils/randomString";
 import { Container, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
-import { Pagenator } from "@/ui/tools/Pagenator";
+import { Paginator } from "@/ui/tools/Paginator";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import { convertTimeAbsolute } from "@/utils/time";
@@ -121,8 +121,8 @@ export function IssuanceInvoice() {
       {bidRequestList.length > 0
         ? <>
           {InvoiceTable(bidRequestList)}
-          <Pagenator
-            page={page}
+          <Paginator
+            currentPage={page}
             numData={totalNumData}
             itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}

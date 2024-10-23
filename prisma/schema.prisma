@@ -62,18 +62,25 @@ model BidRequest {
   @@map("bid_requests")
 }
 
+enum BidRoundStatus {
+  IDLE
+  WAITING
+  BIDDING
+  NEGOTIATING
+  DONE
+}
+
 model BidRound {
-  id                Int       @id @default(autoincrement())
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  id                Int            @id @default(autoincrement())
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
   userId            Int?
   webtoonId         Int
   isWebtoon         Boolean?
   isSecondary       Boolean?
   contractRange     Json?
-  // TODO enum
-  status            String
-  originality       String
+  status            BidRoundStatus
+  isOriginal        Boolean
   isBrandNew        Boolean
   numEpisode        Int?
   bidStartAt        DateTime?

@@ -9,7 +9,7 @@ export type NotificationFormT = {
 export type NotificationT = {
     id: number;
     createdAt: Date;
-    updatedAt?: Date | undefined;
+    updatedAt: Date;
     userId: number;
     type: "roundAdminAccepted" | "roundAdminRejected" | "requestReceived" | "requestAccepted" | "requestRejected" | "invoicePublished";
     message: string;

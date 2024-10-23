@@ -2,7 +2,7 @@
 
 import { BuyerFormT } from "@/resources/buyers/buyer.types";
 import prisma from "@/utils/prisma";
-import { getServerUserInfo } from "@/utils/auth/server";
+import { getUserInfo } from "@/utils/auth/server";
 import { updateClerkUser } from "@/resources/users/user.service";
 
 export async function createBuyer(form: BuyerFormT ) {
@@ -17,7 +17,7 @@ export async function createBuyer(form: BuyerFormT ) {
   //   form.companyInfo.businessCertPath = await uploadFile(businessCert, "buyers/business_certs");
   // }
   await prisma.$transaction(async (tx) => {
-    const { id } = await getServerUserInfo();
+    const { id } = await getUserInfo();
 
     // 레코드 추가
     const insert = {

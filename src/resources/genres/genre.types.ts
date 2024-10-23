@@ -7,10 +7,10 @@ export type GenreFormT = {
 export type GenreT = {
     id: number;
     createdAt: Date;
-    updatedAt?: Date | undefined;
+    updatedAt: Date;
     label: string;
-    label_en?: (string | null) | undefined;
-    rank?: (number | null) | undefined;
+    label_en: string | null;
+    rank: number | null;
 }
 
 export type GetGenreOptionT = {

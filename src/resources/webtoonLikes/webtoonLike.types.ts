@@ -5,6 +5,6 @@ export type WebtoonLikeFormT = {
 export type WebtoonLikeT = {
     id: number;
     createdAt: Date;
-    updatedAt?: Date | undefined;
+    updatedAt: Date;
     webtoonId: number;
 }

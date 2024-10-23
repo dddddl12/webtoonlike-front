@@ -13,7 +13,7 @@ export type InvoiceFormT = {
 type _InvoiceT = {
     id: number;
     createdAt: Date;
-    updatedAt?: Date | undefined;
+    updatedAt: Date;
     requestId: number;
     creatorUid: number | null;
     buyerUid: number | null;

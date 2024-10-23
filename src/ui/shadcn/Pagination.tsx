@@ -49,9 +49,9 @@ const PaginationLink = ({
   size = "icon",
   ...props
 }: PaginationLinkProps) => (
-  <span
+  <button
     aria-current={isActive ? "page" : undefined}
-    className={cn(isActive ? "bg-white border border-black/20" : "bg-gray/40 text-black",
+    className={cn(isActive ? "bg-white border border-black/20" : "bg-gray/40 text-black cursor-pointer",
       buttonVariants({
         variant: isActive ? "secondary" : "ghost",
         size,

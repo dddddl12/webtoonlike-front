@@ -11,7 +11,7 @@ export type WebtoonEpisodeImageFormT = {
 type _WebtoonEpisodeImageT = {
     id: number;
     createdAt: Date;
-    updatedAt?: Date | undefined;
+    updatedAt: Date;
     episodeId: number;
     host?: (string | null) | undefined;
     path: string;

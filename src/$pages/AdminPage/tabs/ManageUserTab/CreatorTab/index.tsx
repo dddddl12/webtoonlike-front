@@ -5,7 +5,7 @@ import { useListData } from "@/hooks/ListData";
 import { useState } from "react";
 import { convertTimeAbsolute } from "@/utils/time";
 import { Heading } from "@/ui/texts";
-import { Pagenator } from "@/ui/tools/Pagenator";
+import { Paginator } from "@/ui/tools/Paginator";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { enqueueSnackbar } from "notistack";
@@ -140,8 +140,8 @@ export function ManageCreatorTab() {
       </Row>
       <Gap y={4} />
       {UserTable(creators)}
-      <Pagenator
-        page={page}
+      <Paginator
+        currentPage={page}
         numData={totalNumData}
         itemsPerPage={itemPerPage}
         pageWindowLen={pageWindowLen}

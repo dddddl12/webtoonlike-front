@@ -11,7 +11,7 @@ export const getClerkUser = async (): Promise<SignedInAuthObject> => {
   return clerkUser;
 };
 
-export const getServerUserInfo = async (): Promise<ClerkUserMetadata> => {
+export const getUserInfo = async (): Promise<ClerkUserMetadata> => {
   const clerkUser = await getClerkUser();
   return ClerkUserMetadataSchema.parse(clerkUser.sessionClaims.metadata);
 };

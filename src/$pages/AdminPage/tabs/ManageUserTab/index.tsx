@@ -5,7 +5,7 @@ import { useListData } from "@/hooks/ListData";
 import { useState } from "react";
 import { convertTimeAbsolute } from "@/utils/time";
 import { Heading } from "@/ui/texts";
-import { Pagenator } from "@/ui/tools/Pagenator";
+import { Paginator } from "@/ui/tools/Paginator";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 
@@ -96,8 +96,8 @@ export function ManageUserTab() {
       </Row>
       <Gap y={4} />
       {UserTable(userList)}
-      <Pagenator
-        page={page}
+      <Paginator
+        currentPage={page}
         numData={totalNumData}
         itemsPerPage={itemPerPage}
         pageWindowLen={pageWindowLen}

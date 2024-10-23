@@ -29,7 +29,7 @@ export type BidRequestFormT = {
 type _BidRequestT = {
     id: number;
     createdAt: Date;
-    updatedAt?: Date | undefined;
+    updatedAt: Date;
     userId: number | null;
     roundId: number;
     message?: (string | null) | undefined;

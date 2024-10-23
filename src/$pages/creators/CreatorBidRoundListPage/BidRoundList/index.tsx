@@ -7,7 +7,7 @@ import { Heading, Text } from "@/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
-import { Pagenator } from "@/ui/tools/Pagenator";
+import { Paginator } from "@/ui/tools/Paginator";
 import { useLocale, useTranslations } from "next-intl";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
@@ -111,7 +111,7 @@ export function BidRoundList() {
 
         <div className="w-[20%] p-2 flex justify-center">
           {locale === "ko" ? convertBidRoundStatus(bidRound.status)
-          : convertBidRoundStatusEn(bidRound.status)}
+            : convertBidRoundStatusEn(bidRound.status)}
         </div>
       </div>
     );
@@ -145,8 +145,8 @@ export function BidRoundList() {
         <>
           {WebtoonTable(bidRounds)}
           <Gap y={4} />
-          <Pagenator
-            page={page}
+          <Paginator
+            currentPage={page}
             numData={totalNumData}
             itemsPerPage={itemPerPage}
             pageWindowLen={pageWindowLen}

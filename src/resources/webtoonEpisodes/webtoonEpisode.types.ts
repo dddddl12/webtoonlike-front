@@ -16,7 +16,7 @@ export type WebtoonEpisodeFormT = {
 type _WebtoonEpisodeT = {
     id: number;
     createdAt: Date;
-    updatedAt?: Date | undefined;
+    updatedAt: Date;
     authorId: number | null;
     webtoonId: number;
     episodeNo: number;
