@@ -17,7 +17,7 @@ export async function createBuyer(form: BuyerFormT ) {
   //   form.companyInfo.businessCertPath = await uploadFile(businessCert, "buyers/business_certs");
   // }
   await prisma.$transaction(async (tx) => {
-    const { id } = getServerUserInfo();
+    const { id } = await getServerUserInfo();
 
     // 레코드 추가
     const insert = {

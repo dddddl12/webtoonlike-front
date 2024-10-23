@@ -4,7 +4,7 @@ import { Heading, Text } from "@/ui/texts";
 import { headers } from "next/headers";
 
 export default async function NotFound() {
-  const headersList = headers();
+  const headersList = await headers();
   const domain = headersList.get("host");
   return (
     <Col>

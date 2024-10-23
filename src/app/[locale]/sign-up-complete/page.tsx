@@ -25,8 +25,8 @@ export default async function SignUpComplete() {
   </Col>;
 }
 
-function SignUpCompleteForm () {
-  const clerkUser = getClerkUser();
+async function SignUpCompleteForm () {
+  const clerkUser = await getClerkUser();
   const { data: userInfo } = ClerkUserMetadataSchema.safeParse(clerkUser.sessionClaims.metadata);
 
   switch (userInfo?.type) {

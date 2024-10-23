@@ -2,15 +2,13 @@ import React, { ReactNode } from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { RecoilProvider } from "@/components/$providers/RecoilProvider";
 import "./globals.css";
-import { AOSInit } from "@/ui/AOS";
-import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
+import { NextIntlClientProvider } from "next-intl";
 import { enUS, koKR } from "@clerk/localizations";
 import { SnackbarProvider } from "@/hooks/Snackbar";
-import { ConfirmDialogShared } from "@/hooks/ConfirmDialog";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { getLocale, getMessages } from "next-intl/server";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,36 +17,28 @@ export const metadata: Metadata = {
   description: "웹툰 오퍼 플랫폼 웹툰라이크",
 };
 
-export default function RootLayout({
-  children,
-  params: { locale },
+export default async function RootLayout({
+  children
 }: {
   children: ReactNode;
-  params: { locale: string };
 }) {
-  const messages = useMessages();
-  const currentLocale = useLocale();
+  const messages = await getMessages();
+  const locale = await getLocale();
   return (
-    <ClerkProvider localization={currentLocale === "en" ? enUS : koKR}>
-      <RecoilProvider>
-        <html lang={locale} className="h-[100%]">
-          {/*TODO 필요한지 확인*/}
-          <AOSInit />
-          <NextIntlClientProvider messages={messages}>
-            <body className={`h-[100%] ${inter.className}`}>
-              {/*TODO 필요한지 확인*/}
-              <ConfirmDialogShared />
-              <SnackbarProvider>
-                <Header/>
-                <main className="h-auto min-h-[100%] flex justify-center">
-                  {children}
-                </main>
-                <Footer/>
-              </SnackbarProvider>
-            </body>
-          </NextIntlClientProvider>
-        </html>
-      </RecoilProvider>
-    </ClerkProvider>
+    <html lang={locale} className="h-[100%]">
+      <ClerkProvider localization={locale === "en" ? enUS : koKR}>
+        <NextIntlClientProvider messages={messages}>
+          <body className={`h-[100%] ${inter.className}`}>
+            <SnackbarProvider>
+              <Header/>
+              <main className="h-auto min-h-[100%] flex justify-center">
+                {children}
+              </main>
+              <Footer/>
+            </SnackbarProvider>
+          </body>
+        </NextIntlClientProvider>
+      </ClerkProvider>
+    </html>
   );
 }

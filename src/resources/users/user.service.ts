@@ -11,7 +11,7 @@ import { DefaultArgs } from "@prisma/client/runtime/binary";
 
 export async function createUser(form: UserFormT) {
   await prisma.$transaction(async (tx) => {
-    const { userId: clerkUserId } = getClerkUser();
+    const { userId: clerkUserId } = await getClerkUser();
     // 레코드 추가
     const insert = {
       ...form,
@@ -53,7 +53,7 @@ async function deleteMe(id: idT): Promise<UserT> {
 }
 
 export async function updateClerkUser(tx: Omit<PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">) {
-  const { userId: clerkUserId } = getClerkUser();
+  const { userId: clerkUserId } = await getClerkUser();
   const user = await tx.user.findUnique({
     where: {
       sub: clerkUserId
