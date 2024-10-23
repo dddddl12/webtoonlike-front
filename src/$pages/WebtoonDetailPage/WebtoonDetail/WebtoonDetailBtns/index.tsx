@@ -8,8 +8,6 @@ import { convertBidRoundStatus, convertBidRoundStatusEn } from "@/utils/bidRound
 import { useAlertDialog } from "@/hooks/ConfirmDialog";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
-import { getServerUserInfo } from "@/utils/auth/server";
-import type { WebtoonT } from "@backend/types/Webtoon";
 
 type WebtoonDetailBtnsProps = {
   webtoon: WebtoonT;

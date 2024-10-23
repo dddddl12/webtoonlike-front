@@ -6,10 +6,6 @@ import { Gap } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import * as WebtoonLike from "@/apis/webtoon_likes";
-import * as WebtoonApi from "@/apis/webtoons";
-import type { GetWebtoonOptionT, WebtoonT } from "@backend/types/Webtoon";
-import type { WebtoonLikeFormT } from "@backend/types/WebtoonLike";
 
 type WebtoonDetailProps = {
   webtoon: WebtoonT;

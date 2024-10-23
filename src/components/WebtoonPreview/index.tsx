@@ -3,9 +3,7 @@ import { Gap, Row } from "@/ui/layouts";
 import { buildImgUrl } from "@/utils/media";
 import { Text } from "@/ui/texts";
 import { useLocale } from "next-intl";
-import { getClientUserInfo } from "@/utils/auth/client";
 import { useUser } from "@clerk/nextjs";
-import type { WebtoonT } from "@backend/types/Webtoon";
 
 type WebtoonPreviewProps = {
   webtoon: WebtoonT;

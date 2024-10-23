@@ -2,7 +2,6 @@
 import React, { useEffect } from "react";
 import { Container, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
-import * as GenreApi from "@/apis/genre";
 import { useListData } from "@/hooks/ListData";
 import { useAlertDialog } from "@/hooks/ConfirmDialog";
 import { useSnackbar } from "@/hooks/Snackbar";
@@ -11,7 +10,6 @@ import { GenreItem } from "@/components/GenreItem";
 import { IconDelete } from "@/components/svgs/IconDelete";
 import Spinner from "@/components/Spinner";
 import { GenreEditor } from "./GenreEditor";
-import type { GenreT } from "@backend/types/Genre";
 
 
 export function ManageGenre(): JSX.Element {

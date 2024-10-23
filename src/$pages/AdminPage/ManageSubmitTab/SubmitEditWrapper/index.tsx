@@ -9,7 +9,6 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader } from "@/ui/shadcn/
 import { Input } from "@/ui/shadcn/Input";
 import { Button } from "@/ui/shadcn/Button";
 import { Col, Gap, Row } from "@/ui/layouts";
-import * as BidRoundApi from "@/apis/bid_rounds";
 import { useSnackbar } from "@/hooks/Snackbar";
 import { Text } from "@/ui/texts";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/ui/shadcn/Select";

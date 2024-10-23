@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Col, Container, Gap, Row } from "@/ui/layouts";
 import { Heading, Text } from "@/ui/texts";
-import { getUsersStats } from "@/apis/users";
 
 const MOCK_DATA_LIST = [
   { id: 1, title: "전체 유저", content: 0 },

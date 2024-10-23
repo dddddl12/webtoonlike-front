@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, Dispatch, SetStateAction } from "react";
 import { replaceItem as replaceItem_ } from "@/utils/misc";
 

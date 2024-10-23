@@ -3,12 +3,10 @@
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
 import Image from "next/image";
-import * as CreatorApi from "@/apis/creators";
 import { useListData } from "@/hooks/ListData";
 import { useEffect } from "react";
 import { buildImgUrl } from "@/utils/media";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";
-import type { CreatorT, ListCreatorOptionT } from "@backend/types/Creator";
 
 export default function OtherCreatorInfoSection({ creator }: { creator: CreatorT }) : JSX.Element {
   const { data: Creators$, actions: CreatorAct } = useListData({

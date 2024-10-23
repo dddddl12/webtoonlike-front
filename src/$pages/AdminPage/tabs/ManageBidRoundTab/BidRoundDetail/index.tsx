@@ -2,7 +2,6 @@
 
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
-import * as BidRoundsApi from "@/apis/bid_rounds";
 import { Heading, Text } from "@/ui/texts";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";

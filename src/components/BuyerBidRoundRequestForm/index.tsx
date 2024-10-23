@@ -4,7 +4,6 @@ import { Col, Gap } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { Input } from "@/ui/shadcn/Input";
 import { ChangeEvent, useState } from "react";
-import * as BidRequestApi from "@/apis/bid_request";
 import { useSnackbar } from "notistack";
 import { Heading, Text } from "@/ui/texts";
 import {
@@ -30,9 +29,6 @@ import { IconRightBrackets } from "../svgs/IconRightBrackets";
 import { IconDelete } from "../svgs/IconDelete";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import { getServerUserInfo } from "@/utils/auth/server";
-import { BidRoundT } from "@backend/types/BidRound";
-import { BidRequestFormT } from "@backend/types/BidRequest";
 
 type BuyerBidRoundRequestFormPropsT = {
   bidRound: BidRoundT;

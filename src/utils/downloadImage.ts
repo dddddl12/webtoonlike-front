@@ -1,5 +1,3 @@
-import * as AdminApi from "@/apis/admins";
-
 export async function downloadImage(url: string, filename: string): Promise<void> {
   try {
     const rsp = await AdminApi.loadMedia({ key: url });

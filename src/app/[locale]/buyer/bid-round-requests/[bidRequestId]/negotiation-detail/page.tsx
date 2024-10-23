@@ -1,7 +1,6 @@
 import { BuyerNegotiationDetailPage } from "@/$pages/buyers/BuyerNegotiationDetailPage";
 import { tokenHolder } from "@/system/token_holder";
 import { cookies } from "next/headers";
-import * as BidRequestApi from "@/apis/bid_request";
 import { ErrorComponent } from "@/components/ErrorComponent";
 
 export default async function NegotiationDetail({ params }: { params: { bidRequestId: string }}) {

@@ -6,13 +6,10 @@ import { Grid, Row } from "@/ui/layouts";
 import { Clickable } from "@/ui/tools/Clickable";
 import { ListView } from "@/ui/tools/ListView";
 import { Fragment, useEffect } from "react";
-import * as WebtoonApi from "@/apis/webtoons";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "@/i18n/routing";
 import { Text } from "@/ui/texts";
 import { ErrorComponent } from "@/components/ErrorComponent";
-import type { CreatorT } from "@backend/types/Creator";
-import type { ListWebtoonOptionT } from "@backend/types/Webtoon";
 
 export default function CreatorWebtoonList({
   creator,

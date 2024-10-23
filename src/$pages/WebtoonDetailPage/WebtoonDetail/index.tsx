@@ -6,13 +6,11 @@ import { Pencil1Icon } from "@radix-ui/react-icons";
 import { Row, Col, Gap } from "@/ui/layouts";
 import { buildImgUrl } from "@/utils/media";
 import { Text } from "@/ui/texts";
-import { LeftTimeInfo } from "@/components/LeftTimeInfo";
 import { Badge } from "@/ui/shadcn/Badge";
 import { WebtoonDetailBtns } from "./WebtoonDetailBtns";
 import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
 import { intervalToDuration ,format as dfFormat } from "date-fns";
 import { useRouter } from "@/i18n/routing";
-import type { WebtoonT } from "@backend/types/Webtoon";
 
 type WebtoonDetailProps = {
   webtoon: WebtoonT;
@@ -68,8 +66,9 @@ export function WebtoonDetail({ webtoon, editable }: WebtoonDetailProps) {
       <Gap y={20} />
 
       <Col className="ml-[20px] justify-center my-auto w-full">
-        {!hasBidStartAtPassed()
-          && !isBidStartAtExist() ? null : <LeftTimeInfo time={getLeftTime()} headCount={webtoon.numRequest ? webtoon.numRequest : 0}/>}
+        {/*TODO*/}
+        {/*{!hasBidStartAtPassed()*/}
+        {/*  && !isBidStartAtExist() ? null : <LeftTimeInfo time={getLeftTime()} headCount={webtoon.numRequest ? webtoon.numRequest : 0}/>}*/}
         <Gap y={10} />
         <Col>
           <Row className="justify-between">

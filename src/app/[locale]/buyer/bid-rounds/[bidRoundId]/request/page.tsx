@@ -1,7 +1,5 @@
 import { BuyerBidRoundItemDetail } from "@/$pages/buyers/BuyerBidRoundRequestListPage/BuyerBidRoundList/BuyerBidRoundListItem/BuyerBidRoundItemDetail";
 import { tokenHolder } from "@/system/token_holder";
-import * as BidRoundsApi from "@/apis/bid_rounds";
-import * as WebtoonsApi from "@/apis/webtoons";
 import { cookies } from "next/headers";
 
 export default async function CreateBidRoundRequestPage({ params }: { params: { bidRoundId: string } }) {

@@ -7,7 +7,6 @@ import { Textarea } from "@/ui/shadcn/Textarea";
 import { uploadToS3 } from "@/utils/s3";
 import { buildImgUrl } from "@/utils/media";
 import { useSnackbar } from "@/hooks/Snackbar";
-import * as WebtoonApi from "@/apis/webtoons";
 import { Label } from "@/ui/shadcn/Label";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Checkbox } from "@/ui/shadcn/CheckBox";
@@ -16,14 +15,10 @@ import { RadioGroup, RadioGroupItem } from "@/ui/shadcn/RadioGroup";
 import { GenreSelector } from "@/components/GenreSelector";
 import { IconRightBrackets } from "../svgs/IconRightBrackets";
 import { IconUpload } from "../svgs/IconUpload";
-import * as GenreApi from "@/apis/genre";
 import { useLocale, useTranslations } from "next-intl";
 import { useListData } from "@/hooks/ListData";
 import Spinner from "../Spinner";
 import { ErrorComponent } from "../ErrorComponent";
-import { getServerUserInfo } from "@/utils/auth/server";
-import { WebtoonFormT, WebtoonT } from "@backend/types/Webtoon";
-import { GenreT } from "@backend/types/Genre";
 
 type LabelValueT<ValueT> = { label: string; value: ValueT };
 

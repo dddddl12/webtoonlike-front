@@ -1,6 +1,5 @@
 import { tokenHolder } from "@/system/token_holder";
 import { cookies } from "next/headers";
-import * as BidRoundsApi from "@/apis/bid_rounds";
 import { CreatorBidRequestDetailPage } from "@/$pages/creators/CreatorBidRequestDetailPage";
 import { ErrorComponent } from "@/components/ErrorComponent";
 

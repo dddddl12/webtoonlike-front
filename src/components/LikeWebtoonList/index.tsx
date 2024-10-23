@@ -2,7 +2,6 @@ import { Fragment } from "react";
 import { Col, Gap, Grid, Row } from "@/ui/layouts";
 import { Clickable } from "@/ui/tools/Clickable";
 import { WebtoonPreview } from "@/components/WebtoonPreview";
-import * as WebtoonApi from "@/apis/webtoons";
 import { useListData } from "@/hooks/ListData";
 import { ListView } from "@/ui/tools/ListView";
 import Spinner from "@/components/Spinner";
@@ -10,7 +9,6 @@ import { useLocale } from "next-intl";
 import { Text } from "@/ui/texts";
 import { ErrorComponent } from "../ErrorComponent";
 import { useRouter } from "@/i18n/routing";
-import type { ListWebtoonOptionT } from "@backend/types/Webtoon";
 
 export function LikeWebtoonList() {
   const router = useRouter();

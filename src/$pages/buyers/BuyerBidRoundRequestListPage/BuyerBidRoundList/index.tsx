@@ -1,7 +1,6 @@
 "use client";
 
 import { useListData } from "@/hooks/ListData";
-import * as BidRequestApi from "@/apis/bid_request";
 import { useEffect, useState } from "react";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Heading, Text } from "@/ui/texts";
@@ -30,12 +29,8 @@ import {
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import { generateRandomString } from "@/utils/randomString";
 import { useLocale, useTranslations } from "next-intl";
-import * as BidRoundApi from "@/apis/bid_rounds";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "@/i18n/routing";
-import { getServerUserInfo } from "@/utils/auth/server";
-import type { BidRoundT, ListBidRoundOptionT } from "@backend/types/BidRound";
-import type { ListBidRequestOptionT } from "@backend/types/BidRequest";
 
 const OFFER_TABLE_HEADER = [
   { ko: "No.", en: "No." },

@@ -6,7 +6,6 @@ import { Heading, Text } from "@/ui/texts";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import * as BidRequestsApi from "@/apis/bid_request";
 import { Pagenator } from "@/ui/tools/Pagenator";
 import { nationConverter, nationConverterToKr } from "@/utils/nationConverter";
 import { businessFieldConverterToEn, businessFieldConverterToKr } from "@/utils/businessFieldConverter";
@@ -15,8 +14,6 @@ import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
-import type { BidRoundT } from "@backend/types/BidRound";
-import type { BidRequestT, ListBidRequestOptionT } from "@backend/types/BidRequest";
 
 export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT }) {
   const router = useRouter();

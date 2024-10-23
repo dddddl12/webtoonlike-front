@@ -17,9 +17,6 @@ import {
   SelectValue
 } from "@/ui/shadcn/Select";
 import { useLocale, useTranslations } from "next-intl";
-import * as WebtoonApi from "@/apis/webtoons";
-import type { ListWebtoonOptionT, WebtoonT } from "@backend/types/Webtoon";
-import type { GenreT } from "@backend/types/Genre";
 
 export type WebtoonList = {
   items: WebtoonT[];

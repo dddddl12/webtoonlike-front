@@ -1,7 +1,6 @@
 "use client";
 
 import { useListData } from "@/hooks/ListData";
-import * as BidRequestApi from "@/apis/bid_request";
 import { useEffect, useState } from "react";
 import { generateRandomString } from "@/utils/randomString";
 import { Container, Gap, Row } from "@/ui/layouts";

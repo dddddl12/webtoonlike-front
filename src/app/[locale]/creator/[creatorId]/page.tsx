@@ -1,8 +1,6 @@
 import { cookies } from "next/headers";
-import * as CreatorApi from "@/apis/creators";
 import { tokenHolder } from "@/system/token_holder";
 import { CreatorOtherPage } from "@/$pages/creators/CreatorOtherPage";
-import type { GetCreatorOptionT } from "@backend/types/Creator";
 
 export default async function CreatorOther({
   params,

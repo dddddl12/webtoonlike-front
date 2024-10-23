@@ -6,11 +6,9 @@ import { Text } from "@/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
 import { useListData } from "@/hooks/ListData";
 import { Pagenator } from "@/ui/tools/Pagenator";
-import * as BidRoundsApi from "@/apis/bid_rounds";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useRouter } from "@/i18n/routing";
-import type { BidRoundT, ListBidRoundOptionT } from "@backend/types/BidRound";
 
 
 type BidRoundListProps = {

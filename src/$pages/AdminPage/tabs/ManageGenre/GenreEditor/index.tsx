@@ -3,12 +3,10 @@ import React, { useEffect, useState } from "react";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { Input } from "@/ui/shadcn/Input";
-import * as GenreApi from "@/apis/genre";
 import { useSnackbar } from "@/hooks/Snackbar";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/ui/shadcn/Dialog";
 import { Label } from "@/ui/shadcn/Label";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import type { GenreFormT, GenreT } from "@backend/types/Genre";
 
 
 type GenreEditorProps = {

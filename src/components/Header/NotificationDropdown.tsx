@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { IconBell } from "@/components/svgs/IconBell";
 import { NotificationItem } from "@/components/NotificationItem";
-import * as NotificationApi from "@/apis/notifications";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/shadcn/DropdownMenu";
@@ -12,7 +11,6 @@ import { ListView } from "@/ui/tools/ListView";
 import { useListData } from "@/hooks/ListData";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "@/i18n/routing";
-import type { ListNotificationOptionT, NotificationT } from "@backend/types/Notification";
 
 export function NotificationDropdown() {
   const router = useRouter();

@@ -1,7 +1,5 @@
 import { BuyerBidRoundItemDetail } from "@/$pages/buyers/BuyerBidRoundRequestListPage/BuyerBidRoundList/BuyerBidRoundListItem/BuyerBidRoundItemDetail";
 import { cookies } from "next/headers";
-import * as BidRoundsApi from "@/apis/bid_rounds";
-import * as WebtoonsApi from "@/apis/webtoons";
 import { tokenHolder } from "@/system/token_holder";
 import { ErrorComponent } from "@/components/ErrorComponent";
 

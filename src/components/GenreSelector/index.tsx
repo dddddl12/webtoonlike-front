@@ -3,11 +3,9 @@ import React, { useEffect, Fragment } from "react";
 import { useListData } from "@/hooks/ListData";
 import { Row } from "@/ui/layouts";
 import { Badge } from "@/ui/shadcn/Badge";
-import * as GenreApi from "@/apis/genre";
 import Spinner from "../Spinner";
 import { ErrorComponent } from "../ErrorComponent";
 import { useLocale } from "next-intl";
-import type { GenreT } from "@backend/types/Genre";
 
 type GenreSelectorProps = {
   withAll?: boolean

@@ -2,7 +2,6 @@ import { Button } from "@/ui/shadcn/Button";
 import { Container, Row, Gap } from "@/ui/layouts";
 import { MyWebtooonList } from "./MyWebtoonList";
 import { useRouter } from "@/i18n/routing";
-import { getServerUserInfo } from "@/utils/auth/server";
 
 export function CreatorHomePage(): JSX.Element {
   const user = getServerUserInfo();

@@ -12,14 +12,10 @@ import { Col, Container, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
 import { buildImgUrl } from "@/utils/media";
-import * as BidRequestApi from "@/apis/bid_request";
-import * as BidRoundApi from "@/apis/bid_rounds";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/shadcn/Accordion";
 import { businessFieldConverterToKr } from "@/utils/businessFieldConverter";
 import { nationConverterToKr } from "@/utils/nationConverter";
 import { Button } from "@/ui/shadcn/Button";
-import type { BidRoundT, ListBidRoundOptionT } from "@backend/types/BidRound";
-import type { ListBidRequestOptionT } from "@backend/types/BidRequest";
 
 export function ManageBidRoundRequestTab() {
   const router = useRouter();

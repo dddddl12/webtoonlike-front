@@ -1,6 +1,5 @@
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import * as BidRequestApi from "@/apis/bid_request";
 import { Dialog, DialogContent, DialogTrigger } from "@/ui/shadcn/Dialog";
 import Image from "next/image";
 import { Button } from "@/ui/shadcn/Button";

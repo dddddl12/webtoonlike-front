@@ -11,11 +11,9 @@ import { Text } from "@/ui/texts";
 import { Pagenator } from "@/ui/tools/Pagenator";
 import { Button } from "@/ui/shadcn/Button";
 import { SubmitEditWrapper } from "./SubmitEditWrapper";
-import * as BidRoundApi from "@/apis/bid_rounds";
 import { convertBidRoundStatus } from "@/utils/bidRoundStatusConverter";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useRouter } from "@/i18n/routing";
-import type { BidRoundT, ListBidRoundOptionT } from "@backend/types/BidRound";
 
 export function ManageSubmitTab() {
   const router = useRouter();

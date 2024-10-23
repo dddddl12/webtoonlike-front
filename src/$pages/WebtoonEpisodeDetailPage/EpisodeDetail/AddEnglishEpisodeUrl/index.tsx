@@ -6,12 +6,8 @@ import { Input } from "@/ui/shadcn/Input";
 import { Label } from "@/ui/shadcn/Label";
 import { Text } from "@/ui/texts";
 import { useSnackbar } from "@/hooks/Snackbar";
-import * as WebtoonEpisodeApi from "@/apis/webtoon_episodes";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { getServerUserInfo } from "@/utils/auth/server";
-import type { WebtoonT } from "@backend/types/Webtoon";
-import type { WebtoonEpisodeT } from "@backend/types/WebtoonEpisode";
 
 type AddEnglishEpisodeUrlProps = {
   webtoon: WebtoonT;

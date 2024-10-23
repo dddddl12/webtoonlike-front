@@ -4,7 +4,6 @@ import { Text } from "@/ui/texts";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import * as UserApi from "@/apis/users";
 import { useAlertDialog } from "@/hooks/ConfirmDialog";
 import { useRouter } from "@/i18n/routing";
 

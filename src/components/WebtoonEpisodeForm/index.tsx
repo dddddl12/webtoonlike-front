@@ -17,8 +17,6 @@ import { useSnackbar } from "@/hooks/Snackbar";
 import { useAlertDialog, useConfirmDialog } from "@/hooks/ConfirmDialog";
 import { WebtoonImageItem } from "./WebtoonImageItem";
 // logic
-import * as WebtoonApi from "@/apis/webtoons";
-import * as WebtoonEpisodeImageApi from "@/apis/webtoon_episode_images";
 import { buildImgUrl } from "@/utils/media";
 import { generateRandomString } from "@/utils/randomString";
 import { IconUpload } from "../svgs/IconUpload";
@@ -26,9 +24,6 @@ import { IconUpArrow } from "../svgs/IconUpArrow";
 import { IconDownArrow } from "../svgs/IconDownArrow";
 import { IconRightBrackets } from "../svgs/IconRightBrackets";
 import { useLocale, useTranslations } from "next-intl";
-import { getServerUserInfo } from "@/utils/auth/server";
-import type { WebtoonEpisodeFormT, WebtoonEpisodeT } from "@backend/types/WebtoonEpisode";
-import type { WebtoonEpisodeImageFormT } from "@backend/types/WebtoonEpisodeImage";
 
 type WebtoonEpisodeFormProps = {
   webtoonId: number;

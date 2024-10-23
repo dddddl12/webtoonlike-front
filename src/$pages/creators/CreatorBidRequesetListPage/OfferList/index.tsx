@@ -9,13 +9,10 @@ import { convertTimeAbsolute } from "@/utils/time";
 import { buildImgUrl } from "@/utils/media";
 import { convertBidRoundStatus, convertBidRoundStatusEn } from "@/utils/bidRoundStatusConverter";
 import Image from "next/image";
-import * as BidRoundsApi from "@/apis/bid_rounds";
 import { useLocale, useTranslations } from "next-intl";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useRouter } from "@/i18n/routing";
-import { getServerUserInfo } from "@/utils/auth/server";
-import type { BidRoundT, ListBidRoundOptionT } from "@backend/types/BidRound";
 
 export function OfferList() {
   const router = useRouter();

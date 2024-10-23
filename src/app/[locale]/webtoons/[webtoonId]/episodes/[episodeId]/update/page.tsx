@@ -1,6 +1,5 @@
 import React from "react";
 import { UpdateWebtoonEpisodetPage } from "@/$pages/UpdateWebtoonEpisodePage";
-import * as WebtoonEpisodeApi from "@/apis/webtoon_episodes";
 
 export default async function UpdateWebtoonEpisode(
   { params }:

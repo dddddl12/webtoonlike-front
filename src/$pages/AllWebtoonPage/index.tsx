@@ -1,8 +1,6 @@
 import { WebtooonFeedList } from "./WebtoonFeedList";
 import { Col, Container, Gap, Row } from "@/ui/layouts";
 import { Heading } from "@/ui/texts";
-import * as GenreApi from "@/apis/genre";
-import * as WebtoonApi from "@/apis/webtoons";
 import { getTranslations } from "next-intl/server";
 
 export async function AllWebtoonPage() {

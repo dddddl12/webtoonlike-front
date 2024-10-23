@@ -19,19 +19,14 @@ import { buildImgUrl } from "@/utils/media";
 import { nationConverter, nationConverterToKr } from "@/utils/nationConverter";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import * as BidRequestApi from "@/apis/bid_request";
 import { Button } from "@/ui/shadcn/Button";
 import { enqueueSnackbar } from "notistack";
 import { useRouter } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
-import * as BidRequestMessagesApi from "@/apis/bid_request_message";
 import { useListData } from "@/hooks/ListData";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
-import type { BidRequestMessageFormT, ListBidRequestMessageOptionT } from "@backend/types/BidRequestMessage";
-import type { BidRequestT } from "@backend/types/BidRequest";
 import { useUser } from "@clerk/nextjs";
-import { getClientUserInfo } from "@/utils/auth/client";
 
 
 type BuyerNegotiationDetailPageProps = {

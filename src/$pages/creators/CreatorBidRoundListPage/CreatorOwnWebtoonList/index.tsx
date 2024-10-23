@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { useListData } from "@/hooks/ListData";
-import * as WebtoonApi from "@/apis/webtoons";
 import { Pagenator } from "@/ui/tools/Pagenator";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Heading, Text } from "@/ui/texts";
@@ -15,8 +14,6 @@ import { useLocale, useTranslations } from "next-intl";
 import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useRouter } from "@/i18n/routing";
-import { getServerUserInfo } from "@/utils/auth/server";
-import type { ListWebtoonOptionT, WebtoonT } from "@backend/types/Webtoon";
 
 export function CreatorOwnWebtoonList() {
   const router = useRouter();

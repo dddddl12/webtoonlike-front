@@ -3,10 +3,7 @@
 import React, { useContext } from "react";
 import { useRouter } from "@/i18n/routing";
 import { BuyerProfileForm } from "@/components/BuyerProfileForm";
-import * as BuyerApi from "@/apis/buyers";
 import { useSnackbar } from "@/hooks/Snackbar";
-import { MeContext } from "../../../../components/MeProvider";
-import type { BuyerFormT } from "@backend/types/Buyer";
 
 export function BuyerUpdateProfileForm(): JSX.Element {
   const router = useRouter();
