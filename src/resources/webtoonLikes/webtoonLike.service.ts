@@ -1,33 +1,54 @@
-import { Injectable } from "@nestjs/common";
-import { webtoonLikeM } from "@/models/webtoonLikes";
-import * as err from "@/errors";
-import type { WebtoonLikeT } from "@/types";
+"use server";
 
-@Injectable()
-export class WebtoonLikeService {
-  constructor() {}
+import prisma from "@/utils/prisma";
+import { getUserInfo } from "@/utils/auth/server";
+import { WebtoonLikeT } from "@/resources/webtoonLikes/webtoonLike.types";
 
-  // TODO 필요한지 확인
-  async get(id: idT): Promise<WebtoonLikeT> {
-    const webtoonLike = await webtoonLikeM.findOne({ id });
-    if (!webtoonLike) {
-      throw new err.NotExistE();
-    }
-    return webtoonLike;
-  }
+export async function createLike(webtoonId: number): Promise<WebtoonLikeT> {
+  const { likes, WebtoonLike } = await prisma.$transaction(async (tx) => {
+    const { id: userId } = await getUserInfo();
+    await tx.webtoonLike.create({
+      data: { userId, webtoonId }
+    });
+    // TODO 일괄 싱크 로직 추가
+    return tx.webtoon.update({
+      where: { id: webtoonId },
+      data: { likes: { increment: 1 } },
+      select: {
+        likes: true,
+        WebtoonLike: {
+          where: { userId }
+        }
+      }
+    });
+  });
+  return {
+    webtoonId,
+    likes,
+    myLike: WebtoonLike.length > 0
+  };
+}
 
-  async create(webtoonId: idT, userId: idT): Promise<void> {
-    const created = await webtoonLikeM.upsert({ webtoonId, userId },
-      { onConflict: ["userId", "webtoonId"] });
-    if (!created) {
-      throw new err.NotAppliedE();
-    }
-  }
-
-  async remove(webtoonId: idT, userId: idT): Promise<void> {
-    const deleted = await webtoonLikeM.deleteOne({ webtoonId, userId });
-    if (!deleted) {
-      throw new err.NotAppliedE();
-    }
-  }
+export async function deleteLike(webtoonId: number): Promise<WebtoonLikeT> {
+  const { likes, WebtoonLike } = await prisma.$transaction(async (tx) => {
+    const { id: userId } = await getUserInfo();
+    await tx.webtoonLike.deleteMany({
+      where: { userId, webtoonId },
+    });
+    return tx.webtoon.update({
+      where: { id: webtoonId },
+      data: { likes: { decrement: 1 } },
+      select: {
+        likes: true,
+        WebtoonLike: {
+          where: { userId }
+        }
+      }
+    });
+  });
+  return {
+    webtoonId,
+    likes,
+    myLike: WebtoonLike.length > 0
+  };
 }

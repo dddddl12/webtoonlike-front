@@ -3,7 +3,7 @@
 import { Col, Row } from "@/ui/layouts";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { BannerWebtoon, bannerWebtoons } from "@/$pages/HomePage/banners/bannerData";
+import { BannerWebtoon, bannerWebtoons } from "@/components/HomePage/banners/bannerData";
 import { ReactNode, useEffect, useState } from "react";
 import { clsx } from "clsx";
 import ClockIcon from "./icons/clock.svg";

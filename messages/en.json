@@ -344,8 +344,17 @@
         "genre": "Genre",
         "ageRestriction": "Age Restriction"
     },
-    "statusData": {
-        "BIDDING": "Offer",
+    "bidRequestStatus": {
+        "IDLE": "Waiting for Closing",
+        "WAITING": "Waiting for Response",
+        "BIDDING": "Bidding",
+        "NEGOTIATING": "Negotiation",
+        "DONE": "Procedure Completed"
+    },
+    "bidRoundStatus": {
+        "IDLE": "Pending Approval",
+        "WAITING": "Waiting for Bidding",
+        "BIDDING": "Bidding",
         "NEGOTIATING": "Negotiation",
         "DONE": "Contract Done"
     },

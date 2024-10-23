@@ -3,16 +3,14 @@
 import { Container, Row, Gap } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import { UpdateWebtoonPostForm } from "./UpdateWebtoonEpisodeForm";
+import { UpdateWebtoonPostForm } from "@/app/[locale]/webtoons/[webtoonId]/update/UpdateWebtoonPostForm";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
-import type { WebtoonEpisodeT } from "@backend/types/WebtoonEpisode";
+import { WebtoonEpisodeT } from "@/resources/webtoonEpisodes/webtoonEpisode.types";
 
-type UpdateWebtoonEpisodePageProps = {
+export function UpdateWebtoonEpisodetPage({ episode }: {
   episode: WebtoonEpisodeT
-}
-
-export function UpdateWebtoonEpisodetPage({ episode }: UpdateWebtoonEpisodePageProps) {
+}) {
   const router = useRouter();
   const path = usePathname();
   const t = useTranslations("detailedInfoPage");

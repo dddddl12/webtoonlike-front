@@ -1,13 +1,15 @@
 import React from "react";
-import { UpdateWebtoonEpisodetPage } from "@/$pages/UpdateWebtoonEpisodePage";
+import { UpdateWebtoonEpisodetPage } from "@/app/[locale]/webtoons/[webtoonId]/update/UpdateWebtoonEpisodetPage";
+import { getEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
 
 export default async function UpdateWebtoonEpisode(
   { params }:
   {params: {webtoonId: string, episodeId: string}},
 ) {
 
+  const { episodeId } = await params;
+  const episode = await getEpisode(Number(episodeId));
 
-  const { data: episode } = await WebtoonEpisodeApi.get(parseInt(params.episodeId), { $images: true });
   return (
     <div className="bg-[#121212] min-h-screen">
       <UpdateWebtoonEpisodetPage episode={episode}/>

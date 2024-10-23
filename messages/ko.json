@@ -345,9 +345,18 @@
         "genre": "장르",
         "ageRestriction": "이용 등급"
     },
-    "statusData": {
-        "BIDDING": "오퍼중",
-        "NEGOTIATING": "협상중",
+    "bidRequestStatus": {
+        "IDLE": "마감 대기",
+        "WAITING": "답변 대기",
+        "BIDDING": "노출 중",
+        "NEGOTIATING": "협상 중",
+        "DONE": "절차 완료"
+    },
+    "bidRoundStatus": {
+        "IDLE": "승인 대기",
+        "WAITING": "노출 대기",
+        "BIDDING": "노출 중",
+        "NEGOTIATING": "협상 중",
         "DONE": "계약 완료"
     },
     "ageRestriction": {

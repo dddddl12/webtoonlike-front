@@ -3,7 +3,7 @@ import PageLayout from "@/components/PageLayout";
 import { Gap, Row } from "@/ui/layouts";
 import { Heading } from "@/ui/texts";
 import { getTranslations } from "next-intl/server";
-import { WebtooonFeedList } from "@/app/[locale]/webtoons/WebtooonFeedList";
+import WebtooonFeedList from "@/app/[locale]/webtoons/WebtooonFeedList";
 import { listGenres } from "@/resources/genres/genre.service";
 import { listWebtoons } from "@/resources/webtoons/webtoon.service";
 

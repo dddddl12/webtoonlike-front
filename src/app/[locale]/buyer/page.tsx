@@ -1,4 +1,3 @@
-export default function Buyer(): JSX.Element {
+export default function Buyer() {
   return <></>;
-  // return <BuyerHomePage />;
 }

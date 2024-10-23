@@ -1,8 +1,8 @@
 import { getTranslations } from "next-intl/server";
-import SectionHeading from "@/$pages/HomePage/SectionHeading";
-import WebtoonGrid from "@/$pages/HomePage/WebtoonGrid";
-import ArtistGrid from "@/$pages/HomePage/ArtistGrid";
-import BannerSection from "@/$pages/HomePage/BannerSection";
+import SectionHeading from "@/components/HomePage/SectionHeading";
+import WebtoonGrid from "@/components/HomePage/WebtoonGrid";
+import ArtistGrid from "@/components/HomePage/ArtistGrid";
+import BannerSection from "@/components/HomePage/BannerSection";
 import { homeItems } from "@/resources/webtoons/webtoon.service";
 import PageLayout from "@/components/PageLayout";
 import Image from "next/image";

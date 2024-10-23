@@ -1,7 +1,6 @@
 "use client";
 
 import { IconExclamation } from "@/components/svgs/IconExclamation";
-import { useListData } from "@/hooks/ListData";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Button } from "@/ui/shadcn/Button";
 import { Input } from "@/ui/shadcn/Input";
@@ -13,50 +12,19 @@ import { nationConverter, nationConverterToKr } from "@/utils/nationConverter";
 import { RadioGroup } from "@radix-ui/react-radio-group";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
-import { Fragment, useEffect } from "react";
-import Spinner from "@/components/Spinner";
-import { ErrorComponent } from "@/components/ErrorComponent";
-import { useAuth } from "@clerk/nextjs";
-import type { WebtoonT } from "@backend/types/Webtoon";
-import type { ListWebtoonEpisodeOptionT } from "@backend/types/WebtoonEpisode";
+import { Fragment } from "react";
+import { WebtoonT } from "@/resources/webtoons/webtoon.types";
+import { useUserInfo } from "@/utils/auth/client";
 
-type ContractRangeDataProps = {
+export function ContractRangeData({ webtoon }: {
   webtoon: WebtoonT;
-};
-
-export function ContractRangeData({ webtoon }: ContractRangeDataProps) {
+}) {
   const locale = useLocale();
   const router = useRouter();
-  const auth = useAuth();
-  const userType = "creator";
-  const userId = 1234; // TODO
+  const { user } = useUserInfo();
 
   const t = useTranslations("contractRangeData");
   const Tbusiness = useTranslations("businessFieldENG");
-
-  const { data: webtoonEpisodes$, actions: webtoonEpisodesAct } = useListData({
-    listFn: async (listOpt) => {
-      return await WebtoonEpisodeApi.list(listOpt);
-    },
-  });
-
-  const listOpt: ListWebtoonEpisodeOptionT = {
-    webtoonId: webtoon.id,
-    limit: 10,
-  };
-
-  useEffect(() => {
-    webtoonEpisodesAct.load(listOpt);
-  }, []);
-
-  const { status, data: episodes } = webtoonEpisodes$;
-
-  if (status == "idle" || status == "loading") {
-    return <Spinner />;
-  }
-  if (status == "error") {
-    return <ErrorComponent />;
-  }
 
   return (
     <Fragment>
@@ -65,7 +33,7 @@ export function ContractRangeData({ webtoon }: ContractRangeDataProps) {
       <Gap y={10} />
       <Row>
         <p className="text-2xl font-bold">{t("detailedInformation")}</p>
-        {userId === webtoon.authorId && (
+        {user?.id === webtoon.authorId && (
           <>
             <Gap x={4} />
             <Button
@@ -107,7 +75,7 @@ export function ContractRangeData({ webtoon }: ContractRangeDataProps) {
           <Gap y={2} />
           <RadioGroup
             disabled
-            value={webtoon.bidRounds && `${webtoon.bidRounds[0]?.originality}`}
+            value={webtoon.bidRounds && `${webtoon.bidRounds[0]?.isOriginal}`}
           >
             <Row>
               <RadioGroupItem value="original" className="border-white" />
@@ -125,7 +93,7 @@ export function ContractRangeData({ webtoon }: ContractRangeDataProps) {
             webtoon.bidRounds[0] &&
             webtoon.bidRounds[0].nowEpisode &&
             webtoon.bidRounds[0].nowEpisode > 0 ? (
-              <>
+                <>
                   <Input
                     placeholder="_"
                     defaultValue={
@@ -187,44 +155,44 @@ export function ContractRangeData({ webtoon }: ContractRangeDataProps) {
         {webtoon.bidRounds &&
         webtoon.bidRounds.length > 0 &&
         webtoon.bidRounds[0].contractRange.data.length > 0 ? (
-          <Row className="justify-between items-start">
+            <Row className="justify-between items-start">
               {webtoon.bidRounds[0].contractRange.data.filter(
                 (item) => item.businessField === "webtoon"
               ).length > 0 ? (
-                <Row className="w-[48%]">
+                  <Row className="w-[48%]">
                     <Col className="w-full">
-                    <Row className="justify-between">
+                      <Row className="justify-between">
                         <Text className="text-white text-[14pt] font-bold">
-                        {t("webtoonServiceRegion")}
-                      </Text>
+                          {t("webtoonServiceRegion")}
+                        </Text>
                         <Row>
-                        <RadioGroup disabled value={"1"}>
+                          <RadioGroup disabled value={"1"}>
                             <Row>
-                            <RadioGroupItem value="1" className="border-mint" />
-                            <Gap x={1} />
-                            <Label>{t("exclusive")}</Label>
-                            <Gap x={5} />
-                            <RadioGroupItem value="2" className="border-mint" />
-                            <Gap x={1} />
-                            <Label>{t("nonExclusive")}</Label>
-                          </Row>
+                              <RadioGroupItem value="1" className="border-mint" />
+                              <Gap x={1} />
+                              <Label>{t("exclusive")}</Label>
+                              <Gap x={5} />
+                              <RadioGroupItem value="2" className="border-mint" />
+                              <Gap x={1} />
+                              <Label>{t("nonExclusive")}</Label>
+                            </Row>
                           </RadioGroup>
+                        </Row>
                       </Row>
-                      </Row>
-                    <Gap y={5} />
-                    <Table className="text-white">
+                      <Gap y={5} />
+                      <Table className="text-white">
                         <TableHeader>
-                        <TableRow>
+                          <TableRow>
                             <TableHead className="text-white w-[33%] text-center border">
-                            {t("serviceCountry")}
-                          </TableHead>
+                              {t("serviceCountry")}
+                            </TableHead>
                             <TableHead className="text-white w-[33%] text-center border">
-                            {t("exclusiveOrNon")}
-                          </TableHead>
+                              {t("exclusiveOrNon")}
+                            </TableHead>
                           </TableRow>
-                      </TableHeader>
+                        </TableHeader>
                         <TableBody>
-                        {webtoon.bidRounds[0].contractRange.data
+                          {webtoon.bidRounds[0].contractRange.data
                             .filter((item) => item.businessField === "webtoon")
                             .map((data, index) => (
                               <TableRow key={index}>
@@ -244,51 +212,51 @@ export function ContractRangeData({ webtoon }: ContractRangeDataProps) {
                                 </TableCell>
                               </TableRow>
                             ))}
-                      </TableBody>
+                        </TableBody>
                       </Table>
-                  </Col>
+                    </Col>
                   </Row>
                 ) : null}
               {webtoon.bidRounds[0].contractRange.data.filter(
                 (item) => item.businessField !== "webtoon"
               ).length > 0 ? (
-                <Row className="w-[48%]">
+                  <Row className="w-[48%]">
                     <Col className="w-full">
-                    <Row className="justify-between">
+                      <Row className="justify-between">
                         <Text className="text-white text-[14pt] font-bold">
-                        {t("secondaryCopyrightSalesStatus")}
-                      </Text>
+                          {t("secondaryCopyrightSalesStatus")}
+                        </Text>
                         <Row>
-                        <RadioGroup disabled value={"1"}>
+                          <RadioGroup disabled value={"1"}>
                             <Row>
-                            <RadioGroupItem value="1" className="border-mint" />
-                            <Gap x={1} />
-                            <Label>{t("exclusive")}</Label>
-                            <Gap x={5} />
-                            <RadioGroupItem value="2" className="border-mint" />
-                            <Gap x={1} />
-                            <Label>{t("nonExclusive")}</Label>
-                          </Row>
+                              <RadioGroupItem value="1" className="border-mint" />
+                              <Gap x={1} />
+                              <Label>{t("exclusive")}</Label>
+                              <Gap x={5} />
+                              <RadioGroupItem value="2" className="border-mint" />
+                              <Gap x={1} />
+                              <Label>{t("nonExclusive")}</Label>
+                            </Row>
                           </RadioGroup>
+                        </Row>
                       </Row>
-                      </Row>
-                    <Gap y={5} />
-                    <Table className="text-white">
+                      <Gap y={5} />
+                      <Table className="text-white">
                         <TableHeader>
-                        <TableRow>
+                          <TableRow>
                             <TableHead className="text-white w-[33%] text-center border">
-                            {t("secondaryCopyright")}
-                          </TableHead>
+                              {t("secondaryCopyright")}
+                            </TableHead>
                             <TableHead className="text-white w-[33%] text-center border">
-                            {t("serviceCountry")}
-                          </TableHead>
+                              {t("serviceCountry")}
+                            </TableHead>
                             <TableHead className="text-white w-[33%] text-center border">
-                            {t("exclusiveOrNon")}
-                          </TableHead>
+                              {t("exclusiveOrNon")}
+                            </TableHead>
                           </TableRow>
-                      </TableHeader>
+                        </TableHeader>
                         <TableBody>
-                        {webtoon.bidRounds[0].contractRange.data
+                          {webtoon.bidRounds[0].contractRange.data
                             .filter((item) => item.businessField !== "webtoon")
                             .map((data, index) => (
                               <TableRow key={index}>
@@ -311,9 +279,9 @@ export function ContractRangeData({ webtoon }: ContractRangeDataProps) {
                                 </TableCell>
                               </TableRow>
                             ))}
-                      </TableBody>
+                        </TableBody>
                       </Table>
-                  </Col>
+                    </Col>
                   </Row>
                 ) : null}
             </Row>

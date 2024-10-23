@@ -7,6 +7,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { AdminLevel, ClerkUserMetadata } from "@/utils/auth/base";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/binary";
+import { PrismaTransaction } from "@/resources/globalTypes";
 
 
 export async function createUser(form: UserFormT) {
@@ -44,7 +45,7 @@ async function listStats() {
   return await listUsersStat();
 }
 
-async function deleteMe(id: idT): Promise<UserT> {
+async function deleteMe(id: number): Promise<UserT> {
   const deleted = await userM.deleteOne({ id });
   if (!deleted) {
     throw new err.NotAppliedE();
@@ -52,7 +53,7 @@ async function deleteMe(id: idT): Promise<UserT> {
   return deleted;
 }
 
-export async function updateClerkUser(tx: Omit<PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">) {
+export async function updateClerkUser(tx: PrismaTransaction) {
   const { userId: clerkUserId } = await getClerkUser();
   const user = await tx.user.findUnique({
     where: {
@@ -66,9 +67,10 @@ export async function updateClerkUser(tx: Omit<PrismaClient<Prisma.PrismaClientO
   });
 
   if (!user) {
-    await clerkClient.users.updateUserMetadata(clerkUserId, {
-      publicMetadata: {}
-    });
+    await clerkClient().then(client =>
+      client.users.updateUserMetadata(clerkUserId, {
+        publicMetadata: {}
+      }));
   } else {
     const isSignUpComplete = !!((user.userType === UserTypeT.Creator && user.Creator)
       || (user.userType === UserTypeT.Buyer && user.Buyer));
@@ -80,8 +82,9 @@ export async function updateClerkUser(tx: Omit<PrismaClient<Prisma.PrismaClientO
         : AdminLevel.None,
       signUpComplete: isSignUpComplete,
     };
-    await clerkClient().users.updateUserMetadata(clerkUserId, {
-      publicMetadata: clerkUserMetadata
-    });
+    await clerkClient().then(client =>
+      client.users.updateUserMetadata(clerkUserId, {
+        publicMetadata: clerkUserMetadata
+      }));
   }
 }

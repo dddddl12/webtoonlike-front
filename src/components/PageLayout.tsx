@@ -7,7 +7,7 @@ export default function PageLayout({ children, bgColor, className }: {
   className?: string;
 }) {
   return <div className={clsx("flex justify-center w-full pt-10 pb-24 px-10", {
-    "bg-black": bgColor !== "light",
+    "bg-black text-white": bgColor !== "light",
   })}>
     <div className={clsx(className, "max-w-screen-xl w-full")}>{children}</div>
   </div>;

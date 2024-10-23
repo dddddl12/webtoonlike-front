@@ -51,12 +51,12 @@ type _BidRoundT = {
       country: "all" | "ko" | "en" | "zhCN" | "zhTW" | "de" | "id" | "ja" | "fr" | "vi" | "ms" | "th" | "es";
     }[];
   };
-  originality: "original" | "notOriginal";
+  isOriginal: boolean;
   isBrandNew: boolean;
   numEpisode?: (number | null) | undefined;
   nowEpisode?: (number | null) | undefined;
   monthlyNumEpisode?: (number | null) | undefined;
-  status: "idle" | "waiting" | "bidding" | "negotiating" | "done";
+  status: BidRoundStatus;
   bidStartAt?: (Date | null) | undefined;
   negoStartAt?: (Date | null) | undefined;
   processEndAt?: (Date | null) | undefined;
@@ -64,23 +64,6 @@ type _BidRoundT = {
   disapprovedAt?: (Date | null) | undefined;
   adminMemo?: (string | null) | undefined;
 }
-
-export type ListBidRoundOptionT = {
-  cursor?: string | undefined;
-  limit?: number | undefined;
-  offset?: number | undefined;
-  $numData?: boolean | undefined;
-  meId?: ((number | undefined) | undefined) | undefined;
-  $webtoon?: (boolean | undefined) | undefined;
-  $user?: (boolean | undefined) | undefined;
-  $requests?: (boolean | undefined) | undefined;
-  userId?: number | undefined;
-  webtoonId?: number | undefined;
-  /** pass comma separated string for array of status */
-  status?: (("idle" | "waiting" | "bidding" | "negotiating" | "done") | string) | undefined;
-  approval?: ("approvedOnly" | "disapprovedOnly" | "waitingApproval" | "exceptApproved" | "exceptDisapproved") | undefined;
-}
-
 
 export interface BidRoundT extends _BidRoundT {
   webtoon?: WebtoonT;

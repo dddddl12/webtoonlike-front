@@ -7,17 +7,16 @@ import { Row, Col, Gap } from "@/ui/layouts";
 import { buildImgUrl } from "@/utils/media";
 import { Text } from "@/ui/texts";
 import { Badge } from "@/ui/shadcn/Badge";
-import { WebtoonDetailBtns } from "./WebtoonDetailBtns";
 import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
-import { intervalToDuration ,format as dfFormat } from "date-fns";
+import { intervalToDuration } from "date-fns";
 import { useRouter } from "@/i18n/routing";
+import { WebtoonT } from "@/resources/webtoons/webtoon.types";
+import WebtoonDetailsBtns from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetailsBtns";
 
-type WebtoonDetailProps = {
+export default function WebtoonDetails({ webtoon, editable }: {
   webtoon: WebtoonT;
-  editable?: boolean;
-};
-
-export function WebtoonDetail({ webtoon, editable }: WebtoonDetailProps) {
+  editable: boolean;
+}) {
   const router = useRouter();
   const t = useTranslations("detailedInfoPage");
   const Tdetails = useTranslations("detailedInfoPage");
@@ -104,7 +103,7 @@ export function WebtoonDetail({ webtoon, editable }: WebtoonDetailProps) {
             ))}
           </Row>
           <Gap y="52px" />
-          <WebtoonDetailBtns webtoon={webtoon} />
+          <WebtoonDetailsBtns webtoon={webtoon} />
         </Col>
       </Col>
     </Col>

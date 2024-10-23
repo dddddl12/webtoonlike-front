@@ -38,7 +38,7 @@ next-env.d.ts
 
 # custom
 _scripts/
-src/$pages/HomePage/PopularCarousel/PopularCarouselBox/CarouselItem
+src/components/HomePage/PopularCarousel/PopularCarouselBox/CarouselItem
 
 # ide settings
 .vscode

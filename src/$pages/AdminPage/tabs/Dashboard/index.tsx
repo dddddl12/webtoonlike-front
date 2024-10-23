@@ -54,16 +54,13 @@ export function Dashboard() {
   ]);
 
   const getUserStats = async () => {
-    try {
-      const rsp = await getUsersStats();
-      setUserStats([
-        { id: 1, title: "전체 유저", content: rsp.data.totalUsers },
-        { id: 2, title: "신규 유저", content: rsp.data.newUsers },
-        { id: 3, title: "신규 작품", content: rsp.data.newWebtoons },
-        { id: 4, title: "신규 오퍼", content: rsp.data.newBidRequests },
-      ]);
-    } catch (e) {
-    }
+    // const rsp = await getUsersStats();
+    // setUserStats([
+    //   { id: 1, title: "전체 유저", content: rsp.data.totalUsers },
+    //   { id: 2, title: "신규 유저", content: rsp.data.newUsers },
+    //   { id: 3, title: "신규 작품", content: rsp.data.newWebtoons },
+    //   { id: 4, title: "신규 오퍼", content: rsp.data.newBidRequests },
+    // ]);
   };
 
   useEffect(() => {

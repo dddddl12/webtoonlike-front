@@ -33,7 +33,7 @@ type WebtoonList = {
   totalPages: number;
 }
 
-export function WebtooonFeedList({
+export default function WebtooonFeedList({
   genres,
   initialWebtoonList,
 }: {
@@ -63,7 +63,7 @@ export function WebtooonFeedList({
   // 번역
   const TallSeries = useTranslations("allSeries");
   const Tage = useTranslations("ageRestriction");
-  const Tstatus = useTranslations("statusData");
+  const Tstatus = useTranslations("bidRoundStatus");
   const locale = useLocale();
 
   return (

@@ -8,7 +8,7 @@ import { Text } from "@/ui/texts";
 import { RadioGroup } from "@radix-ui/react-radio-group";
 import { ChevronDownIcon } from "lucide-react";
 import { Fragment } from "react";
-import type { WebtoonT } from "@backend/types/Webtoon";
+import { WebtoonT } from "@/resources/webtoons/webtoon.types";
 
 type CreatorWebtoonDataProps = {
   webtoon: WebtoonT;

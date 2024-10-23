@@ -12,7 +12,7 @@ import {
 } from "@/resources/webtoons/webtoon.types";
 import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 
-const mapToDTO = (record: WebtoonRecord) => ({
+const mapToDTO = (record: WebtoonRecord): WebtoonT => ({
   ...record,
   targetAge: record.targetAge
     .map(a => TargetAge[a as keyof typeof TargetAge]),
@@ -28,12 +28,11 @@ export async function createWebtoon(form: WebtoonFormT): Promise<WebtoonT> {
   return created;
 }
 
-export async function getWebtoon(id: number, getOpt: GetWebtoonOptionT = {}): Promise<WebtoonT> {
-  return webtoonM.findById(id, {
-    builder: (qb, select) => {
-      lookupBuilder(select, getOpt);
-    }
-  });
+export async function getWebtoon(id: number): Promise<WebtoonT> {
+  // TODO 에러 핸들링
+  return prisma.webtoon.findUniqueOrThrow({
+    where: { id }
+  }).then(mapToDTO);
 }
 
 export async function updateWebtoon(id: number, form: Partial<WebtoonFormT>): Promise<WebtoonT> {

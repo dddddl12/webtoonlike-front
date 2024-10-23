@@ -1,10 +1,10 @@
-import BANNER0 from "@/$pages/HomePage/banners/images/banner_image0.jpeg";
-import BANNER1 from "@/$pages/HomePage/banners/images/banner_image1.jpeg";
-import BANNER2 from "@/$pages/HomePage/banners/images/banner_image2.jpeg";
-import BANNER3 from "@/$pages/HomePage/banners/images/banner_image3.jpeg";
-import BANNER4 from "@/$pages/HomePage/banners/images/banner_image4.jpeg";
-import BANNER5 from "@/$pages/HomePage/banners/images/banner_image5.jpeg";
-import BANNER6 from "@/$pages/HomePage/banners/images/banner_image6.jpeg";
+import BANNER0 from "@/components/HomePage/banners/images/banner_image0.jpeg";
+import BANNER1 from "@/components/HomePage/banners/images/banner_image1.jpeg";
+import BANNER2 from "@/components/HomePage/banners/images/banner_image2.jpeg";
+import BANNER3 from "@/components/HomePage/banners/images/banner_image3.jpeg";
+import BANNER4 from "@/components/HomePage/banners/images/banner_image4.jpeg";
+import BANNER5 from "@/components/HomePage/banners/images/banner_image5.jpeg";
+import BANNER6 from "@/components/HomePage/banners/images/banner_image6.jpeg";
 import { StaticImageData } from "next/image";
 import { AgeLimit } from "@/resources/webtoons/webtoon.types";
 

@@ -12,9 +12,10 @@ const isAuthRelatedRoute = createRouteMatcher([
   "/sign-in(.*)", "/sign-up(.*)", "/(.*)/sign-up-complete"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) auth().protect();
+  if (isProtectedRoute(req)) await auth.protect();
+  // TODO 필요한지 검토
 
-  const { userId, sessionClaims } = auth();
+  const { userId, sessionClaims } = await auth();
   if (!isAuthRelatedRoute(req) && userId) {
     const { data: userInfo } = await ClerkUserMetadataSchema.safeParseAsync(sessionClaims.metadata);
     if (!userInfo || !userInfo.signUpComplete) {

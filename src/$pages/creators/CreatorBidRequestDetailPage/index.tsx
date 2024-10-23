@@ -1,53 +1,27 @@
 "use client";
 
-import { useListData } from "@/hooks/ListData";
 import { Col, Container, Gap, Row } from "@/ui/layouts";
 import { Heading, Text } from "@/ui/texts";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Paginator } from "@/ui/tools/Paginator";
 import { nationConverter, nationConverterToKr } from "@/utils/nationConverter";
 import { businessFieldConverterToEn, businessFieldConverterToKr } from "@/utils/businessFieldConverter";
-import { convertBidRequestStatus, convertBidRequestStatusEn } from "@/utils/bidRequestStatusConverter";
-import Spinner from "@/components/Spinner";
-import { ErrorComponent } from "@/components/ErrorComponent";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
+import { BidRequestT } from "@/resources/bidRequests/bidRequest.types";
+import { BidRoundT } from "@/resources/bidRounds/bidRound.types";
 
 export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT }) {
   const router = useRouter();
   const locale = useLocale();
-  const { data: bidReqeusts$, actions: bidRequestsAct } = useListData({
-    listFn: async (listOpt) => {
-      return await BidRequestsApi.list(listOpt);
-    },
-  });
-
-  const { status: bidRequestsStatus, data: bidRequests } = bidReqeusts$;
+  const TbidRequestStatus = useTranslations("bidRequestStatus");
 
   const [page, setPage] = useState<number>(0);
   const pageWindowLen = 2;
   const itemPerPage = 5;
-  const totalNumData = bidRequests.length || 0;
-
-  const bidRequestListOpt: ListBidRequestOptionT = {
-    $round: true,
-    $buyer: true,
-    roundId: bidRound.id,
-  };
-
-  useEffect(() => {
-    bidRequestsAct.load(bidRequestListOpt);
-  }, []);
-
-  if (bidRequestsStatus == "idle" || bidRequestsStatus == "loading") {
-    return <Spinner />;
-  }
-
-  if (bidRequestsStatus == "error") {
-    return <ErrorComponent />;
-  }
+  // const totalNumData = bidRequests.length || 0;
 
   function handlePageClick(page: number) {
     setPage(page);
@@ -96,7 +70,7 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
             />
           </div>
           <Gap x={4} />
-          {bidRequests.buyer?.companyInfo.name} / {bidRequests.buyer?.name}
+          {/*{bidRequests.buyer?.companyInfo.name} / {bidRequests.buyer?.name}*/}
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
@@ -120,9 +94,7 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
         </div>
 
         <div className="w-[15%] p-2 flex justify-center">
-          {locale === "ko"
-            ? convertBidRequestStatus(bidRound.status)
-            : convertBidRequestStatusEn(bidRound.status)}
+          {TbidRequestStatus(bidRound.status)}
         </div>
 
         <div className="w-[15%] p-2 flex justify-center">
@@ -178,7 +150,7 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
               </div>
             </Row>
             <Gap y={2} />
-            <Text className="text-white font-bold text-[16pt]">{bidRound.user?.fullName}</Text>
+            {/*<Text className="text-white font-bold text-[16pt]">{bidRound.user?.fullName}</Text>*/}
             <Gap y={2} />
             <Text className="text-white">{locale === "ko" ? bidRound.webtoon?.description : bidRound.webtoon?.description_en ?? bidRound.webtoon?.description}</Text>
             <Gap y={2} />
@@ -191,14 +163,14 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
           <Heading className="text-white font-bold text-[20pt]">
             {locale === "ko" ? "받은 오퍼" : "Offers"}</Heading>
         </Col>
-        {BidRequestTable(bidRequests)}
-        <Paginator
-          currentPage={page}
-          numData={totalNumData}
-          itemsPerPage={itemPerPage}
-          pageWindowLen={pageWindowLen}
-          onPageChange={handlePageClick}
-        />
+        {/*{BidRequestTable(bidRequests)}*/}
+        {/*<Paginator*/}
+        {/*  currentPage={page}*/}
+        {/*  numData={totalNumData}*/}
+        {/*  itemsPerPage={itemPerPage}*/}
+        {/*  pageWindowLen={pageWindowLen}*/}
+        {/*  onPageChange={handlePageClick}*/}
+        {/*/>*/}
         <Gap y={40} />
       </Col>
     </Container>
