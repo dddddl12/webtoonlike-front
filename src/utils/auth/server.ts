@@ -1,9 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { ClerkUserMetadata, ClerkUserMetadataSchema } from "@/utils/auth/base";
-import { SignedInAuthObject } from "@clerk/backend/internal";
 import { NotSignedInError } from "@/errors";
 
-export const getClerkUser = async (): Promise<SignedInAuthObject> => {
+export const getClerkUser = async () => {
   const clerkUser = await auth();
   if (!clerkUser.userId) {
     throw new NotSignedInError();
