@@ -1,19 +1,19 @@
-import { Col, Gap, Row } from "@/ui/layouts";
+import { Gap, Row } from "@/ui/layouts";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { KenazLogo } from "@/components/svgs/KenazLogo";
 // import { NotificationDropdown } from "./NotificationDropdown";
 import { TranslationDropdown } from "./TranslationDropdown";
-import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { SelectItem } from "@/ui/shadcn/Select";
 import { routing } from "@/i18n/routing";
 import React from "react";
 import { NavBar } from "@/components/Header/NavBar";
+import { getLocale, getTranslations } from "next-intl/server";
 
-export function Header() {
-  const locale = useLocale();
-  const t = useTranslations("localeSwitcher");
-  const Tinquiry = useTranslations("inquiryMenu");
+export async function Header() {
+  const locale = await getLocale();
+  const t = await getTranslations("localeSwitcher");
+  const Tinquiry = await getTranslations("inquiryMenu");
 
   return (
     <header

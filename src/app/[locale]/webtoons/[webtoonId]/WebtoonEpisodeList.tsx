@@ -26,7 +26,7 @@ export function WebtoonEpisodeList({
           {t("pressAddEps")}
         </Row>
       )}
-      {episodes.length == 0 && editable && (
+      {episodes.length == 0 && !editable && (
         <Row className="justify-center bg-gray-darker p-3 rounded-sm">
           {t("noEps")}
         </Row>

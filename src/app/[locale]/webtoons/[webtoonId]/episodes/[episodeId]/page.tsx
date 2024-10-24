@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactNode } from "react";
 import PageLayout from "@/components/PageLayout";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { IconLeftBrackets } from "@/components/svgs/IconLeftBrackets";
@@ -9,17 +9,18 @@ import { Pencil1Icon } from "@radix-ui/react-icons";
 import { buildImgUrl } from "@/utils/media";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { getEpisodeWidthWebtoonInfo } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
 import { getUserInfo } from "@/utils/auth/server";
+import { getEpisodeWidthDetails } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
+import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
+import NavBanner from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/EpisodeNavBanner";
 
 export default async function WebtoonEpisodeDetail(
   { params }:
   {params: Promise<{webtoonId: string, episodeId: string}>},
 ) {
-  const { episodeId } = await params;
-  const episode = await getEpisodeWidthWebtoonInfo(Number(episodeId));
+  const { episodeId, webtoonId } = await params;
+  const episode = await getEpisodeWidthDetails(Number(episodeId), Number(webtoonId));
   const { webtoon } = episode;
-  const user = await getUserInfo();
 
   const locale = await getLocale();
   const t = await getTranslations("detailedInfoPage");
@@ -28,51 +29,71 @@ export default async function WebtoonEpisodeDetail(
 
   return (
     <PageLayout>
-      <Row>
-        <Link href={`/webtoons/${webtoon.id}`}>
-          <IconLeftBrackets className="fill-white" width={24} height={24} />
-        </Link>
-        <Text className="text-3xl font-bold text-white">
-          {`${webtoonTitle} _ ${t("episodeSeq", {
-            number: episode.episodeNo
-          })}`}
-        </Text>
-      </Row>
+      <div className="flex flex-row items-stretch">
+        <div className="flex-1 flex justify-center">
+          <NavBanner
+            webtoonId={webtoon.id}
+            episodeId={episode.prevEpisodeId}
+          >
+            <IconLeftBrackets className="fill-white" width={24} height={24} />
+            <span>이전화 보기</span>
+          </NavBanner>
+        </div>
+        <div className="max-w-[800px] w-full h-auto min-h-screen">
+          <Row>
+            <Link href={`/webtoons/${webtoon.id}`}>
+              <IconLeftBrackets className="fill-white" width={24} height={24} />
+            </Link>
+            <Text className="text-3xl font-bold text-white">
+              {`${webtoonTitle} _ ${t("episodeSeq", {
+                number: episode.episodeNo
+              })}`}
+            </Text>
+          </Row>
 
-      <Gap y={10} />
+          <Gap y={10} />
 
-      {/*<AddEnglishEpisodeUrl webtoon={webtoon} episode={episode} />*/}
-      {/*<DownloadEpisodeImage webtoon={webtoon} episode={episode} />*/}
+          {/*<AddEnglishEpisodeUrl webtoon={webtoon} episode={episode} />*/}
+          {/*<DownloadEpisodeImage webtoon={webtoon} episode={episode} />*/}
 
-      <Gap y={10} />
+          {/*<Gap y={10} />*/}
 
-      <Row className="justify-between">
-        <p className="text-xl font-bold">{episode.title}</p>
-        {(webtoon.authorId === user.id || user.adminLevel > 0) && (
-          <Link href={`/webtoons/${webtoon.id}/episodes/${episode.id}/update`}>
-            <Pencil1Icon className="text-mint" width={25} height={25} />
-            <Gap x={1} />
-            <Text className="text-mint">{t("goEdit")}</Text>
-          </Link>
-        )}
-      </Row>
+          <Row className="justify-between">
+            <p className="text-xl font-bold">{episode.title}</p>
+            {/*{(webtoon!.authorId === user.id || user.adminLevel > 0) && (*/}
+            {/*  <Link href={`/webtoons/${webtoon.id}/episodes/${episode.id}/update`}>*/}
+            {/*    <Pencil1Icon className="text-mint" width={25} height={25} />*/}
+            {/*    <Gap x={1} />*/}
+            {/*    <Text className="text-mint">{t("goEdit")}</Text>*/}
+            {/*  </Link>*/}
+            {/*)}*/}
+          </Row>
 
-      <Gap y={4} />
-
-      <Col>
-        {episode.WebtoonEpisodeImage.map((image) => {
-          return (
-            <Fragment key={image.id}>
-              <img
-                width="100%"
-                src={buildImgUrl(null, image.path)}
-                alt={image.path}
-              />
-            </Fragment>
-          );
-        })}
-      </Col>
+          <Gap y={4} />
+          <Col>
+            {episode.WebtoonEpisodeImage.map((image) => {
+              return (
+                <img
+                  key={image.id}
+                  src={buildImgUrl(null, image.path)}
+                  alt={image.path}
+                />
+              );
+            })}
+          </Col>
+        </div>
+        <div className="flex-1 flex justify-center">
+          <NavBanner
+            webtoonId={webtoon.id}
+            episodeId={episode.nextEpisodeId}
+          >
+            <span>다음화 보기</span>
+            <IconRightBrackets className="fill-white" width={24} height={24} />
+          </NavBanner>
+        </div>
+      </div>
 
     </PageLayout>
   );
 }
+

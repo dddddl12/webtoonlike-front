@@ -31,8 +31,14 @@ const mapToDTO = (record: WebtoonRecord): WebtoonT => ({
 export async function getWebtoon(id: number): Promise<WebtoonT> {
   // TODO 에러 핸들링
   return prisma.webtoon.findUniqueOrThrow({
-    where: { id }
-  }).then(mapToDTO);
+    where: { id },
+    include: {
+      WebtoonEpisode: true
+    }
+  }).then(record => ({
+    ...mapToDTO(record),
+    episodes: record.WebtoonEpisode
+  }));
 }
 
 // export async function updateWebtoon(id: number, form: Partial<WebtoonFormT>): Promise<WebtoonT> {

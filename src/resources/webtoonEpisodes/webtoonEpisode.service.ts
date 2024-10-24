@@ -75,24 +75,41 @@ export async function getEpisode(id: number) {
   }).then(mapToDTO);
 }
 
-export async function getEpisodeWidthWebtoonInfo(id: number) {
-  return prisma.webtoonEpisode.findUniqueOrThrow({
-    where: { id },
-    include: {
-      webtoon: {
-        select: {
-          id: true,
-          title: true,
-          title_en: true,
-          authorId: true
-        },
-      },
-      WebtoonEpisodeImage: true
-    }
-  });
+export async function getEpisodeWidthDetails(id: number, webtoonId: number) {
+  const [episodeRecord, webtoonRecord] = await prisma.$transaction([
+    prisma.webtoonEpisode.findUniqueOrThrow({
+      where: { id },
+      include: {
+        WebtoonEpisodeImage: true
+      }
+    }),
+    prisma.webtoon.findUniqueOrThrow({
+      where: { id: webtoonId },
+      select: {
+        id: true,
+        title: true,
+        title_en: true,
+        authorId: true,
+        WebtoonEpisode: {
+          select: {
+            id: true,
+            episodeNo: true,
+          }
+        }
+      }
+    })
+  ]);
+  const episodeIds = webtoonRecord.WebtoonEpisode
+    .sort((a, b) => a.episodeNo - b.episodeNo)
+    .map(e => e.id);
+  return {
+    ...episodeRecord,
+    webtoon: webtoonRecord,
+    nextEpisodeId: episodeIds[episodeIds.indexOf(id) + 1],
+    prevEpisodeId: episodeIds[episodeIds.indexOf(id) - 1],
+  };
 }
 
-//
 // export async function getThumbnailPresignedUrl(mimeType: string) {
 //   let key = `webtoon_episodes/thumbnails/thumbnail_${new Date().getTime()}.${mime.extension(mimeType)}`;
 //   key = putDevPrefix(key);
