@@ -76,7 +76,8 @@ export async function updateClerkUser(tx: PrismaTransaction) {
       || (user.userType === UserTypeT.Buyer && user.Buyer));
     const clerkUserMetadata: ClerkUserMetadata = {
       id: user.id,
-      type: UserTypeT[user.userType as keyof typeof UserTypeT],
+      type: user.userType === UserTypeT.Buyer ? UserTypeT.Buyer : UserTypeT.Creator,
+      // TODO
       adminLevel: user.Admin
         ? (user.Admin.isSuper ? AdminLevel.SuperAdmin : AdminLevel.Admin)
         : AdminLevel.None,

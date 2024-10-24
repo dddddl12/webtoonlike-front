@@ -8,12 +8,12 @@ import { BuyerProfileForm } from "@/components/BuyerProfileForm";
 import { MeSetupEditor } from "@/app/[locale]/sign-up-complete/MeSetupEditor";
 import { getTranslations } from "next-intl/server";
 import { ClerkUserMetadataSchema } from "@/utils/auth/base";
+import PageLayout from "@/components/PageLayout";
 
 export default async function SignUpComplete() {
   const t = await getTranslations("setupPage");
 
-  return <Col className="bg-white min-h-[100vh] overflow-y-scroll items-center justify-start">
-    <Gap y={40} />
+  return <PageLayout bgColor="light" className="justify-center items-center flex flex-col">
     <Col className="w-[400px]">
       <KenazLogo className="fill-black" />
       <Gap y={10} />
@@ -22,7 +22,7 @@ export default async function SignUpComplete() {
       </Heading>
       <SignUpCompleteForm />
     </Col>
-  </Col>;
+  </PageLayout>;
 }
 
 async function SignUpCompleteForm () {
