@@ -1,7 +1,7 @@
 import { Gap, Row } from "@/ui/layouts";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { KenazLogo } from "@/components/svgs/KenazLogo";
-// import { NotificationDropdown } from "./NotificationDropdown";
+import { NotificationDropdown } from "./NotificationDropdown";
 import { TranslationDropdown } from "./TranslationDropdown";
 import { Link } from "@/i18n/routing";
 import { SelectItem } from "@/ui/shadcn/Select";
@@ -32,7 +32,7 @@ export async function Header() {
               </SelectItem>
             ))}
           </TranslationDropdown>
-          {/*<NotificationDropdown />*/}
+          <NotificationDropdown />
           <Gap x={3}/>
           <SignedOut>
             <Link className="bg-white text-black font-bold p-2 rounded-[4px] cursor-pointer" href={"/sign-in"}>
