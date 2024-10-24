@@ -17,7 +17,8 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   experimental: {
-    scrollRestoration: true
+    scrollRestoration: true,
+    webpackMemoryOptimizations: true
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
