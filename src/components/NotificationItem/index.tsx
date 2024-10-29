@@ -8,7 +8,7 @@ type NotificationItemProps = {
   item: NotificationT
 }
 
-export function NotificationItem({ item }: NotificationItemProps): JSX.Element {
+export function NotificationItem({ item }: NotificationItemProps) {
   return (
     <Col key={item.id} className="rounded-none cursor-pointer px-[20px] py-[12px] hover:bg-gray-light transition-all">
       <Text className="text-black text-[15px]">{item.message}</Text>

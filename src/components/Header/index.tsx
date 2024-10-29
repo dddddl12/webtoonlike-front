@@ -1,5 +1,4 @@
 import { Gap, Row } from "@/ui/layouts";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { KenazLogo } from "@/components/svgs/KenazLogo";
 import { NotificationDropdown } from "./NotificationDropdown";
 import { TranslationDropdown } from "./TranslationDropdown";
@@ -9,11 +8,11 @@ import { routing } from "@/i18n/routing";
 import React from "react";
 import { NavBar } from "@/components/Header/NavBar";
 import { getLocale, getTranslations } from "next-intl/server";
+import { Account } from "@/components/Header/Account";
 
 export async function Header() {
   const locale = await getLocale();
   const t = await getTranslations("localeSwitcher");
-  const Tinquiry = await getTranslations("inquiryMenu");
 
   return (
     <header
@@ -34,14 +33,7 @@ export async function Header() {
           </TranslationDropdown>
           <NotificationDropdown />
           <Gap x={3}/>
-          <SignedOut>
-            <Link className="bg-white text-black font-bold p-2 rounded-[4px] cursor-pointer" href={"/sign-in"}>
-              {Tinquiry("login")}
-            </Link>
-          </SignedOut>
-          <SignedIn>
-            <UserButton afterSignOutUrl={`/${locale}`}/>
-          </SignedIn>
+          <Account />
         </Row>
       </Row>
       <NavBar/>
