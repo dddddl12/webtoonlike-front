@@ -6,6 +6,7 @@ import { getUserInfo } from "@/utils/auth/server";
 import { updateClerkUser } from "@/resources/users/user.service";
 
 export async function createBuyer(form: BuyerFormT ) {
+  // TODO
   const { thumbnail, businessCard, businessCert } = form.companyInfo;
   // if (thumbnail) {
   //   form.companyInfo.thumbPath = await uploadFile(thumbnail, "buyers/thumbnails");
@@ -31,23 +32,14 @@ export async function createBuyer(form: BuyerFormT ) {
       userId: id
     };
 
-    const existingBuyer = await tx.buyer.findUnique({
+    await tx.buyer.upsert({
+      create: insert,
+      update: insert,
       where: {
-        userId: id,
-      },
+        userId: id
+      }
     });
-    if (existingBuyer) {
-      await tx.buyer.update({
-        data: insert,
-        where: {
-          userId: id
-        }
-      });
-    } else {
-      await tx.buyer.create({
-        data: insert
-      });
-    }
+
     await updateClerkUser(tx);
   });
 }

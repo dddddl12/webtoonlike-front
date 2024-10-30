@@ -1,45 +1,24 @@
 import { UserT } from "@/resources/users/user.types";
+import z from "zod";
+import { Resource } from "@/resources/globalTypes";
 
-export type CreatorFormT = {
-    userId: number;
-    name: string;
-    name_en?: string;
-    thumbPath?: string;
-    agencyName?: string;
-    isNew: boolean;
-    isExposed: boolean;
-}
+const CreatorBaseSchema = z.object({
+  name: z.string().min(1),
+  name_en: z.string().optional(),
+  thumbPath: z.string().optional(),
+  isAgencyAffiliated: z.boolean(),
+  isExperienced: z.boolean(),
+  isExposed: z.boolean().default(false),
+});
 
-type _CreatorT = {
-    id: number;
-    createdAt: Date;
-    updatedAt?: Date;
-} & CreatorFormT;
+export const CreatorFormSchema = CreatorBaseSchema.extend({
+  thumbnail: z.instanceof(File).optional(),
+});
 
-export type GetCreatorOptionT = {
-    meId?: number;
-    $user?: boolean;
-    $numWebtoon?: boolean;
-    $numWebtoonLike?: boolean;
-}
+export type CreatorFormT = z.infer<typeof CreatorFormSchema>;
 
-// TODO 불필요한  | undefined 제거
-export type ListCreatorOptionT = {
-    cursor?: string | undefined;
-    limit?: number | undefined;
-    offset?: number | undefined;
-    $numData?: boolean | undefined;
-    meId?: (number | undefined) | undefined;
-    $user?: boolean | undefined;
-    $numWebtoon?: boolean | undefined;
-    $numWebtoonLike?: boolean | undefined;
-    sort?: ("recent") | undefined;
-    exposed?: ("only") | undefined;
-}
-
-
-export interface CreatorT extends _CreatorT {
+export type CreatorT = Resource<{
   user?: UserT;
   numWebtoon?: number;
   numWebtoonLike?: number;
-}
+}> & z.infer<typeof CreatorBaseSchema>

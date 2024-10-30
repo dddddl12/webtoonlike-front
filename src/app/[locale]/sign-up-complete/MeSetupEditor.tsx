@@ -17,10 +17,10 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem } from "@/ui/shadcn/Form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/ui/shadcn/Select";
 import { createUser } from "@/resources/users/user.service";
-import { useUser } from "@clerk/nextjs";
-import { router } from "next/client";
+import { useSession, useUser } from "@clerk/nextjs";
 import { useRouter } from "@/i18n/routing";
 import Spinner from "@/components/Spinner";
+import { NotSignedInError } from "@/errors";
 
 const NATION_DATA = [
   { label: "대한민국", value: "ko" },
@@ -120,15 +120,19 @@ function ProfileForm({ userType, setUserType }: {
   }, [allValues]);
 
   const [submissionInProgress, setSubmissionInProgress] = useState(false);
-  if (submissionInProgress) {
+  const { session, isLoaded, isSignedIn } = useSession();
+  if (isLoaded && !isSignedIn) {
+    throw new NotSignedInError();
+  } else if (submissionInProgress || !isLoaded) {
     return <Spinner />;
   }
   return <Form {...form}>
     <form onSubmit={form.handleSubmit(async (userForm) => {
       setSubmissionInProgress(true);
       await createUser(userForm);
-      setSubmissionInProgress(false);
-      router.replace("/");
+      await session.touch();
+      // setSubmissionInProgress(false);
+      router.refresh();
     })}>
       <span className="text-black">
         {/*TODO 번역 적용*/}

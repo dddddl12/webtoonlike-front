@@ -113,17 +113,17 @@ model Buyer {
 }
 
 model Creator {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  userId     Int      @unique
+  id                 Int      @id @default(autoincrement())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  userId             Int      @unique
   // TODO 데이터 타입 최적화
-  name       String
-  name_en    String?
-  thumbPath  String?
-  agencyName String?
-  isNew      Boolean  @default(false)
-  isExposed  Boolean  @default(false)
+  name               String
+  name_en            String?
+  thumbPath          String?
+  isAgencyAffiliated Boolean
+  isExperienced      Boolean
+  isExposed          Boolean
 
   user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   Webtoon Webtoon[]
@@ -302,7 +302,7 @@ model Webtoon {
   thumbPath      String?
   externalUrl    String?
   englishUrl     String?
-  adultOnly      Boolean       @default(false)
+  adultOnly      Boolean
   targetAge      TargetAge[]
   ageLimit       AgeLimit
   targetGender   TargetGender?

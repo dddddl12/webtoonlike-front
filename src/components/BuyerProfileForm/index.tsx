@@ -16,6 +16,8 @@ import { BuyerCompanyIndustry, BuyerCompanyType, BuyerFormT, BuyerT } from "@/re
 import { Form, FormControl, FormField, FormItem } from "@/ui/shadcn/Form";
 import Spinner from "@/components/Spinner";
 import { createBuyer } from "@/resources/buyers/buyer.service";
+import { useSession } from "@clerk/nextjs";
+import { NotSignedInError } from "@/errors";
 
 
 const BUSINESS_FIELD_DATA: {
@@ -101,7 +103,10 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
   const Tpurpose = useTranslations("purpose");
 
   const [submissionInProgress, setSubmissionInProgress] = useState(false);
-  if (submissionInProgress) {
+  const { session, isLoaded, isSignedIn } = useSession();
+  if (isLoaded && !isSignedIn) {
+    throw new NotSignedInError();
+  } else if (submissionInProgress || !isLoaded) {
     return <Spinner />;
   }
   return (
@@ -112,6 +117,7 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
         <form onSubmit={form.handleSubmit(async (buyerForm) => {
           setSubmissionInProgress(true);
           await createBuyer(buyerForm);
+          await session?.touch();
           setSubmissionInProgress(false);
           router.replace(redirectPath || "/");
         })}>
@@ -126,8 +132,9 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
                     className="border-gray"
                     type='text'
                     inputMode="numeric"
-                    placeholder={t("businessRegPlaceholder")}
+                    placeholder={t("businessRegPlaceholder") + " *"}
                   />
+                  {/* TODO  필수 표시*/}
                 </FormControl>
               </FormItem>
             )}
@@ -148,7 +155,7 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
                       option => prevBuyerCompany?.fieldType.includes(option.value))}
                     onChange={field.onChange}
                     defaultOptions={BUSINESS_FIELD_DATA}
-                    placeholder={t("businessFieldPlaceholder")}
+                    placeholder={t("businessFieldPlaceholder") + " (멀티셀렉트 재구현 예정)"}
                     hidePlaceholderWhenSelected
                   />
                 </FormControl>
@@ -233,7 +240,7 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
                     {...field}
                     className="border-gray"
                     type='text'
-                    placeholder={t("insertCompanyName")}
+                    placeholder={t("insertCompanyName") + " *"}
                   />
                 </FormControl>
               </FormItem>
@@ -397,7 +404,7 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Select defaultValue={prevBuyer ? `${prevBuyer.purpose}` : ""}
+                  <Select defaultValue={prevBuyer?.purpose ?? ""}
                     onValueChange={field.onChange}
                   >
                     <SelectTrigger className="bg-white border-gray text-[#94A4B8] rounded-sm">
@@ -428,7 +435,6 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
           />
         </form>
       </Form>
-      <Gap y={40}/>
     </Col>
   );
 }

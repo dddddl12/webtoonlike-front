@@ -30,8 +30,8 @@ async function SignUpCompleteForm () {
   const { data: user } = ClerkUserMetadataSchema.safeParse(clerkUser.sessionClaims.metadata);
 
   switch (user?.type) {
-  // case UserTypeT.Creator:
-  //   return <CreatorProfileForm />;
+    case UserTypeT.Creator:
+      return <CreatorProfileForm />;
     case UserTypeT.Buyer:
       return <BuyerProfileForm />;
     default:
