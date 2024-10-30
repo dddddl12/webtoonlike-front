@@ -1,18 +1,19 @@
 "use server";
 
 import prisma from "@/utils/prisma";
-import { getUserInfo } from "@/utils/auth/server";
-import { updateClerkUser } from "@/resources/users/user.service";
 import { CreatorFormT } from "@/resources/creators/creator.types";
+import { getClerkUser, updateUserMetadata } from "@/resources/userMetadata/userMetadata.service";
+import { BaseClerkUserMetadata, ClerkUserMetadata } from "@/resources/userMetadata/userMetadata.types";
 
 export async function createCreator(form: CreatorFormT ) {
   // TODO
-  const { thumbnail } = form;
+  const { thumbnail } = form.files;
   // if (thumbnail) {
   //   form.companyInfo.thumbPath = await uploadFile(thumbnail, "buyers/thumbnails");
   // }
   await prisma.$transaction(async (tx) => {
-    const { id } = await getUserInfo();
+    const clerkUser = await getClerkUser();
+    const { id } = (clerkUser.sessionClaims.metadata as BaseClerkUserMetadata | ClerkUserMetadata);
 
     // 레코드 추가
     const insert = {
@@ -33,6 +34,6 @@ export async function createCreator(form: CreatorFormT ) {
       }
     });
 
-    await updateClerkUser(tx);
+    await updateUserMetadata(tx);
   });
 }

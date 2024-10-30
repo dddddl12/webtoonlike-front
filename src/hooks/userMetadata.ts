@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/nextjs";
-import { ClerkUserMetadata, ClerkUserMetadataSchema } from "@/utils/auth/base";
+import { ClerkUserMetadata, ClerkUserMetadataSchema } from "@/resources/userMetadata/userMetadata.types";
 
-export function useUserInfo(): {
+export function useUserMetadata(): {
   user?: ClerkUserMetadata;
   isLoaded: boolean;
 } {

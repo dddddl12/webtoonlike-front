@@ -21,7 +21,6 @@ import Spinner from "../Spinner";
 import { ErrorComponent } from "../ErrorComponent";
 import { WebtoonFormT, WebtoonT } from "@/resources/webtoons/webtoon.types";
 import { GenreT } from "@/resources/genres/genre.types";
-import { useUserInfo } from "@/utils/auth/client";
 
 type LabelValueT<ValueT> = { label: string; value: ValueT };
 

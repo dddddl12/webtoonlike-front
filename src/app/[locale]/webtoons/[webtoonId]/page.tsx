@@ -6,31 +6,30 @@ import { IconCross } from "@/components/svgs/IconCross";
 import { Text } from "@/ui/texts";
 import { WebtoonEpisodeList } from "@/app/[locale]/webtoons/[webtoonId]/WebtoonEpisodeList";
 import { getTranslations } from "next-intl/server";
-import { getUserInfo } from "@/utils/auth/server";
 import { getWebtoon } from "@/resources/webtoons/webtoon.service";
 import { UserTypeT } from "@/resources/users/user.types";
 import WebtoonDetails from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetails";
 import PageLayout from "@/components/PageLayout";
+import { getUserMetadata } from "@/resources/userMetadata/userMetadata.service";
 
 export default async function WebtoonInfo({ params }:
 { params: Promise<{ webtoonId: string }> }) {
   const { webtoonId } = await params;
   const webtoon = await getWebtoon(Number(webtoonId));
-  const user = await getUserInfo();
-  const editable = webtoon.authorId === user.id; //TODO creator ID 비교로 변경
-  // TODO 서버에서 미리 파악해서 주는 것 고려
-  const contractInfoDisclosed = editable || user.type === UserTypeT.Buyer;
+  const user = await getUserMetadata();
+  const isOwner = user.type === UserTypeT.Creator
+    && webtoon.authorId === user.creatorId;
   const t = await getTranslations("detailedInfoPage");
 
   return (
     <PageLayout>
       <WebtoonDetails
         webtoon={webtoon}
-        editable={editable}
+        editable={isOwner}
       />
 
       {
-        contractInfoDisclosed && webtoon.bidRounds?.length
+        webtoon.bidRounds?.length
           && <ContractRangeData webtoon={webtoon}/>
       }
 
@@ -38,14 +37,14 @@ export default async function WebtoonInfo({ params }:
       <hr className="border-gray-shade"/>
 
       {
-        contractInfoDisclosed && <>
+        <>
           <Gap y={10}/>
           <Row className="justify-between">
             <p className='text-2xl font-bold'>{t("episodePreview")}</p>
 
             <Gap x={4}/>
 
-            {editable && (
+            {isOwner && (
               <Link className="cursor-pointer"
                 href={`/webtoons/${webtoon.id}/episodes/create`}>
                 <IconCross className="fill-mint"/>
@@ -54,13 +53,6 @@ export default async function WebtoonInfo({ params }:
             )}
 
           </Row>
-
-          <Gap y={4}/>
-
-          <WebtoonEpisodeList
-            webtoon={webtoon}
-            editable={editable}
-          />
         </>
       }
     </PageLayout>

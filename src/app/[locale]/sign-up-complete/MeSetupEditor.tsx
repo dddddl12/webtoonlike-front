@@ -8,33 +8,19 @@ import { IconSignupCreator } from "@/components/svgs/IconSignupCreatori";
 import { IconSignupBuyer } from "@/components/svgs/IconSignupBuyer";
 import { Text } from "@/ui/texts";
 import { Checkbox } from "@/ui/shadcn/CheckBox";
-// import { nationConverterToKr } from "@/utils/nationConverter";
 import { useLocale, useTranslations } from "next-intl";
 import TermsOfUseKo from "@/common/TermsOfUseKo";
 import TermsOfUseEn from "@/common/TermsOfUseEn";
-import { UserFormT, UserTypeT } from "@/resources/users/user.types";
+import { CountrySchema, UserFormSchema, UserFormT, UserTypeT } from "@/resources/users/user.types";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem } from "@/ui/shadcn/Form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/ui/shadcn/Select";
 import { createUser } from "@/resources/users/user.service";
-import { useSession, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { useRouter } from "@/i18n/routing";
 import Spinner from "@/components/Spinner";
-import { NotSignedInError } from "@/errors";
-
-const NATION_DATA = [
-  { label: "대한민국", value: "ko" },
-  { label: "미국", value: "en" },
-  { label: "중국", value: "zhCN" },
-  { label: "대만", value: "zhTW" },
-  { label: "일본", value: "ja" },
-  { label: "프랑스", value: "fr" },
-  { label: "스페인", value: "es" },
-  { label: "베트남", value: "vi" },
-  { label: "말레이시아", value: "ms" },
-  { label: "태국", value: "th" },
-  { label: "기타", value: "all" },
-];
+import { useAllRequiredFilled } from "@/hooks/allRequiredFilled";
+import { useTokenRefresh } from "@/hooks/tokenRefresh";
 
 export function MeSetupEditor() {
   const { enqueueSnackbar } = useSnackbar();
@@ -54,8 +40,7 @@ function UserTypeSelector({ setUserType }: {
   const t = useTranslations("setupPage");
 
   return <>
-    <span className="text-black">{t("selectMembershipType")}</span>
-    <Gap y={20} />
+    <span className="text-black mb-10">{t("selectMembershipType")}</span>
 
     <Row className="justify-evenly">
       <Col className="justify-center items-center">
@@ -93,46 +78,40 @@ function ProfileForm({ userType, setUserType }: {
   userType: UserTypeT
   setUserType: Dispatch<SetStateAction<UserTypeT | undefined>>;
 }) {
-  const authUser = useUser();
-  const router = useRouter();
+  const t = useTranslations("countryOptionsENG");
   const locale = useLocale();
   const form = useForm<UserFormT>({
     defaultValues: {
-      email: authUser.user?.emailAddresses[0].emailAddress ?? "",
       phone: "",
       userType,
-      country: "",
       postCode: "",
       address: "",
-      addressDetail: "",
-      agreed: false,
+      addressDetail: ""
     },
   });
 
   // 필수 필드 체크
-  const allValues = form.watch();
-  const [allRequiredFilled, setAllRequiredFilled] = useState(false);
-  const checkRequiredFieldsFilled = (values: UserFormT) => {
-    return !!(values.phone && values.agreed);
-  };
-  useEffect(() => {
-    setAllRequiredFilled(checkRequiredFieldsFilled(allValues));
-  }, [allValues]);
+  const allRequiredFilled = useAllRequiredFilled(form, UserFormSchema);
 
+  // 제출 이후 동작
+  const router = useRouter();
+  const { tokenRefreshed, startRefresh } = useTokenRefresh();
+  useEffect(() => {
+    if (!tokenRefreshed) return;
+    router.refresh();
+  }, [tokenRefreshed]);
+
+  // 스피너
   const [submissionInProgress, setSubmissionInProgress] = useState(false);
-  const { session, isLoaded, isSignedIn } = useSession();
-  if (isLoaded && !isSignedIn) {
-    throw new NotSignedInError();
-  } else if (submissionInProgress || !isLoaded) {
+  if (submissionInProgress) {
     return <Spinner />;
   }
+
   return <Form {...form}>
     <form onSubmit={form.handleSubmit(async (userForm) => {
       setSubmissionInProgress(true);
       await createUser(userForm);
-      await session.touch();
-      // setSubmissionInProgress(false);
-      router.refresh();
+      startRefresh();
     })}>
       <span className="text-black">
         {/*TODO 번역 적용*/}
@@ -177,9 +156,9 @@ function ProfileForm({ userType, setUserType }: {
                     <SelectValue placeholder={"국가 선택"}/>
                   </SelectTrigger>
                   <SelectContent>
-                    {NATION_DATA.map((item) => (
-                      <SelectItem key={item.label} value={item.value}>
-                        {item.label}
+                    {CountrySchema.options.map((value) => (
+                      <SelectItem key={value} value={value}>
+                        {t(value)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -308,9 +287,6 @@ function ProfileForm({ userType, setUserType }: {
           value="다음"
         />
       </Row>
-      <Gap y={40}/>
     </form>
-  </Form>
-  ;
-
+  </Form>;
 }

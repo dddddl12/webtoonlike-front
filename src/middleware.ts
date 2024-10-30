@@ -1,24 +1,28 @@
 import createMiddleware from "next-intl/middleware";
 import { routing } from "@/i18n/routing";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { ClerkUserMetadataSchema } from "@/utils/auth/base";
+import { ClerkUserMetadataSchema } from "@/resources/userMetadata/userMetadata.types";
 
 
 const intlMiddleware = createMiddleware(routing);
 
 const isProtectedRoute = createRouteMatcher([
-  "/creator/(.*)", "/buyer/(.*)", "/admin/(.*)"]);
+  "(.*)/creator/(.*)", "(.*)/buyer/(.*)", "(.*)/admin/(.*)"]);
+// TODO 성분 검토 검토
 const isAuthRelatedRoute = createRouteMatcher([
-  "/sign-in(.*)", "/sign-up(.*)", "/(.*)/sign-up-complete"]);
+  "(.*)/sign-in(.*)", "(.*)/sign-up(.*)", "(.*)/sign-up-complete"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) await auth.protect();
-  // TODO 필요한지 검토
+  if (isProtectedRoute(req)) {
+    req.nextUrl.pathname = "/sign-in";
+    return intlMiddleware(req);
+  }
 
-  const { userId, sessionClaims } = await auth();
-  if (!isAuthRelatedRoute(req) && userId) {
-    const { data: userInfo } = await ClerkUserMetadataSchema.safeParseAsync(sessionClaims.metadata);
-    if (!userInfo || !userInfo.signUpComplete) {
+  const { sessionClaims } = await auth();
+  if (sessionClaims) {
+    const { success } = await ClerkUserMetadataSchema.safeParseAsync(sessionClaims.metadata);
+    if (!success && !isAuthRelatedRoute(req)) {
+      // 회원가입을 마치지 않았는데 일반 페이지에 있는 경우
       req.nextUrl.pathname = "/sign-up-complete";
     }
   }

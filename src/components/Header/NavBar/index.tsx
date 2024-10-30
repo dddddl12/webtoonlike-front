@@ -1,9 +1,9 @@
 import { Row } from "@/ui/layouts";
 import NavigationLink from "./NavigationLink";
 import { UserTypeT } from "@/resources/users/user.types";
-import { AdminLevel } from "@/utils/auth/base";
 import { getTranslations } from "next-intl/server";
-import { getUserInfo } from "@/utils/auth/server";
+import { getUserMetadata } from "@/resources/userMetadata/userMetadata.service";
+import { AdminLevel } from "@/resources/userMetadata/userMetadata.types";
 
 export type NavArrT = {
   name: string;
@@ -12,7 +12,7 @@ export type NavArrT = {
 
 export async function NavBar() {
   const t = await getTranslations("inquiryMenu");
-  const user = await getUserInfo().catch(() => undefined);
+  const user = await getUserMetadata().catch(() => undefined);
   const userType = user?.type;
   const adminLevel = user?.adminLevel || AdminLevel.None;
 

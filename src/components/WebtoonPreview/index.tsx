@@ -4,15 +4,15 @@ import { buildImgUrl } from "@/utils/media";
 import { Text } from "@/ui/texts";
 import { useLocale } from "next-intl";
 import { WebtoonT } from "@/resources/webtoons/webtoon.types";
-import { useUserInfo } from "@/utils/auth/client";
 import { Link } from "@/i18n/routing";
+import { useUserMetadata } from "@/hooks/userMetadata";
 
 export function WebtoonPreview({ webtoon, href }: {
   webtoon: WebtoonT;
   href: string;
 }) {
   const locale = useLocale();
-  const { user } = useUserInfo();
+  const { user } = useUserMetadata();
 
   return (
     <Link className='mx-2 my-4' href={href}>

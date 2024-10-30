@@ -12,13 +12,15 @@ const CreatorBaseSchema = z.object({
 });
 
 export const CreatorFormSchema = CreatorBaseSchema.extend({
-  thumbnail: z.instanceof(File).optional(),
+  files: z.object({
+    thumbnail: z.instanceof(File).optional(),
+  })
 });
 
 export type CreatorFormT = z.infer<typeof CreatorFormSchema>;
 
 export type CreatorT = Resource<{
-  user?: UserT;
+  user: UserT;
   numWebtoon?: number;
   numWebtoonLike?: number;
 }> & z.infer<typeof CreatorBaseSchema>

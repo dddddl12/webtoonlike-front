@@ -14,14 +14,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { Fragment } from "react";
 import { WebtoonT } from "@/resources/webtoons/webtoon.types";
-import { useUserInfo } from "@/utils/auth/client";
+import { useUserMetadata } from "@/hooks/userMetadata";
 
 export function ContractRangeData({ webtoon }: {
   webtoon: WebtoonT;
 }) {
   const locale = useLocale();
   const router = useRouter();
-  const { user } = useUserInfo();
+  const { user } = useUserMetadata();
 
   const t = useTranslations("contractRangeData");
   const Tbusiness = useTranslations("businessFieldENG");

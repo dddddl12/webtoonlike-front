@@ -3,7 +3,7 @@
 import { BidRoundStatus, BidRoundT } from "@/resources/bidRounds/bidRound.types";
 import { BidRound as BidRoundRecord } from "@prisma/client";
 import prisma from "@/utils/prisma";
-import { getUserInfo } from "@/utils/auth/server";
+import { getUserMetadata } from "@/resources/userMetadata/userMetadata.service";
 
 const mapToDTO = (record: BidRoundRecord): BidRoundT => ({
   ...record,
@@ -68,7 +68,7 @@ const mapToDTO = (record: BidRoundRecord): BidRoundT => ({
 export async function listBidRounds(): Promise<{
   items: BidRoundT[]
 }> {
-  const { id: userId } = await getUserInfo();
+  const { id: userId } = await getUserMetadata();
   const records = await prisma.bidRound.findMany({
     where: { userId }
   });

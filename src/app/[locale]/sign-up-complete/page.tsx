@@ -1,40 +1,35 @@
 import { Col, Gap } from "@/ui/layouts";
 import { KenazLogo } from "@/components/svgs/KenazLogo";
 import { Heading } from "@/ui/texts";
-import { getClerkUser } from "@/utils/auth/server";
-import { UserTypeT } from "@/resources/users/user.types";
-import { CreatorProfileForm } from "@/components/CreatorProfileForm";
-import { BuyerProfileForm } from "@/components/BuyerProfileForm";
-import { MeSetupEditor } from "@/app/[locale]/sign-up-complete/MeSetupEditor";
-import { getTranslations } from "next-intl/server";
-import { ClerkUserMetadataSchema } from "@/utils/auth/base";
+import { getLocale, getTranslations } from "next-intl/server";
 import PageLayout from "@/components/PageLayout";
+import { updateUserMetadata } from "@/resources/userMetadata/userMetadata.service";
+import { SignUpCompleteForm } from "@/app/[locale]/sign-up-complete/SignUpCompleteForm";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "@/i18n/routing";
 
 export default async function SignUpComplete() {
-  const t = await getTranslations("setupPage");
+  const { userId } = await auth();
+  if (!userId) {
+    // 아직 clerk에 로그인하지 않은 경우 홈으로 리다이렉트
+    const locale = await getLocale();
+    redirect({
+      href: "/", locale: locale
+    });
+  }
 
-  return <PageLayout bgColor="light" className="justify-center items-center flex flex-col">
+  const t = await getTranslations("setupPage");
+  const userMetadata = await updateUserMetadata();
+
+  return <PageLayout bgColor="light" className="items-center flex flex-col">
     <Col className="w-[400px]">
       <KenazLogo className="fill-black" />
       <Gap y={10} />
       <Heading className="text-black font-bold text-[20pt]">
         {t("setupAccount")}
       </Heading>
-      <SignUpCompleteForm />
+      <SignUpCompleteForm userMetadata={userMetadata} />
     </Col>
   </PageLayout>;
 }
 
-async function SignUpCompleteForm () {
-  const clerkUser = await getClerkUser();
-  const { data: user } = ClerkUserMetadataSchema.safeParse(clerkUser.sessionClaims.metadata);
-
-  switch (user?.type) {
-    case UserTypeT.Creator:
-      return <CreatorProfileForm />;
-    case UserTypeT.Buyer:
-      return <BuyerProfileForm />;
-    default:
-      return <MeSetupEditor />;
-  }
-}

@@ -1,9 +1,18 @@
 import { getLocale } from "next-intl/server";
 import { SignUp } from "@clerk/nextjs";
 import React from "react";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "@/i18n/routing";
 
 export default async function SignUpPage() {
   const locale = await getLocale();
+  const { userId } = await auth();
+  if (userId) {
+    // 이미 로그인한 경우 스킵
+    redirect({
+      href: "/", locale: locale
+    });
+  }
   return (
     <div className='h-screen w-screen'>
       <div className='absolute left-1/2 top-1/2 w-fit -translate-x-1/2 -translate-y-1/2'>

@@ -1,49 +1,75 @@
 import { Resource } from "@/resources/globalTypes";
+import z from "zod";
+import { UserT } from "@/resources/users/user.types";
 
-export type BuyerCompanyIndustry =
-  "webtoon"
-  | "game"
-  | "movie"
-  | "drama"
-  | "webDrama"
-  | "video"
-  | "book"
-  | "performance"
-  | "etc";
-export type BuyerCompanyType = "creator" | "investor" | "agent" | "platform" | "ott" | "management" | "etc";
-export type BuyerPurpose = "privateContract" | "publicContract" | "publish" | "secondaryProperty" | "investment";
+export const BuyerCompanyFieldSchema = z.enum([
+  "webtoon",
+  "game",
+  "movie",
+  "drama",
+  "webDrama",
+  "video",
+  "book",
+  "performance",
+  "etc"
+]);
+export const BuyerCompanyTypeSchema = z.enum([
+  "creator",
+  "investor",
+  "agent",
+  "platform",
+  "ott",
+  "management",
+  "etc"
+]);
+export const BuyerPurposeSchema = z.enum([
+  "privateContract",
+  "publicContract",
+  "publish",
+  "secondaryProperty",
+  "investment"
+]);
 
-type BuyerCompanyInfo = {
-  name: string;
+const BuyerCompanySchema = z.object({
+  /** 업체명 */
+  name: z.string().min(1).max(100),
   /** 대표이미지 */
-  thumbPath?: string;
-  /** 업체분야 */
-  fieldType: BuyerCompanyIndustry[];
+  thumbPath: z.string().optional(),
+  /** 업체 분야 */
+  fieldType: z.array(BuyerCompanyFieldSchema),
   /** 직종/업종 */
-  businessType: BuyerCompanyType[];
+  businessType: z.array(BuyerCompanyTypeSchema),
   /** 부서 */
-  dept?: string;
+  dept: z.string().optional(),
   /** 직책 */
-  position?: string;
+  position: z.string().optional(),
   /** 담당 업무 입력 */
-  positionDetail?: string;
+  positionDetail: z.string().optional(),
   /** 사업자등록번호 */
-  businessNumber: string;
+  // TODO
+  // businessNumber: z.string().min(10).max(10),
+  businessNumber: z.string(),
   /** 사업자등록증 파일 경로 */
-  businessCertPath?: string;
+  businessCertPath: z.string().optional(),
   /** 명함 파일 경로 */
-  businessCardPath?: string;
-}
+  businessCardPath: z.string().optional(),
+});
 
-export type BuyerFormT = {
-  companyInfo: BuyerCompanyInfo & {
-    thumbnail?: File;
-    businessCert?: File;
-    businessCard?: File;
-  };
-  purpose?: BuyerPurpose;
-}
+const BuyerBaseSchema = z.object({
+  companyInfo: BuyerCompanySchema,
+  purpose: BuyerPurposeSchema.optional()
+});
 
-export type BuyerT = Resource<BuyerFormT & {
-  userId: number;
-}>;
+export const BuyerFormSchema = BuyerBaseSchema.extend({
+  files: z.object({
+    thumbnail: z.instanceof(File).optional(),
+    businessCert: z.instanceof(File).optional(),
+    businessCard: z.instanceof(File).optional(),
+  })
+});
+
+export type BuyerFormT = z.infer<typeof BuyerFormSchema>;
+
+export type BuyerT = Resource<{
+  user: UserT;
+}> & z.infer<typeof BuyerBaseSchema>;

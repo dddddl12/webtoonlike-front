@@ -1,0 +1,99 @@
+import { PrismaTransaction } from "@/resources/globalTypes";
+import {
+  AdminLevel,
+  BaseClerkUserMetadata,
+  ClerkUserMetadata,
+  ClerkUserMetadataSchema
+} from "@/resources/userMetadata/userMetadata.types";
+import prisma from "@/utils/prisma";
+import { auth, clerkClient } from "@clerk/nextjs/server";
+import { UserTypeT } from "@/resources/users/user.types";
+import type { Admin } from "@prisma/client";
+import { NotSignedInError } from "@/errors";
+
+export const getClerkUser = async () => {
+  const clerkUser = await auth();
+  if (!clerkUser.userId) {
+    throw new NotSignedInError();
+  }
+  return clerkUser;
+};
+
+export const getUserMetadata = async (): Promise<ClerkUserMetadata> => {
+  const clerkUser = await getClerkUser();
+  return ClerkUserMetadataSchema.parseAsync(clerkUser.sessionClaims.metadata);
+};
+
+export async function updateUserMetadata(tx?: PrismaTransaction): Promise<BaseClerkUserMetadata | ClerkUserMetadata | undefined> {
+  const { clerkUserId, metadata } = await getVerifiedUserMetadata(tx);
+  await clerkClient().then(client =>
+    client.users.updateUserMetadata(clerkUserId, {
+      publicMetadata: metadata || {}
+    }));
+  return metadata;
+}
+
+async function getVerifiedUserMetadata(tx?: PrismaTransaction): Promise<{
+  clerkUserId: string;
+  metadata?: BaseClerkUserMetadata | ClerkUserMetadata;
+}> {
+  const prismaClient = tx || prisma;
+  const { userId: clerkUserId } = await getClerkUser();
+  const user = await prismaClient.user.findUnique({
+    where: {
+      sub: clerkUserId
+    },
+    include: {
+      Creator: true,
+      Buyer: true,
+      Admin: true,
+    },
+  });
+
+  if (!user) {
+    await clerkClient().then(client =>
+      client.users.updateUserMetadata(clerkUserId, {
+        publicMetadata: {}
+      }));
+    return { clerkUserId };
+  }
+
+  // 유저 정보 업데이트
+  let clerkUserMetadata: BaseClerkUserMetadata | ClerkUserMetadata = {
+    id: user.id,
+    type: user.userType as UserTypeT,
+    adminLevel: getAdminLevel(user.Admin),
+    signUpComplete: false
+  };
+  if (clerkUserMetadata.type == UserTypeT.Creator && user.Creator) {
+    clerkUserMetadata = {
+      ...clerkUserMetadata,
+      type: clerkUserMetadata.type,
+      creatorId: user.Creator.id,
+      signUpComplete: true,
+    };
+  } else if (clerkUserMetadata.type == UserTypeT.Buyer && user.Buyer) {
+    clerkUserMetadata = {
+      ...clerkUserMetadata,
+      type: clerkUserMetadata.type,
+      buyerId: user.Buyer.id,
+      signUpComplete: true,
+    };
+  }
+
+  return {
+    clerkUserId,
+    metadata: clerkUserMetadata
+  };
+}
+
+const getAdminLevel = (admin: Admin | null) => {
+  if (!admin) {
+    return AdminLevel.None;
+  } else if (!admin.isSuper) {
+    return AdminLevel.Admin;
+  } else if (admin.isSuper) {
+    return AdminLevel.SuperAdmin;
+  }
+  throw new Error("Unexpected admin level");
+};

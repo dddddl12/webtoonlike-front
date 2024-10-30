@@ -2,12 +2,16 @@
 
 import { BuyerFormT } from "@/resources/buyers/buyer.types";
 import prisma from "@/utils/prisma";
-import { getUserInfo } from "@/utils/auth/server";
-import { updateClerkUser } from "@/resources/users/user.service";
+import { getClerkUser, updateUserMetadata } from "@/resources/userMetadata/userMetadata.service";
+import {
+  BaseClerkUserMetadata,
+  ClerkUserMetadata
+} from "@/resources/userMetadata/userMetadata.types";
+import { NotSignedInError } from "@/errors";
 
 export async function createBuyer(form: BuyerFormT ) {
   // TODO
-  const { thumbnail, businessCard, businessCert } = form.companyInfo;
+  const { thumbnail, businessCard, businessCert } = form.files;
   // if (thumbnail) {
   //   form.companyInfo.thumbPath = await uploadFile(thumbnail, "buyers/thumbnails");
   // }
@@ -18,11 +22,12 @@ export async function createBuyer(form: BuyerFormT ) {
   //   form.companyInfo.businessCertPath = await uploadFile(businessCert, "buyers/business_certs");
   // }
   await prisma.$transaction(async (tx) => {
-    const { id } = await getUserInfo();
+    const clerkUser = await getClerkUser();
+    const { id } = (clerkUser.sessionClaims.metadata as BaseClerkUserMetadata | ClerkUserMetadata);
 
     // 레코드 추가
     const insert = {
-      ...form,
+      purpose: form.purpose,
       companyInfo: {
         ...form.companyInfo,
         thumbnail: undefined,
@@ -40,6 +45,6 @@ export async function createBuyer(form: BuyerFormT ) {
       }
     });
 
-    await updateClerkUser(tx);
+    await updateUserMetadata(tx);
   });
 }

@@ -6,9 +6,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { WebtoonT } from "@/resources/webtoons/webtoon.types";
 import WebtoonDetailsLikeButton from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetailsLikeButton";
-import { useUserInfo } from "@/utils/auth/client";
 import { UserTypeT } from "@/resources/users/user.types";
 import { BidRoundStatus, BidRoundT } from "@/resources/bidRounds/bidRound.types";
+import { useUserMetadata } from "@/hooks/userMetadata";
 
 export default function WebtoonDetailsBtns({ webtoon }: {
   webtoon: WebtoonT;
@@ -25,8 +25,9 @@ export default function WebtoonDetailsBtns({ webtoon }: {
 
   const isDone = latestBidRound?.status === BidRoundStatus.Done;
 
-  const { user } = useUserInfo();
-  const isOwner = webtoon.authorId === user?.id;
+  const { user } = useUserMetadata();
+  const isOwner = user?.type === UserTypeT.Creator
+    && webtoon.authorId === user.creatorId;
   // TODO creator로 변경
   const isDisapproved = !!latestBidRound?.disapprovedAt;
 
@@ -107,7 +108,7 @@ function SubmitButton({ webtoon }: {
         }
       }} className="w-full bg-mint text-white rounded-sm hover:text-texts h-10 flex justify-center items-center">{TseriesManagement("registerOfContentTransactions")}</Button>
       : webtoon.bidRounds && webtoon.bidRounds.length > 0 ? null :
-      <Link
+        <Link
           className="w-full bg-mint text-white rounded-sm hover:text-texts h-10 flex justify-center items-center cursor-pointer"
           href={`/market/bid-rounds/${webtoon.id}/create`}
         >

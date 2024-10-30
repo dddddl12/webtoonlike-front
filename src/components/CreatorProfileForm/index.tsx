@@ -23,6 +23,9 @@ import { NotSignedInError } from "@/errors";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "@/i18n/routing";
 import { createCreator } from "@/resources/creators/creator.service";
+import { useAllRequiredFilled } from "@/hooks/allRequiredFilled";
+import { BuyerFormSchema } from "@/resources/buyers/buyer.types";
+import { useTokenRefresh } from "@/hooks/tokenRefresh";
 
 export function CreatorProfileForm({
   prevCreator,
@@ -31,9 +34,9 @@ export function CreatorProfileForm({
   prevCreator?: CreatorT;
   redirectPath?: string;
 }) {
-  const router = useRouter();
+  // 번역
   const t = useTranslations("setupPageNextForCreators");
-  const tMyInfoPage = useTranslations("myInfoPage");
+
   const [thumbnail, setThumbnail] = useState<ImageData | undefined>(
     prevCreator?.thumbPath ? new ImageData(prevCreator?.thumbPath) : undefined);
 
@@ -49,32 +52,30 @@ export function CreatorProfileForm({
   });
 
   // 필수 필드 체크
-  const allValues = form.watch();
-  const [allRequiredFilled, setAllRequiredFilled] = useState(false);
-  useEffect(() => {
-    const { success } = CreatorFormSchema.safeParse(allValues);
-    setAllRequiredFilled(success);
-  }, [allValues]);
+  const allRequiredFilled = useAllRequiredFilled(form, CreatorFormSchema);
 
+  // 제출 이후 동작
+  const router = useRouter();
+  const { tokenRefreshed, startRefresh } = useTokenRefresh();
+  useEffect(() => {
+    if (!tokenRefreshed) return;
+    router.replace(redirectPath || "/");
+  }, [tokenRefreshed]);
+
+  // 스피너
   const [submissionInProgress, setSubmissionInProgress] = useState(false);
-  const { session, isLoaded, isSignedIn } = useSession();
-  if (isLoaded && !isSignedIn) {
-    throw new NotSignedInError();
-  } else if (submissionInProgress || !isLoaded) {
+  if (submissionInProgress) {
     return <Spinner />;
   }
   return (
-    <Col>
-      <span className="text-black">{tMyInfoPage("profileDesc")}</span>
-      <Gap y={10} />
+    <>
+      <span className="text-black mb-10">{t("profileDesc")}</span>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(async (creatorForm) => {
           setSubmissionInProgress(true);
           await createCreator(creatorForm);
-          await session?.touch();
-          setSubmissionInProgress(false);
-          router.replace(redirectPath || "/");
+          startRefresh();
         })}>
 
           <Row className="justify-between">
@@ -102,7 +103,7 @@ export function CreatorProfileForm({
             </Col>
             <FormField
               control={form.control}
-              name="thumbnail"
+              name="files.thumbnail"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -232,6 +233,6 @@ export function CreatorProfileForm({
           />
         </form>
       </Form>
-    </Col>
+    </>
   );
 }

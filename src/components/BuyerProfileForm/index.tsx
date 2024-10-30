@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
 import { Label } from "@/ui/shadcn/Label";
@@ -12,55 +12,27 @@ import MultipleSelector from "@/ui/shadcn/MultipleSelector";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { useForm } from "react-hook-form";
-import { BuyerCompanyIndustry, BuyerCompanyType, BuyerFormT, BuyerT } from "@/resources/buyers/buyer.types";
+import {
+  BuyerCompanyFieldSchema,
+  BuyerCompanyTypeSchema,
+  BuyerFormSchema,
+  BuyerFormT, BuyerPurposeSchema,
+  BuyerT
+} from "@/resources/buyers/buyer.types";
 import { Form, FormControl, FormField, FormItem } from "@/ui/shadcn/Form";
 import Spinner from "@/components/Spinner";
 import { createBuyer } from "@/resources/buyers/buyer.service";
-import { useSession } from "@clerk/nextjs";
-import { NotSignedInError } from "@/errors";
+import { useTokenRefresh } from "@/hooks/tokenRefresh";
+import { useAllRequiredFilled } from "@/hooks/allRequiredFilled";
 
-
-const BUSINESS_FIELD_DATA: {
-  label: string;
-  value: BuyerCompanyIndustry;
-}[] = [
-  { label: "웹툰", value: "webtoon" },
-  { label: "게임", value: "game" },
-  { label: "영화", value: "movie" },
-  { label: "드라마", value: "drama" },
-  { label: "웹드라마", value: "webDrama" },
-  { label: "영상", value: "video" },
-  { label: "출판", value: "book" },
-  { label: "공연", value: "performance" },
-  { label: "기타", value: "etc" }
-];
-
-const BUSINESS_TYPE_DATA: {
-  label: string;
-  value: BuyerCompanyType;
-}[] = [
-  { label: "제작사", value: "creator" },
-  { label: "투자사", value: "investor" },
-  { label: "에이전트", value: "agent" },
-  { label: "플랫폼사", value: "platform" },
-  { label: "OTT", value: "ott" },
-  { label: "매니지먼트", value: "management" },
-  { label: "기타", value: "etc" }
-];
-
-const PURPOSE_DATA = [
-  "privateContract",
-  "publicContract",
-  "publish",
-  "secondaryProperty",
-  "investment",
-];
 
 export function BuyerProfileForm({ prevBuyer, redirectPath } : {
   prevBuyer?: BuyerT;
   redirectPath?: string;
 }) {
-  const router = useRouter();
+  // 번역
+  const t = useTranslations("profilePage");
+
   const prevBuyerCompany = prevBuyer?.companyInfo;
   const [thumbnail, setThumbnail] = useState<ImageData | undefined>(
     prevBuyerCompany?.thumbPath ? new ImageData(prevBuyerCompany?.thumbPath) : undefined);
@@ -79,47 +51,36 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
         position: prevBuyerCompany?.position || "",
         positionDetail: prevBuyerCompany?.positionDetail || "",
         businessNumber: prevBuyerCompany?.businessNumber || "",
-        thumbnail: undefined,
-        businessCert: undefined,
-        businessCard: undefined,
       },
       purpose: prevBuyer?.purpose,
     }
   });
 
   // 필수 필드 체크
-  const allValues = form.watch();
-  const [allRequiredFilled, setAllRequiredFilled] = useState(false);
-  const checkRequiredFieldsFilled = (values: BuyerFormT) => {
-    // TODO zod로 변경
-    const { companyInfo } = values;
-    return !!(companyInfo.name && companyInfo.businessNumber);
-  };
+  const allRequiredFilled = useAllRequiredFilled(form, BuyerFormSchema);
+
+  // 제출 이후 동작
+  const router = useRouter();
+  const { tokenRefreshed, startRefresh } = useTokenRefresh();
   useEffect(() => {
-    setAllRequiredFilled(checkRequiredFieldsFilled(allValues));
-  }, [allValues]);
+    if (!tokenRefreshed) return;
+    router.replace(redirectPath || "/");
+  }, [tokenRefreshed]);
 
-  const t = useTranslations("profilePage");
-  const Tpurpose = useTranslations("purpose");
-
+  // 스피너
   const [submissionInProgress, setSubmissionInProgress] = useState(false);
-  const { session, isLoaded, isSignedIn } = useSession();
-  if (isLoaded && !isSignedIn) {
-    throw new NotSignedInError();
-  } else if (submissionInProgress || !isLoaded) {
+  if (submissionInProgress) {
     return <Spinner />;
   }
   return (
-    <Col>
-      <span className="text-black">{t("headerDesc")}</span>
-      <Gap y={10} />
+    <>
+      <span className="text-black mb-10">{t("headerDesc")}</span>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(async (buyerForm) => {
           setSubmissionInProgress(true);
-          await createBuyer(buyerForm);
-          await session?.touch();
-          setSubmissionInProgress(false);
-          router.replace(redirectPath || "/");
+          await createBuyer(buyerForm); //TODO 실패 케이스 고려
+          startRefresh();
         })}>
           <FormField
             control={form.control}
@@ -151,10 +112,11 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
                   {/*  TODO*/}
                   <MultipleSelector
                     className="border-gray px-1 py-2 rounded-sm"
-                    value={BUSINESS_FIELD_DATA.filter(
-                      option => prevBuyerCompany?.fieldType.includes(option.value))}
                     onChange={field.onChange}
-                    defaultOptions={BUSINESS_FIELD_DATA}
+                    defaultOptions={BuyerCompanyFieldSchema.options
+                      .map(value => ({
+                        label: t(`businessFieldItems.${value}`), value
+                      }))}
                     placeholder={t("businessFieldPlaceholder") + " (멀티셀렉트 재구현 예정)"}
                     hidePlaceholderWhenSelected
                   />
@@ -173,11 +135,12 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
                 <FormControl>
                   <MultipleSelector
                     className="border-gray px-1 py-2 rounded-sm"
-                    value={BUSINESS_TYPE_DATA.filter(
-                      option => prevBuyerCompany?.businessType.includes(option.value))}
                     onChange={field.onChange}
-                    defaultOptions={BUSINESS_TYPE_DATA}
-                    placeholder={t("occupationPlaceholder")}
+                    defaultOptions={BuyerCompanyTypeSchema.options
+                      .map(value => ({
+                        label: t(`businessTypeItems.${value}`), value
+                      }))}
+                    placeholder={t("businessTypePlaceholder")}
                     hidePlaceholderWhenSelected
                   />
                 </FormControl>
@@ -199,7 +162,7 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
 
             <FormField
               control={form.control}
-              name="companyInfo.businessCert"
+              name="files.businessCert"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -274,7 +237,7 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
             </Col>
             <FormField
               control={form.control}
-              name="companyInfo.thumbnail"
+              name="files.thumbnail"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -368,7 +331,7 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
             </Label>
             <FormField
               control={form.control}
-              name="companyInfo.businessCard"
+              name="files.businessCard"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -408,13 +371,12 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
                     onValueChange={field.onChange}
                   >
                     <SelectTrigger className="bg-white border-gray text-[#94A4B8] rounded-sm">
-                      <SelectValue placeholder={t("goals")}/>
+                      <SelectValue placeholder={t("purposePlaceholder")}/>
                     </SelectTrigger>
                     <SelectContent>
-                      {PURPOSE_DATA.map((item) => (
-                        <SelectItem
-                          key={item} value={item}>
-                          {Tpurpose(item)}
+                      {BuyerPurposeSchema.options.map((value) => (
+                        <SelectItem key={value} value={value}>
+                          {t(`purpose.${value}`)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -435,6 +397,6 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
           />
         </form>
       </Form>
-    </Col>
+    </>
   );
 }
