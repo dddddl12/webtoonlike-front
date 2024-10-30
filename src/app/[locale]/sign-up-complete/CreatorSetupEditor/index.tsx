@@ -21,9 +21,7 @@ export function CreatorSetupEditor(): JSX.Element {
 
   return (
     <div>
-      <CreatorProfileForm
-        onSubmit={handleSubmit}
-      />
+      <CreatorProfileForm />
     </div>
   );
 }
