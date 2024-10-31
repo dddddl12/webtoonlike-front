@@ -22,8 +22,8 @@ import {
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import { generateRandomString } from "@/utils/randomString";
 import { useLocale, useTranslations } from "next-intl";
-import { BidRoundT } from "@/resources/bidRounds/bidRound.types";
 import { Link } from "@/i18n/routing";
+import { BidRequestT } from "@/resources/bidRequests/bidRequest.types";
 
 const OFFER_TABLE_HEADER = [
   { ko: "No.", en: "No." },
@@ -32,10 +32,10 @@ const OFFER_TABLE_HEADER = [
   { ko: "", en: "" },
 ];
 
-export function BuyerBidRoundList({
-  bidRounds
+export function BuyerBidRequestList({
+  bidRequests
 }: {
-  bidRounds: BidRoundT[]
+  bidRequests: BidRequestT[]
 }) {
   const t = useTranslations("offerPage");
   const TbidRequestStatus = useTranslations("bidRequestStatus");
@@ -51,13 +51,13 @@ export function BuyerBidRoundList({
   //   setFilteredBidRounds(filteredBidRounds);
   // }, [bidRequest, bidRounds]);
 
-  if(!bidRounds.length) {
+  if(!bidRequests.length) {
     return <Row className="rounded-md bg-gray-darker h-[84px] justify-center">
       <Text className="text-white">{t("ifNoOfferDesc")}</Text>
     </Row>;
   }
   return <Accordion type="single" collapsible className="w-full">
-    {bidRounds.map((bidRound, idx) => {
+    {bidRequests.map((bidRound, idx) => {
       return (
         <AccordionItem
           key={generateRandomString()}

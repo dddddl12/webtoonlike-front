@@ -22,7 +22,7 @@ import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 import { listWebtoons } from "@/resources/webtoons/webtoon.service";
 
 type Filters = {
-  status?: BidRoundStatus;
+  statuses?: BidRoundStatus[];
   genreId?: number;
   ageLimit?: AgeLimit,
   page: number;
@@ -70,7 +70,7 @@ export default function WebtooonFeedList({
     <>
       <Row className="gap-4">
         <Select onValueChange={(status) => handleChange({
-          status: status as BidRoundStatus,
+          statuses: [status] as BidRoundStatus[],
           page: 1
         })}>
           {/*TODO select 해제*/}
@@ -149,7 +149,6 @@ function GridContainer({ webtoonList, page, handleChange }: {
   page: number;
   handleChange: (newFilters: Filters) => void;
 }) {
-  const router = useRouter();
   if (!webtoonList) {
     return <Spinner />;
   }

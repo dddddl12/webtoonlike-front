@@ -3,6 +3,8 @@ import { WebtoonT } from "@/resources/webtoons/webtoon.types";
 import { BuyerT } from "@/resources/buyers/buyer.types";
 import { CreatorT } from "@/resources/creators/creator.types";
 import { InvoiceT } from "@/resources/invoices/invoice.types";
+import { UserT } from "@/resources/users/user.types";
+import { BidRequestMessageT } from "@/resources/bidRequestMessages/bidRequestMessage.types";
 
 export enum BidRequestStatus {
   Idle = "IDLE",
@@ -92,4 +94,6 @@ export interface BidRequestT extends _BidRequestT {
   buyer?: BuyerT;
   creator?: CreatorT;
   invoice?: InvoiceT;
+  user?: UserT;
+  BidRequestMessage: BidRequestMessageT[]
 }

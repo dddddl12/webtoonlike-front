@@ -9,7 +9,7 @@ import { Text } from "@/ui/texts";
 import { Badge } from "@/ui/shadcn/Badge";
 import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
 import { intervalToDuration } from "date-fns";
-import { useRouter } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { WebtoonT } from "@/resources/webtoons/webtoon.types";
 import WebtoonDetailsBtns from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetailsBtns";
 
@@ -103,7 +103,14 @@ export default function WebtoonDetails({ webtoon, editable }: {
             ))}
           </Row>
           <Gap y="52px" />
-          <WebtoonDetailsBtns webtoon={webtoon} />
+          {/*<WebtoonDetailsBtns webtoon={webtoon} />*/}
+          {webtoon.episodes?.length
+            && <Link
+              className="bg-[#C3C3C3] text-black rounded-s p-3 font-bold flex justify-center"
+              href={`/webtoons/${webtoon.id}/episodes/${webtoon.episodes[0].id}`}
+            >
+              원고 보기
+            </Link>}
         </Col>
       </Col>
     </Col>

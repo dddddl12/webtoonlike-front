@@ -2,7 +2,7 @@ import { Gap, Row } from "@/ui/layouts";
 import { Heading } from "@/ui/texts";
 import PageLayout from "@/components/PageLayout";
 import { getTranslations } from "next-intl/server";
-import { BuyerBidRoundList } from "@/app/[locale]/buyer/bid-round-requests/BuyerBidRoundList";
+import { BuyerBidRequestList } from "@/app/[locale]/buyer/bid-round-requests/BuyerBidRequestList";
 import { listBidRounds } from "@/resources/bidRounds/bidRound.service";
 
 const OFFER_TABLE_HEADER = [
@@ -38,7 +38,7 @@ export default async function BidRoundRequests() {
         </Row>
       </Row>
       <Gap y={4} />
-      <BuyerBidRoundList bidRounds={bidRounds} />
+      <BuyerBidRequestList bidRequests={bidRounds} />
     </PageLayout>
   );
 }

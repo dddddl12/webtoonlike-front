@@ -14,6 +14,7 @@ datasource db {
 }
 
 // TODO join 삭제 시 로직 재조정
+// TODO Index 추가
 
 model Admin {
   id        Int      @id @default(autoincrement())

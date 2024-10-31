@@ -13,10 +13,10 @@ const isAuthRelatedRoute = createRouteMatcher([
   "(.*)/sign-in(.*)", "(.*)/sign-up(.*)", "(.*)/sign-up-complete"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) {
-    req.nextUrl.pathname = "/sign-in";
-    return intlMiddleware(req);
-  }
+  // if (isProtectedRoute(req)) {
+  //   req.nextUrl.pathname = "/sign-in";
+  //   return intlMiddleware(req);
+  // }
 
   const { sessionClaims } = await auth();
   if (sessionClaims) {

@@ -11,6 +11,11 @@ import {
   WebtoonT
 } from "@/resources/webtoons/webtoon.types";
 import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
+import { getUserMetadata } from "@/resources/userMetadata/userMetadata.service";
+import { UserTypeT } from "@/resources/users/user.types";
+import { WrongUserTypeError } from "@/errors";
+
+type BidRoundFilter = BidRoundStatus[] | "any" | "none"
 
 const mapToDTO = (record: WebtoonRecord): WebtoonT => ({
   ...record,
@@ -33,11 +38,13 @@ export async function getWebtoon(id: number): Promise<WebtoonT> {
   return prisma.webtoon.findUniqueOrThrow({
     where: { id },
     include: {
-      WebtoonEpisode: true
+      WebtoonEpisode: true,
+      BidRound: true,
     }
   }).then(record => ({
     ...mapToDTO(record),
-    episodes: record.WebtoonEpisode
+    episodes: record.WebtoonEpisode,
+    bidRounds: record.BidRound,
   }));
 }
 
@@ -49,30 +56,44 @@ export async function getWebtoon(id: number): Promise<WebtoonT> {
 //   return updated;
 // }
 
-export async function listWebtoons({ status, genreId, ageLimit, page }: {
-  status?: BidRoundStatus;
+export async function listMyWebtoonsWithNoRounds({ page }: {
+  page?: number
+} = {}) {
+  const userMetadata = await getUserMetadata();
+  if(userMetadata.type !== UserTypeT.Creator) {
+    throw new WrongUserTypeError();
+  }
+  const { creatorId } = userMetadata;
+  return listWebtoons({
+    creatorId, page,
+    statuses: "none",
+    limit: 5
+  });
+}
+
+export async function listWebtoons({
+  statuses, genreId, ageLimit, creatorId,
+  page = 1,
+  limit = 10
+}: {
+  statuses?: BidRoundFilter;
   genreId?: number;
   ageLimit?: AgeLimit;
   page?: number;
+  creatorId?: number;
+  limit?: number;
 } = {}): Promise<{
     items: WebtoonT[];
     totalPages: number;
   }> {
   const where: Prisma.WebtoonWhereInput = {
+    authorId: creatorId,
     ageLimit: ageLimit,
-    BidRound: status ? {
-      some: {
-        status: {
-          in: [status]
-        },
-      },
-    } : undefined,
+    BidRound: getBidRoundFilter(statuses),
     XWebtoonGenre: genreId ? {
       some: { genreId }
     } : undefined,
   };
-  const limit = 10;
-  page ??= 1;
 
   const [records, totalRecords] = await prisma.$transaction([
     prisma.webtoon.findMany({
@@ -87,6 +108,30 @@ export async function listWebtoons({ status, genreId, ageLimit, page }: {
     totalPages: Math.ceil(totalRecords / limit),
   };
 }
+
+const getBidRoundFilter = (statuses?:BidRoundFilter): Prisma.BidRoundListRelationFilter | undefined => {
+  if (!statuses) {
+    return;
+  } else if (statuses === "any") {
+    return {
+      some: {}
+    };
+  } else if (statuses === "none") {
+    return {
+      none: {}
+    };
+  } else if (Array.isArray(statuses)) {
+    return statuses.length > 0 ? {
+      some: {
+        status: {
+          in: statuses
+        },
+      },
+    } : undefined;
+  }
+  throw new Error("Unknown statuses");
+};
+
 
 // export async function getThumbnailPresignedUrl(mimeType: string) {
 //   let key = `webtoons/thumbnails/thumbnail_${new Date().getTime()}.${mime.extension(mimeType)}`;

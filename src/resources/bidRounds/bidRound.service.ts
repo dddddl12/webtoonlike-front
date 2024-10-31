@@ -1,7 +1,7 @@
 // on every 24 hours
 // @Cron("0 0 * * * *")
 import { BidRoundStatus, BidRoundT } from "@/resources/bidRounds/bidRound.types";
-import { BidRound as BidRoundRecord } from "@prisma/client";
+import { BidRound as BidRoundRecord, Prisma } from "@prisma/client";
 import prisma from "@/utils/prisma";
 import { getUserMetadata } from "@/resources/userMetadata/userMetadata.service";
 
@@ -65,15 +65,33 @@ const mapToDTO = (record: BidRoundRecord): BidRoundT => ({
 //   });
 // }
 
-export async function listBidRounds(): Promise<{
-  items: BidRoundT[]
-}> {
+export async function listBidRounds({
+  page = 1,
+  limit = 5
+}: {
+  page?: number;
+  limit?: number;
+} = {}): Promise<{
+    items: BidRoundT[];
+    totalPages: number;
+  }> {
   const { id: userId } = await getUserMetadata();
-  const records = await prisma.bidRound.findMany({
-    where: { userId }
-  });
+
+  const where: Prisma.BidRoundWhereInput = {
+    userId
+  };
+
+  const [records, totalRecords] = await prisma.$transaction([
+    prisma.bidRound.findMany({
+      where,
+      take: limit,
+      skip: (page - 1) * limit,
+    }),
+    prisma.bidRound.count({ where })
+  ]);
   return {
-    items: records.map(mapToDTO)
+    items: records.map(mapToDTO),
+    totalPages: Math.ceil(totalRecords / limit),
   };
 }
 

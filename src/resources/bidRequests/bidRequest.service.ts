@@ -1,12 +1,20 @@
-// import { Injectable } from "@nestjs/common";
-// import { bidRequestM } from "@/models/bidRequests";
-// import { bidRoundM } from "@/models/bidRounds";
-// import * as err from "@/errors";
-// import { lookupBuilder } from "./fncs/lookup_builder";
-// import { listBidRequest } from "./fncs/list_bid_request";
-// import type { BidRequestFormT, BidRequestT, GetBidRequestOptionT, ListBidRequestOptionT } from "@/types";
-//
-//
+"use server";
+
+import { BidRequest as BidRequestRecord, Prisma } from "@prisma/client";
+import { BidRequestT } from "@/resources/bidRequests/bidRequest.types";
+import { getUserMetadata } from "@/resources/userMetadata/userMetadata.service";
+import prisma from "@/utils/prisma";
+
+
+const mapToDTO = (record: BidRequestRecord): BidRequestT => ({
+  ...record,
+  contractRange: {
+    // TODO contractRange json 검토
+    data: []
+  },
+});
+
+
 // @Injectable()
 // export class BidRequestService {
 //   constructor() {}
@@ -91,3 +99,42 @@
 //     return updated;
 //   }
 // }
+
+export async function listBidRequests({
+  page = 1,
+  limit = 10
+}: {
+  page?: number;
+  limit?: number;
+} = {}): Promise<{
+    items: BidRequestT[];
+    totalPages: number;
+  }> {
+  const { id: userId } = await getUserMetadata();
+
+  const where: Prisma.BidRequestWhereInput = {
+    // userId
+  //   TODO
+  };
+
+  const [records, totalRecords] = await prisma.$transaction([
+    prisma.bidRequest.findMany({
+      where,
+      include: {
+        round: {
+          include: {
+            webtoon: true
+          }
+        },
+        BidRequestMessage: true
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+    }),
+    prisma.bidRequest.count({ where })
+  ]);
+  return {
+    items: records.map(mapToDTO),
+    totalPages: Math.ceil(totalRecords / limit),
+  };
+}

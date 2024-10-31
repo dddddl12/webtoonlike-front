@@ -19,7 +19,6 @@ export default async function WebtoonInfo({ params }:
   const user = await getUserMetadata();
   const isOwner = user.type === UserTypeT.Creator
     && webtoon.authorId === user.creatorId;
-  const t = await getTranslations("detailedInfoPage");
 
   return (
     <PageLayout>
@@ -28,33 +27,10 @@ export default async function WebtoonInfo({ params }:
         editable={isOwner}
       />
 
-      {
-        webtoon.bidRounds?.length
-          && <ContractRangeData webtoon={webtoon}/>
-      }
-
       <Gap y={10}/>
       <hr className="border-gray-shade"/>
-
-      {
-        <>
-          <Gap y={10}/>
-          <Row className="justify-between">
-            <p className='text-2xl font-bold'>{t("episodePreview")}</p>
-
-            <Gap x={4}/>
-
-            {isOwner && (
-              <Link className="cursor-pointer"
-                href={`/webtoons/${webtoon.id}/episodes/create`}>
-                <IconCross className="fill-mint"/>
-                <Text className="text-mint">{t("addEpisode")}</Text>
-              </Link>
-            )}
-
-          </Row>
-        </>
-      }
+      <Gap y={10}/>
+      <ContractRangeData webtoon={webtoon}/>
     </PageLayout>
   );
 }
