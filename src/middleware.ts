@@ -20,7 +20,7 @@ export default clerkMiddleware(async (auth, req) => {
 
   const { sessionClaims } = await auth();
   if (sessionClaims) {
-    const { success } = await ClerkUserMetadataSchema.safeParseAsync(sessionClaims.metadata);
+    const { success } = ClerkUserMetadataSchema.safeParse(sessionClaims.metadata);
     if (!success && !isAuthRelatedRoute(req)) {
       // 회원가입을 마치지 않았는데 일반 페이지에 있는 경우
       req.nextUrl.pathname = "/sign-up-complete";

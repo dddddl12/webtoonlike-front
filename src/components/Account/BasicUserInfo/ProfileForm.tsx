@@ -1,92 +1,34 @@
-"use client";
+import { CountrySchema, UserFormSchema, UserFormT, UserTypeT } from "@/resources/users/user.types";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Button } from "@/ui/shadcn/Button";
-import { Input } from "@/ui/shadcn/Input";
-import { useSnackbar } from "@/hooks/Snackbar";
+import { useTranslations } from "next-intl";
+import { useForm } from "react-hook-form";
+import { useAllRequiredFilled } from "@/hooks/allRequiredFilled";
+import { useRouter } from "@/i18n/routing";
+import { useTokenRefresh } from "@/hooks/tokenRefresh";
+import Spinner from "@/components/Spinner";
+import { Form, FormControl, FormField, FormItem } from "@/ui/shadcn/Form";
+import { createUser } from "@/resources/users/user.service";
 import { Col, Gap, Row } from "@/ui/layouts";
-import { IconSignupCreator } from "@/components/svgs/IconSignupCreatori";
-import { IconSignupBuyer } from "@/components/svgs/IconSignupBuyer";
+import { Input } from "@/ui/shadcn/Input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/shadcn/Select";
 import { Text } from "@/ui/texts";
 import { Checkbox } from "@/ui/shadcn/CheckBox";
-import { useLocale, useTranslations } from "next-intl";
-import TermsOfUseKo from "@/common/TermsOfUseKo";
-import TermsOfUseEn from "@/common/TermsOfUseEn";
-import { CountrySchema, UserFormSchema, UserFormT, UserTypeT } from "@/resources/users/user.types";
-import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem } from "@/ui/shadcn/Form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/ui/shadcn/Select";
-import { createUser } from "@/resources/users/user.service";
-import { useUser } from "@clerk/nextjs";
-import { useRouter } from "@/i18n/routing";
-import Spinner from "@/components/Spinner";
-import { useAllRequiredFilled } from "@/hooks/allRequiredFilled";
-import { useTokenRefresh } from "@/hooks/tokenRefresh";
+import { Button } from "@/ui/shadcn/Button";
+import TermsOfUse from "@/components/Account/BasicUserInfo/TermsOfUse";
 
-export function MeSetupEditor() {
-  const { enqueueSnackbar } = useSnackbar();
-
-  const [userType, setUserType] = useState<UserTypeT | undefined>();
-
-  // enqueueSnackbar("user successfully created", { variant: "success" });
-
-  return userType ?
-    <ProfileForm userType={userType} setUserType={setUserType} /> :
-    <UserTypeSelector setUserType={setUserType} />;
-}
-
-function UserTypeSelector({ setUserType }: {
-  setUserType: Dispatch<SetStateAction<UserTypeT | undefined>>;
-}) {
-  const t = useTranslations("setupPage");
-
-  return <>
-    <span className="text-black mb-10">{t("selectMembershipType")}</span>
-
-    <Row className="justify-evenly">
-      <Col className="justify-center items-center">
-        <IconSignupCreator className="fill-black" />
-        <Gap y={4} />
-        <span className="text-black">{t("membershipCopyrightHolder")}</span>
-        <Gap y={4} />
-        <Button
-          onClick={() => setUserType(UserTypeT.Creator)}
-          className="w-[160px] bg-black-texts text-white hover:bg-mint"
-        >
-          {t("createAccount")}
-        </Button>
-      </Col>
-
-      <div className="border border-gray h-[180px]" />
-
-      <Col className="justify-center items-center">
-        <IconSignupBuyer className="fill-black" />
-        <Gap y={4} />
-        <span className="text-black">{t("membershipBuyers")}</span>
-        <Gap y={4} />
-        <Button
-          onClick={() => setUserType(UserTypeT.Buyer)}
-          className="w-[160px] bg-black-texts text-white hover:bg-mint"
-        >
-          {t("createAccount")}
-        </Button>
-      </Col>
-    </Row>
-  </>;
-}
-
-function ProfileForm({ userType, setUserType }: {
+export default function ProfileForm({ userType, setUserType }: {
   userType: UserTypeT
   setUserType: Dispatch<SetStateAction<UserTypeT | undefined>>;
 }) {
-  const t = useTranslations("countryOptionsENG");
-  const locale = useLocale();
+  const t = useTranslations("setupForm");
+  const tGeneral = useTranslations("general");
   const form = useForm<UserFormT>({
     defaultValues: {
       phone: "",
       userType,
-      postCode: "",
-      address: "",
-      addressDetail: ""
+      postcode: "",
+      addressLine1: "",
+      addressLine2: ""
     },
   });
 
@@ -114,8 +56,11 @@ function ProfileForm({ userType, setUserType }: {
       startRefresh();
     })}>
       <span className="text-black">
-        {/*TODO 번역 적용*/}
-        선택한 사용자 유형: {userType === UserTypeT.Creator ? "저작권자" : "바이어"}
+        {t("selectedUserType", {
+          userType: userType === UserTypeT.Creator
+            ? t("selectedUserTypeCreator")
+            : t("selectedUserTypeBuyer")
+        })}
       </span>
       <Gap y={10}/>
 
@@ -129,7 +74,7 @@ function ProfileForm({ userType, setUserType }: {
                 {...field}
                 className="border-gray"
                 type="tel"
-                placeholder="휴대폰 번호(숫자만 입력)"
+                placeholder={t("insertPhone")}
               />
             </FormControl>
           </FormItem>
@@ -153,12 +98,12 @@ function ProfileForm({ userType, setUserType }: {
                   onValueChange={field.onChange}
                 >
                   <SelectTrigger className="bg-white border-gray text-black-texts rounded-sm">
-                    <SelectValue placeholder={"국가 선택"}/>
+                    <SelectValue placeholder={t("insertCountry")}/>
                   </SelectTrigger>
                   <SelectContent>
                     {CountrySchema.options.map((value) => (
                       <SelectItem key={value} value={value}>
-                        {t(value)}
+                        {t(`countries.${value}`)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -170,7 +115,7 @@ function ProfileForm({ userType, setUserType }: {
 
         <FormField
           control={form.control}
-          name="postCode"
+          name="postcode"
           render={({ field }) => (
             <FormItem className="flex-1">
               <FormControl>
@@ -179,7 +124,7 @@ function ProfileForm({ userType, setUserType }: {
                   className="border-gray"
                   type="text"
                   inputMode="numeric"
-                  placeholder="우편번호 입력"
+                  placeholder={t("insertPostalCode")}
                 />
               </FormControl>
             </FormItem>
@@ -191,7 +136,7 @@ function ProfileForm({ userType, setUserType }: {
 
       <FormField
         control={form.control}
-        name="address"
+        name="addressLine1"
         render={({ field }) => (
           <FormItem>
             <FormControl>
@@ -199,7 +144,7 @@ function ProfileForm({ userType, setUserType }: {
                 {...field}
                 className="border-gray"
                 type="text"
-                placeholder="주소 입력"
+                placeholder={t("insertAddress1")}
               />
             </FormControl>
           </FormItem>
@@ -210,7 +155,7 @@ function ProfileForm({ userType, setUserType }: {
 
       <FormField
         control={form.control}
-        name="addressDetail"
+        name="addressLine2"
         render={({ field }) => (
           <FormItem>
             <FormControl>
@@ -218,7 +163,7 @@ function ProfileForm({ userType, setUserType }: {
                 {...field}
                 className="border-gray"
                 type="text"
-                placeholder="상세주소 입력"
+                placeholder={t("insertAddress2")}
               />
             </FormControl>
           </FormItem>
@@ -233,16 +178,15 @@ function ProfileForm({ userType, setUserType }: {
       <Gap y={10}/>
 
       <Row className="px-4 py-2 text-black-texts text-[11pt] border border-gray rounded-t-sm">
+        {t("termsAndConditions")}
         <Gap x={1}/>
-        WebtoonLike 이용약관
-        <Gap x={1}/>
-        <span className="text-red">(필수)</span>
+        <span className="text-red">{t("required")}</span>
       </Row>
 
       <Col className="h-[350px] overflow-y-scroll border border-gray rounded-b-sm">
         <Row className="sticky top-0 p-3 justify-center bg-gray-light/90">
           <Text className="text-sm text-black-texts">
-            이용약관에 동의하시겠습니까?
+            {t("doYouAgree")}
           </Text>
           <Gap x={1}/>
           <FormField
@@ -261,12 +205,8 @@ function ProfileForm({ userType, setUserType }: {
           />
 
         </Row>
-        <Col className="p-3 pt-0">
-          <Text className="text-black-texts text-[16px] font-bold bg">
-            Webtoonlike 이용약관
-          </Text>
-          <Gap y={2}/>
-          {locale === "ko" ? <TermsOfUseKo/> : <TermsOfUseEn/>}
+        <Col className="p-3">
+          <TermsOfUse/>
         </Col>
         <Gap y={5}/>
       </Col>
@@ -278,13 +218,13 @@ function ProfileForm({ userType, setUserType }: {
           className="w-[49%] bg-black-texts text-white hover:text-black"
           onClick={() => setUserType(undefined)}
         >
-          이전
+          {tGeneral("goBack")}
         </Button>
         <Input
           type="submit"
           className="w-[49%] bg-black-texts text-white hover:text-black"
           disabled={!allRequiredFilled}
-          value="다음"
+          value={tGeneral("goNext")}
         />
       </Row>
     </form>

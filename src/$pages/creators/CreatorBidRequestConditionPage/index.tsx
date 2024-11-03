@@ -6,7 +6,7 @@ import Image from "next/image";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import Spinner from "@/components/Spinner";
 import { useAlertDialog } from "@/hooks/ConfirmDialog";
-import { useListData } from "@/hooks/ListData";
+import { useListData } from "@/hooks/listData";
 import { useMe } from "@/states/UserState";
 import { useSnackbar } from "notistack";
 import {
@@ -212,42 +212,42 @@ export function CreatorBidRequestConditionPage({
           !bidRequestDetail.acceptedAt &&
           !bidRequestDetail.rejectedAt &&
           !bidRequestDetail.cancelledAt ? (
-            <Row className="m-auto w-[30%] justify-evenly">
+              <Row className="m-auto w-[30%] justify-evenly">
                 <Button className="w-[120px] bg-red" onClick={handleClickReject}>
-                {t("reject")}
-              </Button>
+                  {t("reject")}
+                </Button>
                 {/* <Button className="w-[120px] bg-gray-shade">협의요청</Button> */}
                 <Button className="w-[120px] bg-mint" onClick={handleClickAccept}>
-                {t("accept")}
-              </Button>
+                  {t("accept")}
+                </Button>
               </Row>
             ) : null}
 
           {me?.id === bidRequestDetail.round?.userId &&
           bidRequestDetail.rejectedAt &&
           !bidRequestDetail.cancelledAt ? (
-            <Row className="m-auto w-[30%] justify-evenly">
+              <Row className="m-auto w-[30%] justify-evenly">
                 <Button disabled className="w-[120px] bg-red">
-                {t("rejectComplete")}
-              </Button>
+                  {t("rejectComplete")}
+                </Button>
               </Row>
             ) : null}
 
           {me?.id === bidRequestDetail.round?.userId &&
           bidRequestDetail.acceptedAt ? (
-            <Row className="m-auto w-[30%] justify-evenly">
+              <Row className="m-auto w-[30%] justify-evenly">
                 <Button disabled className="w-[120px] bg-mint">
-                {t("acceptComplete")}
-              </Button>
+                  {t("acceptComplete")}
+                </Button>
               </Row>
             ) : null}
 
           {me?.id === bidRequestDetail.round?.userId &&
           bidRequestDetail.cancelledAt ? (
-            <Row className="m-auto w-[30%] justify-evenly">
+              <Row className="m-auto w-[30%] justify-evenly">
                 <Button disabled className="w-[120px] bg-red">
-                {t("cancelledOffer")}
-              </Button>
+                  {t("cancelledOffer")}
+                </Button>
               </Row>
             ) : null}
         </Row>
@@ -330,26 +330,26 @@ export function CreatorBidRequestConditionPage({
         bidRequestDetail.contractRange.data.filter(
           (data) => data.businessField === "webtoon"
         ).length > 0 ? (
-          <Col>
+            <Col>
               <Text className="text-white text-[14pt] font-bold">
-              {t("webtoonSerialRights")}
-            </Text>
+                {t("webtoonSerialRights")}
+              </Text>
               <Gap y={5} />
               <Table className="text-white">
-              <TableHeader>
+                <TableHeader>
                   <TableRow>
-                  <TableHead className="text-white w-[33%] text-center border">
+                    <TableHead className="text-white w-[33%] text-center border">
                       {t("serviceRegion")}
                     </TableHead>
-                  <TableHead className="text-white w-[33%] text-center border">
+                    <TableHead className="text-white w-[33%] text-center border">
                       {t("exclusiveRights")}
                     </TableHead>
-                  <TableHead className="text-white w-[33%] text-center border">
+                    <TableHead className="text-white w-[33%] text-center border">
                       {t("proposalTermsAndConditions")}
                     </TableHead>
-                </TableRow>
+                  </TableRow>
                 </TableHeader>
-              <TableBody>
+                <TableBody>
                   {bidRequestDetail.contractRange.data
                     .filter((data) => data.businessField === "webtoon")
                     .map((data, idx) => (
@@ -370,7 +370,7 @@ export function CreatorBidRequestConditionPage({
                       </TableRow>
                     ))}
                 </TableBody>
-            </Table>
+              </Table>
             </Col>
           ) : null}
 
@@ -380,24 +380,24 @@ export function CreatorBidRequestConditionPage({
         bidRequestDetail.contractRange.data.filter(
           (data) => data.businessField !== "webtoon"
         ).length > 0 ? (
-          <Col>
+            <Col>
               <Text className="text-white text-[14pt] font-bold">2차 사업권</Text>
               <Gap y={5} />
               <Table className="text-white">
-              <TableHeader>
+                <TableHeader>
                   <TableRow>
-                  <TableHead className="text-white w-[33%] text-center border">
+                    <TableHead className="text-white w-[33%] text-center border">
                       {t("businessRightClassification")}
                     </TableHead>
-                  <TableHead className="text-white w-[33%] text-center border">
+                    <TableHead className="text-white w-[33%] text-center border">
                       {t("countryOfDistribution")}
                     </TableHead>
-                  <TableHead className="text-white w-[33%] text-center border">
+                    <TableHead className="text-white w-[33%] text-center border">
                       {t("proposalTermsAndConditions")}
                     </TableHead>
-                </TableRow>
+                  </TableRow>
                 </TableHeader>
-              <TableBody>
+                <TableBody>
                   {bidRequestDetail.contractRange.data
                     .filter((data) => data.businessField !== "webtoon")
                     .map((data, idx) => (
@@ -418,7 +418,7 @@ export function CreatorBidRequestConditionPage({
                       </TableRow>
                     ))}
                 </TableBody>
-            </Table>
+              </Table>
             </Col>
           ) : null}
       </Col>

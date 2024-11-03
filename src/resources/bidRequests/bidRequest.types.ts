@@ -1,11 +1,8 @@
-import { BidRoundT } from "@/resources/bidRounds/bidRound.types";
-import { WebtoonT } from "@/resources/webtoons/webtoon.types";
-import { BuyerT } from "@/resources/buyers/buyer.types";
-import { CreatorT } from "@/resources/creators/creator.types";
-import { InvoiceT } from "@/resources/invoices/invoice.types";
-import { UserT } from "@/resources/users/user.types";
-import { BidRequestMessageT } from "@/resources/bidRequestMessages/bidRequestMessage.types";
+import { ContractRangeItemSchema } from "@/resources/bidRounds/bidRound.types";
+import z from "zod";
+import { ResourceSchema } from "@/resources/globalTypes";
 
+// TODO 상태
 export enum BidRequestStatus {
   Idle = "IDLE",
   Waiting = "WAITING",
@@ -14,86 +11,43 @@ export enum BidRequestStatus {
   Done = "DONE",
 }
 
-export type BidRequestFormT = {
-  userId: number | null;
-  roundId: number;
-  message?: (string | null) | undefined;
-  contractRange: {
-    data: {
-      contract: "exclusive" | "nonExclusive" | "disallow";
-      businessField: "all" | "webtoon" | "movie" | "drama" | "webDrama" | "ads" | "musical" | "game" | "book" | "product";
-      country: "all" | "ko" | "en" | "zhCN" | "zhTW" | "de" | "id" | "ja" | "fr" | "vi" | "ms" | "th" | "es";
-      message: string;
-    }[];
-  };
-  /** creator acceptance */
-  acceptedAt?: (Date | null) | undefined;
-  /** creator rejection */
-  rejectedAt?: (Date | null) | undefined;
-  /** admin approval */
-  approvedAt?: (Date | null) | undefined;
-  /** user cancel bid request */
-  cancelledAt?: (Date | null) | undefined;
-}
+// 대기 중, 거절 완료, 협상 중, 성사 완료, 협상 종료
 
-type _BidRequestT = {
-  id: number;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: number | null;
-  roundId: number;
-  message?: (string | null) | undefined;
-  contractRange: {
-    data: {
-      contract: "exclusive" | "nonExclusive" | "disallow";
-      businessField: "all" | "webtoon" | "movie" | "drama" | "webDrama" | "ads" | "musical" | "game" | "book" | "product";
-      country: "all" | "ko" | "en" | "zhCN" | "zhTW" | "de" | "id" | "ja" | "fr" | "vi" | "ms" | "th" | "es";
-      message: string;
-    }[];
-  };
-  /** creator acceptance */
-  acceptedAt?: (Date | null) | undefined;
-  /** creator rejection */
-  rejectedAt?: (Date | null) | undefined;
-  /** admin approval */
-  approvedAt?: (Date | null) | undefined;
-  /** user cancel bid request */
-  cancelledAt?: (Date | null) | undefined;
-}
+const BidRequestBaseSchema = z.object({
+  roundId: z.number(),
+  message: z.string().optional(),
+  contractRange: z.array(
+    ContractRangeItemSchema.extend({
+      message: z.string().optional(),
+    })
+  ),
+});
 
-export type GetBidRequestOptionT = {
-  meId?: (number | undefined) | undefined;
-  $round?: boolean | undefined;
-  $webtoon?: boolean | undefined;
-  $buyer?: boolean | undefined;
-  $creator?: boolean | undefined;
-  $invoice?: boolean | undefined;
-}
+export const BidRequestFormSchema = BidRequestBaseSchema;
+export type BidRequestFormT = z.infer<typeof BidRequestFormSchema>;
 
-export type ListBidRequestOptionT = {
-  cursor?: string | undefined;
-  limit?: number | undefined;
-  offset?: number | undefined;
-  $numData?: boolean | undefined;
-  meId?: ((number | undefined) | undefined) | undefined;
-  $round?: (boolean | undefined) | undefined;
-  $webtoon?: (boolean | undefined) | undefined;
-  $buyer?: (boolean | undefined) | undefined;
-  $creator?: (boolean | undefined) | undefined;
-  $invoice?: (boolean | undefined) | undefined;
-  userId?: number | undefined;
-  roundId?: number | undefined;
-  status?: ("accepted" | "rejected") | undefined;
-  approved?: ("only" | "except") | undefined;
-  mine?: ("only" | "except") | undefined;
-}
+export const BidRequestSchema = BidRequestBaseSchema
+  .merge(ResourceSchema)
+  .extend({
+    userId: z.number().optional(),
+    /** creator acceptance */
+    acceptedAt: z.date().optional(),
+    /** creator rejection */
+    rejectedAt: z.date().optional(),
+    /** admin approval */
+    approvedAt: z.date().optional(),
+    /** user cancel bid request */
+    cancelledAt: z.date().optional(),
+  });
+export type BidRequestT = z.infer<typeof BidRequestSchema>;
 
-export interface BidRequestT extends _BidRequestT {
-  round?: BidRoundT;
-  webtoon?: WebtoonT;
-  buyer?: BuyerT;
-  creator?: CreatorT;
-  invoice?: InvoiceT;
-  user?: UserT;
-  BidRequestMessage: BidRequestMessageT[]
-}
+export const BidRequestSchemaExtendedSchema = BidRequestSchema
+  .extend({
+    webtoon: z.object({
+      id: z.number(),
+      title: z.string(),
+      title_en: z.string().optional(),
+      thumbPath: z.string(),
+    })
+  });
+export type BidRequestExtendedT = z.infer<typeof BidRequestSchemaExtendedSchema>;

@@ -1,4 +1,10 @@
 {
+    "general": {
+        "submit": "제출",
+        "edit": "수정",
+        "goBack": "이전",
+        "goNext": "다음"
+    },
     "setupPage": {
         "setupAccount": "회원가입",
         "selectMembershipType": "사용자 유형을 골라주세요",
@@ -7,30 +13,30 @@
         "createAccount": "가입하기"
     },
     "setupForm": {
-        "insertName": "이름 입력",
+        "selectedUserType": "선택한 사용자 유형: {userType}",
+        "selectedUserTypeCreator": "저작권자",
+        "selectedUserTypeBuyer": "바이어",
         "insertPhone": "휴대폰 번호(숫자만 입력)",
         "insertCountry": "국가 선택",
         "insertPostalCode": "우편번호 입력",
         "insertAddress1": "주소 입력",
         "insertAddress2": "상세주소 입력",
         "termsAndConditions": "webtoonlike 이용약관",
-        "required": "필수",
+        "required": "(필수)",
         "doYouAgree": "이용약관에 동의하시겠습니까?",
-        "goBack": "이전",
-        "goNext": "다음"
-    },
-    "nationData": {
-        "대한민국": "대한민국",
-        "미국": "미국",
-        "중국": "중국",
-        "대만": "대만",
-        "일본": "일본",
-        "프랑스": "프랑스",
-        "스페인": "스페인 ",
-        "베트남": "베트남",
-        "말레이시아": "말레이사아",
-        "태국": "태국",
-        "기타": "기타"
+        "countries": {
+            "ko": "대한민국",
+            "en": "미국",
+            "zhCN": "중국",
+            "zhTW": "대만",
+            "ja": "일본",
+            "fr": "프랑스",
+            "es": "스페인",
+            "vi": "베트남",
+            "ms": "말레이시아",
+            "th": "태국",
+            "all": "전체"
+        }
     },
     "setupPageNextForCreators": {
         "profileDesc": "프로필 정보를 입력해 주세요.",
@@ -43,9 +49,7 @@
         "affiliation": "소속",
         "noAffiliation": "미소속",
         "rookie": "신인",
-        "experienced": "경력",
-        "submit": "제출",
-        "edit": "수정"
+        "experienced": "경력"
     },
     "homeMain": {
         "days": "일",
@@ -111,10 +115,7 @@
         "registrationDate": "등록일",
         "viewNegotiationHistory": "최근 협상 보기",
         "situation": "상태",
-        "ifNoOfferDesc": "홈에서 웹툰을 선택하여 오퍼를 넣어보세요",
-        "makeOffer": "오퍼 하기",
-        "unableToMakeOffer": "투고 전 오퍼 불가",
-        "notPossibleToOffer": "오퍼 가능 기간이 아닙니다."
+        "ifNoOfferDesc": "홈에서 웹툰을 선택하여 오퍼를 넣어보세요"
     },
     "personalInformation": {
         "personalInfo": "기본 정보",
@@ -125,24 +126,24 @@
         "latestContent": "신작",
         "earliestContent": "구작",
         "yes": "예",
-        "no": "아니오"
+        "no": "아니요"
     },
     "makeAnOffer": {
-      "makeOffer": "오퍼 하기",
-      "addItem": "항목 추가",
-      "typeOfBusinessRight": "사업권 종류",
-      "businessRightClassification": "사업권 구분",
-      "exclusiveRights": "독점 권리",
-      "serviceRegion": "서비스 권역",
-      "contractCondition": "계약 조건",
-      "contractConditionDesc": "MG, 기간, RS, 원고료 등을 작성해 주세요.",
-      "delete": "삭제",
-      "exclusive": "독점",
-      "nonExclusive": "비독점",
-      "toCreator": "저작권자에게",
-      "inputAdditionalRequirements": "추가 요구사항을 입력해 주세요",
-      "note": "*전화번호, SNS계정 등 별도 연락수단을 기재할 경우 웹툰라이크 이용이 제한될 수 있습니다.",
-      "next": "다음"
+        "makeOffer": "오퍼 하기",
+        "addItem": "항목 추가",
+        "typeOfBusinessRight": "사업권 종류",
+        "businessRightClassification": "사업권 구분",
+        "exclusiveRights": "독점 권리",
+        "serviceRegion": "서비스 권역",
+        "contractCondition": "계약 조건",
+        "contractConditionDesc": "MG, 기간, RS, 원고료 등을 작성해 주세요.",
+        "delete": "삭제",
+        "exclusive": "독점",
+        "nonExclusive": "비독점",
+        "toCreator": "저작권자에게",
+        "inputAdditionalRequirements": "추가 요구사항을 입력해 주세요",
+        "note": "*전화번호, SNS계정 등 별도 연락수단을 기재할 경우 웹툰라이크 이용이 제한될 수 있습니다.",
+        "next": "다음"
     },
     "offerHeaderData": {
         "사업권 종류": "사업권 종류",
@@ -156,61 +157,10 @@
         "webtoonRights": "웹툰 연재권",
         "secondaryRights": "2차 사업권"
     },
-    "businessRightClassification": {
-        "전체": "전체",
-        "영화": "영화",
-        "드라마": "드라마",
-        "웹드라마": "웹드라마",
-        "광고": "광고",
-        "뮤지컬": "뮤지컬",
-        "게임": "게임",
-        "도서": "도서",
-        "상품": "상품"
-    },
-    "businessFieldENG": {
-        "all": "전체",
-        "webtoon": "웹툰",
-        "movie": "영화",
-        "drama": "드라마",
-        "webDrama": "웹드라마",
-        "ads": "광고",
-        "musical": "뮤지컬",
-        "game": "게임",
-        "book": "도서",
-        "product": "상품"
-    },
-    "countryOptions": {
-        "전체": "전체",
-        "국내": "국내",
-        "북미(영어)": "북미(영어)",
-        "중국(간체)": "중국(간체)",
-        "대만(번체)": "대만(번체)",
-        "일본": "일본",
-        "프랑스": "프랑스",
-        "스페인": "스페인",
-        "베트남": "베트남",
-        "말레이시아": "말레이시아",
-        "태국": "태국",
-        "기타": "기타"
-    },
-    "countryOptionsENG": {
-        "ko": "대한민국",
-        "en": "미국",
-        "zhCN": "중국",
-        "zhTW": "대만",
-        "ja": "일본",
-        "fr": "프랑스",
-        "es": "스페인",
-        "vi": "베트남",
-        "ms": "말레이시아",
-        "th": "태국",
-        "all": "전체"
-    },
     "detailedInfoPage": {
         "episodePreview": "회차 미리보기",
         "episodeSeq": "{number}화",
         "addEpisode": "회차 추가하기",
-        "goEdit": "수정하기",
         "editEpisode": "회차 수정하기",
         "episodeTitle": "회차 제목",
         "episodeEnTitle": "회차 제목 (영문)",
@@ -219,7 +169,6 @@
         "episodeEnTitlePlaceholder": "영문 회차 제목을 입력해 주세요",
         "episodeNumberPlaceholder": "회차 번호을 입력해 주세요",
         "episodeThumbnail": "회차 썸네일",
-        "edit": "수정",
         "episodeImage": "회차 이미지",
         "preview": "미리보기",
         "imageUpload": "이미지 업로드",
@@ -320,9 +269,7 @@
             "publish": "콘텐츠 유통",
             "secondaryProperty": "2차 판권",
             "investment": "투자"
-        },
-        "edit": "수정",
-        "submit": "제출"
+        }
     },
     "invoiceManagement": {
         "invoiceManagement": "인보이스 관리",
@@ -414,6 +361,47 @@
     "pagination": {
         "previous": "이전",
         "next": "다음"
+    },
+    "webtoonDetails": {
+        "timeLeft": "{days}일 {hours}시간 {minutes}분",
+        "numberOfOffers": "{count}명 오퍼중",
+        "targetAge": "{age}대 타켓",
+        "targetAgeRanged": "{lowerLimit}~{upperLimit}대 타켓",
+        "episodeCount": "{count}화 완결",
+        "viewEpisodes": "원고 보기",
+        "unableToView": "등록된 원고가 없습니다",
+        "makeOffer": "오퍼하기",
+        "unableToMakeOffer": "투고 전 오퍼 불가",
+        "notPossibleToOffer": "오퍼 가능 기간이 아닙니다"
+    },
+    "contractRange": {
+        "derivative": {
+            "all": "전체",
+            "webtoon": "웹툰",
+            "movie": "영화",
+            "drama": "드라마",
+            "webDrama": "웹드라마",
+            "ads": "광고",
+            "musical": "뮤지컬",
+            "game": "게임",
+            "book": "도서",
+            "product": "상품"
+        },
+        "countries": {
+            "all": "전체",
+            "ko": "국내",
+            "en": "북미(영어)",
+            "zhCN": "중국(간체)",
+            "zhTW": "대만(번체)",
+            "de": "독일",
+            "id": "인도네시아",
+            "ja": "일본",
+            "fr": "프랑스",
+            "es": "스페인",
+            "vi": "베트남",
+            "ms": "말레이시아",
+            "th": "태국"
+        }
     },
     "contractRangeData": {
         "detailedInformation": "작품 상세정보",

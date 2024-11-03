@@ -7,7 +7,7 @@ import { Text } from "@/ui/texts";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useListData } from "@/hooks/ListData";
+import { useListData } from "@/hooks/listData";
 import * as CreatorApi from "@/apis/creators";
 import * as UserApi from "@/apis/users";
 import { ListCreatorOptionT } from "@/types";

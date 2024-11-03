@@ -1,22 +1,15 @@
-export type GenreFormT = {
-    label: string;
-    label_en?: (string | null) | undefined;
-    rank?: (number | null) | undefined;
-}
+import z from "zod";
+import { ResourceSchema } from "@/resources/globalTypes";
 
-export type GenreT = {
-    id: number;
-    createdAt: Date;
-    updatedAt: Date;
-    label: string;
-    label_en: string | null;
-    rank: number | null;
-}
+const GenreBaseSchema = z.object({
+  label: z.string(),
+  label_en: z.string().optional(),
+  rank: z.number().optional(),
+});
 
-export type GetGenreOptionT = {
-    meId?: number | undefined;
-}
+export const GenreFormSchema = GenreBaseSchema;
+export type GenreFormT = z.infer<typeof GenreFormSchema>;
 
-export type ListGenreOptionT = {
-    meId?: number | undefined;
-}
+export const GenreSchema = GenreBaseSchema
+  .merge(ResourceSchema);
+export type GenreT = z.infer<typeof GenreSchema>;

@@ -1,11 +1,13 @@
+"use client";
+
 import { IconHeart } from "@/components/svgs/IconHeart";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";
-import { Gap } from "@/ui/layouts";
-import { Button } from "@/ui/shadcn/Button";
+import { Row } from "@/ui/layouts";
 import { useState } from "react";
 import { createLike, deleteLike } from "@/resources/webtoonLikes/webtoonLike.service";
 import { WebtoonLikeT } from "@/resources/webtoonLikes/webtoonLike.types";
 
+// TODO buyer만 가능한가?
 export default function WebtoonDetailsLikeButton({
   initWebtoonLike,
 }: {
@@ -22,17 +24,10 @@ export default function WebtoonDetailsLikeButton({
     const newWebtoonLike = await deleteLike(webtoonLike.webtoonId);
     setWebtoonLike(newWebtoonLike);
   }
-
-  return (
-    <>
-      {webtoonLike.myLike
-        ? <Button onClick={handleClickUnlike} className="w-full bg-gray-dark text-white rounded-sm hover:bg-red">
-          {webtoonLike.likes}<Gap x={2} /><IconHeartFill fill="red"/>
-        </Button>
-        : <Button onClick={handleClickLike} className="w-full bg-gray-dark text-white rounded-sm hover:bg-red">
-          {webtoonLike.likes}<Gap x={2} /><IconHeart className="fill-white" />
-        </Button>
-      }
-    </>
-  );
+  return <Row>
+    {webtoonLike.myLike
+      ? <IconHeartFill onClick={handleClickUnlike} className="fill-red cursor-pointer"/>
+      : <IconHeart onClick={handleClickLike} className="fill-white cursor-pointer" />}
+    <span className="ml-2.5">{webtoonLike.likeCount}</span>
+  </Row>;
 }

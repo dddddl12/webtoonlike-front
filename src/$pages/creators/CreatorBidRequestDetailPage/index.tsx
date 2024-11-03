@@ -1,6 +1,6 @@
 "use client";
 
-import { useListData } from "@/hooks/ListData";
+import { useListData } from "@/hooks/listData";
 import { Col, Container, Gap, Row } from "@/ui/layouts";
 import { Heading, Text } from "@/ui/texts";
 import { buildImgUrl } from "@/utils/media";
@@ -88,8 +88,8 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
               src={
                 bidRequests.buyer?.companyInfo.thumbPath
                   ? buildImgUrl(null, bidRequests.buyer.companyInfo.thumbPath, {
-                      size: "xxs",
-                    })
+                    size: "xxs",
+                  })
                   : "/img/webtoon_default_image_small.svg"
               }
               alt={`${bidRequests.buyer?.companyInfo.thumbPath}`}
@@ -113,11 +113,11 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
           {bidRequests.contractRange.data[0].businessField
             ? locale === "en"
               ? businessFieldConverterToEn(
-                  bidRequests.contractRange.data[0].businessField
-                )
+                bidRequests.contractRange.data[0].businessField
+              )
               : businessFieldConverterToKr(
-                  bidRequests.contractRange.data[0].businessField
-                )
+                bidRequests.contractRange.data[0].businessField
+              )
             : "-"}
         </div>
 
@@ -164,8 +164,8 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
         <Row className="bg-gray-darker rounded-sm p-[12px] justify-between">
           <div className="w-[115px] h-[175px] overflow-hidden relative rounded-sm">
             <Image
-              src={ bidRound.webtoon?.thumbPath ? buildImgUrl(null, bidRound.webtoon?.thumbPath, { size: "sm" }) : "/img/webtoon_default_image.svg"}
-              alt={`${bidRound.webtoon?.thumbPath}`}
+              src={ buildImgUrl(null, bidRound.webtoon.thumbPath, { size: "sm" })}
+              alt={bidRound.webtoon.thumbPath}
               style={{ objectFit: "cover" }}
               fill
             />

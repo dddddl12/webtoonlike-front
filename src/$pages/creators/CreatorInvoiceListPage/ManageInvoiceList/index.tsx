@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Fragment, useEffect, useState, useMemo } from "react";
-import { useListData } from "@/hooks/ListData";
+import { useListData } from "@/hooks/listData";
 import { Pagenator } from "@/ui/tools/Pagenator";
 import { useMe } from "@/states/UserState";
 import { Col, Gap, Row } from "@/ui/layouts";
@@ -85,8 +85,8 @@ export function ManageInvoiceList() {
         <div className="w-[20%] p-2 flex justify-start items-center">
           <div className="w-[60px] h-[60px] overflow-hidden relative rounded-sm">
             <Image
-              src={invoice.webtoon?.thumbPath ? buildImgUrl(null, invoice.webtoon.thumbPath, { size: "xxs" } ) : "/img/webtoon_default_image_small.svg"}
-              alt={`${invoice.webtoon?.thumbPath}`}
+              src={buildImgUrl(null, invoice.webtoon.thumbPath, { size: "xxs" } )}
+              alt={invoice.webtoon.thumbPath}
               style={{ objectFit: "cover" }}
               fill
             />

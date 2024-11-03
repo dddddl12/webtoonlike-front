@@ -4,7 +4,7 @@ import { Col, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
 import Image from "next/image";
 import * as CreatorApi from "@/apis/creators";
-import { useListData } from "@/hooks/ListData";
+import { useListData } from "@/hooks/listData";
 import { useEffect } from "react";
 import { ListCreatorOptionT } from "@/types";
 import { buildImgUrl } from "@/utils/media";

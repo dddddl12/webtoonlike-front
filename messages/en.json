@@ -1,4 +1,10 @@
 {
+    "general": {
+        "submit": "Submit",
+        "edit": "Edit",
+        "goBack": "Previous",
+        "goNext": "Next"
+    },
     "setupPage": {
         "setupAccount": "Set Up Account",
         "selectMembershipType": "Select your membership type",
@@ -7,30 +13,30 @@
         "createAccount": "Create account"
     },
     "setupForm": {
-        "insertName": "Insert name",
-        "insertPhone": "Cell number",
+        "selectedUserType": "User type: {userType}",
+        "selectedUserTypeCreator": "Creator",
+        "selectedUserTypeBuyer": "Buyer",
+        "insertPhone": "Phone number",
         "insertCountry": "Country/Region",
         "insertPostalCode": "Postal Code / Zipcode",
         "insertAddress1": "Address",
         "insertAddress2": "Address 2",
         "termsAndConditions": "Webtoonlike Terms and Conditions",
-        "required": "required",
+        "required": "(required)",
         "doYouAgree": "Do you agree with Webtoonlike Terms and Conditions?",
-        "goBack": "Previous",
-        "goNext": "Next"
-    },
-    "nationData": {
-        "대한민국": "South Korea",
-        "미국": "United States",
-        "중국": "China",
-        "대만": "Taiwan",
-        "일본": "Japan",
-        "프랑스": "France",
-        "스페인": "Spain",
-        "베트남": "Vietnam",
-        "말레이시아": "Malaysia",
-        "태국": "Thailand",
-        "기타": "Other"
+        "countries": {
+            "ko": "South Korea",
+            "en": "United States",
+            "zhCN": "China",
+            "zhTW": "Taiwan",
+            "ja": "Japan",
+            "fr": "France",
+            "es": "Spain",
+            "vi": "Vietnam",
+            "ms": "Malaysia",
+            "th": "Thailand",
+            "all": "All"
+        }
     },
     "setupPageNextForCreators": {
         "profileDesc": "Enter profile information",
@@ -43,9 +49,7 @@
         "affiliation": "Affiliation",
         "noAffiliation": "No Affiliation",
         "rookie": "Rookie",
-        "experienced": "Experienced",
-        "submit": "Submit",
-        "edit": "Edit"
+        "experienced": "Experienced"
     },
     "purpose": {
         "privateContract": "Private Contract",
@@ -58,7 +62,7 @@
         "days": " days",
         "hours": " hours",
         "minutes": " minutes",
-        "numberOfOffers": " Offers",
+        "numberOfOffers": " offers",
         "viewContent": "View Content",
         "recommendedPopularSeries": "Popular",
         "seeMorePopularSeries": "more",
@@ -118,10 +122,7 @@
         "registrationDate": "Registration Date",
         "viewNegotiationHistory": "View the Latest Negotiations",
         "situation": "Status",
-        "ifNoOfferDesc": "Please select a Webtoon at Home and put in an offer",
-        "makeOffer": "Make an Offer",
-        "unableToMakeOffer": "Unable to Make Offer",
-        "notPossibleToOffer": "Not an Offer period."
+        "ifNoOfferDesc": "Please select a Webtoon at Home and put in an offer"
     },
     "personalInformation": {
         "personalInfo": "Personal Info",
@@ -163,60 +164,10 @@
         "webtoonRights": "Webtoon Service Rights",
         "secondaryRights": "Secondary Business Rights"
     },
-    "businessRightClassification": {
-        "전체": "All",
-        "영화": "Movie",
-        "드라마": "Drama",
-        "웹드라마": "WebDrama",
-        "광고": "Ads",
-        "뮤지컬": "Musical",
-        "게임": "Game",
-        "도서": "Book",
-        "상품": "Product"
-    },
-    "businessFieldENG": {
-        "all": "All",
-        "webtoon": "Webtoon",
-        "movie": "Movie",
-        "drama": "Drama",
-        "webDrama": "Web Drama",
-        "ads": "Ads",
-        "musical": "Musical",
-        "game": "Game",
-        "book": "Book",
-        "product": "Product"
-    },
-    "countryOptions": {
-        "전체": "All",
-        "국내": "Domestic",
-        "북미(영어)": "North America (English)",
-        "중국(간체)": "China (Simplified)",
-        "대만(번체)": "Taiwan (Traditional)",
-        "일본": "Japan",
-        "프랑스": "France",
-        "스페인": "Spain",
-        "베트남": "Vietnam",
-        "말레이시아": "Malaysia",
-        "태국": "Thailand"
-    },
-    "countryOptionsENG": {
-        "ko": "South Korea",
-        "en": "United States",
-        "zhCN": "China",
-        "zhTW": "Taiwan",
-        "ja": "Japan",
-        "fr": "France",
-        "es": "Spain",
-        "vi": "Vietnam",
-        "ms": "Malaysia",
-        "th": "Thailand",
-        "all": "All"
-    },
     "detailedInfoPage": {
         "episodePreview": "Episode Preview",
         "episodeSeq": "Episode {number}",
         "addEpisode": "Add Episode",
-        "goEdit": "Edit",
         "editEpisode": "Edit Episode",
         "episodeTitle": "Episode Title",
         "episodeEnTitle": "Episode Title (English)",
@@ -225,7 +176,6 @@
         "episodeEnTitlePlaceholder": "Please enter the title of the episode in English",
         "episodeNumberPlaceholder": "Please enter the episode number",
         "episodeThumbnail": "Episode Thumbnail",
-        "edit": "Edit",
         "episodeImage": "Episode Image",
         "preview": "Preview",
         "imageUpload": "Upload Image",
@@ -319,9 +269,7 @@
         "insertBusinessPosition": "Insert your position in business",
         "insertInChargeOf": "In charge of",
         "attachEmploymentCert": "Attach file of your employment certificate or business card",
-        "goals": "Sign up for",
-        "edit": "Edit",
-        "submit": "Submit"
+        "goals": "Sign up for"
     },
     "invoiceManagement": {
         "invoiceManagement": "Invoice Management",
@@ -414,28 +362,69 @@
         "previous": "Previous",
         "next": "Next"
     },
+    "webtoonDetails": {
+        "timeLeft": "{days} days {hours} hours {minutes} minutes",
+        "numberOfOffers": "{count} offers",
+        "targetAge": "Audience: {age}s",
+        "targetAgeRanged": "Audience: {lowerLimit}s to {upperLimit}s",
+        "episodeCount": "{count} episodes complete",
+        "viewEpisodes": "View",
+        "unableToView": "No episodes registered",
+        "makeOffer": "Make an Offer",
+        "unableToMakeOffer": "Unable to Make Offer",
+        "notPossibleToOffer": "Not an Offer period"
+    },
+    "contractRange": {
+        "derivative": {
+            "all": "All",
+            "webtoon": "Webtoon",
+            "movie": "Movie",
+            "drama": "Drama",
+            "webDrama": "Web Drama",
+            "ads": "Ads",
+            "musical": "Musical",
+            "game": "Game",
+            "book": "Book",
+            "product": "Product"
+        },
+        "countries": {
+            "all": "All",
+            "ko": "South Korea",
+            "en": "North America (English)",
+            "zhCN": "China (Simplified)",
+            "zhTW": "Taiwan (Traditional)",
+            "de": "Germany",
+            "id": "Indonesia",
+            "ja": "Japan",
+            "fr": "France",
+            "es": "Spain",
+            "vi": "Vietnam",
+            "ms": "Malaysia",
+            "th": "Thailand"
+        }
+    },
     "contractRangeData": {
-      "detailedInformation": "Detailed Information on Series",
-      "seriesInformation": "Series Information",
-      "seriesType": "Type of Content",
-      "latestContent": "Latest content",
-      "earliestContent": "Earliest content",
-      "serviceOnOtherPlatforms": "Whether to Service on Other Platforms",
-      "yes": "Yes",
-      "no": "No",
-      "serviceEpisodeInformation": "Service Episode Information",
-      "completedEpisodes": "episodes (now)",
-      "episodesCompleted": "Episodes Completed",
+        "detailedInformation": "Detailed Information on Series",
+        "seriesInformation": "Series Information",
+        "seriesType": "Type of Content",
+        "latestContent": "Latest content",
+        "earliestContent": "Earliest content",
+        "serviceOnOtherPlatforms": "Whether to Service on Other Platforms",
+        "yes": "Yes",
+        "no": "No",
+        "serviceEpisodeInformation": "Service Episode Information",
+        "completedEpisodes": "episodes (now)",
+        "episodesCompleted": "Episodes Completed",
         "monthlyProductionAvailableRounds": "Monthly Production Available Rounds",
         "episodesPossible": "episodes possible",
-      "secondaryCopyrightSalesStatus": "Secondary Copyright Sales Status",
-      "exclusive": "Exclusive",
-      "nonExclusive": "Non Exclusive",
-      "secondaryCopyright": "Secondary Copyright",
-      "serviceCountry": "Service Country",
-      "exclusiveOrNon": "Exclusive or Non Exclusive",
-      "all": "All",
-      "webtoonServiceRegion": "Webtoon Service Region"
+        "secondaryCopyrightSalesStatus": "Secondary Copyright Sales Status",
+        "exclusive": "Exclusive",
+        "nonExclusive": "Non Exclusive",
+        "secondaryCopyright": "Secondary Copyright",
+        "serviceCountry": "Service Country",
+        "exclusiveOrNon": "Exclusive or Non Exclusive",
+        "all": "All",
+        "webtoonServiceRegion": "Webtoon Service Region"
     },
     "updateOrCreateBidRoundsPage": {
         "generalInformation": "General Information",

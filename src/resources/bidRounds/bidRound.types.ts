@@ -1,6 +1,5 @@
-import { WebtoonT } from "@/resources/webtoons/webtoon.types";
-import { UserT } from "@/resources/users/user.types";
-import { BidRequestT } from "@/resources/bidRequests/bidRequest.types";
+import z from "zod";
+import { ResourceSchema } from "@/resources/globalTypes";
 
 export enum BidRoundStatus {
   Idle = "IDLE",
@@ -10,63 +9,74 @@ export enum BidRoundStatus {
   Done = "DONE",
 }
 
-export type BidRoundFormT = {
-  userId: number | null;
-  webtoonId: number;
-  isWebtoon?: (boolean | null) | undefined;
-  isSecondary?: (boolean | null) | undefined;
-  contractRange: {
-    data: {
-      contract: "exclusive" | "nonExclusive" | "disallow";
-      businessField: "all" | "webtoon" | "movie" | "drama" | "webDrama" | "ads" | "musical" | "game" | "book" | "product";
-      country: "all" | "ko" | "en" | "zhCN" | "zhTW" | "de" | "id" | "ja" | "fr" | "vi" | "ms" | "th" | "es";
-    }[];
-  };
-  isOriginal: boolean;
-  isBrandNew: boolean;
-  numEpisode?: (number | null) | undefined;
-  nowEpisode?: (number | null) | undefined;
-  monthlyNumEpisode?: (number | null) | undefined;
-  status: BidRoundStatus;
-  bidStartAt?: (Date | null) | undefined;
-  negoStartAt?: (Date | null) | undefined;
-  processEndAt?: (Date | null) | undefined;
-  approvedAt?: (Date | null) | undefined;
-  disapprovedAt?: (Date | null) | undefined;
-  adminMemo?: (string | null) | undefined;
-}
+const ContractRangeExclusivitySchema = z.enum(["exclusive", "nonExclusive"]);
 
-type _BidRoundT = {
-  id: number;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: number | null;
-  webtoonId: number;
-  isWebtoon?: (boolean | null) | undefined;
-  isSecondary?: (boolean | null) | undefined;
-  contractRange: {
-    data: {
-      contract: "exclusive" | "nonExclusive" | "disallow";
-      businessField: "all" | "webtoon" | "movie" | "drama" | "webDrama" | "ads" | "musical" | "game" | "book" | "product";
-      country: "all" | "ko" | "en" | "zhCN" | "zhTW" | "de" | "id" | "ja" | "fr" | "vi" | "ms" | "th" | "es";
-    }[];
-  };
-  isOriginal: boolean;
-  isBrandNew: boolean;
-  numEpisode?: (number | null) | undefined;
-  nowEpisode?: (number | null) | undefined;
-  monthlyNumEpisode?: (number | null) | undefined;
-  status: BidRoundStatus;
-  bidStartAt?: (Date | null) | undefined;
-  negoStartAt?: (Date | null) | undefined;
-  processEndAt?: (Date | null) | undefined;
-  approvedAt?: (Date | null) | undefined;
-  disapprovedAt?: (Date | null) | undefined;
-  adminMemo?: (string | null) | undefined;
-}
+export const ContractRangeBusinessFieldSchema = z.enum([
+  "all",
+  "webtoon",
+  "movie",
+  "drama",
+  "webDrama",
+  "ads",
+  "musical",
+  "game",
+  "book",
+  "product",
+]);
 
-export interface BidRoundT extends _BidRoundT {
-  webtoon?: WebtoonT;
-  user?: UserT;
-  requests?: BidRequestT[];
-}
+export const ContractRangeCountrySchema = z.enum([
+  "all",
+  "ko",
+  "en",
+  "zhCN",
+  "zhTW",
+  "de",
+  "id",
+  "ja",
+  "fr",
+  "vi",
+  "ms",
+  "th",
+  "es",
+]);
+
+export const ContractRangeItemSchema = z.object({
+  contract: ContractRangeExclusivitySchema,
+  businessField: ContractRangeBusinessFieldSchema,
+  country: ContractRangeCountrySchema,
+});
+
+export const ContractRange = z.array(ContractRangeItemSchema);
+
+export const BidRoundBaseSchema = z.object({
+  webtoonId: z.number(),
+  contractRange: ContractRange,
+  isOriginal: z.boolean(),
+  isNew: z.boolean(),
+  // TODO optional 체크
+  episodeCount: z.number().min(1).optional(),
+  currentEpisodeNo: z.number().min(1).optional(),
+  monthlyEpisodeCount: z.number().min(1).optional(),
+});
+
+export const BidRoundFormSchema = BidRoundBaseSchema;
+export type BidRoundFormT = z.infer<typeof BidRoundFormSchema>;
+
+export const BidRoundSchema = ResourceSchema
+  .merge(BidRoundBaseSchema)
+  .extend({
+    status: z.nativeEnum(BidRoundStatus),
+    bidStartsAt: z.date().optional(),
+    negoStartsAt: z.date().optional(),
+    processEndsAt: z.date().optional(),
+    approvedAt: z.date().optional(),
+    disapprovedAt: z.date().optional(),
+    // adminNote: z.string().optional(), TODO 어드민용 별도
+  });
+export type BidRoundT = z.infer<typeof BidRoundSchema>;
+
+export const BidRoundExtendedSchema = BidRoundSchema
+  .extend({
+    bidRequestCount: z.number()
+  });
+export type BidRoundExtendedT = z.infer<typeof BidRoundExtendedSchema>;

@@ -69,13 +69,11 @@ export function BuyerBidRequestList({
               <div className="w-[60px] h-[60px] overflow-hidden relative rounded-sm">
                 <Image
                   src={
-                    bidRound.webtoon?.thumbPath
-                      ? buildImgUrl(null, bidRound.webtoon.thumbPath, {
-                        size: "xxs",
-                      })
-                      : "/img/webtoon_default_image_small.svg"
+                    buildImgUrl(null, bidRound.webtoon.thumbPath, {
+                      size: "xxs",
+                    })
                   }
-                  alt={`${bidRound.webtoon?.thumbPath}`}
+                  alt={bidRound.webtoon.thumbPath}
                   style={{ objectFit: "cover" }}
                   fill
                 />

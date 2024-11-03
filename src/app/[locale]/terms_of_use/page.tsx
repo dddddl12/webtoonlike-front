@@ -1,7 +1,7 @@
 "use client";
 
-import TermsOfUseEn from "@/common/TermsOfUseEn";
-import TermsOfUseKo from "@/common/TermsOfUseKo";
+import TermsOfUseEn from "@/components/Account/BasicUserInfo/TermsOfUse/TermsOfUseEn";
+import TermsOfUseKo from "@/components/Account/BasicUserInfo/TermsOfUse/TermsOfUseKo";
 import { Container } from "@/ui/layouts";
 import { useLocale } from "next-intl";
 

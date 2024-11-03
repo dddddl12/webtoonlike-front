@@ -1,118 +1,173 @@
-"use client";
-
 import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { Row, Col, Gap } from "@/ui/layouts";
 import { buildImgUrl } from "@/utils/media";
 import { Text } from "@/ui/texts";
 import { Badge } from "@/ui/shadcn/Badge";
-import { extractAuthorName, extractAuthorNameEn } from "@/utils/webtoon";
-import { intervalToDuration } from "date-fns";
-import { Link, useRouter } from "@/i18n/routing";
-import { WebtoonT } from "@/resources/webtoons/webtoon.types";
-import WebtoonDetailsBtns from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetailsBtns";
+import { Link } from "@/i18n/routing";
+import { TargetAge, WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
+import { getLocale, getTranslations } from "next-intl/server";
+import WebtoonDetailsBiddingStatus from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetailsBiddingStatus";
+import WebtoonDetailsButtons from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetailsButtons";
+import WebtoonDetailsLikeButton from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetailsLikeButton";
+import { IconLink } from "@/components/svgs/IconLink";
 
-export default function WebtoonDetails({ webtoon, editable }: {
-  webtoon: WebtoonT;
-  editable: boolean;
+export default async function WebtoonDetails({ webtoon }: {
+  webtoon: WebtoonExtendedT;
 }) {
-  const router = useRouter();
-  const t = useTranslations("detailedInfoPage");
-  const Tdetails = useTranslations("detailedInfoPage");
-  const locale = useLocale();
-
-  function hasBidStartAtPassed() {
-    if (webtoon.bidRounds && webtoon.bidRounds.length > 0 && webtoon.bidRounds[0].bidStartAt) {
-      const now = new Date();
-      const bidStartAt = new Date(webtoon.bidRounds[0].bidStartAt);
-      return bidStartAt < now;
-    } else return false;
-  }
-
-  function getLeftTime() {
-    if (webtoon.bidRounds && webtoon.bidRounds.length > 0 && webtoon.bidRounds[0].negoStartAt) {
-      const now = new Date();
-      const bidEndAt = new Date(webtoon.bidRounds[0].negoStartAt);
-      const { days, hours, minutes } = intervalToDuration({ start: now, end: bidEndAt });
-
-      return `${days}일 ${hours}시간 ${minutes}분`;
-    } else return "";
-  }
-
-  function isBidStartAtExist() {
-    return !!(webtoon.bidRounds && webtoon.bidRounds.length > 0 && webtoon.bidRounds[0].bidStartAt);
-  }
+  const t = await getTranslations("webtoonDetails");
+  const tGeneral = await getTranslations("general");
+  const tAgeRestriction = await getTranslations("ageRestriction");
+  const targetAge = await formatTargetAge(webtoon.targetAges);
+  const locale = await getLocale();
 
   return (
-    <Col className="justify-center items-center md:items-start md:flex-row md:justify-start">
-      <Col className="rounded-sm min-w-[300px] min-h-[450px] justify-center bg-gray-darker">
-        {webtoon.thumbPath ? (
-          <div className="w-[300px] h-[450px] overflow-hidden relative rounded-sm">
-            <Image
-              src={webtoon.thumbPath ? buildImgUrl(null, webtoon.thumbPath, { size: "md" }) : "/img/webtoon_default_image.svg"}
-              alt={`${webtoon?.thumbPath}`}
-              style={{ objectFit: "cover" }}
-              fill
-              priority={true}
-            />
-          </div>
-        ) : (
-          <div className="w-[300px] h-[450px] rounded-md bg-gray" />
-        )}
-      </Col>
+    <Row className="items-center md:items-start md:flex-row md:justify-start gap-12">
+      <Image
+        src={buildImgUrl(null, webtoon.thumbPath, { size: "md" })}
+        alt={webtoon.thumbPath}
+        width={300}
+        height={450}
+        style={{ objectFit: "cover" }}
+        priority={true}
+        className="rounded-sm"
+      />
 
-      <Gap y={20} />
+      <Col className="flex-1 my-auto">
+        <WebtoonDetailsLikeButton initWebtoonLike={{
+          webtoonId: webtoon.id,
+          likeCount: webtoon.likeCount,
+          myLike: webtoon.myLike
+        }} />
+        <Gap y={7.5} />
 
-      <Col className="ml-[20px] justify-center my-auto w-full">
-        {/*TODO*/}
-        {/*{!hasBidStartAtPassed()*/}
-        {/*  && !isBidStartAtExist() ? null : <LeftTimeInfo time={getLeftTime()} headCount={webtoon.numRequest ? webtoon.numRequest : 0}/>}*/}
-        <Gap y={10} />
+        {/*TODO 디자인*/}
+        <WebtoonDetailsBiddingStatus bidRound={webtoon.bidRound}/>
         <Col>
           <Row className="justify-between">
-            <Text className="text-white text-[24pt]">{locale === "ko" ? webtoon.title : webtoon.title_en ?? webtoon.title} </Text>
-            {editable && (
-              <Row className="cursor-pointer" onClick={() => {router.push(`/webtoons/${webtoon.id}/update`);}}>
+            <Text className="text-white text-2xl">
+              {locale === "ko" ? webtoon.title : webtoon.title_en ?? webtoon.title}
+            </Text>
+            {/*TODO*/}
+            {webtoon.isMine && (
+              <Link
+                className="cursor-pointer"
+                href={`/webtoons/${webtoon.id}/update`}
+              >
                 <Pencil1Icon width={25} height={25} className="text-mint" />
                 <Gap x={2} />
-                <Text className="text-mint">{t("goEdit")}</Text>
-              </Row>
+                <Text className="text-mint">{tGeneral("edit")}</Text>
+              </Link>
             )}
           </Row>
-          <Gap y="16px" />
-          <Row>
-            <Text className="text-[16pt] text-white">
-              {locale === "ko" ? extractAuthorName(webtoon) ?? "알 수 없음" : extractAuthorNameEn(webtoon) ?? "Unknown"}
+          <Gap y={4} />
+          <Row className="gap-2">
+            {/* 작가 */}
+            <Text className="text-base text-white">
+              {locale === "ko" ? webtoon.creator.name
+                : (webtoon.creator.name_en ?? webtoon.creator.name)}
             </Text>
-            <Gap x={4} />
-            <Text className="text-[16pt] text-white">|</Text>
-            <Gap x={4} />
-            <Text className="text-[16pt] text-white">
-              {webtoon?.ageLimit ? webtoon.ageLimit : (locale === "ko" ? "전체이용가" : "ALL")}
+            {/* 총 에피소드 */}
+            {webtoon.bidRound?.episodeCount && <>
+              <Text className="text-base text-white">|</Text>
+              <Text className="text-base text-white">
+                {t("episodeCount", {
+                  count: webtoon.bidRound.episodeCount
+                })}
+              </Text>
+            </>}
+            {/* 연령 제한 */}
+            <Text className="text-base text-white">|</Text>
+            <Text className="text-base text-white">
+              {tAgeRestriction(webtoon.ageLimit)}
             </Text>
+            {/* 타겟 연령 */}
+            {targetAge && <>
+              <Text className="text-base text-white">|</Text>
+              <Text className="text-base text-white">
+                {targetAge}
+              </Text>
+            </>}
           </Row>
-          <Gap y="16px" />
-          <Text className="text-[12pt] text-white line-clamp-5">{locale === "ko" ? webtoon.description : webtoon.description_en ?? webtoon.description}</Text>
-          <Gap y="16px" />
-          <Row className="flex-wrap gap-2 content-stretch">
-            {(webtoon.genres ?? []).map((item) => (
-              <Badge key={item.id} className="bg-gray-dark text-white">
-                {locale === "ko" ? item.label : item.label_en ?? item.label}
-              </Badge>
-            ))}
-          </Row>
-          <Gap y="52px" />
-          {/*<WebtoonDetailsBtns webtoon={webtoon} />*/}
-          {webtoon.episodes?.length
-            && <Link
-              className="bg-[#C3C3C3] text-black rounded-s p-3 font-bold flex justify-center"
-              href={`/webtoons/${webtoon.id}/episodes/${webtoon.episodes[0].id}`}
-            >
-              원고 보기
-            </Link>}
+          <Gap y={4} />
+          <Text className="text-sm text-white">{locale === "ko" ? webtoon.description : webtoon.description_en ?? webtoon.description}</Text>
+          <ExternalLink webtoon={webtoon} />
+          <Gap y={7} />
+          <WebtoonDetailsButtons webtoon={webtoon} />
+          <Genres webtoon={webtoon} />
         </Col>
       </Col>
-    </Col>
+    </Row>
   );
+}
+
+async function ExternalLink({ webtoon }: {
+  webtoon: WebtoonExtendedT;
+}) {
+  const locale = await getLocale();
+  const link = locale === "ko"
+    ? webtoon.externalUrl
+    : webtoon.englishUrl ?? webtoon.externalUrl;
+  if (!link) {
+    return null;
+  }
+  return <>
+    <Gap y={5} />
+    <Row>
+      <IconLink/>
+      <Link href={link} className="ml-4 text-[#0075FF] underline text-sm">{link}</Link>
+    </Row>
+  </>;
+}
+
+async function Genres({ webtoon }: {
+  webtoon: WebtoonExtendedT;
+}) {
+  const locale = await getLocale();
+  if (webtoon.genres.length === 0) {
+    return null;
+  }
+  return <>
+    <Gap y={13} />
+    <Row className="flex-wrap gap-2 content-stretch">
+      {(webtoon.genres).map((item) => (
+        <Badge key={item.id} className="bg-gray-dark text-white">
+          {locale === "ko" ? item.label : (item.label_en ?? item.label)}
+        </Badge>
+      ))}
+    </Row>
+  </>;
+}
+
+async function formatTargetAge(targetAges: TargetAge[]) {
+  const t = await getTranslations("webtoonDetails");
+  if (targetAges.includes(TargetAge.All) || targetAges.length === 0) {
+    return undefined;
+  }
+  const numericAges = targetAges.map(age => {
+    switch (age) {
+      case TargetAge.Teens:
+        return 10;
+      case TargetAge.Twenties:
+        return 20;
+      case TargetAge.Thirties:
+        return 30;
+      case TargetAge.Forties:
+        return 40;
+      case TargetAge.Fifties:
+        return 50;
+      default:
+        throw new Error(`Unknown age ${targetAges.join(",")}`);
+    }
+  }).sort((a, b) => a - b);
+  if (numericAges.length === 1) {
+    return t("targetAge", {
+      age: numericAges[0]
+    });
+  } else {
+    return t("targetAgeRanged", {
+      lowerLimit: numericAges[0],
+      upperLimit: numericAges[numericAges.length - 1],
+    });
+  }
 }

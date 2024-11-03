@@ -14,8 +14,6 @@ export const IconLeftBrackets = ({
     className={cn(className)}
     {...props}
   >
-    <path
-      d="m17.885 4.27-1.77-1.77-10 10 10 10 1.77-1.77-8.23-8.23 8.23-8.23Z"
-    />
+    <path d="M11.885 1.77L10.115 0L0.11499 10L10.115 20L11.885 18.23L3.65499 10L11.885 1.77Z" fill="white"/>
   </svg>
 );

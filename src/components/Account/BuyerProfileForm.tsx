@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
@@ -26,12 +24,13 @@ import { useTokenRefresh } from "@/hooks/tokenRefresh";
 import { useAllRequiredFilled } from "@/hooks/allRequiredFilled";
 
 
-export function BuyerProfileForm({ prevBuyer, redirectPath } : {
+export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
   prevBuyer?: BuyerT;
   redirectPath?: string;
 }) {
   // 번역
   const t = useTranslations("profilePage");
+  const tGeneral = useTranslations("general");
 
   const prevBuyerCompany = prevBuyer?.companyInfo;
   const [thumbnail, setThumbnail] = useState<ImageData | undefined>(
@@ -392,7 +391,8 @@ export function BuyerProfileForm({ prevBuyer, redirectPath } : {
           <Input
             type="submit"
             className="w-full bg-black-texts text-white hover:text-black"
-            value={prevBuyer ? `${t("edit")}` : `${t("submit")}`}
+            value={prevBuyer
+              ? `${tGeneral("edit")}` : `${tGeneral("submit")}`}
             disabled={!allRequiredFilled}
           />
         </form>

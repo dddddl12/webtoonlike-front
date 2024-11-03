@@ -1,20 +1,24 @@
+"use server";
+
 import { GenreT } from "@/resources/genres/genre.types";
 import prisma from "@/utils/prisma";
+import { Prisma, Genre as GenreRecord } from "@prisma/client";
 
-// export async function getGenre(id: number): Promise<GenreT> {
-//   const fetched = await genreM.findOne({ id });
-//   if (!fetched) {
-//     throw new err.NotExistE(`genre with id ${id} not found`);
-//   }
-//   return fetched;
-// }
+const mapToGenreDTO = (record: GenreRecord): GenreT => ({
+  id: record.id,
+  createdAt: record.createdAt,
+  updatedAt: record.updatedAt,
+  label: record.label,
+  label_en: record.label_en ?? undefined,
+  rank: record.rank ?? undefined
+});
 
 export async function listGenres(): Promise<GenreT[]> {
   return prisma.genre.findMany({
     orderBy: {
       rank: "asc",
     },
-  });
+  }).then(records => records.map(mapToGenreDTO));
 }
 
 // export async function createGenre(form: GenreFormT): Promise<GenreT> {

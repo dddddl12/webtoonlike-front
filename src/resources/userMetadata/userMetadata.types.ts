@@ -18,6 +18,7 @@ const BaseClerkUserMetadataSchema = z.object({
 export type BaseClerkUserMetadata = z.infer<typeof BaseClerkUserMetadataSchema>;
 
 // 둘 중 하나 타입으로 가입을 완료한 상태
+// TODO creatorId / buyerId 필요 없을 수 있음
 const CreatorUserSchema = BaseClerkUserMetadataSchema.extend({
   type: z.literal(UserTypeT.Creator),
   creatorId: z.number(),

@@ -1,3 +1,5 @@
+"use server";
+
 // import { Injectable } from "@nestjs/common";
 // import { webtoonEpisodeImageM } from "@/models/webtoonEpisodeImages";
 // import * as err from "@/errors";

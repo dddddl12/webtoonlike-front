@@ -1,5 +1,5 @@
 import React from "react";
-import { BidRequestList } from "@/app/[locale]/creator/bid-requests/BidRequestList";
+import BidRequestList from "@/app/[locale]/creator/bid-requests/BidRequestList";
 import PageLayout from "@/components/PageLayout";
 import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
 import { Heading } from "@/ui/texts";

@@ -1,10 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { Gap, Grid, Row } from "@/ui/layouts";
 import { WebtoonPreview } from "@/components/WebtoonPreview";
-import Spinner from "@/components/Spinner";
-import { useRouter } from "@/i18n/routing";
 import { Paginator } from "@/ui/tools/Paginator";
 import {
   Select,
@@ -20,6 +17,8 @@ import { AgeLimit, WebtoonT } from "@/resources/webtoons/webtoon.types";
 import { GenreT } from "@/resources/genres/genre.types";
 import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 import { listWebtoons } from "@/resources/webtoons/webtoon.service";
+import { ListResponse } from "@/resources/globalTypes";
+import { useListData } from "@/hooks/listData";
 
 type Filters = {
   statuses?: BidRoundStatus[];
@@ -28,31 +27,21 @@ type Filters = {
   page: number;
 }
 
-type WebtoonList = {
-  items: WebtoonT[];
-  totalPages: number;
-}
+type WebtoonListResponse = ListResponse<WebtoonT>;
 
 export default function WebtooonFeedList({
   genres,
-  initialWebtoonList,
+  initialWebtoonListResponse,
 }: {
   genres: GenreT[];
-  initialWebtoonList: WebtoonList;
+  initialWebtoonListResponse: WebtoonListResponse;
 }) {
-  const [filters, setFilters] = useState<Filters>({
-    page: 1,
-  });
-  const [webtoonList, setWebtoonList] = useState<WebtoonList>(initialWebtoonList);
-  const isInitialRender = useRef(true);
-  useEffect(() => {
-    if (isInitialRender.current) {
-      // Skip the effect during the initial render
-      isInitialRender.current = false;
-      return;
-    }
-    listWebtoons(filters).then(setWebtoonList);
-  }, [filters]);
+
+  const initialFilters: Filters = {
+    page: 1
+  };
+  const { listResponse, filters, setFilters } = useListData(
+    listWebtoons, initialFilters, initialWebtoonListResponse);
 
   function handleChange(newFilters: Filters) {
     setFilters(prev => ({
@@ -135,37 +124,20 @@ export default function WebtooonFeedList({
       </Row>
 
       <Gap y={10} />
-      <GridContainer
-        webtoonList={webtoonList}
-        page={filters.page}
-        handleChange={handleChange}
+      <Grid className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {listResponse.items.map((item) =>
+          <WebtoonPreview
+            key={item.id}
+            webtoon={item}
+            href={`/webtoons/${item.id}`}
+          />
+        )}
+      </Grid>
+      <Paginator
+        currentPage={filters.page}
+        totalPages={listResponse.totalPages}
+        setFilters={setFilters}
       />
     </>
   );
-}
-
-function GridContainer({ webtoonList, page, handleChange }: {
-  webtoonList?: WebtoonList;
-  page: number;
-  handleChange: (newFilters: Filters) => void;
-}) {
-  if (!webtoonList) {
-    return <Spinner />;
-  }
-  return <>
-    <Grid className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-      {webtoonList.items.map((item) =>
-        <WebtoonPreview
-          key={item.id}
-          webtoon={item}
-          href={`/webtoons/${item.id}`}
-        />
-      )}
-    </Grid>
-    <Paginator
-      currentPage={page}
-      totalPages={webtoonList.totalPages}
-      onPageChange={(page) => handleChange({ page })}
-    />
-  </>;
 }

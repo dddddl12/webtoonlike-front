@@ -1,78 +1,154 @@
 "use server";
 
 import prisma from "@/utils/prisma";
-import { Prisma, Webtoon as WebtoonRecord } from "@prisma/client";
+import { BidRound as BidRoundRecord, Prisma, Webtoon as WebtoonRecord } from "@prisma/client";
 import {
   AgeLimit,
   HomeArtistItem,
   HomeWebtoonItem,
-  TargetAge, TargetGender,
-  WebtoonFormT,
-  WebtoonT
+  TargetAge, TargetGender, WebtoonExtendedT, WebtoonT,
 } from "@/resources/webtoons/webtoon.types";
-import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
+import { BidRoundStatus, BidRoundT, ContractRange } from "@/resources/bidRounds/bidRound.types";
 import { getUserMetadata } from "@/resources/userMetadata/userMetadata.service";
 import { UserTypeT } from "@/resources/users/user.types";
 import { WrongUserTypeError } from "@/errors";
+import { ListResponse } from "@/resources/globalTypes";
 
 type BidRoundFilter = BidRoundStatus[] | "any" | "none"
 
-const mapToDTO = (record: WebtoonRecord): WebtoonT => ({
-  ...record,
-  targetAge: record.targetAge
-    .map(a => TargetAge[a as keyof typeof TargetAge]),
-  ageLimit: AgeLimit[record.ageLimit as keyof typeof AgeLimit],
-  targetGender: TargetGender[record.ageLimit as keyof typeof TargetGender],
+const mapToWebtoonDTO = (record: WebtoonRecord): WebtoonT => ({
+  id: record.id,
+  createdAt: record.createdAt,
+  updatedAt: record.updatedAt,
+  title: record.title,
+  title_en: record.title_en ?? undefined,
+  description: record.description ?? undefined,
+  description_en: record.description_en ?? undefined,
+  externalUrl: record.externalUrl ?? undefined,
+  englishUrl: record.externalUrl ?? undefined,
+  adultOnly: record.adultOnly,
+  targetAges: record.targetAges
+    .map(a => a as TargetAge),
+  ageLimit: record.ageLimit as AgeLimit,
+  targetGender: record.ageLimit as TargetGender,
+  thumbPath: record.thumbPath,
 });
 
-// export async function createWebtoon(form: WebtoonFormT): Promise<WebtoonT> {
-//   const created = await webtoonM.create(form);
-//   if (!created) {
-//     throw new err.NotAppliedE();
-//   }
-//   return created;
-// }
+const mapToBidRoundDTO = (record: BidRoundRecord): BidRoundT => ({
+  id: record.id,
+  createdAt: record.createdAt,
+  updatedAt: record.updatedAt,
+  webtoonId: record.webtoonId,
+  contractRange: ContractRange.safeParse(record.contractRange).data ?? [],
+  isOriginal: record.isOriginal,
+  isNew: record.isNew,
+  episodeCount: record.episodeCount ?? undefined,
+  currentEpisodeNo: record.currentEpisodeNo ?? undefined,
+  monthlyEpisodeCount: record.monthlyEpisodeCount ?? undefined,
+  status: record.status as BidRoundStatus,
+  bidStartsAt: record.bidStartsAt ?? undefined,
+  negoStartsAt: record.negoStartsAt ?? undefined,
+  processEndsAt: record.processEndsAt ?? undefined,
+  disapprovedAt: record.disapprovedAt ?? undefined,
+});
 
-export async function getWebtoon(id: number): Promise<WebtoonT> {
+
+export async function getWebtoon(id: number): Promise<WebtoonExtendedT> {
   // TODO 에러 핸들링
+  const userMetadata = await getUserMetadata();
   return prisma.webtoon.findUniqueOrThrow({
     where: { id },
     include: {
-      WebtoonEpisode: true,
-      BidRound: true,
+      user: {
+        select: {
+          creator: {
+            select: {
+              id: true,
+              name: true,
+              name_en: true,
+            }
+          }
+        }
+      },
+      episodes: {
+        select: {
+          id: true,
+        },
+        orderBy: {
+          episodeNo: "asc",
+        },
+        take: 1
+      },
+      bidRound: {
+        include: {
+          _count: {
+            select: {
+              requests: true
+            }
+          }
+        }
+      },
+      _count: {
+        select: {
+          likes: true
+        }
+      },
+      likes: {
+        where: {
+          userId: userMetadata.id
+        },
+        take: 1
+      },
+      genreLinks: {
+        select: {
+          genre: {
+            select: {
+              id: true,
+              label: true,
+              label_en: true
+            }
+          }
+        },
+        orderBy: {
+          genre: {
+            rank: "asc"
+          }
+        }
+      }
     }
-  }).then(record => ({
-    ...mapToDTO(record),
-    episodes: record.WebtoonEpisode,
-    bidRounds: record.BidRound,
-  }));
-}
-
-// export async function updateWebtoon(id: number, form: Partial<WebtoonFormT>): Promise<WebtoonT> {
-//   const updated = await webtoonM.updateOne({ id }, form);
-//   if (!updated) {
-//     throw new err.NotAppliedE();
-//   }
-//   return updated;
-// }
-
-export async function listMyWebtoonsWithNoRounds({ page }: {
-  page?: number
-} = {}) {
-  const userMetadata = await getUserMetadata();
-  if(userMetadata.type !== UserTypeT.Creator) {
-    throw new WrongUserTypeError();
-  }
-  const { creatorId } = userMetadata;
-  return listWebtoons({
-    creatorId, page,
-    statuses: "none",
-    limit: 5
+  }).then(record => {
+    const { creator } = record.user;
+    if (!creator) {
+      // TODO http 에러로 대체
+      throw new Error("Creator should exist.");
+    }
+    return {
+      ...mapToWebtoonDTO(record),
+      isMine: record.userId !== null && record.userId === userMetadata.id,
+      creator: {
+        id: creator.id,
+        name: creator.name,
+        name_en: creator.name_en ?? undefined,
+      },
+      likeCount: record._count.likes,
+      myLike: record.likes.length > 0,
+      genres: record.genreLinks
+        .map(l=> ({
+          id: l.genre.id,
+          label: l.genre.label,
+          label_en: l.genre.label_en ?? undefined,
+        })),
+      bidRound: record.bidRound ? {
+        ...mapToBidRoundDTO(record.bidRound),
+        bidRequestCount: record.bidRound._count.requests ?? 0
+      } : undefined,
+      firstEpisodeId: record.episodes?.[0].id,
+    };
   });
 }
 
 export async function listWebtoons({
-  statuses, genreId, ageLimit, creatorId,
+  statuses, genreId, ageLimit,
   page = 1,
   limit = 10
 }: {
@@ -80,17 +156,12 @@ export async function listWebtoons({
   genreId?: number;
   ageLimit?: AgeLimit;
   page?: number;
-  creatorId?: number;
   limit?: number;
-} = {}): Promise<{
-    items: WebtoonT[];
-    totalPages: number;
-  }> {
+} = {}): Promise<ListResponse<WebtoonT>> {
   const where: Prisma.WebtoonWhereInput = {
-    authorId: creatorId,
     ageLimit: ageLimit,
-    BidRound: getBidRoundFilter(statuses),
-    XWebtoonGenre: genreId ? {
+    bidRound: getBidRoundFilter(statuses),
+    genreLinks: genreId ? {
       some: { genreId }
     } : undefined,
   };
@@ -104,64 +175,134 @@ export async function listWebtoons({
     prisma.webtoon.count({ where })
   ]);
   return {
-    items: records.map(mapToDTO),
+    items: records.map(mapToWebtoonDTO),
     totalPages: Math.ceil(totalRecords / limit),
   };
 }
 
-const getBidRoundFilter = (statuses?:BidRoundFilter): Prisma.BidRoundListRelationFilter | undefined => {
+const getBidRoundFilter = (statuses?:BidRoundFilter): Prisma.WebtoonWhereInput["bidRound"] => {
   if (!statuses) {
     return;
   } else if (statuses === "any") {
     return {
-      some: {}
+      isNot: null
     };
   } else if (statuses === "none") {
     return {
-      none: {}
+      is: null
     };
   } else if (Array.isArray(statuses)) {
     return statuses.length > 0 ? {
-      some: {
-        status: {
-          in: statuses
-        },
-      },
+      status: {
+        in: statuses
+      }
     } : undefined;
   }
   throw new Error("Unknown statuses");
 };
 
+export async function listMyWebtoonsNotOnSale({ page = 1 }: {
+  page?: number
+} = {}): Promise<ListResponse<WebtoonT>> {
+  const userMetadata = await getUserMetadata();
+  if(userMetadata.type !== UserTypeT.Creator) {
+    throw new WrongUserTypeError();
+  }
+  const { id: userId } = userMetadata;
 
-// export async function getThumbnailPresignedUrl(mimeType: string) {
-//   let key = `webtoons/thumbnails/thumbnail_${new Date().getTime()}.${mime.extension(mimeType)}`;
-//   key = putDevPrefix(key);
-//   const putUrl = await createSignedUrl(key, mimeType);
-//   return { putUrl, key };
-// }
+  const where: Prisma.WebtoonWhereInput = {
+    userId,
+    bidRound: {
+      isNot: null
+    }
+  };
+  const limit = 5;
 
+  const [records, totalRecords] = await prisma.$transaction([
+    prisma.webtoon.findMany({
+      where,
+      take: limit,
+      skip: (page - 1) * limit,
+    }),
+    prisma.webtoon.count({ where })
+  ]);
+  return {
+    items: records.map(mapToWebtoonDTO),
+    totalPages: Math.ceil(totalRecords / limit),
+  };
+}
+
+export async function listMyWebtoonsOnSale({ page = 1 }: {
+  page?: number
+} = {}): Promise<ListResponse<WebtoonT & {
+  roundAddedAt: Date
+}>> {
+  const userMetadata = await getUserMetadata();
+  if(userMetadata.type !== UserTypeT.Creator) {
+    throw new WrongUserTypeError();
+  }
+  const { id: userId } = userMetadata;
+
+  const where: Prisma.WebtoonWhereInput = {
+    userId,
+    bidRound: {
+      is: null
+    }
+  };
+  const limit = 5;
+
+  const [records, totalRecords] = await prisma.$transaction([
+    prisma.webtoon.findMany({
+      where,
+      include: {
+        bidRound: {
+          select: {
+            createdAt: true
+          }
+        }
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+    }),
+    prisma.webtoon.count({ where })
+  ]);
+  return {
+    items: records.map(record => {
+      if (!record.bidRound) {
+        throw new Error("Unknown situation");
+      }
+      return {
+        ...mapToWebtoonDTO(record),
+        roundAddedAt: record.bidRound.createdAt
+      };
+    }),
+    totalPages: Math.ceil(totalRecords / limit),
+  };
+}
 
 export async function homeItems() {
   // Using Prisma's transaction to run all queries concurrently
   const where: Prisma.WebtoonWhereInput = {
-    BidRound: {
-      some: {
-        status: {
-          in: [BidRoundStatus.Bidding, BidRoundStatus.Negotiating]
-        },
+    bidRound: {
+      status: {
+        in: [BidRoundStatus.Bidding, BidRoundStatus.Negotiating]
       },
     },
   };
-  const select: Prisma.WebtoonSelect = {
+  const select = {
     id: true,
     title: true,
     title_en: true,
-    author: {
+    user: {
       select: {
-        id: true,
-        name: true,
-        name_en: true,
-      },
+        creator: {
+          select: {
+            id: true,
+            name: true,
+            name_en: true,
+          },
+        }
+      }
     },
     thumbPath: true,
   };
@@ -170,9 +311,20 @@ export async function homeItems() {
       // 인기 웹툰
       tx.webtoon.findMany({
         where,
-        select,
+        select: {
+          ...select,
+          _count: {
+            select: {
+              likes: true
+            }
+          }
+        },
         orderBy: [
-          { likes: "desc" },
+          {
+            likes: {
+              _count: "desc"
+            }
+          },
           { createdAt: "desc" },
         ],
         take: 4
@@ -197,44 +349,56 @@ export async function homeItems() {
 
       // 작가
       tx.webtoon.groupBy({
-        by: ["authorId"],
+        by: "userId",
         _count: {
-          authorId: true,
+          userId: true,
         },
         where: {
-          authorId: {
-            not: null,
+          user: {
+            creator: {
+              isNot: null
+            },
           },
         },
         orderBy: {
           _count: {
-            authorId: "desc",
+            userId: "desc",
           },
         },
         take: 5
       }).then(async (records) => {
-        const authors = records
-          .map((record) => ({
-            id: record.authorId,
-            numOfWebtoons: record._count.authorId,
-          }));
-
-        const creatorRecords = await tx.creator.findMany({
+        const userRecords = await tx.user.findMany({
+          select: {
+            id: true,
+            creator: {
+              select: {
+                id: true,
+                name: true,
+                name_en: true,
+                thumbPath: true
+              }
+            }
+          },
           where: {
             id: {
-              in: authors
-                .map((author) => author.id)
-                .filter(id => id !== null),
+              in: records
+                .map((r) => r.userId)
+                .filter(r => r !== null)
             }
           }
         });
-        const artists: HomeArtistItem[] = creatorRecords.map(creatorRecord => ({
-          id: creatorRecord.id,
-          name: creatorRecord.name,
-          name_en: creatorRecord.name_en,
-          numOfWebtoons: authors.find(author => author.id === creatorRecord.id)?.numOfWebtoons || 0,
-          thumbPath: creatorRecord.thumbPath,
-        }));
+        const artists: HomeArtistItem[] = userRecords
+          .map(userRecord => {
+            if (!userRecord.creator) return;
+            return {
+              id: userRecord.creator.id,
+              name: userRecord.creator.name,
+              name_en: userRecord.creator.name_en ?? undefined,
+              numOfWebtoons: records.find(r => r.userId === userRecord.id)?._count.userId || 0,
+              thumbPath: userRecord.creator.thumbPath ?? undefined,
+            };
+          })
+          .filter(artist => !!artist);
         return artists;
       })
     ]);
@@ -245,9 +409,9 @@ export async function homeItems() {
       return group.map(item => ({
         id: item.id,
         title: item.title,
-        title_en: item.title_en,
-        creatorName: item.author?.name || null,
-        creatorName_en: item.author?.name || null,
+        title_en: item.title_en ?? undefined,
+        creatorName: item.user?.creator?.name,
+        creatorName_en: item.user?.creator?.name_en ?? undefined,
         thumbPath: item.thumbPath,
       }));
     });

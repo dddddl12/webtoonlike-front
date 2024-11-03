@@ -1,4 +1,3 @@
-import { Resource } from "@/resources/globalTypes";
 import z from "zod";
 import { UserT } from "@/resources/users/user.types";
 
@@ -49,6 +48,7 @@ const BuyerCompanySchema = z.object({
   // TODO
   // businessNumber: z.string().min(10).max(10),
   businessNumber: z.string(),
+  // TODO Form에서는 immutable하게 수정
   /** 사업자등록증 파일 경로 */
   businessCertPath: z.string().optional(),
   /** 명함 파일 경로 */
@@ -67,9 +67,8 @@ export const BuyerFormSchema = BuyerBaseSchema.extend({
     businessCard: z.instanceof(File).optional(),
   })
 });
-
 export type BuyerFormT = z.infer<typeof BuyerFormSchema>;
 
-export type BuyerT = Resource<{
-  user: UserT;
-}> & z.infer<typeof BuyerBaseSchema>;
+export const BuyerSchema = BuyerBaseSchema
+  .merge(BuyerBaseSchema);
+export type BuyerT = z.infer<typeof BuyerSchema>;

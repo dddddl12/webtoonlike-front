@@ -21,7 +21,7 @@ export const getClerkUser = async () => {
 
 export const getUserMetadata = async (): Promise<ClerkUserMetadata> => {
   const clerkUser = await getClerkUser();
-  return ClerkUserMetadataSchema.parseAsync(clerkUser.sessionClaims.metadata);
+  return ClerkUserMetadataSchema.parse(clerkUser.sessionClaims.metadata);
 };
 
 export async function updateUserMetadata(tx?: PrismaTransaction): Promise<BaseClerkUserMetadata | ClerkUserMetadata | undefined> {
@@ -44,9 +44,9 @@ async function getVerifiedUserMetadata(tx?: PrismaTransaction): Promise<{
       sub: clerkUserId
     },
     include: {
-      Creator: true,
-      Buyer: true,
-      Admin: true,
+      creator: true,
+      buyer: true,
+      admin: true,
     },
   });
 
@@ -59,24 +59,25 @@ async function getVerifiedUserMetadata(tx?: PrismaTransaction): Promise<{
   }
 
   // 유저 정보 업데이트
+  // TODO 즉각 변화되지 않음
   let clerkUserMetadata: BaseClerkUserMetadata | ClerkUserMetadata = {
     id: user.id,
     type: user.userType as UserTypeT,
-    adminLevel: getAdminLevel(user.Admin),
+    adminLevel: getAdminLevel(user.admin),
     signUpComplete: false
   };
-  if (clerkUserMetadata.type == UserTypeT.Creator && user.Creator) {
+  if (clerkUserMetadata.type == UserTypeT.Creator && user.creator) {
     clerkUserMetadata = {
       ...clerkUserMetadata,
       type: clerkUserMetadata.type,
-      creatorId: user.Creator.id,
+      creatorId: user.creator.id,
       signUpComplete: true,
     };
-  } else if (clerkUserMetadata.type == UserTypeT.Buyer && user.Buyer) {
+  } else if (clerkUserMetadata.type == UserTypeT.Buyer && user.buyer) {
     clerkUserMetadata = {
       ...clerkUserMetadata,
       type: clerkUserMetadata.type,
-      buyerId: user.Buyer.id,
+      buyerId: user.buyer.id,
       signUpComplete: true,
     };
   }

@@ -1,15 +1,13 @@
-"use client";
+import PrivacyPolicyEn from "@/app/[locale]/privacy_policy/PrivacyPolicyEn";
+import PrivacyPolicyKo from "@/app/[locale]/privacy_policy/PrivacyPolicyKo";
+import { getLocale } from "next-intl/server";
+import PageLayout from "@/components/PageLayout";
 
-import PrivacyPolicyEn from "@/common/PrivacyPolicyEn";
-import PrivacyPolicyKo from "@/common/PrivacyPolicyKo";
-import { Container } from "@/ui/layouts";
-import { useLocale } from "next-intl";
-
-export default function PrivacyPolicy() {
-  const locale = useLocale();
+export default async function PrivacyPolicy() {
+  const locale = await getLocale();
   return (
-    <Container className="my-[80px]">
+    <PageLayout>
       {locale === "ko" ? <PrivacyPolicyKo /> : <PrivacyPolicyEn />}
-    </Container>
+    </PageLayout>
   );
 }

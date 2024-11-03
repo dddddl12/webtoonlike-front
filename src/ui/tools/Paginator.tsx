@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useMemo } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -15,12 +13,15 @@ export function Paginator({
   currentPage,
   totalPages,
   pageWindowLen = 3,
-  onPageChange
+  setFilters
 }: {
   currentPage: number;
   totalPages: number;
   pageWindowLen?: number;
-  onPageChange: (page: number) => void;
+  setFilters: Dispatch<SetStateAction<{
+    page: number;
+    [extra_key: string]: any;
+  }>>;
 }) {
   const pageArray = useMemo(() => {
     const arr = [];
@@ -30,13 +31,19 @@ export function Paginator({
     return arr;
   }, [currentPage, totalPages]);
 
+  const changePage = (page: number) => {
+    setFilters(prev => ({
+      ...prev, page
+    }));
+  };
+
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
             className="bg-[#121212] text-white"
-            onClick={() => onPageChange(currentPage - 1)}
+            onClick={() => changePage(currentPage - 1)}
             disabled={currentPage <= 1}
           />
         </PaginationItem>
@@ -44,7 +51,7 @@ export function Paginator({
         {currentPage - pageWindowLen > 1 && (
           <>
             <PaginationItem>
-              <PaginationLink onClick={() => onPageChange(1)}>1</PaginationLink>
+              <PaginationLink onClick={() => changePage(1)}>1</PaginationLink>
             </PaginationItem>
             <PaginationItem>
               <PaginationEllipsis />
@@ -57,7 +64,7 @@ export function Paginator({
             <PaginationItem key={pageNum}>
               <PaginationLink
                 isActive={currentPage == pageNum}
-                onClick={() => onPageChange(pageNum)}
+                onClick={() => changePage(pageNum)}
               >
                 {pageNum}
               </PaginationLink>
@@ -72,7 +79,7 @@ export function Paginator({
               <PaginationEllipsis />
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink onClick={() => onPageChange(totalPages)}>
+              <PaginationLink onClick={() => changePage(totalPages)}>
                 {totalPages}
               </PaginationLink>
             </PaginationItem>
@@ -82,7 +89,7 @@ export function Paginator({
         <PaginationItem>
           <PaginationNext
             className="bg-[#121212] text-white"
-            onClick={() => onPageChange(currentPage + 1)}
+            onClick={() => changePage(currentPage + 1)}
             disabled={currentPage >= totalPages}
           />
         </PaginationItem>

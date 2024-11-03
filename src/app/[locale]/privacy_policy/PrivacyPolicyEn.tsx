@@ -1,4 +1,4 @@
-export default function PrivacyPolicy() {
+export default function PrivacyPolicyEn() {
   return (
     <div className="text-black-texts">
       <p>Article 1 Consent to Collection of Personal Information and Collection Method</p>

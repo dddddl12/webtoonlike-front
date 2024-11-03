@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { CreatorProfileForm } from "@/components/CreatorProfileForm";
+import { CreatorProfileForm } from "@/components/Account/CreatorProfileForm";
 import { useMe, useUserActions } from "@/states/UserState";
 import * as CreatorApi from "@/apis/creators";
 import { useSnackbar } from "@/hooks/Snackbar";

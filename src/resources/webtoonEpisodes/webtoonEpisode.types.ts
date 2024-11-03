@@ -1,55 +1,38 @@
 import { WebtoonEpisodeImageT } from "@/resources/webtoonEpisodeImages/webtoonEpisodeImage.types";
+import z from "zod";
+import { ResourceSchema } from "@/resources/globalTypes";
 
-export type WebtoonEpisodeFormT = {
-  authorId: number | null;
-  webtoonId: number;
-  episodeNo: number;
-  title?: (string | null) | undefined;
-  title_en?: (string | null) | undefined;
-  description?: (string | null) | undefined;
-  thumbPath?: (string | null) | undefined;
-  englishUrl?: (string | null) | undefined;
-  modifiedAt?: (Date | null) | undefined;
-  publishedAt?: (Date | null) | undefined;
-}
+const WebtoonEpisodeBaseSchema = z.object({
+  webtoonId: z.number(),
+  episodeNo: z.number(),
+  title: z.string().optional(),
+  title_en: z.string().optional(),
+  description: z.string().optional(),
+  // thumbPath: z.string().optional(),
+  englishUrl: z.string().optional()
+});
 
-type _WebtoonEpisodeT = {
-  id: number;
-  createdAt: Date;
-  updatedAt: Date;
-  authorId: number | null;
-  webtoonId: number;
-  episodeNo: number;
-  title?: (string | null) | undefined;
-  title_en?: (string | null) | undefined;
-  description?: (string | null) | undefined;
-  thumbPath?: (string | null) | undefined;
-  englishUrl?: (string | null) | undefined;
-  modifiedAt?: (Date | null) | undefined;
-  publishedAt?: (Date | null) | undefined;
-}
 
-export type GetWebtoonEpisodeOptionT = {
-  meId?: (number | undefined) | undefined;
-  $images?: boolean | undefined;
-}
+export const WebtoonEpisodeSchema = WebtoonEpisodeBaseSchema
+  .merge(ResourceSchema);
+export type WebtoonEpisodeT = z.infer<typeof WebtoonEpisodeSchema>;
 
-export type ListWebtoonEpisodeOptionT = {
-  meId?: ((number | undefined) | undefined) | undefined;
-  $images?: (boolean | undefined) | undefined;
-  limit?: number | undefined;
-  cursor?: string | undefined;
-  webtoonId?: number | undefined;
-}
-
-type BasicWebtoonInfo = {
-  id: true,
-  title: true,
-  title_en: true,
-  authorId: true
-}
-
-export interface WebtoonEpisodeT extends _WebtoonEpisodeT {
-  images?: WebtoonEpisodeImageT[]
-  webtoon?: BasicWebtoonInfo
-}
+export const WebtoonEpisodeExtendedSchema = WebtoonEpisodeSchema
+  .extend({
+    webtoon: z.object({
+      id: z.number(),
+      title: z.string(),
+      title_en: z.string().optional(),
+    }),
+    images: z.array(
+      z.object({
+        id: z.number(),
+        path: z.string(),
+      })
+    ),
+    navigation: z.object({
+      previousId: z.number().optional(),
+      nextId: z.number().optional(),
+    })
+  });
+export type WebtoonEpisodeExtendedT = z.infer<typeof WebtoonEpisodeExtendedSchema>;

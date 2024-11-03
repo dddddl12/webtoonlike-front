@@ -28,7 +28,7 @@ export async function createBuyer(form: BuyerFormT ) {
     // 레코드 추가
     const insert = {
       purpose: form.purpose,
-      companyInfo: {
+      company: {
         ...form.companyInfo,
         thumbnail: undefined,
         businessCard: undefined,

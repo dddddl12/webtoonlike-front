@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import { Col, Gap, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
@@ -27,7 +25,7 @@ import { useAllRequiredFilled } from "@/hooks/allRequiredFilled";
 import { BuyerFormSchema } from "@/resources/buyers/buyer.types";
 import { useTokenRefresh } from "@/hooks/tokenRefresh";
 
-export function CreatorProfileForm({
+export default function CreatorProfileForm({
   prevCreator,
   redirectPath,
 }: {
@@ -36,6 +34,7 @@ export function CreatorProfileForm({
 }) {
   // 번역
   const t = useTranslations("setupPageNextForCreators");
+  const tGeneral = useTranslations("general");
 
   const [thumbnail, setThumbnail] = useState<ImageData | undefined>(
     prevCreator?.thumbPath ? new ImageData(prevCreator?.thumbPath) : undefined);
@@ -229,7 +228,7 @@ export function CreatorProfileForm({
             type="submit"
             className="w-full bg-black-texts text-white hover:text-black"
             disabled={!allRequiredFilled}
-            value={prevCreator ? `${t("edit")}` : `${t("submit")}`}
+            value={prevCreator ? `${tGeneral("edit")}` : `${tGeneral("submit")}`}
           />
         </form>
       </Form>

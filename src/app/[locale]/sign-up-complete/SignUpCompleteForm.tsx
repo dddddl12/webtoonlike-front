@@ -4,9 +4,9 @@ import {
   ClerkUserMetadata,
 } from "@/resources/userMetadata/userMetadata.types";
 import { UserTypeT } from "@/resources/users/user.types";
-import { CreatorProfileForm } from "@/components/CreatorProfileForm";
-import { BuyerProfileForm } from "@/components/BuyerProfileForm";
-import { MeSetupEditor } from "@/app/[locale]/sign-up-complete/MeSetupEditor";
+import CreatorProfileForm from "@/components/Account/CreatorProfileForm";
+import BuyerProfileForm from "@/components/Account/BuyerProfileForm";
+import Index from "@/components/Account/BasicUserInfo";
 import { useRouter } from "@/i18n/routing";
 import { useSession } from "@clerk/nextjs";
 import { useEffect } from "react";
@@ -16,6 +16,8 @@ export function SignUpCompleteForm ({ userMetadata }: {
   userMetadata?: BaseClerkUserMetadata | ClerkUserMetadata
 }) {
   const router = useRouter();
+
+  // 토큰 재검증
   const { isSignedIn, session } = useSession();
   useEffect(() => {
     // 이미 회원가입을 마친 경우 홈으로 리다이렉트하기 위한 훅
@@ -31,7 +33,7 @@ export function SignUpCompleteForm ({ userMetadata }: {
   }, [isSignedIn, session]);
 
   if (!userMetadata) {
-    return <MeSetupEditor />;
+    return <Index />;
   } else if (userMetadata.signUpComplete){
     // 잠시 대기했다가 관련 동작 마친 후 리다이렉트 예정
     return null;

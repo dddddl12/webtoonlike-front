@@ -1,24 +1,36 @@
 import React from "react";
-import { Gap } from "@/ui/layouts";
-import { CreatorOwnWebtoonList } from "@/app/[locale]/creator/bid-rounds/CreatorOwnWebtoonList";
-// import { BidRoundList } from "@/app/[locale]/creator/bid-rounds/BidRoundList";
-import { listBidRounds } from "@/resources/bidRounds/bidRound.service";
-import { listMyWebtoonsWithNoRounds } from "@/resources/webtoons/webtoon.service";
+import { Col, Gap } from "@/ui/layouts";
 import PageLayout from "@/components/PageLayout";
+import { listMyWebtoonsNotOnSale, listMyWebtoonsOnSale } from "@/resources/webtoons/webtoon.service";
+import { getTranslations } from "next-intl/server";
+import BidRoundListNotOnSale from "@/app/[locale]/creator/bid-rounds/BidRoundListNotOnSale";
+import BidRoundListOnSale from "@/app/[locale]/creator/bid-rounds/BidRoundListOnSale";
 
 export default async function BidRound() {
   const [
-    initialWebtoonListNotOnSale,
-    initialBidRoundList
+    initialWebtoonListNotOnSaleResponse,
+    initialWebtoonListOnSaleResponse
   ] = await Promise.all([
-    listMyWebtoonsWithNoRounds(),
-    listBidRounds()
+    listMyWebtoonsNotOnSale(),
+    listMyWebtoonsOnSale()
   ]);
+
+  const t = await getTranslations("manageContents");
   return (
     <PageLayout>
-      <CreatorOwnWebtoonList initialWebtoonList={initialWebtoonListNotOnSale} />
+      <Col>
+        <h1 className="font-bold text-3xl mb-10">
+          {t("unregisteredSeries")}
+        </h1>
+        <BidRoundListNotOnSale initialWebtoonListResponse={initialWebtoonListNotOnSaleResponse} />
+      </Col>
       <Gap y={20} />
-      {/*<BidRoundList initialBidRoundList={initialBidRoundList} />*/}
+      <Col>
+        <h1 className="font-bold text-3xl mb-10">
+          {t("registeredSeries")}
+        </h1>
+        <BidRoundListOnSale initialWebtoonListResponse={initialWebtoonListOnSaleResponse} />
+      </Col>
     </PageLayout>
   );
 }

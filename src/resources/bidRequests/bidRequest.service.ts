@@ -1,104 +1,26 @@
 "use server";
 
 import { BidRequest as BidRequestRecord, Prisma } from "@prisma/client";
-import { BidRequestT } from "@/resources/bidRequests/bidRequest.types";
+import { BidRequestExtendedT, BidRequestSchema, BidRequestT } from "@/resources/bidRequests/bidRequest.types";
 import { getUserMetadata } from "@/resources/userMetadata/userMetadata.service";
 import prisma from "@/utils/prisma";
+import { ListResponse } from "@/resources/globalTypes";
 
 
-const mapToDTO = (record: BidRequestRecord): BidRequestT => ({
-  ...record,
-  contractRange: {
-    // TODO contractRange json 검토
-    data: []
-  },
+const mapToBidRequestDTO = (record: BidRequestRecord): BidRequestT => ({
+  id: record.id,
+  createdAt: record.createdAt,
+  updatedAt: record.updatedAt,
+  roundId: record.roundId,
+  message: record.message ?? undefined,
+  contractRange: BidRequestSchema.shape.contractRange
+    .safeParse(record.contractRange).data ?? [],
+  userId: record.userId ?? undefined,
+  acceptedAt: record.acceptedAt ?? undefined,
+  rejectedAt: record.rejectedAt ?? undefined,
+  approvedAt: record.approvedAt ?? undefined,
+  cancelledAt: record.cancelledAt ?? undefined,
 });
-
-
-// @Injectable()
-// export class BidRequestService {
-//   constructor() {}
-//
-//   async get(id: idT, getOpt: GetBidRequestOptionT = {}): Promise<BidRequestT> {
-//     return bidRequestM.findById(id, {
-//       builder: (qb, select) => {
-//         lookupBuilder(select, getOpt);
-//       }
-//     });
-//   }
-//
-//   async list(listOpt: ListBidRequestOptionT): Promise<ListData<BidRequestT>> {
-//     return await listBidRequest(listOpt);
-//   }
-//
-//   async create(form: BidRequestFormT): Promise<BidRequestT> {
-//     // TODO: Round 사용 안하고 있음
-//     const round = await bidRoundM.findById(form.roundId);
-//
-//     if (!round) {
-//       throw new err.NotExistE("bidRound not exist");
-//     }
-//
-//     // if (round.status !== "bidding") {
-//     //   throw new err.InvalidActionE("bidRound not started");
-//     // }
-//
-//     const created = await bidRequestM.create(form);
-//
-//     if (!created) {
-//       throw new err.NotAppliedE();
-//     }
-//     return created;
-//   }
-//
-//   async update(id: idT, form: Partial<BidRequestFormT>): Promise<BidRequestT> {
-//     const updated = await bidRequestM.updateOne({ id }, form);
-//     if (!updated) {
-//       throw new err.NotAppliedE();
-//     }
-//     return updated;
-//   }
-//
-//   async remove(id: idT): Promise<BidRequestT> {
-//     const deleted = await bidRequestM.deleteOne({ id });
-//     if (!deleted) {
-//       throw new err.NotAppliedE();
-//     }
-//     return deleted;
-//   }
-//
-//   async accept(id: idT): Promise<BidRequestT> {
-//     const updated = await bidRequestM.updateOne({ id }, { acceptedAt: "NOW()" as any, rejectedAt: null });
-//     if (!updated) {
-//       throw new err.NotAppliedE();
-//     }
-//     return updated;
-//   }
-//
-//   async reject(id: idT): Promise<BidRequestT> {
-//     const updated = await bidRequestM.updateOne({ id }, { rejectedAt: "NOW()" as any, acceptedAt: null });
-//     if (!updated) {
-//       throw new err.NotAppliedE();
-//     }
-//     return updated;
-//   }
-//
-//   async cancel(id: idT): Promise<BidRequestT> {
-//     const updated = await bidRequestM.updateOne({ id }, { cancelledAt: "NOW()" as any });
-//     if (!updated) {
-//       throw new err.NotAppliedE();
-//     }
-//     return updated;
-//   }
-//
-//   async approve(id: idT): Promise<BidRequestT> {
-//     const updated = await bidRequestM.updateOne({ id }, { updatedAt: "NOW()" as any });
-//     if (!updated) {
-//       throw new err.NotAppliedE();
-//     }
-//     return updated;
-//   }
-// }
 
 export async function listBidRequests({
   page = 1,
@@ -106,10 +28,7 @@ export async function listBidRequests({
 }: {
   page?: number;
   limit?: number;
-} = {}): Promise<{
-    items: BidRequestT[];
-    totalPages: number;
-  }> {
+} = {}): Promise<ListResponse<BidRequestExtendedT>> {
   const { id: userId } = await getUserMetadata();
 
   const where: Prisma.BidRequestWhereInput = {
@@ -121,12 +40,18 @@ export async function listBidRequests({
     prisma.bidRequest.findMany({
       where,
       include: {
-        round: {
-          include: {
-            webtoon: true
+        bidRound: {
+          select: {
+            webtoon: {
+              select: {
+                id: true,
+                title: true,
+                title_en: true,
+                thumbPath: true,
+              }
+            }
           }
-        },
-        BidRequestMessage: true
+        }
       },
       take: limit,
       skip: (page - 1) * limit,
@@ -134,7 +59,19 @@ export async function listBidRequests({
     prisma.bidRequest.count({ where })
   ]);
   return {
-    items: records.map(mapToDTO),
+    items: records.map(record => {
+      const { webtoon } = record.bidRound;
+      return {
+        ...mapToBidRequestDTO(record),
+        webtoon: {
+          id: webtoon.id,
+          title: webtoon.title,
+          title_en: webtoon.title_en ?? undefined,
+          thumbPath: webtoon.thumbPath,
+        }
+      };
+    }),
     totalPages: Math.ceil(totalRecords / limit),
   };
+
 }

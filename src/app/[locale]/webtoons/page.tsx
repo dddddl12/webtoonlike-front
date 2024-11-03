@@ -24,7 +24,7 @@ export default async function Webtoons() {
       <Gap y={10} />
       <WebtooonFeedList
         genres={genres}
-        initialWebtoonList={webtoonList}
+        initialWebtoonListResponse={webtoonList}
       />
     </PageLayout>
   );

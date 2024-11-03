@@ -1,8 +1,6 @@
-import { CreatorT } from "@/resources/creators/creator.types";
-import { WebtoonEpisodeT } from "@/resources/webtoonEpisodes/webtoonEpisode.types";
-import { BidRoundT } from "@/resources/bidRounds/bidRound.types";
-import { GenreT } from "@/resources/genres/genre.types";
-import { Resource } from "@/resources/globalTypes";
+import { BidRoundExtendedSchema } from "@/resources/bidRounds/bidRound.types";
+import { ResourceSchema } from "@/resources/globalTypes";
+import z from "zod";
 
 export enum AgeLimit {
   All = "ALL",
@@ -25,52 +23,68 @@ export enum TargetGender {
   Female = "FEMALE"
 }
 
-export type WebtoonFormT = {
-  title: string;
-  title_en: string | null;
-  description: string | null;
-  description_en: string | null;
-  thumbNail: File | null;
+const WebtoonBaseSchema = z.object({
+  title: z.string(),
+  title_en: z.string().optional(),
+  description: z.string().optional(),
+  description_en: z.string().optional(),
   /** 외부 연재 중인 웹툰의 url */
-  externalUrl: string | null;
+  externalUrl: z.string().optional(),
   /** 영어 번역 url */
-  englishUrl: string | null;
-  adultOnly: boolean;
-  targetAge: TargetAge[];
-  ageLimit: AgeLimit;
-  targetGender: TargetGender;
-}
+  englishUrl: z.string().optional(),
+  adultOnly: z.boolean(),
+  targetAges: z.array(z.nativeEnum(TargetAge)),
+  ageLimit: z.nativeEnum(AgeLimit),
+  targetGender: z.nativeEnum(TargetGender)
+});
 
-type _WebtoonT = Resource<Omit<WebtoonFormT & {
-  authorId: number | null;
-  thumbPath: string | null;
-  likes: number;
-  publishedAt: Date | null;
-}, "thumbNail">>
+export const WebtoonFormSchema = WebtoonBaseSchema.extend({
+  files: z.object({
+    thumbnail: z.instanceof(File).optional(),
+  })
+});
 
-export interface WebtoonT extends _WebtoonT {
-  creator?: CreatorT
-  episodes?: WebtoonEpisodeT[]
-  numEpisode?: number
-  numRequest?: number
-  myLike?: boolean
-  bidRounds?: BidRoundT[]
-  genres?: GenreT[]
-}
+export const WebtoonSchema = ResourceSchema
+  .merge(WebtoonBaseSchema)
+  .extend({
+    thumbPath: z.string(),
+  });
+export type WebtoonT = z.infer<typeof WebtoonSchema>
+
+export const WebtoonExtendedSchema = WebtoonSchema
+  .extend({
+    // From joined tables
+    isMine: z.boolean(),
+    creator: z.object({
+      id: z.number(),
+      name: z.string(),
+      name_en: z.string().optional()
+    }),
+    likeCount: z.number(),
+    myLike: z.boolean(),
+    genres: z.array(z.object({
+      id: z.number(),
+      label: z.string(),
+      label_en: z.string().optional(),
+    })),
+    bidRound: BidRoundExtendedSchema.optional(),
+    firstEpisodeId: z.number().optional()
+  });
+export type WebtoonExtendedT = z.infer<typeof WebtoonExtendedSchema>
 
 export type HomeWebtoonItem = {
   id: number;
-  thumbPath: string | null;
+  thumbPath?: string;
   title: string;
-  title_en: string | null;
-  creatorName: string | null;
-  creatorName_en: string | null;
+  title_en?: string;
+  creatorName?: string;
+  creatorName_en?: string;
 }
 
 export type HomeArtistItem = {
   id: number;
-  thumbPath: string | null;
+  thumbPath?: string;
   name: string;
-  name_en: string | null;
+  name_en?: string;
   numOfWebtoons: number;
 }

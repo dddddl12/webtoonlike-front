@@ -1,5 +1,5 @@
-import { Resource } from "@/resources/globalTypes";
 import z from "zod";
+import { ResourceSchema } from "@/resources/globalTypes";
 
 export enum UserTypeT {
   Creator = "CREATOR",
@@ -25,20 +25,21 @@ const UserBaseSchema = z.object({
   phone: z.string(),
   userType: z.nativeEnum(UserTypeT),
   country: CountrySchema,
-  // postCode: z.string().regex(/^[0-9]{5}$/),
-  postCode: z.string(),
-  address: z.string(),
-  addressDetail: z.string(),
+  // postcode: z.string().regex(/^[0-9]{5}$/),
+  postcode: z.string(),
+  addressLine1: z.string(),
+  addressLine2: z.string(),
 });
 
 export const UserFormSchema = UserBaseSchema.extend({
   agreed: z.literal(true)
 });
-
 export type UserFormT = z.infer<typeof UserFormSchema>
 
-export type UserT = Resource<{
-  // TODO 마이그레이션 완료 후 이메일 삭제
-  email: string;
-  sub: string;
-}> & z.infer<typeof UserBaseSchema>;
+export const UserSchema = UserBaseSchema
+  .merge(ResourceSchema)
+  .extend({
+    email: z.string(),
+    sub: z.string(),
+  });
+export type UserT = z.infer<typeof UserSchema>;

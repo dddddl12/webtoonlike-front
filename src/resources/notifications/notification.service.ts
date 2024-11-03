@@ -1,3 +1,5 @@
+"use server";
+
 // import { Injectable } from "@nestjs/common";
 // import { notificationM } from "@/models/notifications";
 // import * as err from "@/errors";

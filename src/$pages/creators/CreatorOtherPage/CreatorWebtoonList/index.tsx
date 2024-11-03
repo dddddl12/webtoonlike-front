@@ -1,7 +1,7 @@
 "use client";
 
 import { WebtoonPreview } from "@/components/WebtoonPreview";
-import { useListData } from "@/hooks/ListData";
+import { useListData } from "@/hooks/listData";
 import { CreatorT, ListWebtoonOptionT } from "@/types";
 import { Grid, Row } from "@/ui/layouts";
 import { Clickable } from "@/ui/tools/Clickable";
@@ -19,7 +19,7 @@ export default function CreatorWebtoonList({
   creator,
 }: {
   creator: CreatorT;
-  }): JSX.Element {
+}): JSX.Element {
   const router = useRouter();
   const { data: webtoons$, actions: webtoonsAct } = useListData({
     listFn: async (listOpt) => {
