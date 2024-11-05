@@ -83,7 +83,7 @@ export async function getWebtoon(id: number): Promise<WebtoonExtendedT> {
         include: {
           _count: {
             select: {
-              requests: true
+              bidRequests: true
             }
           }
         }
@@ -140,7 +140,7 @@ export async function getWebtoon(id: number): Promise<WebtoonExtendedT> {
         })),
       bidRound: record.bidRound ? {
         ...mapToBidRoundDTO(record.bidRound),
-        bidRequestCount: record.bidRound._count.requests ?? 0
+        bidRequestCount: record.bidRound._count.bidRequests ?? 0
       } : undefined,
       firstEpisodeId: record.episodes?.[0].id,
     };
@@ -213,7 +213,7 @@ export async function listMyWebtoonsNotOnSale({ page = 1 }: {
   const where: Prisma.WebtoonWhereInput = {
     userId,
     bidRound: {
-      isNot: null
+      is: null
     }
   };
   const limit = 5;
@@ -246,7 +246,7 @@ export async function listMyWebtoonsOnSale({ page = 1 }: {
   const where: Prisma.WebtoonWhereInput = {
     userId,
     bidRound: {
-      is: null
+      isNot: null
     }
   };
   const limit = 5;
