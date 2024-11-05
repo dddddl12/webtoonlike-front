@@ -11,7 +11,7 @@ const mapToBidRequestDTO = (record: BidRequestRecord): BidRequestT => ({
   id: record.id,
   createdAt: record.createdAt,
   updatedAt: record.updatedAt,
-  roundId: record.roundId,
+  bidRoundId: record.bidRoundId,
   message: record.message ?? undefined,
   contractRange: BidRequestSchema.shape.contractRange
     .safeParse(record.contractRange).data ?? [],

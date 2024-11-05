@@ -14,7 +14,7 @@ export enum BidRequestStatus {
 // 대기 중, 거절 완료, 협상 중, 성사 완료, 협상 종료
 
 const BidRequestBaseSchema = z.object({
-  roundId: z.number(),
+  bidRoundId: z.number(),
   message: z.string().optional(),
   contractRange: z.array(
     ContractRangeItemSchema.extend({

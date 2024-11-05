@@ -2,49 +2,29 @@ import { BidRequestT } from "@/resources/bidRequests/bidRequest.types";
 import { WebtoonT } from "@/resources/webtoons/webtoon.types";
 import { CreatorT } from "@/resources/creators/creator.types";
 import { BuyerT } from "@/resources/buyers/buyer.types";
+import z from "zod";
+import { ResourceSchema } from "@/resources/globalTypes";
 
-export type InvoiceFormT = {
-    requestId: number;
-    creatorUid: number | null;
-    buyerUid: number | null;
-    dataUri: string;
-}
+const InvoiceBaseSchema = z.object({
+  bidRequestId: z.number(),
+});
 
-type _InvoiceT = {
-    id: number;
-    createdAt: Date;
-    updatedAt: Date;
-    requestId: number;
-    creatorUid: number | null;
-    buyerUid: number | null;
-    dataUri: string;
-}
+export const InvoiceFormSchema = InvoiceBaseSchema;
+export type InvoiceFormT = z.infer<typeof InvoiceBaseSchema>;
 
-export type GetInvoiceOptionT = {
-    meId?: (number | undefined) | undefined;
-    $request?: boolean | undefined;
-    $webtoon?: boolean | undefined;
-    $creator?: boolean | undefined;
-    $buyer?: boolean | undefined;
-}
+export const InvoiceSchema = InvoiceBaseSchema
+  .merge(ResourceSchema);
+export type InvoiceT = z.infer<typeof InvoiceSchema>;
 
-export type ListInvoiceOptionT = {
-    cursor?: string | undefined;
-    limit?: number | undefined;
-    offset?: number | undefined;
-    $numData?: boolean | undefined;
-    meId?: ((number | undefined) | undefined) | undefined;
-    $request?: (boolean | undefined) | undefined;
-    $webtoon?: (boolean | undefined) | undefined;
-    $creator?: (boolean | undefined) | undefined;
-    $buyer?: (boolean | undefined) | undefined;
-    creatorUid?: number | undefined;
-    buyerUid?: number | undefined;
-}
-
-export interface InvoiceT extends _InvoiceT {
-    request?: BidRequestT;
-    webtoon?: WebtoonT;
-    creator?: CreatorT;
-    buyer?: BuyerT;
-}
+export const InvoiceExtendedSchema = InvoiceSchema
+  .extend({
+    webtoon: z.object({
+      id: z.number(),
+      title: z.string(),
+      title_en: z.string().optional(),
+      thumbPath: z.string()
+    }),
+    creatorUsername: z.string(),
+    buyerUsername: z.string()
+  });
+export type InvoiceExtendedT = z.infer<typeof InvoiceExtendedSchema>;

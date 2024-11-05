@@ -113,6 +113,9 @@ importers:
       recoil:
         specifier: ^0.7.7
         version: 0.7.7(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
       sharp:
         specifier: ^0.33.5
         version: 0.33.5

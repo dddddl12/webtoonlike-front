@@ -1,3 +1,6 @@
+import "server-only";
+// 클라이언트에서 접근을 절대 불허할 것
+
 import { PrismaTransaction } from "@/resources/globalTypes";
 import {
   AdminLevel,
@@ -10,6 +13,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { UserTypeT } from "@/resources/users/user.types";
 import type { Admin } from "@prisma/client";
 import { NotSignedInError } from "@/errors";
+import { User } from "@clerk/backend";
 
 export const getClerkUser = async () => {
   const clerkUser = await auth();
@@ -28,6 +32,7 @@ export async function updateUserMetadata(tx?: PrismaTransaction): Promise<BaseCl
   const { clerkUserId, metadata } = await getVerifiedUserMetadata(tx);
   await clerkClient().then(client =>
     client.users.updateUserMetadata(clerkUserId, {
+      // TODO 키 클리어 이슈
       publicMetadata: metadata || {}
     }));
   return metadata;
@@ -97,4 +102,27 @@ const getAdminLevel = (admin: Admin | null) => {
     return AdminLevel.SuperAdmin;
   }
   throw new Error("Unexpected admin level");
+};
+
+export const getClerkUserMap = async (userIds: number[]): Promise<Map<number, User>> => {
+  const userIdsSet = new Set(userIds);
+  const clerkUsers = await clerkClient().then(client =>
+    client.users.getUserList({
+      externalId: [...userIdsSet].map(id => id.toString())
+    }));
+  const map = new Map<number, User>();
+  clerkUsers.data.forEach(user => {
+    const { externalId } = user;
+    if(externalId) {
+      map.set(parseInt(externalId), user);
+    }
+  });
+  return map;
+//   TODO 계정 탈퇴 시 남겨야 할 유저 정보
+//   TODO 웹훅 검토
+};
+
+export const getClerkUserById = async (userId: number): Promise<User|undefined> => {
+  const userMap = await getClerkUserMap([userId]);
+  return userMap.get(userId);
 };

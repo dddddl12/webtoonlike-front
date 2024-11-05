@@ -29,7 +29,7 @@ export const BuyerPurposeSchema = z.enum([
   "investment"
 ]);
 
-const BuyerCompanySchema = z.object({
+export const BuyerCompanySchema = z.object({
   /** 업체명 */
   name: z.string().min(1).max(100),
   /** 대표이미지 */
@@ -56,7 +56,7 @@ const BuyerCompanySchema = z.object({
 });
 
 const BuyerBaseSchema = z.object({
-  companyInfo: BuyerCompanySchema,
+  company: BuyerCompanySchema,
   purpose: BuyerPurposeSchema.optional()
 });
 

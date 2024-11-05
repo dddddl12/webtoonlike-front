@@ -43,7 +43,7 @@ model BidRequest {
 
   // TODO buyer
   userId        Int       @map("user_id")
-  roundId       Int       @map("bid_round_id")
+  bidRoundId    Int       @map("bid_round_id")
   message       String?   @map("message")
   contractRange Json      @map("contract_range")
   acceptedAt    DateTime? @map("accepted_at")
@@ -52,7 +52,7 @@ model BidRequest {
   cancelledAt   DateTime? @map("cancelled_at")
 
   user     User                @relation(fields: [userId], references: [id], onDelete: Restrict)
-  bidRound BidRound            @relation(fields: [roundId], references: [id], onDelete: Restrict)
+  bidRound BidRound            @relation(fields: [bidRoundId], references: [id], onDelete: Restrict)
   messages BidRequestMessage[]
   invoices Invoice[]
 
@@ -88,12 +88,14 @@ model BidRound {
   currentEpisodeNo    Int?           @map("current_episode_no")
   monthlyEpisodeCount Int?           @map("monthly_episode_count")
 
-  webtoon  Webtoon      @relation(fields: [webtoonId], references: [id], onDelete: Restrict)
-  requests BidRequest[]
+  webtoon     Webtoon      @relation(fields: [webtoonId], references: [id], onDelete: Restrict)
+  bidRequests BidRequest[]
 
   @@map("bid_rounds")
 }
 
+// TODO prisma-json-types-generator
+// https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#typed-json
 model Buyer {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
@@ -139,20 +141,12 @@ model Genre {
 }
 
 model Invoice {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  requestId Int      @map("request_id")
-  creatorId Int      @map("creator_id")
-  buyerId   Int      @map("buyer_id")
-  // TODO 무모한 데이터 저장
-  dataUri   String   @map("data_uri")
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  bidRequestId Int      @map("request_id")
 
-  request BidRequest @relation(fields: [requestId], references: [id], onDelete: Restrict)
-  creator User       @relation(name: "CreatorRelation", fields: [creatorId], references: [id], onDelete: Restrict)
-  buyer   User       @relation(name: "BuyerRelation", fields: [buyerId], references: [id], onDelete: Restrict)
-  User    User?      @relation(fields: [userId], references: [id])
-  userId  Int?
+  bidRequest BidRequest @relation(fields: [bidRequestId], references: [id], onDelete: Restrict)
 
   @@map("invoices")
 }
@@ -186,6 +180,7 @@ model User {
   addressLine2 String?  @map("address_line_2")
 
   admin              Admin?
+  // TODO id 대신 수발신 타입으로 구분
   bidRequestMessages BidRequestMessage[]
   bidRequests        BidRequest[]
   buyer              Buyer?
@@ -193,11 +188,6 @@ model User {
   notifications      Notification[]
   webtoons           Webtoon[]
   webtoonLikes       WebtoonLike[]
-
-  // Define relations with unique names for Invoice model
-  invoicesAsCreator Invoice[] @relation(name: "CreatorRelation")
-  invoicesAsBuyer   Invoice[] @relation(name: "BuyerRelation")
-  invoices          Invoice[]
 
   @@map("users")
 }

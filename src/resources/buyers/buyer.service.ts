@@ -13,13 +13,13 @@ export async function createBuyer(form: BuyerFormT ) {
   // TODO
   const { thumbnail, businessCard, businessCert } = form.files;
   // if (thumbnail) {
-  //   form.companyInfo.thumbPath = await uploadFile(thumbnail, "buyers/thumbnails");
+  //   form.company.thumbPath = await uploadFile(thumbnail, "buyers/thumbnails");
   // }
   // if (businessCard) {
-  //   form.companyInfo.businessCardPath = await uploadFile(businessCard, "buyers/business_cards");
+  //   form.company.businessCardPath = await uploadFile(businessCard, "buyers/business_cards");
   // }
   // if (businessCert) {
-  //   form.companyInfo.businessCertPath = await uploadFile(businessCert, "buyers/business_certs");
+  //   form.company.businessCertPath = await uploadFile(businessCert, "buyers/business_certs");
   // }
   await prisma.$transaction(async (tx) => {
     const clerkUser = await getClerkUser();
@@ -29,7 +29,7 @@ export async function createBuyer(form: BuyerFormT ) {
     const insert = {
       purpose: form.purpose,
       company: {
-        ...form.companyInfo,
+        ...form.company,
         thumbnail: undefined,
         businessCard: undefined,
         businessCert: undefined,

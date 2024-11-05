@@ -86,19 +86,19 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
           <div className="w-[40px] h-[40px] overflow-hidden relative rounded-sm">
             <Image
               src={
-                bidRequests.buyer?.companyInfo.thumbPath
-                  ? buildImgUrl(null, bidRequests.buyer.companyInfo.thumbPath, {
+                bidRequests.buyer?.company.thumbPath
+                  ? buildImgUrl(null, bidRequests.buyer.company.thumbPath, {
                     size: "xxs",
                   })
                   : "/img/webtoon_default_image_small.svg"
               }
-              alt={`${bidRequests.buyer?.companyInfo.thumbPath}`}
+              alt={`${bidRequests.buyer?.company.thumbPath}`}
               style={{ objectFit: "cover" }}
               fill
             />
           </div>
           <Gap x={4} />
-          {bidRequests.buyer?.companyInfo.name} / {bidRequests.buyer?.name}
+          {bidRequests.buyer?.company.name} / {bidRequests.buyer?.name}
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">

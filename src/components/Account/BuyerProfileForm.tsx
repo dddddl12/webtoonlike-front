@@ -32,7 +32,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
   const t = useTranslations("profilePage");
   const tGeneral = useTranslations("general");
 
-  const prevBuyerCompany = prevBuyer?.companyInfo;
+  const prevBuyerCompany = prevBuyer?.company;
   const [thumbnail, setThumbnail] = useState<ImageData | undefined>(
     prevBuyerCompany?.thumbPath ? new ImageData(prevBuyerCompany?.thumbPath) : undefined);
   const [businessCert, setBusinessCert ] = useState<ImageData | undefined>(
@@ -42,7 +42,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
 
   const form = useForm<BuyerFormT>({
     defaultValues: {
-      companyInfo: {
+      company: {
         name: prevBuyerCompany?.name || "",
         fieldType: prevBuyerCompany?.fieldType || [],
         businessType: prevBuyerCompany?.businessType || [],
@@ -83,7 +83,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
         })}>
           <FormField
             control={form.control}
-            name="companyInfo.businessNumber"
+            name="company.businessNumber"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -104,7 +104,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
 
           <FormField
             control={form.control}
-            name="companyInfo.fieldType"
+            name="company.fieldType"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -128,7 +128,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
 
           <FormField
             control={form.control}
-            name="companyInfo.businessType"
+            name="company.businessType"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -194,7 +194,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
 
           <FormField
             control={form.control}
-            name="companyInfo.name"
+            name="company.name"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -264,7 +264,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
 
           <FormField
             control={form.control}
-            name="companyInfo.dept"
+            name="company.dept"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -283,7 +283,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
 
           <FormField
             control={form.control}
-            name="companyInfo.position"
+            name="company.position"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -302,7 +302,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
 
           <FormField
             control={form.control}
-            name="companyInfo.positionDetail"
+            name="company.positionDetail"
             render={({ field }) => (
               <FormItem>
                 <FormControl>

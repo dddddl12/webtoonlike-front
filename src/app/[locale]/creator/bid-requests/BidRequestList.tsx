@@ -3,7 +3,6 @@
 import { Col, Row } from "@/ui/layouts";
 import { Text } from "@/ui/texts";
 import { useTranslations } from "next-intl";
-import Spinner from "@/components/Spinner";
 import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
 import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
 import { Paginator } from "@/ui/tools/Paginator";
@@ -23,9 +22,6 @@ export default function BidRequestList({ initialBidRequestListResponse }: {
     initialBidRequestListResponse
   );
 
-  if (!listResponse) {
-    return <Spinner />;
-  }
   if (listResponse.items.length === 0) {
     return <Row className="rounded-md bg-gray-darker h-[84px] justify-center">
       <Text className="text-white">오퍼가 없습니다.</Text>
@@ -45,6 +41,7 @@ export default function BidRequestList({ initialBidRequestListResponse }: {
         <BidRequestRow key={bidRequest.id} bidRequest={bidRequest} />
       ))}
     </Col>
+    {/*TODO window 통일*/}
     <Paginator
       currentPage={filters.page}
       totalPages={listResponse.totalPages}

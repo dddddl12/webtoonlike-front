@@ -69,18 +69,18 @@ function TableRow({ webtoon }: {
   return (
     <div className="flex p-2 mb-2 text-white rounded-md bg-gray-darker items-center">
       <div className="w-[40%] p-2 flex justify-start items-center">
-        <div className="w-[60px] h-[60px] overflow-hidden relative rounded-sm">
-          <Image
-            src={
-              buildImgUrl(null, webtoon.thumbPath, {
-                size: "sm",
-              })
-            }
-            alt={webtoon.thumbPath}
-            style={{ objectFit: "cover" }}
-            fill
-          />
-        </div>
+        <Image
+          src={
+            buildImgUrl(null, webtoon.thumbPath, {
+              size: "sm",
+            })
+          }
+          alt={webtoon.thumbPath}
+          style={{ objectFit: "cover" }}
+          width={60}
+          height={60}
+          className="rounded-sm"
+        />
         <Gap x={4} />
         <Link
           className="text-mint underline cursor-pointer"

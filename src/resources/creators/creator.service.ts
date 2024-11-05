@@ -9,7 +9,7 @@ export async function createCreator(form: CreatorFormT ) {
   // TODO
   const { thumbnail } = form.files;
   // if (thumbnail) {
-  //   form.companyInfo.thumbPath = await uploadFile(thumbnail, "buyers/thumbnails");
+  //   form.company.thumbPath = await uploadFile(thumbnail, "buyers/thumbnails");
   // }
   await prisma.$transaction(async (tx) => {
     const clerkUser = await getClerkUser();

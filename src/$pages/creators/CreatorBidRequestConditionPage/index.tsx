@@ -181,15 +181,15 @@ export function CreatorBidRequestConditionPage({
             <div className="w-[115px] h-[115px] overflow-hidden relative rounded-full">
               <Image
                 src={
-                  bidRequestDetail.buyer?.companyInfo.thumbPath
+                  bidRequestDetail.buyer?.company.thumbPath
                     ? buildImgUrl(
                       null,
-                      bidRequestDetail.buyer.companyInfo.thumbPath,
+                      bidRequestDetail.buyer.company.thumbPath,
                       { size: "xs" }
                     )
                     : "/img/webtoon_default_image_small.svg"
                 }
-                alt={`${bidRequestDetail.buyer?.companyInfo.thumbPath}`}
+                alt={`${bidRequestDetail.buyer?.company.thumbPath}`}
                 style={{ objectFit: "cover" }}
                 fill
               />
@@ -199,12 +199,12 @@ export function CreatorBidRequestConditionPage({
               <Text className="text-white text-[24pt] font-bold">
                 {bidRequestDetail.buyer?.name}
               </Text>
-              {/* <Text className="text-white">{bidRequestDetail.buyer?.companyInfo.email}</Text> */}
+              {/* <Text className="text-white">{bidRequestDetail.buyer?.company.email}</Text> */}
               <Gap y={4} />
               <Text className="text-white text-[18pt] font-bold">
-                {bidRequestDetail.buyer?.companyInfo.name} /{" "}
-                {bidRequestDetail.buyer?.companyInfo.dept} /{" "}
-                {bidRequestDetail.buyer?.companyInfo.position}
+                {bidRequestDetail.buyer?.company.name} /{" "}
+                {bidRequestDetail.buyer?.company.dept} /{" "}
+                {bidRequestDetail.buyer?.company.position}
               </Text>
             </Col>
           </Row>

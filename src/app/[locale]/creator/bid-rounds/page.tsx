@@ -5,6 +5,7 @@ import { listMyWebtoonsNotOnSale, listMyWebtoonsOnSale } from "@/resources/webto
 import { getTranslations } from "next-intl/server";
 import BidRoundListNotOnSale from "@/app/[locale]/creator/bid-rounds/BidRoundListNotOnSale";
 import BidRoundListOnSale from "@/app/[locale]/creator/bid-rounds/BidRoundListOnSale";
+import { Heading } from "@/ui/texts";
 
 export default async function BidRound() {
   const [
@@ -19,16 +20,16 @@ export default async function BidRound() {
   return (
     <PageLayout>
       <Col>
-        <h1 className="font-bold text-3xl mb-10">
+        <Heading>
           {t("unregisteredSeries")}
-        </h1>
+        </Heading>
         <BidRoundListNotOnSale initialWebtoonListResponse={initialWebtoonListNotOnSaleResponse} />
       </Col>
       <Gap y={20} />
       <Col>
-        <h1 className="font-bold text-3xl mb-10">
+        <Heading>
           {t("registeredSeries")}
-        </h1>
+        </Heading>
         <BidRoundListOnSale initialWebtoonListResponse={initialWebtoonListOnSaleResponse} />
       </Col>
     </PageLayout>
