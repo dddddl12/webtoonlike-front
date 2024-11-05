@@ -19,6 +19,7 @@ export type WebtoonEpisodeT = z.infer<typeof WebtoonEpisodeSchema>;
 
 export const WebtoonEpisodeExtendedSchema = WebtoonEpisodeSchema
   .extend({
+    isEditable: z.boolean(),
     webtoon: z.object({
       id: z.number(),
       title: z.string(),

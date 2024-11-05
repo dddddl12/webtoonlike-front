@@ -287,6 +287,8 @@ model Webtoon {
   // TODO string 길이 조정
   description    String?
   description_en String?
+  authorName     String?       @map("author_name")
+  authorName_en  String?       @map("author_name_en")
   thumbPath      String        @map("thumb_path")
   externalUrl    String?       @map("external_url")
   englishUrl     String?       @map("english_url")

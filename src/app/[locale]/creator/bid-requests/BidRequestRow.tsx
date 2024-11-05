@@ -6,6 +6,7 @@ import { buildImgUrl } from "@/utils/media";
 import { Gap } from "@/ui/layouts";
 import { Link } from "@/i18n/routing";
 import BidRequestMessageList from "@/app/[locale]/creator/bid-requests/BidRequestMessageList";
+import { displayName } from "@/utils/displayName";
 
 export function BidRequestRow({ bidRequest }:{
   bidRequest: BidRequestExtendedT
@@ -29,8 +30,8 @@ export function BidRequestRow({ bidRequest }:{
           <Gap x={4} />
           <Link
             className="underline cursor-pointer"
-            href={`/webtoons/${webtoon?.id}`}>
-            {locale === "ko" ? webtoon?.title : webtoon?.title_en ?? webtoon?.title}
+            href={`/webtoons/${webtoon.id}`}>
+            {displayName(locale, webtoon.title, webtoon.title_en)}
           </Link>
         </div>
 

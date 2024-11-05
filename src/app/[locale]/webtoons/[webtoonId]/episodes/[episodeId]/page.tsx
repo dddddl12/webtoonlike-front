@@ -10,19 +10,19 @@ import { Link } from "@/i18n/routing";
 import { getEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import NavBanner from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/EpisodeNavBanner";
+import { displayName } from "@/utils/displayName";
+import { Pencil1Icon } from "@radix-ui/react-icons";
 
 export default async function WebtoonEpisodeDetail(
   { params }:
   {params: Promise<{webtoonId: string, episodeId: string}>},
 ) {
-  const { episodeId, webtoonId } = await params;
+  const { episodeId } = await params;
   const episode = await getEpisode(Number(episodeId));
   const { webtoon } = episode;
 
   const locale = await getLocale();
   const t = await getTranslations("detailedInfoPage");
-
-  const webtoonTitle = locale === "ko" ? webtoon.title : webtoon.title_en ?? webtoon.title;
 
   return (
     <PageLayout className="flex flex-row items-stretch">
@@ -41,7 +41,7 @@ export default async function WebtoonEpisodeDetail(
             <IconLeftBrackets className="fill-white" />
           </Link>
           <Text className="text-3xl font-bold text-white">
-            {`${webtoonTitle} _ ${t("episodeSeq", {
+            {`${displayName(locale, webtoon.title, webtoon.title_en)} _ ${t("episodeSeq", {
               number: episode.episodeNo
             })}`}
           </Text>
@@ -56,15 +56,15 @@ export default async function WebtoonEpisodeDetail(
 
         <Row className="justify-between">
           <p className="text-xl font-bold">
-            {locale === "ko" ? episode.title : episode.title_en ?? episode.title}
+            {displayName(locale, episode.title || "", episode.title_en)}
           </p>
-          {/*{(webtoon!.authorId === user.id || user.adminLevel > 0) && (*/}
-          {/*  <Link href={`/webtoons/${webtoon.id}/episodes/${episode.id}/update`}>*/}
-          {/*    <Pencil1Icon className="text-mint" width={25} height={25} />*/}
-          {/*    <Gap x={1} />*/}
-          {/*    <Text className="text-mint">{t("goEdit")}</Text>*/}
-          {/*  </Link>*/}
-          {/*)}*/}
+          {episode.isEditable && (
+            <Link href={`/webtoons/${webtoon.id}/episodes/${episode.id}/update`}>
+              <Pencil1Icon className="text-mint" width={25} height={25} />
+              <Gap x={1} />
+              <Text className="text-mint">{t("goEdit")}</Text>
+            </Link>
+          )}
         </Row>
 
         <Gap y={4} />

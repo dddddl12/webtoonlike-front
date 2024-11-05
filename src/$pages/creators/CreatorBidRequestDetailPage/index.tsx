@@ -16,6 +16,7 @@ import Spinner from "@/components/Spinner";
 import { ErrorComponent } from "@/components/ErrorComponent";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
+import { displayName } from "@/utils/displayName";
 
 export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT }) {
   const router = useRouter();
@@ -172,7 +173,9 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
           </div>
           <Col className=" justify-between w-[86%]">
             <Row className="justify-between" onClick={() => {router.push(`/webtoons/${bidRound.webtoon?.id}`);}}>
-              <Text className="font-bold text-[20pt] text-mint underline pr-5 cursor-pointer">{locale === "ko" ? bidRound.webtoon?.title : bidRound.webtoon?.title_en ?? bidRound.webtoon?.title}</Text>
+              <Text className="font-bold text-[20pt] text-mint underline pr-5 cursor-pointer">
+                {displayName(locale, bidRound.webtoon.title, bidRound.webtoon.title_en)}
+              </Text>
               <div
                 className="text-mint underline cursor-pointer"
                 onClick={() => {router.push(`/webtoons/${bidRound.webtoon?.id}`);}}>
@@ -182,7 +185,9 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
             <Gap y={2} />
             <Text className="text-white font-bold text-[16pt]">{bidRound.user?.fullName}</Text>
             <Gap y={2} />
-            <Text className="text-white">{locale === "ko" ? bidRound.webtoon?.description : bidRound.webtoon?.description_en ?? bidRound.webtoon?.description}</Text>
+            <Text className="text-white">
+              {displayName(locale, bidRound.webtoon.description, bidRound.webtoon.description_en)}
+            </Text>
             <Gap y={2} />
           </Col>
         </Row>

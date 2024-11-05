@@ -7,10 +7,10 @@ import { Badge } from "@/ui/shadcn/Badge";
 import { Link } from "@/i18n/routing";
 import { TargetAge, WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
 import { getLocale, getTranslations } from "next-intl/server";
-import WebtoonDetailsBiddingStatus from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetailsBiddingStatus";
 import WebtoonDetailsButtons from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetailsButtons";
 import WebtoonDetailsLikeButton from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetailsLikeButton";
 import { IconLink } from "@/components/svgs/IconLink";
+import { displayName } from "@/utils/displayName";
 
 export default async function WebtoonDetails({ webtoon }: {
   webtoon: WebtoonExtendedT;
@@ -40,23 +40,18 @@ export default async function WebtoonDetails({ webtoon }: {
           myLike: webtoon.myLike
         }} />
         <Gap y={7.5} />
-
-        {/*TODO 디자인*/}
-        <WebtoonDetailsBiddingStatus bidRound={webtoon.bidRound}/>
         <Col>
           <Row className="justify-between">
             <Text className="text-white text-2xl">
-              {locale === "ko" ? webtoon.title : webtoon.title_en ?? webtoon.title}
+              {displayName(locale, webtoon.title, webtoon.title_en)}
             </Text>
-            {/*TODO*/}
-            {webtoon.isMine && (
+            {webtoon.isEditable && (
               <Link
-                className="cursor-pointer"
+                className="flex items-center gap-2 text-mint"
                 href={`/webtoons/${webtoon.id}/update`}
               >
-                <Pencil1Icon width={25} height={25} className="text-mint" />
-                <Gap x={2} />
-                <Text className="text-mint">{tGeneral("edit")}</Text>
+                <Pencil1Icon width={25} height={25} />
+                <Text>{tGeneral("edit")}</Text>
               </Link>
             )}
           </Row>
@@ -64,8 +59,7 @@ export default async function WebtoonDetails({ webtoon }: {
           <Row className="gap-2">
             {/* 작가 */}
             <Text className="text-base text-white">
-              {locale === "ko" ? webtoon.creator.name
-                : (webtoon.creator.name_en ?? webtoon.creator.name)}
+              {displayName(locale, webtoon.authorOrCreatorName, webtoon.authorOrCreatorName_en)}
             </Text>
             {/* 총 에피소드 */}
             {webtoon.bidRound?.episodeCount && <>
@@ -90,7 +84,9 @@ export default async function WebtoonDetails({ webtoon }: {
             </>}
           </Row>
           <Gap y={4} />
-          <Text className="text-sm text-white">{locale === "ko" ? webtoon.description : webtoon.description_en ?? webtoon.description}</Text>
+          <Text className="text-sm text-white">
+            {displayName(locale, webtoon.description || "", webtoon.description_en)}
+          </Text>
           <ExternalLink webtoon={webtoon} />
           <Gap y={7} />
           <WebtoonDetailsButtons webtoon={webtoon} />
@@ -132,7 +128,7 @@ async function Genres({ webtoon }: {
     <Row className="flex-wrap gap-2 content-stretch">
       {(webtoon.genres).map((item) => (
         <Badge key={item.id} className="bg-gray-dark text-white">
-          {locale === "ko" ? item.label : (item.label_en ?? item.label)}
+          {displayName(locale, item.label, item.label_en)}
         </Badge>
       ))}
     </Row>

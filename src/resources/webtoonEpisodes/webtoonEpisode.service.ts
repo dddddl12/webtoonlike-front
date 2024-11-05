@@ -3,6 +3,8 @@
 import { WebtoonEpisode as WebtoonEpisodeRecord } from "@prisma/client";
 import prisma from "@/utils/prisma";
 import { WebtoonEpisodeExtendedT, WebtoonEpisodeT } from "@/resources/webtoonEpisodes/webtoonEpisode.types";
+import { AdminLevel } from "@/resources/tokens/token.types";
+import { getTokenInfo } from "@/resources/tokens/token.service";
 
 const mapToWebtoonEpisodeDTO = (record: WebtoonEpisodeRecord): WebtoonEpisodeT => ({
   id: record.id,
@@ -17,6 +19,7 @@ const mapToWebtoonEpisodeDTO = (record: WebtoonEpisodeRecord): WebtoonEpisodeT =
 });
 
 export async function getEpisode(id: number): Promise<WebtoonEpisodeExtendedT> {
+  const { userId, metadata } = await getTokenInfo();
 
   const record = await prisma.webtoonEpisode.findUniqueOrThrow({
     where: { id },
@@ -25,6 +28,7 @@ export async function getEpisode(id: number): Promise<WebtoonEpisodeExtendedT> {
       webtoon: {
         select: {
           id: true,
+          userId: true,
           title: true,
           title_en: true,
           episodes: {
@@ -50,6 +54,7 @@ export async function getEpisode(id: number): Promise<WebtoonEpisodeExtendedT> {
 
   return {
     ...mapToWebtoonEpisodeDTO(record),
+    isEditable: metadata.adminLevel > AdminLevel.None || record.webtoon.userId === userId,
     webtoon: {
       id: record.webtoon.id,
       title: record.webtoon.title,

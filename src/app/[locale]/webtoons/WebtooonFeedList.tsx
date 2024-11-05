@@ -19,6 +19,7 @@ import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 import { listWebtoons } from "@/resources/webtoons/webtoon.service";
 import { ListResponse } from "@/resources/globalTypes";
 import { useListData } from "@/hooks/listData";
+import { displayName } from "@/utils/displayName";
 
 type Filters = {
   statuses?: BidRoundStatus[];
@@ -94,9 +95,7 @@ export default function WebtooonFeedList({
               <SelectLabel>{TallSeries("genre")}</SelectLabel>
               {genres.map((item) => (
                 <SelectItem key={item.id} value={`${item.id}`}>
-                  {locale === "ko"
-                    ? item.label
-                    : item.label_en ?? item.label}
+                  {displayName(locale, item.label, item.label_en)}
                 </SelectItem>
               ))}
             </SelectGroup>

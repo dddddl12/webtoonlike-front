@@ -12,6 +12,7 @@ import { Paginator } from "@/ui/tools/Paginator";
 import { useListData } from "@/hooks/listData";
 import { ListResponse } from "@/resources/globalTypes";
 import { listInvoices } from "@/resources/invoices/invoice.service";
+import { displayName } from "@/utils/displayName";
 
 type InvoiceListResponse = ListResponse<InvoiceExtendedT>;
 
@@ -77,7 +78,7 @@ function TableRow({ invoice }: { invoice: InvoiceExtendedT}) {
           className="text-mint underline cursor-pointer ml-4"
           href={`/webtoons/${invoice.webtoon.id}`}
         >
-          {locale === "ko" ? invoice.webtoon?.title : invoice.webtoon?.title_en ?? invoice.webtoon?.title}
+          {displayName(locale, invoice.webtoon.title, invoice.webtoon.title_en)}
         </Link>
       </div>
 

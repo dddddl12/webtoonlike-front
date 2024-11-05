@@ -13,6 +13,7 @@ import { UserTypeT } from "@/resources/users/user.types";
 import { WrongUserTypeError } from "@/errors";
 import { ListResponse } from "@/resources/globalTypes";
 import { getTokenInfo } from "@/resources/tokens/token.service";
+import { AdminLevel } from "@/resources/tokens/token.types";
 
 type BidRoundFilter = BidRoundStatus[] | "any" | "none"
 
@@ -55,7 +56,7 @@ const mapToBidRoundDTO = (record: BidRoundRecord): BidRoundT => ({
 
 export async function getWebtoon(id: number): Promise<WebtoonExtendedT> {
   // TODO 에러 핸들링
-  const { userId } = await getTokenInfo();
+  const { userId, metadata } = await getTokenInfo();
   return prisma.webtoon.findUniqueOrThrow({
     where: { id },
     include: {
@@ -124,12 +125,9 @@ export async function getWebtoon(id: number): Promise<WebtoonExtendedT> {
     }
     return {
       ...mapToWebtoonDTO(record),
-      isMine: record.userId !== null && record.userId === userId,
-      creator: {
-        id: creator.id,
-        name: creator.name,
-        name_en: creator.name_en ?? undefined,
-      },
+      isEditable: metadata.adminLevel > AdminLevel.None || record.userId === userId,
+      authorOrCreatorName: record.authorName ?? creator.name,
+      authorOrCreatorName_en: record.authorName_en ?? creator.name_en ?? undefined,
       likeCount: record._count.likes,
       myLike: record.likes.length > 0,
       genres: record.genreLinks

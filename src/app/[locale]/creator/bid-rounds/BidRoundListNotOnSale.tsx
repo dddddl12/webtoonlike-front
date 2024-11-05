@@ -12,6 +12,7 @@ import { listMyWebtoonsNotOnSale } from "@/resources/webtoons/webtoon.service";
 import { Link } from "@/i18n/routing";
 import { ListResponse } from "@/resources/globalTypes";
 import { useListData } from "@/hooks/listData";
+import { displayName } from "@/utils/displayName";
 
 type WebtoonList = ListResponse<WebtoonT>
 
@@ -82,7 +83,7 @@ function TableRow({ webtoon }: {
           className="text-mint underline"
           href={`/webtoons/${webtoon.id}`}
         >
-          {locale === "ko" ? webtoon.title : webtoon.title_en ?? webtoon.title}
+          {displayName(locale, webtoon.title, webtoon.title_en)}
         </Link>
       </div>
 

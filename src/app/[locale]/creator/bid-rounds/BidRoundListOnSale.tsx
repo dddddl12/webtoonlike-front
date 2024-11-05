@@ -11,6 +11,7 @@ import { Paginator } from "@/ui/tools/Paginator";
 import { useListData } from "@/hooks/listData";
 import { listMyWebtoonsOnSale } from "@/resources/webtoons/webtoon.service";
 import { Link } from "@/i18n/routing";
+import { displayName } from "@/utils/displayName";
 
 type WebtoonWithRoundT = WebtoonT & {
   roundAddedAt: Date
@@ -86,9 +87,7 @@ function TableRow({ webtoon }: {
           className="text-mint underline cursor-pointer"
           href={`/webtoons/${webtoon.id}`}
         >
-          {locale === "ko"
-            ? webtoon.title
-            : webtoon.title_en ?? webtoon.title}
+          {displayName(locale, webtoon.title, webtoon.title_en)}
         </Link>
       </div>
 

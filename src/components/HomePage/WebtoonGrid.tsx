@@ -9,12 +9,13 @@ import { buildImgUrl } from "@/utils/media";
 import { useState } from "react";
 import { HomeWebtoonItem } from "@/resources/webtoons/webtoon.types";
 import { GenreT } from "@/resources/genres/genre.types";
+import { displayName } from "@/utils/displayName";
 
 export default function WebtoonGrid({ webtoons, numbered, cols, height }: {
-    webtoons: HomeWebtoonItem[];
-    numbered?: boolean;
-    cols: number;
-    height: number;
+  webtoons: HomeWebtoonItem[];
+  numbered?: boolean;
+  cols: number;
+  height: number;
 }) {
   const [selectedGenre, setSelectedGenre] = useState<GenreT | undefined>(undefined);
   return <>
@@ -78,9 +79,11 @@ function WebtoonItem({ webtoon, height, index }: {
         </span>}
         <Col>
           <span
-            className="text-[18px] font-bold">{locale === "ko" ? webtoon.title : webtoon.title_en ?? webtoon.title}</span>
+            className="text-[18px] font-bold">
+            {displayName(locale, webtoon.title, webtoon.title_en)}
+          </span>
           <span className="text-[14px]">
-            {locale === "ko" ? webtoon.creatorName : webtoon.creatorName_en ?? webtoon.creatorName}
+            {displayName(locale, webtoon.authorOrCreatorName, webtoon.authorOrCreatorName_en)}
           </span>
         </Col>
       </Row>

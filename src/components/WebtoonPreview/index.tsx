@@ -6,6 +6,7 @@ import { useLocale } from "next-intl";
 import { WebtoonT } from "@/resources/webtoons/webtoon.types";
 import { Link } from "@/i18n/routing";
 import { useTokenInfo } from "@/hooks/tokenInfo";
+import { displayName } from "@/utils/displayName";
 
 export function WebtoonPreview({ webtoon, href }: {
   webtoon: WebtoonT;
@@ -32,9 +33,13 @@ export function WebtoonPreview({ webtoon, href }: {
 
       <Gap y={5} />
 
-      <Text className='text-[16pt] font-bold text-white'>{locale === "ko" ? webtoon.title : webtoon.title_en ?? webtoon.title}</Text>
+      <Text className='text-[16pt] font-bold text-white'>
+        {displayName(locale, webtoon.title, webtoon.title_en)}
+      </Text>
 
-      <Text className='text-[12pt] text-gray-text line-clamp-2'>{locale === "ko" ? webtoon.description : webtoon.description_en ?? webtoon.description}</Text>
+      <Text className='text-[12pt] text-gray-text line-clamp-2'>
+        {displayName(locale, webtoon.description || "", webtoon.description_en)}
+      </Text>
 
       <Gap y={2} />
       {/*TODO*/}

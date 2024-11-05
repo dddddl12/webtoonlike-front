@@ -39,6 +39,8 @@ const WebtoonBaseSchema = z.object({
 });
 
 export const WebtoonFormSchema = WebtoonBaseSchema.extend({
+  authorName: z.string().optional(),
+  authorName_en: z.string().optional(),
   files: z.object({
     thumbnail: z.instanceof(File).optional(),
   })
@@ -54,12 +56,9 @@ export type WebtoonT = z.infer<typeof WebtoonSchema>
 export const WebtoonExtendedSchema = WebtoonSchema
   .extend({
     // From joined tables
-    isMine: z.boolean(),
-    creator: z.object({
-      id: z.number(),
-      name: z.string(),
-      name_en: z.string().optional()
-    }),
+    isEditable: z.boolean(),
+    authorOrCreatorName: z.string(),
+    authorOrCreatorName_en: z.string().optional(),
     likeCount: z.number(),
     myLike: z.boolean(),
     genres: z.array(z.object({
@@ -77,8 +76,8 @@ export type HomeWebtoonItem = {
   thumbPath?: string;
   title: string;
   title_en?: string;
-  creatorName?: string;
-  creatorName_en?: string;
+  authorOrCreatorName?: string;
+  authorOrCreatorName_en?: string;
 }
 
 export type HomeArtistItem = {
