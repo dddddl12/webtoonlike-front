@@ -2,8 +2,8 @@ import { Row } from "@/ui/layouts";
 import NavigationLink from "./NavigationLink";
 import { UserTypeT } from "@/resources/users/user.types";
 import { getTranslations } from "next-intl/server";
-import { getUserMetadata } from "@/resources/userMetadata/userMetadata.service";
-import { AdminLevel } from "@/resources/userMetadata/userMetadata.types";
+import { AdminLevel } from "@/resources/tokens/token.types";
+import { getTokenInfo } from "@/resources/tokens/token.service";
 
 export type NavArrT = {
   name: string;
@@ -12,9 +12,10 @@ export type NavArrT = {
 
 export async function NavBar() {
   const t = await getTranslations("inquiryMenu");
-  const user = await getUserMetadata().catch(() => undefined);
-  const userType = user?.type;
-  const adminLevel = user?.adminLevel || AdminLevel.None;
+  const tokenInfo = await getTokenInfo()
+    .catch(() => undefined);
+  const userType = tokenInfo?.metadata.type;
+  const adminLevel = tokenInfo?.metadata.adminLevel || AdminLevel.None;
 
   if (!userType) {
     return null;

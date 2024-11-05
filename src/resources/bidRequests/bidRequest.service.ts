@@ -2,9 +2,9 @@
 
 import { BidRequest as BidRequestRecord, Prisma } from "@prisma/client";
 import { BidRequestExtendedT, BidRequestSchema, BidRequestT } from "@/resources/bidRequests/bidRequest.types";
-import { getUserMetadata } from "@/resources/userMetadata/userMetadata.service";
 import prisma from "@/utils/prisma";
 import { ListResponse } from "@/resources/globalTypes";
+import { getTokenInfo } from "@/resources/tokens/token.service";
 
 
 const mapToBidRequestDTO = (record: BidRequestRecord): BidRequestT => ({
@@ -29,7 +29,7 @@ export async function listBidRequests({
   page?: number;
   limit?: number;
 } = {}): Promise<ListResponse<BidRequestExtendedT>> {
-  const { id: userId } = await getUserMetadata();
+  const { userId } = await getTokenInfo();
 
   const where: Prisma.BidRequestWhereInput = {
     // userId

@@ -2,7 +2,7 @@
 
 import { UserFormT } from "@/resources/users/user.types";
 import prisma from "@/utils/prisma";
-import { getClerkUser, updateUserMetadata } from "@/resources/userMetadata/userMetadata.service";
+import { getClerkUser, updateTokenInfo } from "@/resources/tokens/token.service";
 import { currentUser } from "@clerk/nextjs/server";
 import { NotSignedInError } from "@/errors";
 
@@ -26,6 +26,6 @@ export async function createUser(form: UserFormT) {
         sub: user.id
       }
     });
-    await updateUserMetadata(tx);
+    await updateTokenInfo(tx);
   });
 }

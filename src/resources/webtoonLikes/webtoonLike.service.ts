@@ -2,12 +2,11 @@
 
 import prisma from "@/utils/prisma";
 import { WebtoonLikeT } from "@/resources/webtoonLikes/webtoonLike.types";
-import { getUserMetadata } from "@/resources/userMetadata/userMetadata.service";
+import { getTokenInfo } from "@/resources/tokens/token.service";
 
 export async function createLike(webtoonId: number): Promise<WebtoonLikeT> {
   const likeCount = await prisma.$transaction(async (tx) => {
-    const { id: userId } = await getUserMetadata();
-    console.log(userId, webtoonId);
+    const { userId } = await getTokenInfo();
     await tx.webtoonLike.create({
       // where: {
       //   userId_webtoonId: { userId, webtoonId },
@@ -32,7 +31,7 @@ export async function createLike(webtoonId: number): Promise<WebtoonLikeT> {
 
 export async function deleteLike(webtoonId: number): Promise<WebtoonLikeT> {
   const likeCount = await prisma.$transaction(async (tx) => {
-    const { id: userId } = await getUserMetadata();
+    const { userId } = await getTokenInfo();
     await tx.webtoonLike.deleteMany({
       where: { userId, webtoonId }
     });

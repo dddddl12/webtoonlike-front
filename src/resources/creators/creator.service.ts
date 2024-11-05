@@ -2,8 +2,7 @@
 
 import prisma from "@/utils/prisma";
 import { CreatorFormT } from "@/resources/creators/creator.types";
-import { getClerkUser, updateUserMetadata } from "@/resources/userMetadata/userMetadata.service";
-import { BaseClerkUserMetadata, ClerkUserMetadata } from "@/resources/userMetadata/userMetadata.types";
+import { getClerkUser, updateTokenInfo } from "@/resources/tokens/token.service";
 
 export async function createCreator(form: CreatorFormT ) {
   // TODO
@@ -13,7 +12,14 @@ export async function createCreator(form: CreatorFormT ) {
   // }
   await prisma.$transaction(async (tx) => {
     const clerkUser = await getClerkUser();
-    const { id } = (clerkUser.sessionClaims.metadata as BaseClerkUserMetadata | ClerkUserMetadata);
+    const { id: userId } = await tx.user.findFirstOrThrow({
+      select: {
+        id: true
+      },
+      where: {
+        sub: clerkUser.userId
+      }
+    });
 
     // 레코드 추가
     const insert = {
@@ -23,17 +29,17 @@ export async function createCreator(form: CreatorFormT ) {
       isExposed: form.isExposed,
       isExperienced: form.isExperienced,
       isAgencyAffiliated: form.isAgencyAffiliated,
-      userId: id
+      userId
     };
 
     await tx.creator.upsert({
       create: insert,
       update: insert,
       where: {
-        userId: id
+        userId
       }
     });
 
-    await updateUserMetadata(tx);
+    await updateTokenInfo(tx);
   });
 }

@@ -1,8 +1,7 @@
 import createMiddleware from "next-intl/middleware";
 import { routing } from "@/i18n/routing";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { ClerkUserMetadataSchema } from "@/resources/userMetadata/userMetadata.types";
-
+import { TokenInfoSchema } from "@/resources/tokens/token.types";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -20,7 +19,7 @@ export default clerkMiddleware(async (auth, req) => {
 
   const { sessionClaims } = await auth();
   if (sessionClaims) {
-    const { success } = ClerkUserMetadataSchema.safeParse(sessionClaims.metadata);
+    const { success } = TokenInfoSchema.safeParse(sessionClaims.serviceInfo);
     if (!success && !isAuthRelatedRoute(req)) {
       // 회원가입을 마치지 않았는데 일반 페이지에 있는 경우
       req.nextUrl.pathname = "/sign-up-complete";

@@ -2,12 +2,7 @@
 
 import { BuyerFormT } from "@/resources/buyers/buyer.types";
 import prisma from "@/utils/prisma";
-import { getClerkUser, updateUserMetadata } from "@/resources/userMetadata/userMetadata.service";
-import {
-  BaseClerkUserMetadata,
-  ClerkUserMetadata
-} from "@/resources/userMetadata/userMetadata.types";
-import { NotSignedInError } from "@/errors";
+import { getClerkUser, updateTokenInfo } from "@/resources/tokens/token.service";
 
 export async function createBuyer(form: BuyerFormT ) {
   // TODO
@@ -23,7 +18,14 @@ export async function createBuyer(form: BuyerFormT ) {
   // }
   await prisma.$transaction(async (tx) => {
     const clerkUser = await getClerkUser();
-    const { id } = (clerkUser.sessionClaims.metadata as BaseClerkUserMetadata | ClerkUserMetadata);
+    const { id: userId } = await tx.user.findFirstOrThrow({
+      select: {
+        id: true
+      },
+      where: {
+        sub: clerkUser.userId
+      }
+    });
 
     // 레코드 추가
     const insert = {
@@ -34,17 +36,17 @@ export async function createBuyer(form: BuyerFormT ) {
         businessCard: undefined,
         businessCert: undefined,
       },
-      userId: id
+      userId
     };
 
     await tx.buyer.upsert({
       create: insert,
       update: insert,
       where: {
-        userId: id
+        userId
       }
     });
 
-    await updateUserMetadata(tx);
+    await updateTokenInfo(tx);
   });
 }

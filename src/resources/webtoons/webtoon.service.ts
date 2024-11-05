@@ -9,10 +9,10 @@ import {
   TargetAge, TargetGender, WebtoonExtendedT, WebtoonT,
 } from "@/resources/webtoons/webtoon.types";
 import { BidRoundStatus, BidRoundT, ContractRange } from "@/resources/bidRounds/bidRound.types";
-import { getUserMetadata } from "@/resources/userMetadata/userMetadata.service";
 import { UserTypeT } from "@/resources/users/user.types";
 import { WrongUserTypeError } from "@/errors";
 import { ListResponse } from "@/resources/globalTypes";
+import { getTokenInfo } from "@/resources/tokens/token.service";
 
 type BidRoundFilter = BidRoundStatus[] | "any" | "none"
 
@@ -55,7 +55,7 @@ const mapToBidRoundDTO = (record: BidRoundRecord): BidRoundT => ({
 
 export async function getWebtoon(id: number): Promise<WebtoonExtendedT> {
   // TODO 에러 핸들링
-  const userMetadata = await getUserMetadata();
+  const { userId } = await getTokenInfo();
   return prisma.webtoon.findUniqueOrThrow({
     where: { id },
     include: {
@@ -95,7 +95,7 @@ export async function getWebtoon(id: number): Promise<WebtoonExtendedT> {
       },
       likes: {
         where: {
-          userId: userMetadata.id
+          userId
         },
         take: 1
       },
@@ -124,7 +124,7 @@ export async function getWebtoon(id: number): Promise<WebtoonExtendedT> {
     }
     return {
       ...mapToWebtoonDTO(record),
-      isMine: record.userId !== null && record.userId === userMetadata.id,
+      isMine: record.userId !== null && record.userId === userId,
       creator: {
         id: creator.id,
         name: creator.name,
@@ -204,11 +204,10 @@ const getBidRoundFilter = (statuses?:BidRoundFilter): Prisma.WebtoonWhereInput["
 export async function listMyWebtoonsNotOnSale({ page = 1 }: {
   page?: number
 } = {}): Promise<ListResponse<WebtoonT>> {
-  const userMetadata = await getUserMetadata();
-  if(userMetadata.type !== UserTypeT.Creator) {
+  const { metadata, userId } = await getTokenInfo();
+  if(metadata.type !== UserTypeT.Creator) {
     throw new WrongUserTypeError();
   }
-  const { id: userId } = userMetadata;
 
   const where: Prisma.WebtoonWhereInput = {
     userId,
@@ -237,11 +236,10 @@ export async function listMyWebtoonsOnSale({ page = 1 }: {
 } = {}): Promise<ListResponse<WebtoonT & {
   roundAddedAt: Date
 }>> {
-  const userMetadata = await getUserMetadata();
-  if(userMetadata.type !== UserTypeT.Creator) {
+  const { metadata, userId } = await getTokenInfo();
+  if(metadata.type !== UserTypeT.Creator) {
     throw new WrongUserTypeError();
   }
-  const { id: userId } = userMetadata;
 
   const where: Prisma.WebtoonWhereInput = {
     userId,

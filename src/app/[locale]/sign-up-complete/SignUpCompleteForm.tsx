@@ -1,19 +1,15 @@
 "use client";
-import {
-  BaseClerkUserMetadata,
-  ClerkUserMetadata,
-} from "@/resources/userMetadata/userMetadata.types";
-import { UserTypeT } from "@/resources/users/user.types";
 import CreatorProfileForm from "@/components/Account/CreatorProfileForm";
 import BuyerProfileForm from "@/components/Account/BuyerProfileForm";
-import Index from "@/components/Account/BasicUserInfo";
+import BasicUserInfo from "@/components/Account/BasicUserInfo";
 import { useRouter } from "@/i18n/routing";
 import { useSession } from "@clerk/nextjs";
 import { useEffect } from "react";
 import { NotSignedInError } from "@/errors";
+import { SignUpStatus } from "@/resources/tokens/token.types";
 
-export function SignUpCompleteForm ({ userMetadata }: {
-  userMetadata?: BaseClerkUserMetadata | ClerkUserMetadata
+export function SignUpCompleteForm ({ signUpStatus }: {
+  signUpStatus: SignUpStatus
 }) {
   const router = useRouter();
 
@@ -25,22 +21,24 @@ export function SignUpCompleteForm ({ userMetadata }: {
       // 로그인하지 않았다면 이 화면으로 넘어올 수 없음
       throw new NotSignedInError();
     }
-    if (!userMetadata?.signUpComplete || !session){
+    if (signUpStatus !== SignUpStatus.Complete || !session){
       // 회원가입을 마치지 않았거나 세션 로딩을 기다리는 중
       return;
     }
     session.touch().then(() => router.replace("/"));
   }, [isSignedIn, session]);
 
-  if (!userMetadata) {
-    return <Index />;
-  } else if (userMetadata.signUpComplete){
-    // 잠시 대기했다가 관련 동작 마친 후 리다이렉트 예정
-    return null;
-  } else if (userMetadata.type === UserTypeT.Creator) {
-    return <CreatorProfileForm />;
-  } else if (userMetadata.type === UserTypeT.Buyer) {
-    return <BuyerProfileForm />;
+  switch (signUpStatus) {
+    case SignUpStatus.NeedsBasicInfo:
+      return <BasicUserInfo />;
+    case SignUpStatus.NeedsCreatorInfo:
+      return <CreatorProfileForm />;
+    case SignUpStatus.NeedsBuyerInfo:
+      return <BuyerProfileForm />;
+    case SignUpStatus.Complete:
+      // 잠시 대기했다가 관련 동작 마친 후 리다이렉트 예정
+      return null;
+    default:
+      throw new Error("Unexpected user state");
   }
-  throw new Error("Unexpected user state");
 }

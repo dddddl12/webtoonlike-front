@@ -3,7 +3,7 @@ import { KenazLogo } from "@/components/svgs/KenazLogo";
 import { Heading } from "@/ui/texts";
 import { getLocale, getTranslations } from "next-intl/server";
 import PageLayout from "@/components/PageLayout";
-import { updateUserMetadata } from "@/resources/userMetadata/userMetadata.service";
+import { updateTokenInfo } from "@/resources/tokens/token.service";
 import { SignUpCompleteForm } from "@/app/[locale]/sign-up-complete/SignUpCompleteForm";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "@/i18n/routing";
@@ -19,7 +19,7 @@ export default async function SignUpComplete() {
   }
 
   const t = await getTranslations("setupPage");
-  const userMetadata = await updateUserMetadata();
+  const signUpStatus = await updateTokenInfo();
 
   return <PageLayout bgColor="light" className="items-center flex flex-col">
     <Col className="w-[400px]">
@@ -28,7 +28,7 @@ export default async function SignUpComplete() {
       <Heading className="text-black font-bold text-[20pt]">
         {t("setupAccount")}
       </Heading>
-      <SignUpCompleteForm userMetadata={userMetadata} />
+      <SignUpCompleteForm signUpStatus={signUpStatus} />
     </Col>
   </PageLayout>;
 }

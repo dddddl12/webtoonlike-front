@@ -3,7 +3,7 @@
 import { Invoice as InvoiceRecord, Prisma } from "@prisma/client";
 import { InvoiceExtendedT, InvoiceT } from "@/resources/invoices/invoice.types";
 import { ListResponse } from "@/resources/globalTypes";
-import { getClerkUserMap, getUserMetadata } from "@/resources/userMetadata/userMetadata.service";
+import { getClerkUserMap, getTokenInfo } from "@/resources/tokens/token.service";
 import prisma from "@/utils/prisma";
 import { UserTypeT } from "@/resources/users/user.types";
 
@@ -25,13 +25,13 @@ export async function listInvoices({
 } = {}): Promise<ListResponse<InvoiceExtendedT>> {
   // TODO join 최적화
   // https://www.prisma.io/blog/prisma-orm-now-lets-you-choose-the-best-join-strategy-preview
-  const UserMetadata = await getUserMetadata();
+  const { userId, metadata } = await getTokenInfo();
   const where: Prisma.InvoiceWhereInput = {
     bidRequest: {
-      userId: UserMetadata.type === UserTypeT.Buyer ? UserMetadata.id : undefined,
-      bidRound: UserMetadata.type === UserTypeT.Creator ? {
+      userId: metadata.type === UserTypeT.Buyer ? userId : undefined,
+      bidRound: metadata.type === UserTypeT.Creator ? {
         webtoon: {
-          userId: UserMetadata.id
+          userId: userId
         }
       } : undefined
     }
