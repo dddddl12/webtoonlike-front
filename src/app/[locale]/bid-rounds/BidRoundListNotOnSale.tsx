@@ -14,10 +14,10 @@ import { ListResponse } from "@/resources/globalTypes";
 import { useListData } from "@/hooks/listData";
 import { displayName } from "@/utils/displayName";
 
-type WebtoonList = ListResponse<WebtoonT>
+type WebtoonListResponse = ListResponse<WebtoonT>
 
 export default function BidRoundListNotOnSale({ initialWebtoonListResponse }: {
-  initialWebtoonListResponse: WebtoonList
+  initialWebtoonListResponse: WebtoonListResponse
 }) {
   const t = useTranslations("manageContents");
   const { listResponse, filters, setFilters } = useListData(

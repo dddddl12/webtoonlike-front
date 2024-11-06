@@ -8,7 +8,7 @@ import { listGenres } from "@/resources/genres/genre.service";
 import { listWebtoons } from "@/resources/webtoons/webtoon.service";
 
 export default async function Webtoons() {
-  const [ genres, webtoonList ] = await Promise.all([
+  const [ genres, webtoonListResponse ] = await Promise.all([
     listGenres(),
     listWebtoons()
   ]);
@@ -24,7 +24,7 @@ export default async function Webtoons() {
       <Gap y={10} />
       <WebtooonFeedList
         genres={genres}
-        initialWebtoonListResponse={webtoonList}
+        initialWebtoonListResponse={webtoonListResponse}
       />
     </PageLayout>
   );

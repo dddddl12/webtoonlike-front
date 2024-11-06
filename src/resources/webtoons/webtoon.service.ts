@@ -6,7 +6,7 @@ import {
   AgeLimit,
   HomeArtistItem,
   HomeWebtoonItem,
-  TargetAge, TargetGender, WebtoonExtendedT, WebtoonT,
+  TargetAge, TargetGender, WebtoonExtendedT, WebtoonPreviewT, WebtoonT,
 } from "@/resources/webtoons/webtoon.types";
 import { BidRoundStatus, BidRoundT, ContractRange } from "@/resources/bidRounds/bidRound.types";
 import { UserTypeT } from "@/resources/users/user.types";
@@ -16,6 +16,22 @@ import { getTokenInfo } from "@/resources/tokens/token.service";
 import { AdminLevel } from "@/resources/tokens/token.types";
 
 type BidRoundFilter = BidRoundStatus[] | "any" | "none"
+
+const mapToWebtoonPreviewDTO = (record: {
+  id: number;
+  title: string;
+  title_en: string | null;
+  description: string | null;
+  description_en: string | null;
+  thumbPath: string;
+}): WebtoonPreviewT => ({
+  id: record.id,
+  title: record.title,
+  title_en: record.title_en ?? undefined,
+  description: record.description ?? undefined,
+  description_en: record.description_en ?? undefined,
+  thumbPath: record.thumbPath,
+});
 
 const mapToWebtoonDTO = (record: WebtoonRecord): WebtoonT => ({
   id: record.id,
@@ -147,15 +163,14 @@ export async function getWebtoon(id: number): Promise<WebtoonExtendedT> {
 
 export async function listWebtoons({
   statuses, genreId, ageLimit,
-  page = 1,
-  limit = 10
+  page = 1
 }: {
   statuses?: BidRoundFilter;
   genreId?: number;
   ageLimit?: AgeLimit;
   page?: number;
-  limit?: number;
-} = {}): Promise<ListResponse<WebtoonT>> {
+} = {}): Promise<ListResponse<WebtoonPreviewT>> {
+  const limit = 10;
   const where: Prisma.WebtoonWhereInput = {
     ageLimit: ageLimit,
     bidRound: getBidRoundFilter(statuses),
@@ -169,11 +184,19 @@ export async function listWebtoons({
       where,
       take: limit,
       skip: (page - 1) * limit,
+      select: {
+        id: true,
+        title: true,
+        title_en: true,
+        description: true,
+        description_en: true,
+        thumbPath: true,
+      }
     }),
     prisma.webtoon.count({ where })
   ]);
   return {
-    items: records.map(mapToWebtoonDTO),
+    items: records.map(mapToWebtoonPreviewDTO),
     totalPages: Math.ceil(totalRecords / limit),
   };
 }
@@ -198,6 +221,45 @@ const getBidRoundFilter = (statuses?:BidRoundFilter): Prisma.WebtoonWhereInput["
   }
   throw new Error("Unknown statuses");
 };
+
+export async function listLikedWebtoons({
+  page = 1
+}: {
+  page?: number;
+} = {}): Promise<ListResponse<WebtoonPreviewT>> {
+  const limit = 10;
+  const { userId } = await getTokenInfo();
+  const where: Prisma.WebtoonLikeWhereInput = {
+    userId
+  };
+
+  const [records, totalRecords] = await prisma.$transaction([
+    prisma.webtoonLike.findMany({
+      where,
+      take: limit,
+      skip: (page - 1) * limit,
+      select: {
+        webtoon: {
+          select: {
+            id: true,
+            title: true,
+            title_en: true,
+            description: true,
+            description_en: true,
+            thumbPath: true,
+          }
+        }
+      }
+    }),
+    prisma.webtoonLike.count({ where })
+  ]);
+  return {
+    items: records.map(record => {
+      return mapToWebtoonPreviewDTO(record.webtoon);
+    }),
+    totalPages: Math.ceil(totalRecords / limit),
+  };
+}
 
 export async function listMyWebtoonsNotOnSale({ page = 1 }: {
   page?: number

@@ -21,3 +21,12 @@ export function Heading({ className, ...props }: HeadingProps) {
     />
   );
 }
+
+export function Heading2({ className, ...props }: HeadingProps) {
+  return (
+    <h2
+      className={cn("font-bold text-2xl mb-10", className)}
+      {...props}
+    />
+  );
+}

@@ -1,34 +1,27 @@
 import Image from "next/image";
-import { Gap, Row } from "@/ui/layouts";
+import { Gap } from "@/ui/layouts";
 import { buildImgUrl } from "@/utils/media";
 import { Text } from "@/ui/texts";
 import { useLocale } from "next-intl";
-import { WebtoonT } from "@/resources/webtoons/webtoon.types";
+import { WebtoonPreviewT } from "@/resources/webtoons/webtoon.types";
 import { Link } from "@/i18n/routing";
-import { useTokenInfo } from "@/hooks/tokenInfo";
 import { displayName } from "@/utils/displayName";
 
-export function WebtoonPreview({ webtoon, href }: {
-  webtoon: WebtoonT;
-  href: string;
+export function WebtoonPreview({ webtoon }: {
+  webtoon: WebtoonPreviewT;
 }) {
   const locale = useLocale();
-  const { tokenInfo } = useTokenInfo();
 
   return (
-    <Link className='mx-2 my-4' href={href}>
+    <Link className='mx-2 my-4' href={`/webtoons/${webtoon.id}`}>
       <div className='relative aspect-[3/4] w-full overflow-hidden rounded-md'>
-        {webtoon.thumbPath == null ? (
-          <div className='h-full w-full bg-gray-200' />
-        ) : (
-          <Image
-            src={buildImgUrl(null, webtoon.thumbPath, { size: "sm" })}
-            alt={webtoon.thumbPath}
-            fill
-            style={{ objectFit: "cover" }}
-            priority={true}
-          />
-        )}
+        <Image
+          src={buildImgUrl(null, webtoon.thumbPath, { size: "sm" })}
+          alt={webtoon.thumbPath}
+          fill
+          style={{ objectFit: "cover" }}
+          priority={true}
+        />
       </div>
 
       <Gap y={5} />

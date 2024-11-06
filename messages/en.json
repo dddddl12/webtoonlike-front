@@ -210,15 +210,6 @@
         "businessRegPlaceholder": "Insert Business Number",
         "businessFieldPlaceholder": "Business Field",
         "businessTypePlaceholder": "Business Type",
-        "businessTypeItems": {
-            "creator": "Production",
-            "investor": "Investor",
-            "agent": "Agent",
-            "platform": "Platform",
-            "ott": "Streaming service",
-            "management": "Management",
-            "etc": "Other"
-        },
         "uploadBusinessReg": "Upload Business Registration",
         "selectFile": "Select File",
         "insertCompanyName": "Insert Company Name",

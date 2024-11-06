@@ -195,34 +195,20 @@
         "연령 무관": "연령 무관",
         "19세 이상": "19세 이상"
     },
-    "profilePage": {
+    "accountPage": {
         "editProfile": "프로필 수정",
         "withdrawal": "회원 탈퇴",
         "withdrawalDesc": "정말 탈퇴하시겠습니까?",
+        "myLikes": {
+            "myLikedWebtoons": "좋아요 표시한 웹툰",
+            "noLikedWebtoons": "좋아요 표시한 웹툰이 없습니다."
+        }
+    },
+    "buyerInfoPage": {
         "headerDesc": "사업자 정보 및 재직 정보를 입력해 주세요",
         "businessRegPlaceholder": "사업자등록번호 입력",
         "businessFieldPlaceholder": "업체 분야",
-        "businessFieldItems": {
-            "webtoon": "웹툰",
-            "game": "게임",
-            "movie": "영화",
-            "drama": "드라마",
-            "webDrama": "웹드라마",
-            "video": "영상",
-            "book": "출판",
-            "performance": "공연",
-            "etc": "기타"
-        },
         "businessTypePlaceholder": "직종",
-        "businessTypeItems": {
-            "creator": "제작사",
-            "investor": "투자사",
-            "agent": "에이전트",
-            "platform": "플랫폼사",
-            "ott": "OTT",
-            "management": "매니지먼트",
-            "etc": "기타"
-        },
         "uploadBusinessReg": "사업자등록증 업로드",
         "selectFile": "파일 선택",
         "insertCompanyName": "회사명 입력",

@@ -71,6 +71,18 @@ export const WebtoonExtendedSchema = WebtoonSchema
   });
 export type WebtoonExtendedT = z.infer<typeof WebtoonExtendedSchema>
 
+// 그리드에 표시하기 위한 기본폼
+export const WebtoonPreviewSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  title_en: z.string().optional(),
+  description: z.string().optional(),
+  description_en: z.string().optional(),
+  thumbPath: z.string()
+});
+export type WebtoonPreviewT = z.infer<typeof WebtoonPreviewSchema>
+
+// 홈 화면
 export type HomeWebtoonItem = {
   id: number;
   thumbPath?: string;

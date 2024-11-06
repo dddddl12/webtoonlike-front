@@ -7,12 +7,12 @@ import { getTokenInfo } from "@/resources/tokens/token.service";
 export async function createLike(webtoonId: number): Promise<WebtoonLikeT> {
   const likeCount = await prisma.$transaction(async (tx) => {
     const { userId } = await getTokenInfo();
-    await tx.webtoonLike.create({
-      // where: {
-      //   userId_webtoonId: { userId, webtoonId },
-      // },
-      data: { userId, webtoonId },
-      // update: {}
+    await tx.webtoonLike.upsert({
+      where: {
+        userId_webtoonId: { userId, webtoonId },
+      },
+      create: { userId, webtoonId },
+      update: {}
     });
     const { _count } = await tx.webtoonLike.aggregate({
       where: { webtoonId },

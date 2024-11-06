@@ -29,7 +29,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
   redirectPath?: string;
 }) {
   // 번역
-  const t = useTranslations("profilePage");
+  const t = useTranslations("buyerInfoPage");
   const tGeneral = useTranslations("general");
   const tBusinessFields = useTranslations("businessFields");
 

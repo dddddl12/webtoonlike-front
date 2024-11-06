@@ -16,10 +16,10 @@ import { displayName } from "@/utils/displayName";
 type WebtoonWithRoundT = WebtoonT & {
   roundAddedAt: Date
 }
-type WebtoonList = ListResponse<WebtoonWithRoundT>
+type WebtoonListResponse = ListResponse<WebtoonWithRoundT>
 
 export default function BidRoundListOnSale({ initialWebtoonListResponse }: {
-  initialWebtoonListResponse: WebtoonList
+  initialWebtoonListResponse: WebtoonListResponse
 }) {
   const { listResponse, filters, setFilters } = useListData(
     listMyWebtoonsOnSale, { page: 1 }, initialWebtoonListResponse);
