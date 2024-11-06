@@ -1,7 +1,7 @@
 "use client";
 
 import { Col, Row } from "@/ui/layouts";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { BannerWebtoon, bannerWebtoons } from "@/components/HomePage/banners/bannerData";
 import { ReactNode, useEffect, useState } from "react";

@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { InvoiceExtendedT } from "@/resources/invoices/invoice.types";
-import { PreviewInvoiceUser } from "@/app/[locale]/creator/invoice/PreviewInvoiceUser";
+import { PreviewInvoiceUser } from "@/app/[locale]/invoices/PreviewInvoiceUser";
 import { Paginator } from "@/ui/tools/Paginator";
 import { useListData } from "@/hooks/listData";
 import { ListResponse } from "@/resources/globalTypes";

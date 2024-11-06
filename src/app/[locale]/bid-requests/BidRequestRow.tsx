@@ -5,7 +5,7 @@ import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import { Gap } from "@/ui/layouts";
 import { Link } from "@/i18n/routing";
-import BidRequestMessageList from "@/app/[locale]/creator/bid-requests/BidRequestMessageList";
+import BidRequestMessageList from "@/app/[locale]/bid-requests/BidRequestMessageList";
 import { displayName } from "@/utils/displayName";
 
 export function BidRequestRow({ bidRequest }:{

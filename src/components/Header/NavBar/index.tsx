@@ -8,6 +8,7 @@ import { getTokenInfo } from "@/resources/tokens/token.service";
 export type NavArrT = {
   name: string;
   path: string;
+  isVisible: boolean;
 }[];
 
 export async function NavBar() {
@@ -25,56 +26,41 @@ export async function NavBar() {
     {
       name: `${t("home")}`,
       path: "/",
+      isVisible: true
     },
     {
       name: `${t("seeAll")}`,
       path: "/webtoons",
-    },
-    {
-      name: `${t("market")}`,
-      path: "/market",
+      isVisible: true
     },
     {
       name: `${t("manageContents")}`,
-      path: "/creator/bid-rounds",
+      path: "/bid-rounds",
+      isVisible: userType === UserTypeT.Creator
     },
     {
       name: `${t("manageOffers")}`,
-      path: "/creator/bid-requests",
+      path: "/bid-requests",
+      isVisible: true
     },
     {
       name: `${t("invoice")}`,
-      path: "/creator/invoice",
+      path: "/invoices",
+      isVisible: true
     },
     {
       name: `${t("myInfo")}`,
-      path: "/creator/my",
-    },
-    {
-      name: `${t("offer")}`,
-      path: "/buyer/bid-round-requests",
-    },
-    {
-      name: `${t("invoice")}`,
-      path: "/buyer/invoice",
-    },
-    {
-      name: `${t("myInfo")}`,
-      path: "/buyer/my",
+      path: "/account",
+      isVisible: true
     },
     {
       name: "관리",
       path: "/admin/dashboard",
+      isVisible: adminLevel >= AdminLevel.Admin
     }
-  ].filter(({ path }) => {
-    // TODO: 메뉴 확정 후 더 우아하게 수정
-    const role = path.split("/")[1];
-    return !["buyer", "creator", "admin"].includes(role)
-        || (role === "buyer" && userType === UserTypeT.Buyer)
-        || (role === "creator" && userType === UserTypeT.Creator)
-        || (role === "admin" && adminLevel > 0);
-  });
+  ];
   // TODO 해당사항 없을 때 마스킹 처리
+    // TODO: 메뉴 확정 후 더 우아하게 수정
 
   return (
     <Row className="w-full max-w-screen-xl h-[60px]">

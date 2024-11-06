@@ -3,8 +3,8 @@ import { Col, Gap } from "@/ui/layouts";
 import PageLayout from "@/components/PageLayout";
 import { listMyWebtoonsNotOnSale, listMyWebtoonsOnSale } from "@/resources/webtoons/webtoon.service";
 import { getTranslations } from "next-intl/server";
-import BidRoundListNotOnSale from "@/app/[locale]/creator/bid-rounds/BidRoundListNotOnSale";
-import BidRoundListOnSale from "@/app/[locale]/creator/bid-rounds/BidRoundListOnSale";
+import BidRoundListNotOnSale from "@/app/[locale]/bid-rounds/BidRoundListNotOnSale";
+import BidRoundListOnSale from "@/app/[locale]/bid-rounds/BidRoundListOnSale";
 import { Heading } from "@/ui/texts";
 
 export default async function BidRound() {

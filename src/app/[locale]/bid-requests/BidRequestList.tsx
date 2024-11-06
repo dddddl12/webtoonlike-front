@@ -8,7 +8,7 @@ import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
 import { Paginator } from "@/ui/tools/Paginator";
 import { ListResponse } from "@/resources/globalTypes";
 import { useListData } from "@/hooks/listData";
-import { BidRequestRow } from "@/app/[locale]/creator/bid-requests/BidRequestRow";
+import { BidRequestRow } from "@/app/[locale]/bid-requests/BidRequestRow";
 
 type BidRequestListResponse = ListResponse<BidRequestExtendedT>;
 
