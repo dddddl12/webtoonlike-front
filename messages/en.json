@@ -23,20 +23,7 @@
         "insertAddress2": "Address 2",
         "termsAndConditions": "Webtoonlike Terms and Conditions",
         "required": "(required)",
-        "doYouAgree": "Do you agree with Webtoonlike Terms and Conditions?",
-        "countries": {
-            "ko": "South Korea",
-            "en": "United States",
-            "zhCN": "China",
-            "zhTW": "Taiwan",
-            "ja": "Japan",
-            "fr": "France",
-            "es": "Spain",
-            "vi": "Vietnam",
-            "ms": "Malaysia",
-            "th": "Thailand",
-            "all": "All"
-        }
+        "doYouAgree": "Do you agree with Webtoonlike Terms and Conditions?"
     },
     "setupPageNextForCreators": {
         "profileDesc": "Enter profile information",
@@ -74,22 +61,6 @@
         "recommendedCreators": "Creators",
         "seeMoreCreators": "See more creators",
         "seeAll": "See All"
-    },
-    "genre": {
-        "전체": "All Genres",
-        "전체보기": "All",
-        "로맨스": "Romance",
-        "로맨스 판타지": "Romance Fantasy",
-        "무협": "Martial Arts",
-        "스릴러": "Thriller",
-        "액션": "Action",
-        "옴니버스": "Omniverse",
-        "코믹": "Comedy",
-        "판타지": "Fantasy",
-        "학원물": "학원물",
-        "회귀물": "회귀물",
-        "BL/GL": "BL/GL",
-        "기타": "Others"
     },
     "footer": {
         "aboutUs": "About Us",
@@ -240,17 +211,6 @@
         "headerDesc": "Enter business information and employment information",
         "businessRegPlaceholder": "Insert Business Number",
         "businessFieldPlaceholder": "Business Field",
-        "businessFieldItems": {
-            "webtoon": "Webtoons",
-            "game": "Games",
-            "movie": "Movies",
-            "drama": "TV shows",
-            "webDrama": "Web series",
-            "video": "Videos",
-            "book": "Books",
-            "performance": "Performances",
-            "etc": "Other"
-        },
         "businessTypePlaceholder": "Business Type",
         "businessTypeItems": {
             "creator": "Production",
@@ -374,34 +334,38 @@
         "unableToMakeOffer": "Unable to Make Offer",
         "notPossibleToOffer": "Not an Offer period"
     },
-    "contractRange": {
-        "derivative": {
-            "all": "All",
-            "webtoon": "Webtoon",
-            "movie": "Movie",
-            "drama": "Drama",
-            "webDrama": "Web Drama",
-            "ads": "Ads",
-            "musical": "Musical",
-            "game": "Game",
-            "book": "Book",
-            "product": "Product"
-        },
-        "countries": {
-            "all": "All",
-            "ko": "South Korea",
-            "en": "North America (English)",
-            "zhCN": "China (Simplified)",
-            "zhTW": "Taiwan (Traditional)",
-            "de": "Germany",
-            "id": "Indonesia",
-            "ja": "Japan",
-            "fr": "France",
-            "es": "Spain",
-            "vi": "Vietnam",
-            "ms": "Malaysia",
-            "th": "Thailand"
-        }
+    "businessFields": {
+        "WEBTOONS": "Webtoons",
+        "TV_SHOWS": "TV shows",
+        "WEB_SERIES": "Web series",
+        "MOVIES": "Movies",
+        "ADS": "Ads",
+        "MUSICALS": "Musicals",
+        "PLAYS": "Plays",
+        "GAMES": "Games",
+        "BOOKS": "Books",
+        "GOODS": "Goods",
+        "WEB_NOVELS": "Web novels",
+        "MUSIC": "Music",
+        "NFT": "NFT",
+        "CHARACTERS": "Characters",
+        "OTHER": "{plural, select, true {Others} other {Other}}"
+    },
+    "countries": {
+        "ALL": "All",
+        "KR": "South Korea",
+        "US": "United States",
+        "CN": "China",
+        "TW": "Taiwan",
+        "FR": "France",
+        "DE": "Germany",
+        "ID": "Indonesia",
+        "TH": "Thailand",
+        "VN": "Vietnam",
+        "MY": "Malaysia",
+        "ES": "Spain",
+        "JP": "Japan",
+        "OTHER": "{plural, select, true {Others} other {Other}}"
     },
     "contractRangeData": {
         "detailedInformation": "Detailed Information on Series",

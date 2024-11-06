@@ -1,9 +1,8 @@
 import { Col, Gap, Row } from "@/ui/layouts";
-import { Text } from "@/ui/texts";
 import { RadioGroup } from "@radix-ui/react-radio-group";
 import { RadioGroupItem } from "@/ui/shadcn/RadioGroup";
 import { Label } from "@/ui/shadcn/Label";
-import { BidRoundT, ContractRange, ContractRangeCountrySchema } from "@/resources/bidRounds/bidRound.types";
+import { BidRoundT, ContractRange, ContractRangeItemSchema } from "@/resources/bidRounds/bidRound.types";
 import { getTranslations } from "next-intl/server";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/ui/shadcn/Table";
 import React from "react";
@@ -14,7 +13,7 @@ export default async function ContractRangeCountries({ bidRound }: {
 }) {
 
   const t = await getTranslations("contractRangeData");
-  const tContractRange = await getTranslations("contractRange");
+  const tCountries = await getTranslations("countries");
 
   return <Col className="flex-1">
     <Row className="justify-between">
@@ -41,11 +40,11 @@ export default async function ContractRangeCountries({ bidRound }: {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {ContractRangeCountrySchema.options
+        {ContractRangeItemSchema.shape.country.options
           .map((code, index) => {
             return <TableRow key={index}>
               <TableCell className="text-center border">
-                {tContractRange(`countries.${code}`)}
+                {tCountries(code, { plural: "true" })}
               </TableCell>
               <TableCell className="text-center border">
                 <WhetherExclusive
@@ -62,10 +61,10 @@ export default async function ContractRangeCountries({ bidRound }: {
 
 // todo 데이터 형태 재검토
 function WhetherExclusive({ data, countryCode }: {
-  countryCode: z.infer<typeof ContractRangeCountrySchema>,
+  countryCode: z.infer<typeof ContractRangeItemSchema.shape.country>,
   data: z.infer<typeof ContractRange>
 }) {
-  const target = data.find((item) => item.businessField === "webtoon" && item.country === countryCode);
+  const target = data.find((item) => item.businessField === "WEBTOONS" && item.country === countryCode);
   if (!target) {
     return <></>;
   }
@@ -73,7 +72,7 @@ function WhetherExclusive({ data, countryCode }: {
     <RadioGroupItem
       value="exclusive"
       className="border-mint m-auto"
-      checked={target.contract === "exclusive"}
+      checked={target.contract === "EXCLUSIVE"}
     />
   </RadioGroup>;
 

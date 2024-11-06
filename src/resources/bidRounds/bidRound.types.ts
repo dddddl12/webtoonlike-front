@@ -1,5 +1,5 @@
 import z from "zod";
-import { ResourceSchema } from "@/resources/globalTypes";
+import { BusinessFieldSchema, CountrySchema, ResourceSchema } from "@/resources/globalTypes";
 
 export enum BidRoundStatus {
   Idle = "IDLE",
@@ -9,41 +9,10 @@ export enum BidRoundStatus {
   Done = "DONE",
 }
 
-const ContractRangeExclusivitySchema = z.enum(["exclusive", "nonExclusive"]);
-
-export const ContractRangeBusinessFieldSchema = z.enum([
-  "all",
-  "webtoon",
-  "movie",
-  "drama",
-  "webDrama",
-  "ads",
-  "musical",
-  "game",
-  "book",
-  "product",
-]);
-
-export const ContractRangeCountrySchema = z.enum([
-  "all",
-  "ko",
-  "en",
-  "zhCN",
-  "zhTW",
-  "de",
-  "id",
-  "ja",
-  "fr",
-  "vi",
-  "ms",
-  "th",
-  "es",
-]);
-
 export const ContractRangeItemSchema = z.object({
-  contract: ContractRangeExclusivitySchema,
-  businessField: ContractRangeBusinessFieldSchema,
-  country: ContractRangeCountrySchema,
+  contract: z.enum(["EXCLUSIVE", "NON_EXCLUSIVE"]),
+  businessField: BusinessFieldSchema,
+  country: CountrySchema,
 });
 
 export const ContractRange = z.array(ContractRangeItemSchema);

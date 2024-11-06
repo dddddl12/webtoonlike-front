@@ -23,20 +23,7 @@
         "insertAddress2": "상세주소 입력",
         "termsAndConditions": "webtoonlike 이용약관",
         "required": "(필수)",
-        "doYouAgree": "이용약관에 동의하시겠습니까?",
-        "countries": {
-            "ko": "대한민국",
-            "en": "미국",
-            "zhCN": "중국",
-            "zhTW": "대만",
-            "ja": "일본",
-            "fr": "프랑스",
-            "es": "스페인",
-            "vi": "베트남",
-            "ms": "말레이시아",
-            "th": "태국",
-            "all": "전체"
-        }
+        "doYouAgree": "이용약관에 동의하시겠습니까?"
     },
     "setupPageNextForCreators": {
         "profileDesc": "프로필 정보를 입력해 주세요.",
@@ -67,22 +54,6 @@
         "recommendedCreators": "추천 작가",
         "seeMoreCreators": "작가 더보기",
         "seeAll": "전체 보기"
-    },
-    "genre": {
-        "전체": "전체",
-        "전체보기": "전체보기",
-        "로맨스": "로맨스",
-        "로맨스 판타지": "로맨스 판타지",
-        "무협": "무협",
-        "스릴러": "스릴러",
-        "액션": "액션",
-        "옴니버스": "옴니버스",
-        "코믹": "코믹",
-        "판타지": "판타지",
-        "학원물": "학원물",
-        "회귀물": "회귀물",
-        "BL/GL": "BL/GL",
-        "기타": "기타"
     },
     "footer": {
         "aboutUs": "회사 소개",
@@ -374,34 +345,38 @@
         "unableToMakeOffer": "투고 전 오퍼 불가",
         "notPossibleToOffer": "오퍼 가능 기간이 아닙니다"
     },
-    "contractRange": {
-        "derivative": {
-            "all": "전체",
-            "webtoon": "웹툰",
-            "movie": "영화",
-            "drama": "드라마",
-            "webDrama": "웹드라마",
-            "ads": "광고",
-            "musical": "뮤지컬",
-            "game": "게임",
-            "book": "도서",
-            "product": "상품"
-        },
-        "countries": {
-            "all": "전체",
-            "ko": "국내",
-            "en": "북미(영어)",
-            "zhCN": "중국(간체)",
-            "zhTW": "대만(번체)",
-            "de": "독일",
-            "id": "인도네시아",
-            "ja": "일본",
-            "fr": "프랑스",
-            "es": "스페인",
-            "vi": "베트남",
-            "ms": "말레이시아",
-            "th": "태국"
-        }
+    "businessFields": {
+        "WEBTOONS": "웹툰",
+        "TV_SHOWS": "드라마",
+        "WEB_SERIES": "웹드라마",
+        "MOVIES": "영화",
+        "ADS": "PR 영상",
+        "MUSICALS": "뮤지컬",
+        "PLAYS": "연극",
+        "GAMES": "게임",
+        "BOOKS": "출판",
+        "GOODS": "굿즈",
+        "WEB_NOVELS": "웹소설",
+        "MUSIC": "음악",
+        "NFT": "NFT",
+        "CHARACTERS": "캐릭터",
+        "OTHER": "기타"
+    },
+    "countries": {
+        "ALL": "전체",
+        "KR": "한국",
+        "US": "미국",
+        "CN": "중국",
+        "TW": "대만",
+        "FR": "프랑스",
+        "DE": "독일",
+        "ID": "인도네시아",
+        "TH": "태국",
+        "VN": "베트남",
+        "MY": "말레이시아",
+        "ES": "스페인",
+        "JP": "일본",
+        "OTHER": "기타"
     },
     "contractRangeData": {
         "detailedInformation": "작품 상세정보",

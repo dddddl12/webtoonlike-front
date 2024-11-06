@@ -1,17 +1,10 @@
 import z from "zod";
 import { UserT } from "@/resources/users/user.types";
+import { BusinessFieldSchema } from "@/resources/globalTypes";
 
-export const BuyerCompanyFieldSchema = z.enum([
-  "webtoon",
-  "game",
-  "movie",
-  "drama",
-  "webDrama",
-  "video",
-  "book",
-  "performance",
-  "etc"
-]);
+export const BuyerCompanyFieldSchema = BusinessFieldSchema;
+
+// TODO enum 정리
 export const BuyerCompanyTypeSchema = z.enum([
   "creator",
   "investor",

@@ -36,7 +36,7 @@ export function SignUpCompleteForm ({ signUpStatus }: {
     case SignUpStatus.NeedsBuyerInfo:
       return <BuyerProfileForm />;
     case SignUpStatus.Complete:
-      // 잠시 대기했다가 관련 동작 마친 후 리다이렉트 예정
+      // 잠시 대기했다가 관련 동작 마친 후 리다이렉트
       return null;
     default:
       throw new Error("Unexpected user state");

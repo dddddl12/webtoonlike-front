@@ -31,6 +31,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
   // 번역
   const t = useTranslations("profilePage");
   const tGeneral = useTranslations("general");
+  const tBusinessFields = useTranslations("businessFields");
 
   const prevBuyerCompany = prevBuyer?.company;
   const [thumbnail, setThumbnail] = useState<ImageData | undefined>(
@@ -114,7 +115,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
                     onChange={field.onChange}
                     defaultOptions={BuyerCompanyFieldSchema.options
                       .map(value => ({
-                        label: t(`businessFieldItems.${value}`), value
+                        label: tBusinessFields(value, { plural: false }), value
                       }))}
                     placeholder={t("businessFieldPlaceholder") + " (멀티셀렉트 재구현 예정)"}
                     hidePlaceholderWhenSelected

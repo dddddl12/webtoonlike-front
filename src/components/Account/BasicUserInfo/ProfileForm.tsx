@@ -1,4 +1,4 @@
-import { CountrySchema, UserFormSchema, UserFormT, UserTypeT } from "@/resources/users/user.types";
+import { UserFormSchema, UserFormT, UserTypeT } from "@/resources/users/user.types";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
@@ -16,12 +16,14 @@ import { Checkbox } from "@/ui/shadcn/CheckBox";
 import { Button } from "@/ui/shadcn/Button";
 import TermsOfUse from "@/components/Account/BasicUserInfo/TermsOfUse";
 
+// TODO 이름도 필드에 포함
 export default function ProfileForm({ userType, setUserType }: {
   userType: UserTypeT
   setUserType: Dispatch<SetStateAction<UserTypeT | undefined>>;
 }) {
   const t = useTranslations("setupForm");
   const tGeneral = useTranslations("general");
+  const tCountries = useTranslations("countries");
   const form = useForm<UserFormT>({
     defaultValues: {
       phone: "",
@@ -101,11 +103,12 @@ export default function ProfileForm({ userType, setUserType }: {
                     <SelectValue placeholder={t("insertCountry")}/>
                   </SelectTrigger>
                   <SelectContent>
-                    {CountrySchema.options.map((value) => (
-                      <SelectItem key={value} value={value}>
-                        {t(`countries.${value}`)}
-                      </SelectItem>
-                    ))}
+                    {UserFormSchema.shape.country.options
+                      .map((value) => (
+                        <SelectItem key={value} value={value}>
+                          {tCountries(value, { plural: false })}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </FormControl>
