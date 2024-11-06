@@ -46,10 +46,8 @@
         "investment": "Investment"
     },
     "homeMain": {
-        "days": " days",
-        "hours": " hours",
-        "minutes": " minutes",
-        "numberOfOffers": " offers",
+        "timeLeft": "<hl>{days}</hl> days <hl>{hours}</hl> hours <hl>{minutes}</hl> minutes",
+        "numberOfOffers": "<hl>{count}</hl> offers",
         "viewContent": "View Content",
         "recommendedPopularSeries": "Popular",
         "seeMorePopularSeries": "more",
@@ -323,8 +321,6 @@
         "next": "Next"
     },
     "webtoonDetails": {
-        "timeLeft": "{days} days {hours} hours {minutes} minutes",
-        "numberOfOffers": "{count} offers",
         "targetAge": "Audience: {age}s",
         "targetAgeRanged": "Audience: {lowerLimit}s to {upperLimit}s",
         "episodeCount": "{count} episodes complete",

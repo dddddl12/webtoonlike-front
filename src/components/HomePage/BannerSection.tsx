@@ -51,7 +51,6 @@ function Slide({
 
   const t = useTranslations("homeMain");
   const ageRestrictionT = useTranslations("ageRestriction");
-  const locale = useLocale();
   const time = convertTimeLeft(webtoon.hoursLeft);
 
   return (
@@ -91,16 +90,26 @@ function Slide({
         <div className="flex px-3 py-2 bg-white w-fit rounded-full font-bold text-black text-xs left-8 top-8 absolute">
           <div className="flex items-center">
             <Image src={ClockIcon} alt="clock" className="mr-2"/>
-            <HighlightedText>{time.days}</HighlightedText>{t("days")}
-            &nbsp;<HighlightedText>{time.hours}</HighlightedText>{t("hours")}
-            &nbsp;<HighlightedText>{time.minutes}</HighlightedText>{t("minutes")}
+            <span>
+              {t.rich("timeLeft", {
+                days: time.days,
+                hours: time.hours,
+                minutes: time.minutes,
+                hl: (chunks) => <HighlightedText>{chunks}</HighlightedText>
+              })}
+            </span>
           </div>
           <div className="flex items-center mx-2">
             <Image src={BarIcon} alt="bar"/>
           </div>
           <div className="flex items-center">
             <Image src={OffersIcon} alt="offers" className="mr-2"/>
-            <HighlightedText>{webtoon.offers}</HighlightedText>{t("numberOfOffers")}
+            <span>
+              {t.rich("numberOfOffers", {
+                count: webtoon.offers,
+                hl: (chunks) => <HighlightedText>{chunks}</HighlightedText>
+              })}
+            </span>
           </div>
         </div>
         <div className="left-8 bottom-8 absolute flex flex-col gap-1">

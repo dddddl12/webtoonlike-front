@@ -39,10 +39,8 @@
         "experienced": "경력"
     },
     "homeMain": {
-        "days": "일",
-        "hours": "시간",
-        "minutes": "분",
-        "numberOfOffers": "명 오퍼중",
+        "timeLeft": "<hl>{days}</hl>일 <hl>{hours}</hl>시간 <hl>{minutes}</hl>분",
+        "numberOfOffers": "<hl>{count}</hl>명 오퍼중",
         "viewContent": "작품 보기",
         "recommendedPopularSeries": "인기 작품 추천",
         "seeMorePopularSeries": "더보기",
@@ -334,8 +332,6 @@
         "next": "다음"
     },
     "webtoonDetails": {
-        "timeLeft": "{days}일 {hours}시간 {minutes}분",
-        "numberOfOffers": "{count}명 오퍼중",
         "targetAge": "{age}대 타켓",
         "targetAgeRanged": "{lowerLimit}~{upperLimit}대 타켓",
         "episodeCount": "{count}화 완결",
