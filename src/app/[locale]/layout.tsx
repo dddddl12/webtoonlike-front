@@ -13,8 +13,11 @@ import { getLocale, getMessages } from "next-intl/server";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "webtoonLikes",
-  description: "웹툰 오퍼 플랫폼 웹툰라이크",
+  title: "Webtoon Like",
+  description: "The Place where your IP becomes stock.",
+  openGraph: {
+    images: ["/img/og.png"],
+  }
 };
 
 export default async function RootLayout({
