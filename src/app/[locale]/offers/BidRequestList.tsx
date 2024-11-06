@@ -8,7 +8,7 @@ import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
 import { Paginator } from "@/ui/tools/Paginator";
 import { ListResponse } from "@/resources/globalTypes";
 import { useListData } from "@/hooks/listData";
-import { BidRequestRow } from "@/app/[locale]/bid-requests/BidRequestRow";
+import BidRequestListRow from "@/app/[locale]/offers/BidRequestListRow";
 
 type BidRequestListResponse = ListResponse<BidRequestExtendedT>;
 
@@ -38,7 +38,7 @@ export default function BidRequestList({ initialBidRequestListResponse }: {
       </div>
 
       {listResponse.items.map((bidRequest) => (
-        <BidRequestRow key={bidRequest.id} bidRequest={bidRequest} />
+        <BidRequestListRow key={bidRequest.id} bidRequest={bidRequest} />
       ))}
     </Col>
     {/*TODO window 통일*/}

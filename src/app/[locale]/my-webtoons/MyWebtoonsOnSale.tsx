@@ -18,7 +18,7 @@ type WebtoonWithRoundT = WebtoonT & {
 }
 type WebtoonListResponse = ListResponse<WebtoonWithRoundT>
 
-export default function BidRoundListOnSale({ initialWebtoonListResponse }: {
+export default function MyWebtoonsOnSale({ initialWebtoonListResponse }: {
   initialWebtoonListResponse: WebtoonListResponse
 }) {
   const { listResponse, filters, setFilters } = useListData(

@@ -1,4 +1,4 @@
-import { Container, Gap, Row } from "@/ui/layouts";
+import { Gap, Row } from "@/ui/layouts";
 
 export default function Spinner() {
   return (

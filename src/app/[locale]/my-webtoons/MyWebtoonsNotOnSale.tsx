@@ -16,7 +16,7 @@ import { displayName } from "@/utils/displayName";
 
 type WebtoonListResponse = ListResponse<WebtoonT>
 
-export default function BidRoundListNotOnSale({ initialWebtoonListResponse }: {
+export default function MyWebtoonsNotOnSale({ initialWebtoonListResponse }: {
   initialWebtoonListResponse: WebtoonListResponse
 }) {
   const t = useTranslations("manageContents");

@@ -35,12 +35,12 @@ export async function NavBar() {
     },
     {
       name: `${t("manageContents")}`,
-      path: "/bid-rounds",
+      path: "/my-webtoons",
       isVisible: userType === UserTypeT.Creator
     },
     {
       name: `${t("manageOffers")}`,
-      path: "/bid-requests",
+      path: "/offers",
       isVisible: true
     },
     {

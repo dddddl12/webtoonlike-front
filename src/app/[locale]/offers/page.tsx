@@ -1,11 +1,11 @@
 import React from "react";
-import BidRequestList from "@/app/[locale]/bid-requests/BidRequestList";
+import BidRequestList from "@/app/[locale]/offers/BidRequestList";
 import PageLayout from "@/components/PageLayout";
 import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
 import { getTranslations } from "next-intl/server";
 import { Heading } from "@/ui/texts";
 
-export default async function BidRound() {
+export default async function OffersPage() {
   const initialBidRequestListResponse = await listBidRequests();
   const t = await getTranslations("manageOffers");
   return (

@@ -41,7 +41,7 @@ async function OfferButton ({ bidRound }: {
     className="bg-mint text-white"
     disabled={!isPossibleToOffer}
   >
-    <Link href={`/buyer/bid-rounds/${bidRound?.id}/request`}>
+    <Link href={`/buyer/my-webtoons/${bidRound?.id}/request`}>
       {isPossibleToOffer
         ? t("makeOffer")
         : (bidRound

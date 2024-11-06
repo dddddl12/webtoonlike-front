@@ -3,11 +3,11 @@ import { Col, Gap } from "@/ui/layouts";
 import PageLayout from "@/components/PageLayout";
 import { listMyWebtoonsNotOnSale, listMyWebtoonsOnSale } from "@/resources/webtoons/webtoon.service";
 import { getTranslations } from "next-intl/server";
-import BidRoundListNotOnSale from "@/app/[locale]/bid-rounds/BidRoundListNotOnSale";
-import BidRoundListOnSale from "@/app/[locale]/bid-rounds/BidRoundListOnSale";
+import MyWebtoonsNotOnSale from "@/app/[locale]/my-webtoons/MyWebtoonsNotOnSale";
+import MyWebtoonsOnSale from "@/app/[locale]/my-webtoons/MyWebtoonsOnSale";
 import { Heading } from "@/ui/texts";
 
-export default async function BidRound() {
+export default async function MyWebtoonsPage() {
   const [
     initialWebtoonListNotOnSaleResponse,
     initialWebtoonListOnSaleResponse
@@ -23,14 +23,14 @@ export default async function BidRound() {
         <Heading>
           {t("unregisteredSeries")}
         </Heading>
-        <BidRoundListNotOnSale initialWebtoonListResponse={initialWebtoonListNotOnSaleResponse} />
+        <MyWebtoonsNotOnSale initialWebtoonListResponse={initialWebtoonListNotOnSaleResponse} />
       </Col>
       <Gap y={20} />
       <Col>
         <Heading>
           {t("registeredSeries")}
         </Heading>
-        <BidRoundListOnSale initialWebtoonListResponse={initialWebtoonListOnSaleResponse} />
+        <MyWebtoonsOnSale initialWebtoonListResponse={initialWebtoonListOnSaleResponse} />
       </Col>
     </PageLayout>
   );
