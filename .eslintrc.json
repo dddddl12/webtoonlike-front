@@ -1,28 +1,35 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "extends": [
-    "next/core-web-vitals"
-  ],
-  "plugins": [
-    "@typescript-eslint",
-    "@stylistic/ts"
-  ],
-  "rules": {
-    "semi": "warn",
-    "quotes": ["warn", "double"],
-    "no-multiple-empty-lines": ["warn", { "max": 2 }],
-    "no-multi-spaces": "warn",
-    "no-trailing-spaces": "warn",
-    "key-spacing": "warn",
-    "space-infix-ops": "warn",
-    "object-curly-spacing": ["warn", "always"],
-    "prefer-const": ["warn"],
-    "@next/next/no-img-element": ["off"],
-//    "react/jsx-indent": ["warn", 2, { "indentLogicalExpressions": true }],
-    "react/react-in-jsx-scope": ["off"],
-    "react-hooks/rules-of-hooks": "warn",
-    "react-hooks/exhaustive-deps": "off",
-    "react/display-name": ["off"],
-    "@stylistic/ts/indent": ["warn", 2]
-  }
+    "extends": [
+        "next/core-web-vitals",
+        "next/typescript"
+    ],
+    "rules": {
+        "indent": ["warn", 2],
+        "quotes": [
+            "warn",
+            "double"
+        ],
+        "no-multiple-empty-lines": [
+            "warn",
+            {
+                "max": 2
+            }
+        ],
+        "no-multi-spaces": "warn",
+        "no-trailing-spaces": "warn",
+        "key-spacing": "warn",
+        "space-infix-ops": "warn",
+        "object-curly-spacing": [
+            "warn",
+            "always"
+        ],
+        "prefer-const": [
+            "warn"
+        ],
+        "react/react-in-jsx-scope": [
+            "off"
+        ],
+        "react-hooks/rules-of-hooks": "warn",
+        "@typescript-eslint/no-unused-vars": ["warn"]
+    }
 }
