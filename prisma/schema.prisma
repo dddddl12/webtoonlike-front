@@ -11,6 +11,8 @@ datasource db {
 // TODO Index 추가
 // TODO zero-length 차단
 
+// 배너 many to one?
+
 model Admin {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
@@ -280,23 +282,24 @@ enum TargetAge {
 }
 
 model Webtoon {
-  id             Int          @id @default(autoincrement())
-  createdAt      DateTime     @default(now()) @map("created_at")
-  updatedAt      DateTime     @updatedAt @map("updated_at")
-  userId         Int          @map("user_id")
-  title          String
-  title_en       String
+  id              Int          @id @default(autoincrement())
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  userId          Int          @map("user_id")
+  title           String
+  title_en        String
   // TODO string 길이 조정
-  description    String?
-  description_en String?
-  authorName     String?      @map("author_name")
-  authorName_en  String?      @map("author_name_en")
-  thumbPath      String       @map("thumb_path")
-  externalUrl    String?      @map("external_url")
-  englishUrl     String?      @map("english_url")
-  targetAges     TargetAge[]  @map("target_ages")
-  ageLimit       AgeLimit     @map("age_limit")
-  targetGender   TargetGender @map("target_gender")
+  description     String?
+  description_en  String?
+  authorName      String?      @map("author_name")
+  authorName_en   String?      @map("author_name_en")
+  thumbPath       String       @map("thumb_path")
+  externalUrl     String?      @map("external_url")
+  englishUrl      String?      @map("english_url")
+  targetAges      TargetAge[]  @map("target_ages")
+  ageLimit        AgeLimit     @map("age_limit")
+  targetGender    TargetGender @map("target_gender")
+  isFeaturedAsNew Boolean      @default(false) @map("is_featured_as_new")
 
   user       User             @relation(fields: [userId], references: [id], onDelete: Restrict)
   bidRound   BidRound?
