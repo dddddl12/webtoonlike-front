@@ -1,31 +1,16 @@
-import React from "react";
-import PageLayout from "@/components/PageLayout";
-import { Gap, Row } from "@/ui/layouts";
-import { Heading } from "@/ui/texts";
-import { getTranslations } from "next-intl/server";
-import WebtooonFeedList from "@/app/[locale]/webtoons/WebtooonFeedList";
-import { listGenres } from "@/resources/genres/genre.service";
-import { listWebtoons } from "@/resources/webtoons/webtoon.service";
+import { getTokenInfo } from "@/resources/tokens/token.service";
+import { UserTypeT } from "@/resources/users/user.types";
+import WebtoonFeed from "@/app/[locale]/webtoons/components/WebtoonFeed";
+import ManageWebtoons from "@/app/[locale]/webtoons/components/ManageWebtoons";
 
-export default async function Webtoons() {
-  const [ genres, webtoonListResponse ] = await Promise.all([
-    listGenres(),
-    listWebtoons()
-  ]);
-  const TallSeries = await getTranslations("allSeries");
-
-  return (
-    <PageLayout>
-      <Row className="w-[1200px]">
-        <Heading className="text-white text-[32px] font-bold">
-          {TallSeries("allSeries")}
-        </Heading>
-      </Row>
-      <Gap y={10} />
-      <WebtooonFeedList
-        genres={genres}
-        initialWebtoonListResponse={webtoonListResponse}
-      />
-    </PageLayout>
-  );
+export default async function WebtoonsPage() {
+  const { metadata } = await getTokenInfo();
+  switch (metadata.type) {
+    case UserTypeT.Buyer:
+      return <WebtoonFeed />;
+    case UserTypeT.Creator:
+      return <ManageWebtoons />;
+    default:
+      throw new Error("Invalid user type");
+  }
 }

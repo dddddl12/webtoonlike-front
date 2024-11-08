@@ -1,0 +1,23 @@
+.formWrapper textarea,
+.formWrapper input[type='text'] {
+    background-color: #333;
+    border: none;
+}
+
+.formWrapper textarea::placeholder,
+.formWrapper input::placeholder {
+    color: #808080;
+}
+
+.formWrapper button[role='checkbox'] {
+    border: 1px solid #fff;
+}
+
+.formWrapper fieldset {
+    margin-top: 2.5rem;
+}
+
+.formWrapper legend {
+    font-weight: 700;
+    font-size: 0.875rem;
+}

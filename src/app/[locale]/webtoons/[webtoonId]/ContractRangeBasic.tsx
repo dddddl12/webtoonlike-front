@@ -1,11 +1,11 @@
 import { BidRoundT } from "@/resources/bidRounds/bidRound.types";
-import { Col, Gap, Row } from "@/ui/layouts";
-import { Text } from "@/ui/texts";
+import { Col, Gap, Row } from "@/components/ui/layouts";
+import { Text } from "@/components/ui/texts";
 import { IconExclamation } from "@/components/svgs/IconExclamation";
 import { RadioGroup } from "@radix-ui/react-radio-group";
-import { RadioGroupItem } from "@/ui/shadcn/RadioGroup";
-import { Label } from "@/ui/shadcn/Label";
-import { Input } from "@/ui/shadcn/Input";
+import { RadioGroupItem } from "@/components/ui/shadcn/RadioGroup";
+import { Label } from "@/components/ui/shadcn/Label";
+import { Input } from "@/components/ui/shadcn/Input";
 import React from "react";
 import { getTranslations } from "next-intl/server";
 
@@ -118,11 +118,9 @@ async function ProgressIndicator({ episodeNo }: {
       </>}
 
       <Gap x={2}/>
-      <Input
-        placeholder="_"
-        defaultValue={episodeNo}
-        className="bg-gray-light w-[30px] p-0 text-center placeholder:text-black text-black"
-      />
+      <div className="bg-gray-darker p-0 text-center rounded px-2 py-0.5">
+        {episodeNo || "718"}
+      </div>
       <Gap x={2}/>
       {t("episodesCompleted")}
     </Row>

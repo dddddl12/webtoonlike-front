@@ -1,7 +1,7 @@
 "use client";
 
-import { Col, Gap, Grid, Row } from "@/ui/layouts";
-import { Text } from "@/ui/texts";
+import { Col, Gap, Grid, Row } from "@/components/ui/layouts";
+import { Text } from "@/components/ui/texts";
 import { Link } from "@/i18n/routing";
 import { useLocale } from "next-intl";
 import Image from "next/image";
@@ -62,11 +62,7 @@ function WebtoonItem({ webtoon, height, index }: {
         href={`/webtoons/${webtoon?.id}`}
       >
         <Image
-          src={buildImgUrl(
-            null,
-            webtoon.thumbPath == null ? "" : webtoon.thumbPath,
-            { size: "sm" },
-          )}
+          src={buildImgUrl(webtoon.thumbPath, { size: "sm" })}
           alt="Item thumbnail"
           fill={true}
           className="object-cover transition ease-in-out delay-50 hover:border-2 rounded-md border-red duration-300"

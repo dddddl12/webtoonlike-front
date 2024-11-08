@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import { IconBell } from "@/components/svgs/IconBell";
 import { NotificationItem } from "@/components/NotificationItem";
-import { Col, Gap, Row } from "@/ui/layouts";
-import { Button } from "@/ui/shadcn/Button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/shadcn/DropdownMenu";
-import { Text } from "@/ui/texts";
+import { Col, Gap, Row } from "@/components/ui/layouts";
+import { Button } from "@/components/ui/shadcn/Button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/shadcn/DropdownMenu";
+import { Text } from "@/components/ui/texts";
 import { clsx } from "clsx";
 
 

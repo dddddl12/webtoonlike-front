@@ -3,7 +3,7 @@ import BidRequestList from "@/app/[locale]/offers/BidRequestList";
 import PageLayout from "@/components/PageLayout";
 import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
 import { getTranslations } from "next-intl/server";
-import { Heading } from "@/ui/texts";
+import { Heading } from "@/components/ui/texts";
 
 export default async function OffersPage() {
   const initialBidRequestListResponse = await listBidRequests();

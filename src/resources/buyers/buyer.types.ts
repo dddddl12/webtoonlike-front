@@ -53,13 +53,7 @@ const BuyerBaseSchema = z.object({
   purpose: BuyerPurposeSchema.optional()
 });
 
-export const BuyerFormSchema = BuyerBaseSchema.extend({
-  files: z.object({
-    thumbnail: z.instanceof(File).optional(),
-    businessCert: z.instanceof(File).optional(),
-    businessCard: z.instanceof(File).optional(),
-  })
-});
+export const BuyerFormSchema = BuyerBaseSchema;
 export type BuyerFormT = z.infer<typeof BuyerFormSchema>;
 
 export const BuyerSchema = BuyerBaseSchema

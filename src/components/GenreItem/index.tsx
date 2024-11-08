@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge } from "@/ui/shadcn/Badge";
+import { Badge } from "@/components/ui/shadcn/Badge";
 import { useLocale } from "next-intl";
 import { GenreT } from "@/resources/genres/genre.types";
 import { displayName } from "@/utils/displayName";

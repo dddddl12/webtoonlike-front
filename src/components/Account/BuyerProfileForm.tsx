@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { Col, Gap, Row } from "@/ui/layouts";
-import { Text } from "@/ui/texts";
-import { Label } from "@/ui/shadcn/Label";
-import { Input } from "@/ui/shadcn/Input";
+import { Col, Gap, Row } from "@/components/ui/layouts";
+import { Text } from "@/components/ui/texts";
+import { Label } from "@/components/ui/shadcn/Label";
+import { Input } from "@/components/ui/shadcn/Input";
 import Image from "next/image";
-import { ImageData } from "@/utils/media";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/shadcn/Select";
-import MultipleSelector from "@/ui/shadcn/MultipleSelector";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/shadcn/Select";
+import MultipleSelector from "@/components/ui/shadcn/MultipleSelector";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { useForm } from "react-hook-form";
@@ -17,55 +16,73 @@ import {
   BuyerFormT, BuyerPurposeSchema,
   BuyerT
 } from "@/resources/buyers/buyer.types";
-import { Form, FormControl, FormField, FormItem } from "@/ui/shadcn/Form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/shadcn/Form";
 import Spinner from "@/components/Spinner";
 import { createBuyer } from "@/resources/buyers/buyer.service";
-import { useTokenRefresh } from "@/hooks/tokenRefresh";
-import { useAllRequiredFilled } from "@/hooks/allRequiredFilled";
+import { ImageObject } from "@/utils/media";
+import { FileDirectoryT } from "@/resources/files/files.type";
 
 
-export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
-  prevBuyer?: BuyerT;
-  redirectPath?: string;
+export default function BuyerProfileForm({ prev } : {
+  prev?: BuyerT;
 }) {
   // 번역
   const t = useTranslations("buyerInfoPage");
   const tGeneral = useTranslations("general");
   const tBusinessFields = useTranslations("businessFields");
 
-  const prevBuyerCompany = prevBuyer?.company;
-  const [thumbnail, setThumbnail] = useState<ImageData | undefined>(
-    prevBuyerCompany?.thumbPath ? new ImageData(prevBuyerCompany?.thumbPath) : undefined);
-  const [businessCert, setBusinessCert ] = useState<ImageData | undefined>(
-    prevBuyerCompany?.businessCertPath ? new ImageData(prevBuyerCompany?.businessCertPath) : undefined);
-  const [businessCard, setBusinessCard] = useState<ImageData | undefined>(
-    prevBuyerCompany?.businessCardPath ? new ImageData(prevBuyerCompany?.businessCardPath) : undefined);
+  const prevCompany = prev?.company;
+  const [thumbnail, setThumbnail] = useState(
+    new ImageObject(prevCompany?.thumbPath));
+  const [businessCert, setBusinessCert ] = useState(
+    new ImageObject(prevCompany?.businessCertPath));
+  const [businessCard, setBusinessCard] = useState(
+    new ImageObject(prevCompany?.businessCardPath));
 
   const form = useForm<BuyerFormT>({
     defaultValues: {
       company: {
-        name: prevBuyerCompany?.name || "",
-        fieldType: prevBuyerCompany?.fieldType || [],
-        businessType: prevBuyerCompany?.businessType || [],
-        dept: prevBuyerCompany?.dept || "",
-        position: prevBuyerCompany?.position || "",
-        positionDetail: prevBuyerCompany?.positionDetail || "",
-        businessNumber: prevBuyerCompany?.businessNumber || "",
+        name: prevCompany?.name || "",
+        fieldType: prevCompany?.fieldType || [],
+        businessType: prevCompany?.businessType || [],
+        dept: prevCompany?.dept || "",
+        position: prevCompany?.position || "",
+        positionDetail: prevCompany?.positionDetail || "",
+        businessNumber: prevCompany?.businessNumber || "",
       },
-      purpose: prevBuyer?.purpose,
+      purpose: prev?.purpose,
     }
   });
 
   // 필수 필드 체크
-  const allRequiredFilled = useAllRequiredFilled(form, BuyerFormSchema);
+  const fieldValues = form.watch();
+  const [allRequiredFilled, setAllRequiredFilled] = useState(false);
+  useEffect(() => {
+    const refinedForm: BuyerFormT = {
+      ...fieldValues,
+      company: {
+        ...fieldValues.company,
+        thumbPath: thumbnail.url,
+        businessCertPath: businessCert.url,
+        businessCardPath: businessCard.url
+      }
+    };
+    const { success } = BuyerFormSchema.safeParse(refinedForm);
+    setAllRequiredFilled(success);
+  }, [fieldValues, thumbnail, businessCert, businessCard]);
 
   // 제출 이후 동작
   const router = useRouter();
-  const { tokenRefreshed, startRefresh } = useTokenRefresh();
-  useEffect(() => {
-    if (!tokenRefreshed) return;
-    router.replace(redirectPath || "/");
-  }, [tokenRefreshed]);
+  const onSubmit = async (buyerForm: BuyerFormT) => {
+    setSubmissionInProgress(true);
+
+    buyerForm.company.thumbPath = await thumbnail.uploadAndGetRemotePath(FileDirectoryT.BuyersThumbnails);
+    buyerForm.company.businessCertPath = await businessCert.uploadAndGetRemotePath(FileDirectoryT.BuyersCerts);
+    buyerForm.company.businessCardPath = await businessCard.uploadAndGetRemotePath(FileDirectoryT.BuyersCards);
+
+    await createBuyer(buyerForm); //TODO 실패 케이스 고려
+    router.refresh();
+  };
 
   // 스피너
   const [submissionInProgress, setSubmissionInProgress] = useState(false);
@@ -77,11 +94,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
       <span className="text-black mb-10">{t("headerDesc")}</span>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(async (buyerForm) => {
-          setSubmissionInProgress(true);
-          await createBuyer(buyerForm); //TODO 실패 케이스 고려
-          startRefresh();
-        })}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
             name="company.businessNumber"
@@ -160,30 +173,19 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
                 className="absolute flex justify-center items-center p-2 right-0 bg-mint h-full text-white cursor-pointer">{t("selectFile")}</Label>
             </Label>
 
-            <FormField
-              control={form.control}
-              name="files.businessCert"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      className="hidden h-0 border border-red"
-                      type='file'
-                      accept='image/jpeg, image/png'
-                      onChange={(e) => {
-                        const newFile = e.target.files?.[0];
-                        if (newFile) {
-                          setBusinessCert(new ImageData(newFile));
-                        }
-                        field.onChange(e);
-                      }}
-                      value={undefined}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <FormItem>
+              <FormControl>
+                <Input
+                  className="hidden h-0 border border-red"
+                  type='file'
+                  accept='image/jpeg, image/png'
+                  onChange={(event) => {
+                    const imageData = new ImageObject(event.target.files?.[0]);
+                    setBusinessCert(imageData);
+                  }}
+                />
+              </FormControl>
+            </FormItem>
 
           </Row>
 
@@ -214,7 +216,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
 
           <Row className="justify-between">
             <Col className="w-full justify-center items-center">
-              {thumbnail && <div className="w-[200px] h-[200px] overflow-hidden relative rounded-sm">
+              {thumbnail.url && <div className="w-[200px] h-[200px] overflow-hidden relative rounded-sm">
                 <Image
                   draggable={false}
                   priority
@@ -235,30 +237,19 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
                   className="absolute flex justify-center items-center p-2 right-0 bg-mint h-full text-white  cursor-pointer">{t("selectFile")}</Label>
               </Label>
             </Col>
-            <FormField
-              control={form.control}
-              name="files.thumbnail"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      className="hidden h-0 border border-red"
-                      type='file'
-                      accept='image/jpeg, image/png'
-                      onChange={(e) => {
-                        const newFile = e.target.files?.[0];
-                        if (newFile) {
-                          setThumbnail(new ImageData(newFile));
-                        }
-                        field.onChange(e);
-                      }}
-                      value={undefined}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <FormItem>
+              <FormControl>
+                <Input
+                  className="hidden h-0 border border-red"
+                  type='file'
+                  accept='image/jpeg, image/png'
+                  onChange={(event) => {
+                    const imageData = new ImageObject(event.target.files?.[0]);
+                    setThumbnail(imageData);
+                  }}
+                />
+              </FormControl>
+            </FormItem>
           </Row>
 
           <Gap y={5}/>
@@ -329,30 +320,19 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
               <Label htmlFor="businessCard"
                 className="absolute flex justify-center items-center p-2 right-0 bg-mint h-full text-white cursor-pointer">{t("selectFile")}</Label>
             </Label>
-            <FormField
-              control={form.control}
-              name="files.businessCard"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      className="hidden h-0 border border-red"
-                      type='file'
-                      accept='image/jpeg, image/png'
-                      onChange={(e) => {
-                        const newFile = e.target.files?.[0];
-                        if (newFile) {
-                          setBusinessCard(new ImageData(newFile));
-                        }
-                        field.onChange(e);
-                      }}
-                      value={undefined}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <FormItem>
+              <FormControl>
+                <Input
+                  className="hidden h-0 border border-red"
+                  type='file'
+                  accept='image/jpeg, image/png'
+                  onChange={(event) => {
+                    const imageData = new ImageObject(event.target.files?.[0]);
+                    setBusinessCard(imageData);
+                  }}
+                />
+              </FormControl>
+            </FormItem>
           </Row>
 
           <Gap y={10}/>
@@ -367,7 +347,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Select defaultValue={prevBuyer?.purpose ?? ""}
+                  <Select defaultValue={prev?.purpose ?? ""}
                     onValueChange={field.onChange}
                   >
                     <SelectTrigger className="bg-white border-gray text-[#94A4B8] rounded-sm">
@@ -392,7 +372,7 @@ export default function BuyerProfileForm({ prevBuyer, redirectPath } : {
           <Input
             type="submit"
             className="w-full bg-black-texts text-white hover:text-black"
-            value={prevBuyer
+            value={prev
               ? `${tGeneral("edit")}` : `${tGeneral("submit")}`}
             disabled={!allRequiredFilled}
           />

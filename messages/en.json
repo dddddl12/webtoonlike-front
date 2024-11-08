@@ -121,14 +121,6 @@
         "note": "*If you provide an alternative contact method, such as a phone number or social media account, it may limit your access to Webtoons.",
         "next": "Next"
     },
-    "offerHeaderData": {
-        "사업권 종류": "Type of Business Right",
-        "사업권 구분": "Business Right Classification",
-        "독점 권리": "Exclusive Rights",
-        "서비스 권역": "Service Region",
-        "계약 조건": "Conditions of Contract",
-        "삭제": "Delete"
-    },
     "typeBusinessRight": {
         "webtoonRights": "Webtoon Service Rights",
         "secondaryRights": "Secondary Business Rights"
@@ -161,6 +153,7 @@
     },
     "addSeries": {
         "addSeries": "Add Series",
+        "editSeries": "Edit Series",
         "seriesTitle": "Series Title",
         "enterKoreanTitle": "Please enter the Korean title of the series",
         "enterEnglishTitle": "Please enter the English title of the series",
@@ -168,7 +161,6 @@
         "enterAuthor": "Please enter the Korean author's name.",
         "enterAuthorEn": "Please enter the English author's name.",
         "seriesImage": "Thumbnail of Series",
-        "pleaseUploadImage": "Please upload the image",
         "seriesIntro": "Series Introduction",
         "enterKoreanIntro": "Please enter the introduction of your series in Korean",
         "enterEnglishIntro": "Please enter the introduction of your series in English",
@@ -176,31 +168,31 @@
         "pleaseEnterKeywords": "Please enter keywords of the series",
         "seriesLink": "Series URL (Optional)",
         "pleaseEnterLink": "Please enter the URL of the series",
+        "selectGenres": "Genres (up to 2)",
         "targetGender": "Target Gender",
         "filmRating": "Film Rating",
         "targetAge": "Target Age",
         "isItAdultContent": "Adult Content or Not",
         "registerSeries": "Registration of Series",
         "registering": "Registering...",
-        "editSeries": "Edit Series",
         "editing": "Editing..."
     },
     "targetGender": {
-        "성별 무관": "Gender Irrelevant",
-        "남자": "Male",
-        "여자": "Female"
+        "ALL": "Gender Irrelevant",
+        "MALE": "Male",
+        "FEMALE": "Female"
     },
     "targetAge": {
-        "전체": "General Audience",
-        "10대": "10s",
-        "20대": "20s",
-        "30대": "30s",
-        "40대": "40s",
-        "50대 이상": "50s+"
+        "ALL": "General Audience",
+        "TEENS": "10s",
+        "TWENTIES": "20s",
+        "THIRTIES": "30s",
+        "FORTIES": "40s",
+        "FIFTIES": "50s+"
     },
     "isItAdultContent": {
-        "연령 무관": "Any age",
-        "19세 이상": "Mature"
+        "allAges": "Any age",
+        "adultsOnly": "Mature"
     },
     "profilePage": {
         "editProfile": "Edit Profile",
@@ -354,6 +346,10 @@
         "JP": "Japan",
         "OTHER": "{plural, select, true {Others} other {Other}}"
     },
+    "contractType": {
+        "EXCLUSIVE": "Exclusive",
+        "NON_EXCLUSIVE": "Non Exclusive"
+    },
     "contractRangeData": {
         "detailedInformation": "Detailed Information on Series",
         "seriesInformation": "Series Information",
@@ -369,8 +365,6 @@
         "monthlyProductionAvailableRounds": "Monthly Production Available Rounds",
         "episodesPossible": "episodes possible",
         "secondaryCopyrightSalesStatus": "Secondary Copyright Sales Status",
-        "exclusive": "Exclusive",
-        "nonExclusive": "Non Exclusive",
         "secondaryCopyright": "Secondary Copyright",
         "serviceCountry": "Service Country",
         "exclusiveOrNon": "Exclusive or Non Exclusive",
@@ -403,9 +397,7 @@
         "selectTypeOfBusinessRight": "Select Type of Business Right",
         "webtoonSerialRights": "Webtoon Serial Rights",
         "secondBusinessRight": "Second Business Right",
-        "selectBusinessRightClassifications": "Select Business Classifications",
-        "exclusive": "Exclusive",
-        "nonExclusive": "Non Exclusive"
+        "selectBusinessRightClassifications": "Select Business Classifications"
     },
     "creatorBidRequestConditionPage": {
         "buyerInformation": "Buyer Information",

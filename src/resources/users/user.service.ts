@@ -7,6 +7,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { NotSignedInError } from "@/errors";
 
 export async function createUser(form: UserFormT) {
+  // 저작권자/바이어까지 등록 후 생성으로 구조 변경
   await prisma.$transaction(async (tx) => {
     const user = await currentUser();
     if(!user) {

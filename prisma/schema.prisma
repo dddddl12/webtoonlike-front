@@ -9,6 +9,7 @@ datasource db {
 
 // TODO join 삭제 시 로직 재조정
 // TODO Index 추가
+// TODO zero-length 차단
 
 model Admin {
   id        Int      @id @default(autoincrement())
@@ -17,7 +18,7 @@ model Admin {
   userId    Int      @unique @map("user_id")
   isSuper   Boolean  @default(false) @map("is_super")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("admins")
 }
@@ -88,7 +89,7 @@ model BidRound {
   currentEpisodeNo    Int?           @map("current_episode_no")
   monthlyEpisodeCount Int?           @map("monthly_episode_count")
 
-  webtoon     Webtoon      @relation(fields: [webtoonId], references: [id], onDelete: Restrict)
+  webtoon     Webtoon      @relation(fields: [webtoonId], references: [id], onDelete: Cascade)
   bidRequests BidRequest[]
 
   @@map("bid_rounds")
@@ -104,7 +105,7 @@ model Buyer {
   company   Json
   purpose   String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("buyers")
 }
@@ -122,7 +123,7 @@ model Creator {
   isExperienced      Boolean  @map("is_experienced")
   isExposed          Boolean  @map("is_exposed")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("creators")
 }
@@ -161,7 +162,7 @@ model Notification {
   isRead    Boolean  @default(false) @map("is_read")
   arg       Boolean?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notifications")
 }
@@ -211,7 +212,7 @@ model WebtoonEpisodeImage {
   height    Int?
   rank      Int?
 
-  episode WebtoonEpisode @relation(fields: [episodeId], references: [id], onDelete: Restrict)
+  episode WebtoonEpisode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
 
   @@map("webtoon_episode_images")
 }
@@ -229,7 +230,7 @@ model WebtoonEpisode {
   // TODO 사용 여부 확인
   thumbPath   String?  @map("thumb_path")
 
-  webtoon Webtoon               @relation(fields: [webtoonId], references: [id], onDelete: Restrict)
+  webtoon Webtoon               @relation(fields: [webtoonId], references: [id], onDelete: Cascade)
   images  WebtoonEpisodeImage[]
 
   @@unique([webtoonId, episodeNo])
@@ -243,14 +244,15 @@ model WebtoonLike {
   userId    Int      @map("user_id")
   webtoonId Int      @map("webtoon_id")
 
-  user    User    @relation(fields: [userId], references: [id], onDelete: Restrict)
-  webtoon Webtoon @relation(fields: [webtoonId], references: [id], onDelete: Restrict)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  webtoon Webtoon @relation(fields: [webtoonId], references: [id], onDelete: Cascade)
 
   @@unique([userId, webtoonId])
   @@map("webtoon_likes")
 }
 
 enum TargetGender {
+  ALL    @map("all")
   MALE   @map("male")
   FEMALE @map("female")
 
@@ -278,24 +280,23 @@ enum TargetAge {
 }
 
 model Webtoon {
-  id             Int           @id @default(autoincrement())
-  createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime      @updatedAt @map("updated_at")
-  userId         Int           @map("user_id")
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  userId         Int          @map("user_id")
   title          String
-  title_en       String?
+  title_en       String
   // TODO string 길이 조정
   description    String?
   description_en String?
-  authorName     String?       @map("author_name")
-  authorName_en  String?       @map("author_name_en")
-  thumbPath      String        @map("thumb_path")
-  externalUrl    String?       @map("external_url")
-  englishUrl     String?       @map("english_url")
-  adultOnly      Boolean       @map("adult_only")
-  targetAges     TargetAge[]   @map("target_ages")
-  ageLimit       AgeLimit      @map("age_limit")
-  targetGender   TargetGender? @map("target_gender")
+  authorName     String?      @map("author_name")
+  authorName_en  String?      @map("author_name_en")
+  thumbPath      String       @map("thumb_path")
+  externalUrl    String?      @map("external_url")
+  englishUrl     String?      @map("english_url")
+  targetAges     TargetAge[]  @map("target_ages")
+  ageLimit       AgeLimit     @map("age_limit")
+  targetGender   TargetGender @map("target_gender")
 
   user       User             @relation(fields: [userId], references: [id], onDelete: Restrict)
   bidRound   BidRound?
@@ -313,7 +314,7 @@ model XWebtoonGenre {
   webtoonId Int      @map("webtoon_id")
   genreId   Int      @map("genre_id")
 
-  webtoon Webtoon @relation(fields: [webtoonId], references: [id], onDelete: Restrict)
+  webtoon Webtoon @relation(fields: [webtoonId], references: [id], onDelete: Cascade)
   genre   Genre   @relation(fields: [genreId], references: [id], onDelete: Restrict)
 
   @@map("x_webtoon_genres")

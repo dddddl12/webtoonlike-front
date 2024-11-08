@@ -1,6 +1,6 @@
 import React from "react";
-import { Col, Gap } from "@/ui/layouts";
-import { Text } from "@/ui/texts";
+import { Col, Gap } from "@/components/ui/layouts";
+import { Text } from "@/components/ui/texts";
 import { convertTimeAbsolute } from "@/utils/time";
 import { NotificationT } from "@/resources/notifications/notification.types";
 

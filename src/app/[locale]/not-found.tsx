@@ -1,6 +1,6 @@
-import { Col } from "@/ui/layouts";
-import { Button } from "@/ui/shadcn/Button";
-import { Heading, Text } from "@/ui/texts";
+import { Col } from "@/components/ui/layouts";
+import { Button } from "@/components/ui/shadcn/Button";
+import { Heading, Text } from "@/components/ui/texts";
 import { headers } from "next/headers";
 
 export default async function NotFound() {

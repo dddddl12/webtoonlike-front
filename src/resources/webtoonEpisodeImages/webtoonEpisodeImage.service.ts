@@ -52,10 +52,5 @@
 //     return deleted;
 //   }
 //
-//   async getPresignedUrl(mimeType: string) {
-//     let key = `webtoon_episode_images/images/image_${new Date().getTime()}.${mime.extension(mimeType)}`;
-//     key = putDevPrefix(key);
-//     const putUrl = await createSignedUrl(key, mimeType);
-//     return { putUrl, key };
-//   }
+//
 // }

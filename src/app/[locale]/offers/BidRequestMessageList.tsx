@@ -1,14 +1,16 @@
 import { useLocale } from "next-intl";
-import { Col, Row } from "@/ui/layouts";
+import { Col, Row } from "@/components/ui/layouts";
 import Spinner from "@/components/Spinner";
 import { useListData } from "@/hooks/listData";
 import { listBidRequestMessages } from "@/resources/bidRequestMessages/bidRequestMessage.service";
-import { Paginator } from "@/ui/tools/Paginator";
+import Paginator from "@/components/Paginator";
+import { BidRequestMessageExtendedT } from "@/resources/bidRequestMessages/bidRequestMessage.types";
+import { useState } from "react";
+import NegotiationDetails from "@/app/[locale]/invoices/NegotiationDetails";
 
 export default function BidRequestMessageList({ bidRequestId }: {
   bidRequestId: number
 }) {
-  const locale = useLocale();
   const { listResponse, filters, setFilters } = useListData(
     () => listBidRequestMessages(bidRequestId),
     { page: 1 }
@@ -32,13 +34,7 @@ export default function BidRequestMessageList({ bidRequestId }: {
       <div className="w-[20%] p-2 flex justify-center">메시지</div>
     </Row>
     {listResponse.items.map((message, index) => (
-      <Row key={index}>
-        <div className="w-[20%] p-2 flex justify-center">{index + 1}</div>
-        <div className="w-[20%] p-2 flex justify-center">{message.createdAt.toLocaleString(locale)}</div>
-        <div className="w-[20%] p-2 flex justify-center">유저 {message.user.name}</div>
-        <div className="w-[20%] p-2 flex justify-center text-mint underline">보러가기</div>
-        <div className="w-[20%] p-2 flex justify-center">{message.content}</div>
-      </Row>
+      <MessageRow message={message} index={index} key={index} />
     ))}
     <Paginator
       currentPage={filters.page}
@@ -46,4 +42,25 @@ export default function BidRequestMessageList({ bidRequestId }: {
       setFilters={setFilters}
     />
   </Col>;
+}
+
+function MessageRow({ message, index }: {
+  index: number
+  message: BidRequestMessageExtendedT
+}) {
+  const locale = useLocale();
+  const [showNegotiation, setShowNegotiation] = useState(false);
+  return <>
+    <Row>
+      <div className="w-[20%] p-2 flex justify-center">{index + 1}</div>
+      <div className="w-[20%] p-2 flex justify-center">{message.createdAt.toLocaleString(locale)}</div>
+      <div className="w-[20%] p-2 flex justify-center">유저 {message.user.name}</div>
+      <div className="w-[20%] p-2 flex justify-center text-mint underline cursor-pointer"
+        onClick={() => setShowNegotiation(!showNegotiation)}>
+        {showNegotiation ? "접기" : "보기"}
+      </div>
+      <div className="w-[20%] p-2 flex justify-center">{message.content}</div>
+    </Row>
+    {showNegotiation && <NegotiationDetails/>}
+  </>;
 }

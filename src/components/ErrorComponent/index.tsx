@@ -1,5 +1,5 @@
-import { Row } from "@/ui/layouts";
-import { Text } from "@/ui/texts";
+import { Row } from "@/components/ui/layouts";
+import { Text } from "@/components/ui/texts";
 
 export function ErrorComponent() {
   return (

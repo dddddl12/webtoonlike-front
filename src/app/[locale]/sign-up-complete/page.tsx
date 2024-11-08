@@ -1,6 +1,6 @@
-import { Col, Gap } from "@/ui/layouts";
+import { Col, Gap } from "@/components/ui/layouts";
 import { KenazLogo } from "@/components/svgs/KenazLogo";
-import { Heading } from "@/ui/texts";
+import { Heading } from "@/components/ui/texts";
 import { getLocale, getTranslations } from "next-intl/server";
 import PageLayout from "@/components/PageLayout";
 import { updateTokenInfo } from "@/resources/tokens/token.service";

@@ -1,14 +1,14 @@
 "use client";
 
 import { useListData } from "@/hooks/listData";
-import { Col, Container, Gap, Row } from "@/ui/layouts";
-import { Heading, Text } from "@/ui/texts";
+import { Col, Container, Gap, Row } from "@/components/ui/layouts";
+import { Heading, Text } from "@/components/ui/texts";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import * as BidRequestsApi from "@/apis/bid_request";
 import { BidRequestT, BidRoundT, ListBidRequestOptionT } from "@/types";
-import { Pagenator } from "@/ui/tools/Pagenator";
+import { Pagenator } from "@/components/ui/tools/Pagenator";
 import { nationConverter, nationConverterToKr } from "@/utils/nationConverter";
 import { businessFieldConverterToEn, businessFieldConverterToKr } from "@/utils/businessFieldConverter";
 import { convertBidRequestStatus, convertBidRequestStatusEn } from "@/utils/bidRequestStatusConverter";
@@ -88,8 +88,9 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
             <Image
               src={
                 bidRequests.buyer?.company.thumbPath
-                  ? buildImgUrl(null, bidRequests.buyer.company.thumbPath, {
+                  ? buildImgUrl(bidRequests.buyer.company.thumbPath, {
                     size: "xxs",
+                    fallback: "user"
                   })
                   : "/img/webtoon_default_image_small.svg"
               }
@@ -165,7 +166,7 @@ export function CreatorBidRequestDetailPage({ bidRound }: { bidRound: BidRoundT 
         <Row className="bg-gray-darker rounded-sm p-[12px] justify-between">
           <div className="w-[115px] h-[175px] overflow-hidden relative rounded-sm">
             <Image
-              src={ buildImgUrl(null, bidRound.webtoon.thumbPath, { size: "sm" })}
+              src={ buildImgUrl(bidRound.webtoon.thumbPath, { size: "sm" })}
               alt={bidRound.webtoon.thumbPath}
               style={{ objectFit: "cover" }}
               fill

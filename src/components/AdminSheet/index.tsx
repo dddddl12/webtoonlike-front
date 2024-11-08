@@ -1,7 +1,7 @@
 "use client";
 
-import { Col, Gap, Row } from "@/ui/layouts";
-import { Text } from "@/ui/texts";
+import { Col, Gap, Row } from "@/components/ui/layouts";
+import { Text } from "@/components/ui/texts";
 import { usePathname } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
 import { Fragment, cloneElement } from "react";

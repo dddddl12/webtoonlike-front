@@ -10,7 +10,6 @@ export enum AgeLimit {
 }
 
 export enum TargetAge {
-  All = "ALL",
   Teens = "TEENS",
   Twenties = "TWENTIES",
   Thirties = "THIRTIES",
@@ -19,38 +18,35 @@ export enum TargetAge {
 }
 
 export enum TargetGender {
+  All = "ALL",
   Male = "MALE",
   Female = "FEMALE"
 }
 
 const WebtoonBaseSchema = z.object({
-  title: z.string(),
-  title_en: z.string().optional(),
-  description: z.string().optional(),
-  description_en: z.string().optional(),
+  title: z.string().min(1),
+  title_en: z.string().min(1),
+  description: z.string().max(1000).optional(),
+  description_en: z.string().max(1000).optional(),
+  authorName: z.string().optional(),
+  authorName_en: z.string().optional(),
   /** 외부 연재 중인 웹툰의 url */
   externalUrl: z.string().optional(),
   /** 영어 번역 url */
   englishUrl: z.string().optional(),
-  adultOnly: z.boolean(),
   targetAges: z.array(z.nativeEnum(TargetAge)),
   ageLimit: z.nativeEnum(AgeLimit),
-  targetGender: z.nativeEnum(TargetGender)
+  targetGender: z.nativeEnum(TargetGender),
+  thumbPath: z.string(),
 });
 
 export const WebtoonFormSchema = WebtoonBaseSchema.extend({
-  authorName: z.string().optional(),
-  authorName_en: z.string().optional(),
-  files: z.object({
-    thumbnail: z.instanceof(File).optional(),
-  })
+  genreIds: z.array(z.number()).min(1).max(2),
 });
+export type WebtoonFormT = z.infer<typeof WebtoonFormSchema>
 
 export const WebtoonSchema = ResourceSchema
-  .merge(WebtoonBaseSchema)
-  .extend({
-    thumbPath: z.string(),
-  });
+  .merge(WebtoonBaseSchema);
 export type WebtoonT = z.infer<typeof WebtoonSchema>
 
 export const WebtoonExtendedSchema = WebtoonSchema
@@ -75,7 +71,7 @@ export type WebtoonExtendedT = z.infer<typeof WebtoonExtendedSchema>
 export const WebtoonPreviewSchema = z.object({
   id: z.number(),
   title: z.string(),
-  title_en: z.string().optional(),
+  title_en: z.string(),
   description: z.string().optional(),
   description_en: z.string().optional(),
   thumbPath: z.string()
@@ -85,10 +81,10 @@ export type WebtoonPreviewT = z.infer<typeof WebtoonPreviewSchema>
 // 홈 화면
 export type HomeWebtoonItem = {
   id: number;
-  thumbPath?: string;
+  thumbPath: string;
   title: string;
-  title_en?: string;
-  authorOrCreatorName?: string;
+  title_en: string;
+  authorOrCreatorName: string;
   authorOrCreatorName_en?: string;
 }
 

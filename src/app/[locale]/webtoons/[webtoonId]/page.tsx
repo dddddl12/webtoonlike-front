@@ -5,7 +5,7 @@ import WebtoonDetails from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetails";
 import PageLayout from "@/components/PageLayout";
 import { getTranslations } from "next-intl/server";
 
-export default async function WebtoonInfo({ params }:
+export default async function WebtoonDetailsPage({ params }:
 { params: Promise<{ webtoonId: string }> }) {
   const { webtoonId } = await params;
   const webtoon = await getWebtoon(Number(webtoonId));

@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/utils/prisma";
-import { CreatorFormT } from "@/resources/creators/creator.types";
+import { CreatorFormT, PublicCreatorT } from "@/resources/creators/creator.types";
 import { getClerkUser, updateTokenInfo } from "@/resources/tokens/token.service";
 
 export async function createCreator(form: CreatorFormT ) {
@@ -12,7 +12,7 @@ export async function createCreator(form: CreatorFormT ) {
   // }
   await prisma.$transaction(async (tx) => {
     const clerkUser = await getClerkUser();
-    const { id: userId } = await tx.user.findFirstOrThrow({
+    const { id: userId } = await tx.user.findUniqueOrThrow({
       select: {
         id: true
       },
@@ -42,4 +42,23 @@ export async function createCreator(form: CreatorFormT ) {
 
     await updateTokenInfo(tx);
   });
+}
+
+export async function getCreator(creatorUid: number): Promise<PublicCreatorT> {
+  const record = await prisma.creator.findUniqueOrThrow({
+    where: {
+      userId: creatorUid,
+      // isExposed: true, //TODO
+    },
+    select: {
+      name: true,
+      name_en: true,
+      thumbPath: true,
+    }
+  });
+  return {
+    name: record.name,
+    name_en: record.name_en ?? undefined,
+    thumbPath: record.thumbPath ?? undefined,
+  };
 }

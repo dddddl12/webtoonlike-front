@@ -1,10 +1,10 @@
-import { Col, Gap, Row } from "@/ui/layouts";
+import { Col, Gap, Row } from "@/components/ui/layouts";
 import { RadioGroup } from "@radix-ui/react-radio-group";
-import { RadioGroupItem } from "@/ui/shadcn/RadioGroup";
-import { Label } from "@/ui/shadcn/Label";
+import { RadioGroupItem } from "@/components/ui/shadcn/RadioGroup";
+import { Label } from "@/components/ui/shadcn/Label";
 import { BidRoundT, ContractRange, ContractRangeItemSchema } from "@/resources/bidRounds/bidRound.types";
 import { getTranslations } from "next-intl/server";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/ui/shadcn/Table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/shadcn/Table";
 import React from "react";
 import z from "zod";
 
@@ -14,18 +14,26 @@ export default async function ContractRangeCountries({ bidRound }: {
 
   const t = await getTranslations("contractRangeData");
   const tCountries = await getTranslations("countries");
+  const tContractType = await getTranslations("contractType");
 
   return <Col className="flex-1">
     <Row className="justify-between">
       <h2 className="text-lg font-bold">
         {t("webtoonServiceRegion")}
       </h2>
-      <RadioGroup disabled value={"1"} className="flex">
-        <RadioGroupItem value="1" className="border-mint mr-1"/>
-        <Label>{t("exclusive")}</Label>
-        <Gap x={5}/>
-        <RadioGroupItem value="2" className="border-mint mr-1"/>
-        <Label>{t("nonExclusive")}</Label>
+      <RadioGroup disabled value="EXCLUSIVE" className="flex gap-5">
+        {ContractRangeItemSchema.shape.contract
+          .options.map((value) => {
+            return <Row key={value} className="flex gap-1">
+              <RadioGroupItem
+                className="border-mint"
+                value={value}
+              />
+              <Label>
+                {tContractType(value)}
+              </Label>
+            </Row>;
+          })}
       </RadioGroup>
     </Row>
     <Table className="text-white mt-5">

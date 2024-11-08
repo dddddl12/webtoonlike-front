@@ -2,18 +2,16 @@ import { UserFormSchema, UserFormT, UserTypeT } from "@/resources/users/user.typ
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { useAllRequiredFilled } from "@/hooks/allRequiredFilled";
 import { useRouter } from "@/i18n/routing";
-import { useTokenRefresh } from "@/hooks/tokenRefresh";
 import Spinner from "@/components/Spinner";
-import { Form, FormControl, FormField, FormItem } from "@/ui/shadcn/Form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/shadcn/Form";
 import { createUser } from "@/resources/users/user.service";
-import { Col, Gap, Row } from "@/ui/layouts";
-import { Input } from "@/ui/shadcn/Input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/shadcn/Select";
-import { Text } from "@/ui/texts";
-import { Checkbox } from "@/ui/shadcn/CheckBox";
-import { Button } from "@/ui/shadcn/Button";
+import { Col, Gap, Row } from "@/components/ui/layouts";
+import { Input } from "@/components/ui/shadcn/Input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/shadcn/Select";
+import { Text } from "@/components/ui/texts";
+import { Checkbox } from "@/components/ui/shadcn/CheckBox";
+import { Button } from "@/components/ui/shadcn/Button";
 import TermsOfUse from "@/components/Account/BasicUserInfo/TermsOfUse";
 
 // TODO 이름도 필드에 포함
@@ -35,15 +33,19 @@ export default function ProfileForm({ userType, setUserType }: {
   });
 
   // 필수 필드 체크
-  const allRequiredFilled = useAllRequiredFilled(form, UserFormSchema);
+  const fieldValues = form.watch();
+  const [allRequiredFilled, setAllRequiredFilled] = useState(false);
+  useEffect(() => {
+    const { success } = UserFormSchema.safeParse(fieldValues);
+    setAllRequiredFilled(success);
+  }, [fieldValues]);
 
   // 제출 이후 동작
   const router = useRouter();
-  const { tokenRefreshed, startRefresh } = useTokenRefresh();
-  useEffect(() => {
-    if (!tokenRefreshed) return;
-    router.refresh();
-  }, [tokenRefreshed]);
+  const onSubmit = async (userForm: UserFormT) => {
+    setSubmissionInProgress(true);
+    await createUser(userForm);
+  };
 
   // 스피너
   const [submissionInProgress, setSubmissionInProgress] = useState(false);
@@ -52,11 +54,7 @@ export default function ProfileForm({ userType, setUserType }: {
   }
 
   return <Form {...form}>
-    <form onSubmit={form.handleSubmit(async (userForm) => {
-      setSubmissionInProgress(true);
-      await createUser(userForm);
-      startRefresh();
-    })}>
+    <form onSubmit={form.handleSubmit(onSubmit)}>
       <span className="text-black">
         {t("selectedUserType", {
           userType: userType === UserTypeT.Creator

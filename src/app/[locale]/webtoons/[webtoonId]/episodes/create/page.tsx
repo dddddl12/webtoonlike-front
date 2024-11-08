@@ -1,11 +1,24 @@
-// import { CreateWebtoonEpisodePage } from "@/$pages/creators/CreateWebtoonEpisodePage";
+import PageLayout from "@/components/PageLayout";
+import { Gap, Row } from "@/components/ui/layouts";
+import FormHeader from "@/components/ui/formComponents";
+import { getTranslations } from "next-intl/server";
 
-export default function CreateWebtoonPost({ params } : {
+export default async function CreateWebtoonPost({ params } : {
   params: Promise<{webtoonId: string}>
 } ) {
+  const webtoonId = await params.then(p => Number(p.webtoonId));
+  const t = await getTranslations("detailedInfoPage");
   return (
-    <div className="bg-[#121212] min-h-screen">
-      {/*<CreateWebtoonEpisodePage webtoonId={parseInt(params.webtoonId)} />*/}
-    </div>
+    <PageLayout>
+      <Row>
+        <FormHeader href={`/webtoons/${webtoonId}`}/>
+        <Gap x={2} />
+        <div>{t("addEpisode")}</div>
+      </Row>
+
+      <Gap y={15}/>
+
+      <CreateWebtoonEpisodeForm webtoonId={webtoonId} />
+    </PageLayout>
   );
 }

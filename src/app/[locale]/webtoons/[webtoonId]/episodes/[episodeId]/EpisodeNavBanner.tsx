@@ -3,7 +3,7 @@
 import { Link, useRouter } from "@/i18n/routing";
 import { clsx } from "clsx";
 import { ReactNode } from "react";
-import { Button } from "@/ui/shadcn/Button";
+import { Button } from "@/components/ui/shadcn/Button";
 
 export default function NavBanner({ webtoonId, episodeId, children }: {
   webtoonId: number,

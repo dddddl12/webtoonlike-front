@@ -1,11 +1,11 @@
 "use client";
 
-import { Col, Gap, Grid, Row } from "@/ui/layouts";
-import { Text } from "@/ui/texts";
+import { Col, Gap, Grid, Row } from "@/components/ui/layouts";
+import { Text } from "@/components/ui/texts";
 import { Link, useRouter } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import { buildImgUrl } from "@/utils/media";
-import { Avatar, AvatarFallback, AvatarImage } from "@/ui/shadcn/Avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/shadcn/Avatar";
 import { HomeArtistItem } from "@/resources/webtoons/webtoon.types";
 import { displayName } from "@/utils/displayName";
 
@@ -30,10 +30,13 @@ export function ArtistItem({ artist }: {
   const locale = useLocale();
 
   return (
-    <Link href={`/creator/${artist.id}`}>
+    <Link href={`/creators/${artist.id}`}>
       <Col className="text-white bg-black-texts w-full h-[320px] rounded-md items-center justify-center transition ease-in-out delay-50 hover:bg-mint duration-300">
         <Avatar className="w-[100px] h-[100px]">
-          <AvatarImage src={buildImgUrl(null, artist?.thumbPath || "", { size: "sm" })} />
+          <AvatarImage src={buildImgUrl(artist.thumbPath, {
+            size: "sm",
+            fallback: "user"
+          })} />
           <AvatarFallback>{artist.thumbPath}</AvatarFallback>
         </Avatar>
         <span className="text-base font-bold mt-10">

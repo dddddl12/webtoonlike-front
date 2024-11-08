@@ -1,7 +1,7 @@
 "use client";
 
-import { Gap, Row } from "@/ui/layouts";
-import { Text } from "@/ui/texts";
+import { Gap, Row } from "@/components/ui/layouts";
+import { Text } from "@/components/ui/texts";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import { convertTimeAbsolute } from "@/utils/time";
@@ -10,7 +10,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/ui/shadcn/Accordion";
+} from "@/components/ui/shadcn/Accordion";
 import {
   Table,
   TableBody,
@@ -18,7 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/ui/shadcn/Table";
+} from "@/components/ui/shadcn/Table";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import { generateRandomString } from "@/utils/randomString";
 import { useLocale, useTranslations } from "next-intl";
@@ -69,7 +69,7 @@ export function BuyerBidRequestList({
               <div className="w-[60px] h-[60px] overflow-hidden relative rounded-sm">
                 <Image
                   src={
-                    buildImgUrl(null, bidRound.webtoon.thumbPath, {
+                    buildImgUrl(bidRound.webtoon.thumbPath, {
                       size: "xxs",
                     })
                   }

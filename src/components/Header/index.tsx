@@ -1,9 +1,9 @@
-import { Gap, Row } from "@/ui/layouts";
+import { Gap, Row } from "@/components/ui/layouts";
 import { KenazLogo } from "@/components/svgs/KenazLogo";
 import { NotificationDropdown } from "./NotificationDropdown";
 import { TranslationDropdown } from "./TranslationDropdown";
 import { Link } from "@/i18n/routing";
-import { SelectItem } from "@/ui/shadcn/Select";
+import { SelectItem } from "@/components/ui/shadcn/Select";
 import { routing } from "@/i18n/routing";
 import React from "react";
 import { NavBar } from "@/components/Header/NavBar";

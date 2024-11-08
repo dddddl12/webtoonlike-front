@@ -1,42 +1,21 @@
 import React from "react";
 import PageLayout from "@/components/PageLayout";
-import { Gap, Row } from "@/ui/layouts";
-import { Button } from "@/ui/shadcn/Button";
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import { UpdateWebtoonForm } from "@/app/[locale]/webtoons/[webtoonId]/update/UpdateWebtoonForm";
-import { getLocale } from "next-intl/server";
 import { getWebtoon } from "@/resources/webtoons/webtoon.service";
-import { Link } from "@/i18n/routing";
+import { WebtoonForm } from "@/app/[locale]/webtoons/components/forms/WebtoonForm";
+import { listGenres } from "@/resources/genres/genre.service";
 
-
-export default async function UpdateWebtoon({ params }: {
+export default async function UpdateWebtoonPage({ params }: {
   params: Promise<{webtoonId: string}>
 }) {
 
-  const { webtoonId } = await params;
-  const webtoon = await getWebtoon(Number(webtoonId));
-  const locale = await getLocale();
-
+  const webtoonId = await params.then(p => Number(p.webtoonId));
+  const [webtoon, genres] = await Promise.all([
+    getWebtoon(webtoonId),
+    listGenres()
+  ]);
   return (
     <PageLayout>
-      <Row>
-        <Link
-          // variant='ghost' // TODO
-          href={`/webtoons/${webtoon.id}`}>
-          <ArrowLeftIcon width={32} height={32} />
-        </Link>
-
-        <Gap x={2}/>
-
-        <h1 className='text-xl'>
-          {locale === "en" ? "Edit webtoon" : "작품 수정하기"}
-        </h1>
-      </Row>
-
-      <Gap y={15}/>
-
-      <UpdateWebtoonForm webtoon={webtoon}/>
-
+      <WebtoonForm selectableGenres={genres} prev={webtoon}/>
     </PageLayout>
   );
 }

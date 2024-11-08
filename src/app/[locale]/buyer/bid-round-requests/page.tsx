@@ -1,5 +1,5 @@
-import { Gap, Row } from "@/ui/layouts";
-import { Heading } from "@/ui/texts";
+import { Gap, Row } from "@/components/ui/layouts";
+import { Heading } from "@/components/ui/texts";
 import PageLayout from "@/components/PageLayout";
 import { getTranslations } from "next-intl/server";
 import { BuyerBidRequestList } from "@/app/[locale]/buyer/bid-round-requests/BuyerBidRequestList";

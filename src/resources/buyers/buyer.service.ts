@@ -18,7 +18,7 @@ export async function createBuyer(form: BuyerFormT ) {
   // }
   await prisma.$transaction(async (tx) => {
     const clerkUser = await getClerkUser();
-    const { id: userId } = await tx.user.findFirstOrThrow({
+    const { id: userId } = await tx.user.findUniqueOrThrow({
       select: {
         id: true
       },

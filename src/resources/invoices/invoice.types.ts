@@ -1,7 +1,3 @@
-import { BidRequestT } from "@/resources/bidRequests/bidRequest.types";
-import { WebtoonT } from "@/resources/webtoons/webtoon.types";
-import { CreatorT } from "@/resources/creators/creator.types";
-import { BuyerT } from "@/resources/buyers/buyer.types";
 import z from "zod";
 import { ResourceSchema } from "@/resources/globalTypes";
 

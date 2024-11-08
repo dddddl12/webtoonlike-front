@@ -1,8 +1,8 @@
 import { WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
-import { Row } from "@/ui/layouts";
+import { Row } from "@/components/ui/layouts";
 import { Link } from "@/i18n/routing";
 import { BidRoundStatus, BidRoundT } from "@/resources/bidRounds/bidRound.types";
-import { Button } from "@/ui/shadcn/Button";
+import { Button } from "@/components/ui/shadcn/Button";
 import { ReactNode } from "react";
 import { clsx } from "clsx";
 import { getTranslations } from "next-intl/server";
@@ -12,7 +12,9 @@ export default async function WebtoonDetailsButtons({ webtoon }: {
 }) {
   return <Row className="gap-4 w-full">
     <ViewButton webtoon={webtoon} />
-    <OfferButton bidRound={webtoon.bidRound}/>
+    {webtoon.isEditable
+      ? <BidRoundButton webtoon={webtoon}/>
+      : <OfferButton webtoon={webtoon}/>}
   </Row>;
 }
 
@@ -28,9 +30,29 @@ async function ViewButton ({ webtoon }: {
   </ControlButton>;
 }
 
-async function OfferButton ({ bidRound }: {
-  bidRound?: BidRoundT;
+async function BidRoundButton ({ webtoon }: {
+  webtoon: WebtoonExtendedT;
 }) {
+  const t = await getTranslations("seriesManagement");
+  if(webtoon.bidRound) {
+    return <ControlButton className="bg-mint text-white">
+      <Link href={`/webtoons/${webtoon.id}/bid-round/update`}>
+        {t("reregisterOfContentTransactions")}
+      </Link>
+    </ControlButton>;
+  } else {
+    return <ControlButton className="bg-mint text-white">
+      <Link href={`/webtoons/${webtoon.id}/bid-round/create`}>
+        {t("registerOfContentTransactions")}
+      </Link>
+    </ControlButton>;
+  }
+}
+
+async function OfferButton ({ webtoon }: {
+  webtoon: WebtoonExtendedT;
+}) {
+  const { bidRound } = webtoon;
   const t = await getTranslations("webtoonDetails");
 
   const isPossibleToOffer = bidRound
@@ -41,7 +63,7 @@ async function OfferButton ({ bidRound }: {
     className="bg-mint text-white"
     disabled={!isPossibleToOffer}
   >
-    <Link href={`/buyer/my-webtoons/${bidRound?.id}/request`}>
+    <Link href={`/offers/${webtoon.id}/create`}>
       {isPossibleToOffer
         ? t("makeOffer")
         : (bidRound

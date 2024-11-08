@@ -14,6 +14,7 @@ export const ContractRangeItemSchema = z.object({
   businessField: BusinessFieldSchema,
   country: CountrySchema,
 });
+export type ContractRangeItemT = z.infer<typeof ContractRangeItemSchema>;
 
 export const ContractRange = z.array(ContractRangeItemSchema);
 
@@ -23,8 +24,8 @@ export const BidRoundBaseSchema = z.object({
   isOriginal: z.boolean(),
   isNew: z.boolean(),
   // TODO optional 체크
-  episodeCount: z.number().min(1).optional(),
   currentEpisodeNo: z.number().min(1).optional(),
+  episodeCount: z.number().min(1).optional(),
   monthlyEpisodeCount: z.number().min(1).optional(),
 });
 

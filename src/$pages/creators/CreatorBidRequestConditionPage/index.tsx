@@ -16,11 +16,11 @@ import {
   TableBody,
   TableRow,
   TableCell,
-} from "@/ui/shadcn/Table";
-import { Col, Gap, Row } from "@/ui/layouts";
-import { Button } from "@/ui/shadcn/Button";
-import { Input } from "@/ui/shadcn/Input";
-import { Text } from "@/ui/texts";
+} from "@/components/ui/shadcn/Table";
+import { Col, Gap, Row } from "@/components/ui/layouts";
+import { Button } from "@/components/ui/shadcn/Button";
+import { Input } from "@/components/ui/shadcn/Input";
+import { Text } from "@/components/ui/texts";
 import { businessFieldConverterToEn, businessFieldConverterToKr } from "@/utils/businessFieldConverter";
 import { nationConverter, nationConverterToKr } from "@/utils/nationConverter";
 import { buildImgUrl } from "@/utils/media";
@@ -180,15 +180,10 @@ export function CreatorBidRequestConditionPage({
           <Row className="w-[70%]">
             <div className="w-[115px] h-[115px] overflow-hidden relative rounded-full">
               <Image
-                src={
-                  bidRequestDetail.buyer?.company.thumbPath
-                    ? buildImgUrl(
-                      null,
-                      bidRequestDetail.buyer.company.thumbPath,
-                      { size: "xs" }
-                    )
-                    : "/img/webtoon_default_image_small.svg"
-                }
+                src={buildImgUrl(
+                  bidRequestDetail.buyer.company.thumbPath,
+                  { size: "xs", fallback: "user" }
+                )}
                 alt={`${bidRequestDetail.buyer?.company.thumbPath}`}
                 style={{ objectFit: "cover" }}
                 fill

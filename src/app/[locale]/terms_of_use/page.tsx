@@ -2,7 +2,7 @@
 
 import TermsOfUseEn from "@/components/Account/BasicUserInfo/TermsOfUse/TermsOfUseEn";
 import TermsOfUseKo from "@/components/Account/BasicUserInfo/TermsOfUse/TermsOfUseKo";
-import { Container } from "@/ui/layouts";
+import { Container } from "@/components/ui/layouts";
 import { useLocale } from "next-intl";
 
 export default function TermsOfUse() {

@@ -3,7 +3,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
-import { Gap } from "@/ui/layouts";
+import { Gap } from "@/components/ui/layouts";
 import { Link } from "@/i18n/routing";
 import BidRequestMessageList from "@/app/[locale]/offers/BidRequestMessageList";
 import { displayName } from "@/utils/displayName";
@@ -21,7 +21,7 @@ export default function BidRequestListRow({ bidRequest }:{
         <div className="w-[40%] p-2 flex justify-start items-center">
           <div className="w-[60px] h-[60px] overflow-hidden relative rounded-sm">
             <Image
-              src={buildImgUrl(null, webtoon.thumbPath, { size: "xs" })}
+              src={buildImgUrl(webtoon.thumbPath, { size: "xs" })}
               alt={webtoon.thumbPath}
               style={{ objectFit: "cover" }}
               fill

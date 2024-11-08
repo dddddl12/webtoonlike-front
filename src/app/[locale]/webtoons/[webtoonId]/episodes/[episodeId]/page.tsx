@@ -1,7 +1,7 @@
 import PageLayout from "@/components/PageLayout";
-import { Col, Gap, Row } from "@/ui/layouts";
+import { Col, Gap, Row } from "@/components/ui/layouts";
 import { IconLeftBrackets } from "@/components/svgs/IconLeftBrackets";
-import { Text } from "@/ui/texts";
+import { Text } from "@/components/ui/texts";
 // import { AddEnglishEpisodeUrl } from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/AddEnglishEpisodeUrl";
 // import { DownloadEpisodeImage } from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/DownloadEpisodeImage";
 import { buildImgUrl } from "@/utils/media";
@@ -56,7 +56,7 @@ export default async function WebtoonEpisodeDetail(
 
         <Row className="justify-between">
           <p className="text-xl font-bold">
-            {displayName(locale, episode.title || "", episode.title_en)}
+            {displayName(locale, episode.title, episode.title_en)}
           </p>
           {episode.isEditable && (
             <Link href={`/webtoons/${webtoon.id}/episodes/${episode.id}/update`}>
@@ -73,7 +73,7 @@ export default async function WebtoonEpisodeDetail(
             return (
               <img
                 key={image.id}
-                src={buildImgUrl(null, image.path)}
+                src={buildImgUrl(image.path)}
                 alt={image.path}
               />
             );

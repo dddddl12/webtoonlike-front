@@ -1,4 +1,4 @@
-import { Row } from "@/ui/layouts";
+import { Row } from "@/components/ui/layouts";
 import NavigationLink from "./NavigationLink";
 import { UserTypeT } from "@/resources/users/user.types";
 import { getTranslations } from "next-intl/server";
@@ -31,11 +31,11 @@ export async function NavBar() {
     {
       name: `${t("seeAll")}`,
       path: "/webtoons",
-      isVisible: true
+      isVisible: userType === UserTypeT.Buyer
     },
     {
       name: `${t("manageContents")}`,
-      path: "/my-webtoons",
+      path: "/webtoons",
       isVisible: userType === UserTypeT.Creator
     },
     {
@@ -58,7 +58,7 @@ export async function NavBar() {
       path: "/admin/dashboard",
       isVisible: adminLevel >= AdminLevel.Admin
     }
-  ];
+  ].filter((item) => item.isVisible);
   // TODO 해당사항 없을 때 마스킹 처리
     // TODO: 메뉴 확정 후 더 우아하게 수정
 

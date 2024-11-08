@@ -1,8 +1,8 @@
 "use client";
 import React, { Fragment } from "react";
 // import { Button, Dialog, DialogActions } from '@mui/material';
-import { Dialog, DialogContent, DialogFooter } from "@/ui/shadcn/Dialog";
-import { Button } from "@/ui/shadcn/Button";
+import { Dialog, DialogContent, DialogFooter } from "@/components/ui/shadcn/Dialog";
+import { Button } from "@/components/ui/shadcn/Button";
 import { useLogic } from "./logic";
 import { useTranslations } from "next-intl";
 

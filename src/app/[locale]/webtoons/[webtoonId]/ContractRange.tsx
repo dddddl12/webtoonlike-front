@@ -1,4 +1,4 @@
-import { Col, Gap, Row } from "@/ui/layouts";
+import { Col, Gap, Row } from "@/components/ui/layouts";
 import { WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
 import { Link } from "@/i18n/routing";
 import ContractRangeBasic from "@/app/[locale]/webtoons/[webtoonId]/ContractRangeBasic";
@@ -7,7 +7,7 @@ import { getTranslations } from "next-intl/server";
 import ContractRangeCountries from "@/app/[locale]/webtoons/[webtoonId]/ContractRangeCountries";
 import ContractRangeDerivative from "@/app/[locale]/webtoons/[webtoonId]/ContractRangeDerivative";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import { Text } from "@/ui/texts";
+import { Text } from "@/components/ui/texts";
 
 export default async function ContractRange({ webtoon }: {
   webtoon: WebtoonExtendedT
@@ -25,13 +25,13 @@ export default async function ContractRange({ webtoon }: {
   }
 
   return (
-    <Col>
+    <Col className="w-full gap-14">
       <Row>
         <h1 className="text-2xl font-bold">{t("detailedInformation")}</h1>
         {
           webtoon.isEditable && <Link
             className="ml-4 flex items-center gap-2 text-mint"
-            href={`/market/bid-rounds/${webtoon.id}/update`}
+            href={`/webtoons/${webtoon.id}/bid-round/update`}
           >
             <Pencil1Icon width={25} height={25} />
             <Text>{tGeneral("edit")}</Text>

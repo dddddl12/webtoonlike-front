@@ -1,4 +1,4 @@
-import { Gap, Row } from "@/ui/layouts";
+import { Gap, Row } from "@/components/ui/layouts";
 
 export default function Spinner() {
   return (

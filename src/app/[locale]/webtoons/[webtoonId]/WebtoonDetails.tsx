@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import { Row, Col, Gap } from "@/ui/layouts";
+import { Row, Col, Gap } from "@/components/ui/layouts";
 import { buildImgUrl } from "@/utils/media";
-import { Text } from "@/ui/texts";
-import { Badge } from "@/ui/shadcn/Badge";
+import { Text } from "@/components/ui/texts";
+import { Badge } from "@/components/ui/shadcn/Badge";
 import { Link } from "@/i18n/routing";
 import { TargetAge, WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -24,7 +24,7 @@ export default async function WebtoonDetails({ webtoon }: {
   return (
     <Row className="items-center md:items-start md:flex-row md:justify-start gap-12">
       <Image
-        src={buildImgUrl(null, webtoon.thumbPath, { size: "md" })}
+        src={buildImgUrl(webtoon.thumbPath, { size: "md" })}
         alt={webtoon.thumbPath}
         width={300}
         height={450}
@@ -75,7 +75,7 @@ export default async function WebtoonDetails({ webtoon }: {
             <Text className="text-base text-white">
               {tAgeRestriction(webtoon.ageLimit)}
             </Text>
-            {/* 타겟 연령 */}
+            {/* 타겟 연령 TODO */}
             {targetAge && <>
               <Text className="text-base text-white">|</Text>
               <Text className="text-base text-white">
@@ -85,7 +85,7 @@ export default async function WebtoonDetails({ webtoon }: {
           </Row>
           <Gap y={4} />
           <Text className="text-sm text-white">
-            {displayName(locale, webtoon.description || "", webtoon.description_en)}
+            {displayName(locale, webtoon.description, webtoon.description_en)}
           </Text>
           <ExternalLink webtoon={webtoon} />
           <Gap y={7} />
@@ -137,7 +137,7 @@ async function Genres({ webtoon }: {
 
 async function formatTargetAge(targetAges: TargetAge[]) {
   const t = await getTranslations("webtoonDetails");
-  if (targetAges.includes(TargetAge.All) || targetAges.length === 0) {
+  if (targetAges.length === 0) {
     return undefined;
   }
   const numericAges = targetAges.map(age => {

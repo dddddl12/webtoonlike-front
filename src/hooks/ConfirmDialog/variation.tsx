@@ -1,7 +1,7 @@
 import React from "react";
 import { useConfirmDialog } from "./hook";
-import { DialogTitle, DialogContent } from "@/ui/shadcn/Dialog";
-import { Gap } from "@/ui/layouts";
+import { DialogTitle, DialogContent } from "@/components/ui/shadcn/Dialog";
+import { Gap } from "@/components/ui/layouts";
 
 export interface AlertDialogT {
   title?: string;

@@ -1,11 +1,11 @@
 "use client";
 
-import { Col, Row } from "@/ui/layouts";
-import { Text } from "@/ui/texts";
+import { Col, Row } from "@/components/ui/layouts";
+import { Text } from "@/components/ui/texts";
 import { useTranslations } from "next-intl";
 import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
 import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
-import { Paginator } from "@/ui/tools/Paginator";
+import Paginator from "@/components/Paginator";
 import { ListResponse } from "@/resources/globalTypes";
 import { useListData } from "@/hooks/listData";
 import BidRequestListRow from "@/app/[locale]/offers/BidRequestListRow";

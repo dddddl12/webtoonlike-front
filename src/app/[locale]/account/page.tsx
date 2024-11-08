@@ -1,7 +1,7 @@
 import PageLayout from "@/components/PageLayout";
 import AccountBasicInfoSection from "@/app/[locale]/account/AccountBasicInfoSection";
 import LikedWebtoonList from "@/app/[locale]/account/LikedWebtoonList";
-import { Gap } from "@/ui/layouts";
+import { Gap } from "@/components/ui/layouts";
 
 export default async function AccountPage() {
 
