@@ -1,8 +1,8 @@
 import { WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
-import { Row } from "@/components/ui/layouts";
+import { Row } from "@/shadcn/ui/layouts";
 import { Link } from "@/i18n/routing";
 import { BidRoundStatus, BidRoundT } from "@/resources/bidRounds/bidRound.types";
-import { Button } from "@/components/ui/shadcn/Button";
+import { Button } from "@/shadcn/ui/button";
 import { ReactNode } from "react";
 import { clsx } from "clsx";
 import { getTranslations } from "next-intl/server";

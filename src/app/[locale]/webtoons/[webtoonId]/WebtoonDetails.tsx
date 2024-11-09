@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import { Row, Col, Gap } from "@/components/ui/layouts";
+import { Row, Col, Gap } from "@/shadcn/ui/layouts";
 import { buildImgUrl } from "@/utils/media";
-import { Text } from "@/components/ui/texts";
-import { Badge } from "@/components/ui/shadcn/Badge";
+import { Text } from "@/shadcn/ui/texts";
+import { Badge } from "@/shadcn/ui/badge";
 import { Link } from "@/i18n/routing";
 import { TargetAge, WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -62,11 +62,11 @@ export default async function WebtoonDetails({ webtoon }: {
               {displayName(locale, webtoon.authorOrCreatorName, webtoon.authorOrCreatorName_en)}
             </Text>
             {/* 총 에피소드 */}
-            {webtoon.bidRound?.episodeCount && <>
+            {webtoon.bidRound?.totalEpisodeCount && <>
               <Text className="text-base text-white">|</Text>
               <Text className="text-base text-white">
                 {t("episodeCount", {
-                  count: webtoon.bidRound.episodeCount
+                  count: webtoon.bidRound.totalEpisodeCount
                 })}
               </Text>
             </>}
@@ -142,18 +142,18 @@ async function formatTargetAge(targetAges: TargetAge[]) {
   }
   const numericAges = targetAges.map(age => {
     switch (age) {
-      case TargetAge.Teens:
-        return 10;
-      case TargetAge.Twenties:
-        return 20;
-      case TargetAge.Thirties:
-        return 30;
-      case TargetAge.Forties:
-        return 40;
-      case TargetAge.Fifties:
-        return 50;
-      default:
-        throw new Error(`Unknown age ${targetAges.join(",")}`);
+    case TargetAge.Teens:
+      return 10;
+    case TargetAge.Twenties:
+      return 20;
+    case TargetAge.Thirties:
+      return 30;
+    case TargetAge.Forties:
+      return 40;
+    case TargetAge.Fifties:
+      return 50;
+    default:
+      throw new Error(`Unknown age ${targetAges.join(",")}`);
     }
   }).sort((a, b) => a - b);
   if (numericAges.length === 1) {

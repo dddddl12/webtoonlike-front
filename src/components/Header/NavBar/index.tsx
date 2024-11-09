@@ -1,4 +1,4 @@
-import { Row } from "@/components/ui/layouts";
+import { Row } from "@/shadcn/ui/layouts";
 import NavigationLink from "./NavigationLink";
 import { UserTypeT } from "@/resources/users/user.types";
 import { getTranslations } from "next-intl/server";

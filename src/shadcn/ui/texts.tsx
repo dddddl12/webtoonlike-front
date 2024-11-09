@@ -1,4 +1,4 @@
-import { cn } from "@/components/ui/lib/utils";
+import { cn } from "@/shadcn/lib/utils";
 
 interface TextProps extends React.HTMLProps<HTMLParagraphElement> {}
 

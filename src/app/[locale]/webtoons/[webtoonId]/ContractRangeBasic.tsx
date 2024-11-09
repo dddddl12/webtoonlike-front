@@ -1,11 +1,11 @@
 import { BidRoundT } from "@/resources/bidRounds/bidRound.types";
-import { Col, Gap, Row } from "@/components/ui/layouts";
-import { Text } from "@/components/ui/texts";
+import { Col, Gap, Row } from "@/shadcn/ui/layouts";
+import { Text } from "@/shadcn/ui/texts";
 import { IconExclamation } from "@/components/svgs/IconExclamation";
 import { RadioGroup } from "@radix-ui/react-radio-group";
-import { RadioGroupItem } from "@/components/ui/shadcn/RadioGroup";
-import { Label } from "@/components/ui/shadcn/Label";
-import { Input } from "@/components/ui/shadcn/Input";
+import { RadioGroupItem } from "@/shadcn/ui/radio-group";
+import { Label } from "@/shadcn/ui/label";
+import { Input } from "@/shadcn/ui/input";
 import React from "react";
 import { getTranslations } from "next-intl/server";
 

@@ -3,7 +3,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
-import { Gap } from "@/components/ui/layouts";
+import { Gap } from "@/shadcn/ui/layouts";
 import { Link } from "@/i18n/routing";
 import BidRequestMessageList from "@/app/[locale]/offers/BidRequestMessageList";
 import { displayName } from "@/utils/displayName";

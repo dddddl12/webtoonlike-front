@@ -1,4 +1,3 @@
-import { cn } from "@/components/ui/lib/utils";
 import * as React from "react";
 import type { SVGProps } from "react";
 
@@ -11,7 +10,7 @@ export const IconBell = ({
     width={24}
     height={24}
     fill="none"
-    className={cn(className)}
+    className={className}
     {...props}
   >
     <path

@@ -14,8 +14,8 @@ export async function updateBidRound(form: BidRoundFormT) {
     contractRange: form.contractRange,
     isOriginal: form.isOriginal,
     isNew: form.isNew,
+    totalEpisodeCount: form.totalEpisodeCount,
     currentEpisodeNo: form.currentEpisodeNo,
-    episodeCount: form.episodeCount,
     monthlyEpisodeCount: form.monthlyEpisodeCount,
     status: "IDLE" as $Enums.BidRoundStatus
   };
@@ -43,7 +43,7 @@ export async function getBidRound(webtoonId: number): Promise<BidRoundT> {
     isOriginal: record.isOriginal,
     isNew: record.isNew,
     currentEpisodeNo: record.currentEpisodeNo ?? undefined,
-    episodeCount: record.episodeCount ?? undefined,
+    totalEpisodeCount: record.totalEpisodeCount ?? undefined,
     monthlyEpisodeCount: record.monthlyEpisodeCount ?? undefined,
     status: record.status as BidRoundStatus
   };

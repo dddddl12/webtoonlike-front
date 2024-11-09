@@ -1,7 +1,7 @@
 "use client";
 
-import { Col, Gap, Grid, Row } from "@/components/ui/layouts";
-import { Text } from "@/components/ui/texts";
+import { Col, Gap, Grid, Row } from "@/shadcn/ui/layouts";
+import { Text } from "@/shadcn/ui/texts";
 import { Link } from "@/i18n/routing";
 import { useLocale } from "next-intl";
 import Image from "next/image";

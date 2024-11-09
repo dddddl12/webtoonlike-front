@@ -1,5 +1,5 @@
-import { Col } from "@/components/ui/layouts";
-import { Heading2 } from "@/components/ui/texts";
+import { Col } from "@/shadcn/ui/layouts";
+import { Heading2 } from "@/shadcn/ui/texts";
 import { getTranslations } from "next-intl/server";
 import LikedWebtoonListGrid from "@/app/[locale]/account/LikedWebtoonListGrid";
 import { listLikedWebtoons } from "@/resources/webtoons/webtoon.service";

@@ -1,7 +1,7 @@
 "use client";
 
-import { Col, Gap, Row } from "@/components/ui/layouts";
-import { Text } from "@/components/ui/texts";
+import { Col, Gap, Row } from "@/shadcn/ui/layouts";
+import { Text } from "@/shadcn/ui/texts";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { IconCross } from "@/components/svgs/IconCross";

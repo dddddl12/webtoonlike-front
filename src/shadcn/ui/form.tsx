@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
@@ -10,8 +12,12 @@ import {
   useFormContext,
 } from "react-hook-form";
 
-import { cn } from "@/components/ui/lib/utils";
-import { Label } from "./Label";
+import { cn } from "@/shadcn/lib/utils";
+import { Label } from "@/shadcn/ui/label";
+import { Row } from "@/shadcn/ui/layouts";
+import { Button } from "@/shadcn/ui/button";
+import { Link } from "@/i18n/routing";
+import { ArrowLeftIcon } from "@radix-ui/react-icons";
 
 const Form = FormProvider;
 
@@ -30,8 +36,8 @@ const FormField = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 >({
-  ...props
-}: ControllerProps<TFieldValues, TName>) => {
+    ...props
+  }: ControllerProps<TFieldValues, TName>) => {
   return (
     <FormFieldContext.Provider value={{ name: props.name }}>
       <Controller {...props} />
@@ -78,7 +84,7 @@ const FormItem = React.forwardRef<
 
   return (
     <FormItemContext.Provider value={{ id }}>
-      <div ref={ref} className={cn("space-y-2", className)} {...props} />
+      <div ref={ref} className={cn(className)} {...props} />
     </FormItemContext.Provider>
   );
 });
@@ -133,7 +139,7 @@ const FormDescription = React.forwardRef<
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn("text-[0.8rem] text-muted-foreground", className)}
+      className={cn("text-sm text-muted-foreground", className)}
       {...props}
     />
   );
@@ -155,7 +161,7 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-[0.8rem] font-medium text-destructive", className)}
+      className={cn("text-sm font-medium text-destructive", className)}
       {...props}
     >
       {body}
@@ -163,6 +169,40 @@ const FormMessage = React.forwardRef<
   );
 });
 FormMessage.displayName = "FormMessage";
+
+// 여기는 커스텀
+interface FieldSetProps
+  extends React.FieldsetHTMLAttributes<HTMLFieldSetElement> {}
+
+const FieldSet = React.forwardRef<HTMLFieldSetElement, FieldSetProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <fieldset
+        className={cn(
+          "w-full mt-6",
+          className
+        )}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+FieldSet.displayName = "FieldSet";
+
+function FormHeader({ title, goBackHref }: {
+  title: string;
+  goBackHref: string;
+}) {
+  return <Row className="items-center mb-14">
+    <Button variant='ghost'>
+      <Link href={goBackHref}>
+        <ArrowLeftIcon width={32} height={32} />
+      </Link>
+    </Button>
+    <h2 className="font-bold text-2xl ml-2">{title}</h2>
+  </Row>;
+}
 
 export {
   useFormField,
@@ -173,4 +213,8 @@ export {
   FormDescription,
   FormMessage,
   FormField,
+
+  // 커스텀
+  FieldSet,
+  FormHeader
 };

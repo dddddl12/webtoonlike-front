@@ -1,5 +1,5 @@
 import PageLayout from "@/components/PageLayout";
-import { Gap, Row } from "@/components/ui/layouts";
+import { Gap, Row } from "@/shadcn/ui/layouts";
 import FormHeader from "@/components/ui/formComponents";
 import { getTranslations } from "next-intl/server";
 

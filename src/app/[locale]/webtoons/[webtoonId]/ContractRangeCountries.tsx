@@ -1,10 +1,9 @@
-import { Col, Gap, Row } from "@/components/ui/layouts";
-import { RadioGroup } from "@radix-ui/react-radio-group";
-import { RadioGroupItem } from "@/components/ui/shadcn/RadioGroup";
-import { Label } from "@/components/ui/shadcn/Label";
+import { Col, Row } from "@/shadcn/ui/layouts";
+import { RadioGroup, RadioGroupItem } from "@/shadcn/ui/radio-group";
+import { Label } from "@/shadcn/ui/label";
 import { BidRoundT, ContractRange, ContractRangeItemSchema } from "@/resources/bidRounds/bidRound.types";
 import { getTranslations } from "next-intl/server";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/shadcn/Table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shadcn/ui/table";
 import React from "react";
 import z from "zod";
 

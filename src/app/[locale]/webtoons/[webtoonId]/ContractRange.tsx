@@ -1,4 +1,4 @@
-import { Col, Gap, Row } from "@/components/ui/layouts";
+import { Col, Gap, Row } from "@/shadcn/ui/layouts";
 import { WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
 import { Link } from "@/i18n/routing";
 import ContractRangeBasic from "@/app/[locale]/webtoons/[webtoonId]/ContractRangeBasic";
@@ -7,7 +7,7 @@ import { getTranslations } from "next-intl/server";
 import ContractRangeCountries from "@/app/[locale]/webtoons/[webtoonId]/ContractRangeCountries";
 import ContractRangeDerivative from "@/app/[locale]/webtoons/[webtoonId]/ContractRangeDerivative";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import { Text } from "@/components/ui/texts";
+import { Text } from "@/shadcn/ui/texts";
 
 export default async function ContractRange({ webtoon }: {
   webtoon: WebtoonExtendedT

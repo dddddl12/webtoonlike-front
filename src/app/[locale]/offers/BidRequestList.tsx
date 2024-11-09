@@ -1,7 +1,7 @@
 "use client";
 
-import { Col, Row } from "@/components/ui/layouts";
-import { Text } from "@/components/ui/texts";
+import { Col, Row } from "@/shadcn/ui/layouts";
+import { Text } from "@/shadcn/ui/texts";
 import { useTranslations } from "next-intl";
 import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
 import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";

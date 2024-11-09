@@ -1,8 +1,8 @@
 "use client";
 
 import { useListData } from "@/hooks/listData";
-import { Col, Container, Gap, Row } from "@/components/ui/layouts";
-import { Heading, Text } from "@/components/ui/texts";
+import { Col, Container, Gap, Row } from "@/shadcn/ui/layouts";
+import { Heading, Text } from "@/shadcn/ui/texts";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { useEffect, useState } from "react";

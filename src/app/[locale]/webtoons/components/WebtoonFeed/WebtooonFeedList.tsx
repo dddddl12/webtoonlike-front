@@ -1,6 +1,6 @@
 "use client";
 
-import { Gap, Row } from "@/components/ui/layouts";
+import { Gap, Row } from "@/shadcn/ui/layouts";
 import {
   Select,
   SelectContent,
@@ -9,7 +9,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue
-} from "@/components/ui/shadcn/Select";
+} from "@/shadcn/ui/select";
 import { useLocale, useTranslations } from "next-intl";
 import { AgeLimit, WebtoonPreviewT } from "@/resources/webtoons/webtoon.types";
 import { GenreT } from "@/resources/genres/genre.types";

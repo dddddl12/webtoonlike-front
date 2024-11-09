@@ -1,6 +1,6 @@
 import { BidRoundT, ContractRangeItemSchema } from "@/resources/bidRounds/bidRound.types";
-import { Col } from "@/components/ui/layouts";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/shadcn/Table";
+import { Col } from "@/shadcn/ui/layouts";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shadcn/ui/table";
 import React from "react";
 import { getTranslations } from "next-intl/server";
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { Col, Row } from "@/components/ui/layouts";
-import { Text } from "@/components/ui/texts";
+import { Col, Row } from "@/shadcn/ui/layouts";
+import { Text } from "@/shadcn/ui/texts";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";

@@ -16,11 +16,11 @@ import {
   TableBody,
   TableRow,
   TableCell,
-} from "@/components/ui/shadcn/Table";
-import { Col, Gap, Row } from "@/components/ui/layouts";
-import { Button } from "@/components/ui/shadcn/Button";
-import { Input } from "@/components/ui/shadcn/Input";
-import { Text } from "@/components/ui/texts";
+} from "@/shadcn/ui/table";
+import { Col, Gap, Row } from "@/shadcn/ui/layouts";
+import { Button } from "@/shadcn/ui/button";
+import { Input } from "@/shadcn/ui/input";
+import { Text } from "@/shadcn/ui/texts";
 import { businessFieldConverterToEn, businessFieldConverterToKr } from "@/utils/businessFieldConverter";
 import { nationConverter, nationConverterToKr } from "@/utils/nationConverter";
 import { buildImgUrl } from "@/utils/media";

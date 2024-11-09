@@ -1,27 +1,30 @@
 import { useTranslations } from "next-intl";
-import { Gap, Row } from "@/components/ui/layouts";
-import { Button } from "@/components/ui/shadcn/Button";
+import { Gap, Row } from "@/shadcn/ui/layouts";
+import { Button } from "@/shadcn/ui/button";
 import { IconCross } from "@/components/svgs/IconCross";
-import { Text } from "@/components/ui/texts";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/shadcn/Table";
+import { Text } from "@/shadcn/ui/texts";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shadcn/ui/table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from "@/components/ui/shadcn/Select";
+} from "@/shadcn/ui/select";
 import { IconDelete } from "@/components/svgs/IconDelete";
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, useWatch } from "react-hook-form";
 import { BidRoundFormT, ContractRangeItemSchema, ContractRangeItemT } from "@/resources/bidRounds/bidRound.types";
-import { FormControl, FormField, FormItem } from "@/components/ui/shadcn/Form";
+import { FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 
 export default function BidRoundFormContractRange({ form }: {
   form: UseFormReturn<BidRoundFormT>;
 }) {
   const t = useTranslations("updateOrCreateBidRoundsPage");
 
-  const { contractRange } = form.watch();
+  const contractRange = useWatch({
+    control: form.control,
+    name: "contractRange"
+  });
 
   return (
     <div>
@@ -58,8 +61,8 @@ export default function BidRoundFormContractRange({ form }: {
             <TableRow key={idx}>
               <BusinessRightCell form={form} row={row} idx={idx} />
               <BusinessFieldCell form={form} row={row} idx={idx} />
-              <ExclusiveCell form={form} row={row} idx={idx} />
-              <CountryCell form={form} row={row} idx={idx} />
+              <ExclusiveCell form={form} idx={idx} />
+              <CountryCell form={form} idx={idx} />
               <DeleteCell form={form} idx={idx} />
             </TableRow>
           ))}
@@ -87,7 +90,7 @@ function BusinessRightCell({ form, row, idx }: {
   ];
 
   let defaultValue;
-  if(row.businessField === "WEBTOONS") {
+  if (row.businessField === "WEBTOONS") {
     defaultValue = items[0].value;
   } else if (row.businessField) {
     defaultValue = items[1].value;
@@ -97,7 +100,7 @@ function BusinessRightCell({ form, row, idx }: {
     <Select
       defaultValue={defaultValue}
       onValueChange={(value) => {
-        if(value === items[0].value) {
+        if (value === items[0].value) {
           form.setValue(`contractRange.${idx}.businessField`, "WEBTOONS");
         } else if (row.businessField === "WEBTOONS"){
           form.setValue(`contractRange.${idx}.businessField`, undefined as any);
@@ -105,6 +108,7 @@ function BusinessRightCell({ form, row, idx }: {
       }}
     >
       <SelectTrigger className="bg-gray-darker rounded-sm">
+        {/* todo placeholder 명시적으로 드러나지 않음*/}
         <SelectValue placeholder={t("selectTypeOfBusinessRight")} />
       </SelectTrigger>
       <SelectContent>
@@ -163,9 +167,8 @@ function BusinessFieldCell({ form, row, idx }: {
   </TableCell>;
 }
 
-function ExclusiveCell({ form, row, idx }: {
+function ExclusiveCell({ form, idx }: {
   form: UseFormReturn<BidRoundFormT>;
-  row: ContractRangeItemT;
   idx: number;
 }) {
   const t = useTranslations("updateOrCreateBidRoundsPage");
@@ -202,9 +205,8 @@ function ExclusiveCell({ form, row, idx }: {
   </TableCell>;
 }
 
-function CountryCell({ form, row, idx }: {
+function CountryCell({ form, idx }: {
   form: UseFormReturn<BidRoundFormT>;
-  row: ContractRangeItemT;
   idx: number;
 }) {
   const t = useTranslations("updateOrCreateBidRoundsPage");

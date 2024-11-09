@@ -1,6 +1,6 @@
-import { Col, Row } from "@/components/ui/layouts";
+import { Col, Row } from "@/shadcn/ui/layouts";
 import Image from "next/image";
-import { Text } from "@/components/ui/texts";
+import { Text } from "@/shadcn/ui/texts";
 import { getCreator } from "@/resources/creators/creator.service";
 import { listWebtoons } from "@/resources/webtoons/webtoon.service";
 import { displayName } from "@/utils/displayName";

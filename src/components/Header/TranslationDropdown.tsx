@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "@/i18n/routing";
-import { Select, SelectContent, SelectGroup, SelectTrigger, SelectValue } from "@/components/ui/shadcn/Select";
+import { Select, SelectContent, SelectGroup, SelectTrigger, SelectValue } from "@/shadcn/ui/select";
 import { ReactNode } from "react";
 
 type Props = {

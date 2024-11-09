@@ -397,6 +397,7 @@
         "serialInformation": "연재 회차 정보",
         "currentEpisode": "회 (현재)",
         "expectingOrFinishedEpisode": "회 (완결, 예상)",
+        "currentEpisodeNoMustBeLessThanTotal": "현재 회차는 완결 회차보다 높을 수 없습니다.",
         "monthlyProductionAvailableRounds": "월별 제작 가능 회차",
         "episodesPossible": "회 제작 가능",
         "finishedEpisode": "회 (완결)",

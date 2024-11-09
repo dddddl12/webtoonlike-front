@@ -1,8 +1,8 @@
 "use client";
 
-import { Col, Gap, Row } from "@/components/ui/layouts";
+import { Col, Gap, Row } from "@/shadcn/ui/layouts";
 import { KenazLogo } from "./svgs/KenazLogo";
-import { Text } from "@/components/ui/texts";
+import { Text } from "@/shadcn/ui/texts";
 import React, { Fragment } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";

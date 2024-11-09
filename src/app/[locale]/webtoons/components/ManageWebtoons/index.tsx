@@ -1,11 +1,11 @@
 import React from "react";
-import { Col, Gap } from "@/components/ui/layouts";
+import { Col, Gap } from "@/shadcn/ui/layouts";
 import PageLayout from "@/components/PageLayout";
 import { listMyWebtoonsNotOnSale, listMyWebtoonsOnSale } from "@/resources/webtoons/webtoon.service";
 import { getTranslations } from "next-intl/server";
 import MyWebtoonsNotOnSale from "@/app/[locale]/webtoons/components/ManageWebtoons/MyWebtoonsNotOnSale";
 import MyWebtoonsOnSale from "@/app/[locale]/webtoons/components/ManageWebtoons/MyWebtoonsOnSale";
-import { Heading } from "@/components/ui/texts";
+import { Heading } from "@/shadcn/ui/texts";
 
 export default async function ManageWebtoons() {
   const [

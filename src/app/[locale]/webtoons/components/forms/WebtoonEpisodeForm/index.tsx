@@ -7,11 +7,11 @@ import {
   ChangeEvent,
   ReactNode,
 } from "react";
-import { Text } from "@/components/ui/texts";
-import { Label } from "@/components/ui/shadcn/Label";
-import { Input } from "@/components/ui/shadcn/Input";
-import { Button } from "@/components/ui/shadcn/Button";
-import { Col, Row, Gap } from "@/components/ui/layouts";
+import { Text } from "@/shadcn/ui/texts";
+import { Label } from "@/shadcn/ui/label";
+import { Input } from "@/shadcn/ui/input";
+import { Button } from "@/shadcn/ui/button";
+import { Col, Row, Gap } from "@/shadcn/ui/layouts";
 import { uploadToS3 } from "@/resources/files/files.service";
 import { useSnackbar } from "@/hooks/Snackbar";
 import { useAlertDialog, useConfirmDialog } from "@/hooks/ConfirmDialog";
@@ -51,7 +51,7 @@ export default function WebtoonEpisodeForm({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [episodeImages, setEpisodeImages] = useState<
     (WebtoonEpisodeImageFormT | File)[]
-  >([]);
+      >([]);
   const [selectedImages, setSelectedImages] = useState<boolean[]>(
     episodeImages.map(() => false)
   );

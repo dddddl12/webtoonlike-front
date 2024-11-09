@@ -1,6 +1,6 @@
 import { CreatorBidRequestConditionPage } from "@/$pages/creators/CreatorBidRequestConditionPage";
 import { tokenHolder } from "@/system/token_holder";
-import { Container } from "@/components/ui/layouts";
+import { Container } from "@/shadcn/ui/layouts";
 import { cookies } from "next/headers";
 import * as BidRequestsApi from "@/apis/bid_request";
 import { ErrorComponent } from "@/components/ErrorComponent";

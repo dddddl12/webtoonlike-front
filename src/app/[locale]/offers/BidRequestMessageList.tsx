@@ -1,5 +1,5 @@
 import { useLocale } from "next-intl";
-import { Col, Row } from "@/components/ui/layouts";
+import { Col, Row } from "@/shadcn/ui/layouts";
 import Spinner from "@/components/Spinner";
 import { useListData } from "@/hooks/listData";
 import { listBidRequestMessages } from "@/resources/bidRequestMessages/bidRequestMessage.service";

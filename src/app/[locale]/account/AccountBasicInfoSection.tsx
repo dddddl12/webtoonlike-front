@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { Text } from "@/components/ui/texts";
-import { Col, Row } from "@/components/ui/layouts";
+import { Text } from "@/shadcn/ui/texts";
+import { Col, Row } from "@/shadcn/ui/layouts";
 import { getClerkUserById, getTokenInfo } from "@/resources/tokens/token.service";
-import { Button } from "@/components/ui/shadcn/Button";
+import { Button } from "@/shadcn/ui/button";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";
 import { Link } from "@/i18n/routing";
 import AccountBasicInfoSectionDeleteButton from "@/app/[locale]/account/AccountBasicInfoSectionDeleteButton";

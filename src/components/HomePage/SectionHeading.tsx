@@ -1,5 +1,5 @@
-import { Gap, Row } from "@/components/ui/layouts";
-import { Heading } from "@/components/ui/texts";
+import { Gap, Row } from "@/shadcn/ui/layouts";
+import { Heading } from "@/shadcn/ui/texts";
 import { IconRightArrow } from "@/components/svgs/IconRightArrow";
 import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";

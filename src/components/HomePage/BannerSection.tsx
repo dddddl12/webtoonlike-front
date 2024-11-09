@@ -1,6 +1,6 @@
 "use client";
 
-import { Col, Row } from "@/components/ui/layouts";
+import { Col, Row } from "@/shadcn/ui/layouts";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { BannerWebtoon, bannerWebtoons } from "@/components/HomePage/banners/bannerData";

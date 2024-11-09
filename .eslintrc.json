@@ -3,8 +3,15 @@
         "next/core-web-vitals",
         "next/typescript"
     ],
+    "plugins": [
+        "@stylistic/js"
+    ],
     "rules": {
-        "indent": ["warn", 2],
+        "indent": [
+            "warn",
+            2
+        ],
+        "semi": "warn",
         "quotes": [
             "warn",
             "double"
@@ -30,6 +37,15 @@
             "off"
         ],
         "react-hooks/rules-of-hooks": "warn",
-        "@typescript-eslint/no-unused-vars": ["warn"]
+        "operator-linebreak": ["warn", "before"],
+        "@typescript-eslint/no-unused-vars": [
+            "warn"
+        ],
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-require-imports": "off",
+        "@typescript-eslint/no-empty-object-type": "off",
+        "@stylistic/js/keyword-spacing": [
+            "warn"
+        ]
     }
 }

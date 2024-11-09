@@ -1,7 +1,7 @@
 import PageLayout from "@/components/PageLayout";
-import { Col, Gap, Row } from "@/components/ui/layouts";
+import { Col, Gap, Row } from "@/shadcn/ui/layouts";
 import { IconLeftBrackets } from "@/components/svgs/IconLeftBrackets";
-import { Text } from "@/components/ui/texts";
+import { Text } from "@/shadcn/ui/texts";
 // import { AddEnglishEpisodeUrl } from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/AddEnglishEpisodeUrl";
 // import { DownloadEpisodeImage } from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/DownloadEpisodeImage";
 import { buildImgUrl } from "@/utils/media";

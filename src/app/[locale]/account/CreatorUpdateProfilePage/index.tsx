@@ -1,7 +1,7 @@
 import React from "react";
-import { Col, Container, Gap } from "@/components/ui/layouts";
+import { Col, Container, Gap } from "@/shadcn/ui/layouts";
 import { CreatorUpdateProfileForm } from "./CreatorUpdateProfileForm";
-import { Heading } from "@/components/ui/texts";
+import { Heading } from "@/shadcn/ui/texts";
 import { useTranslations } from "next-intl";
 
 export function CreatorUpdateProfilePage(): JSX.Element {

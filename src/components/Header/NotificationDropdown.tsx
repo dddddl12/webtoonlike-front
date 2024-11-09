@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { IconBell } from "@/components/svgs/IconBell";
 import { NotificationItem } from "@/components/NotificationItem";
-import { Col, Gap, Row } from "@/components/ui/layouts";
-import { Button } from "@/components/ui/shadcn/Button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/shadcn/DropdownMenu";
-import { Text } from "@/components/ui/texts";
+import { Col, Gap, Row } from "@/shadcn/ui/layouts";
+import { Button } from "@/shadcn/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/shadcn/ui/dropdown-menu";
+import { Text } from "@/shadcn/ui/texts";
 import { clsx } from "clsx";
 
 
@@ -39,9 +39,7 @@ export function NotificationDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" className="bg-transparent text-white hover:bg-transparent">
-          <IconBell className="fill-white"/>
-        </Button>
+        <IconBell className="fill-white cursor-pointer"/>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align='end' className="bg-white text-black rounded-sm min-w-[320px] max-w-[430px] p-0 h-fit">
@@ -84,12 +82,12 @@ export function NotificationDropdown() {
 
 function Icon({ status }: {status: "approved" | "rejected" | "offered"}) {
   switch (status) {
-    case "approved":
-      return <Approved />;
-    case "rejected":
-      return <Rejected />;
-    case "offered":
-      return <Offered />;
+  case "approved":
+    return <Approved />;
+  case "rejected":
+    return <Rejected />;
+  case "offered":
+    return <Offered />;
   }
 }
 

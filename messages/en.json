@@ -391,6 +391,7 @@
         "serialInformation": "Serial Information",
         "currentEpisode": "episodes (current)",
         "expectingOrFinishedEpisode": "episodes (finished, expected)",
+        "currentEpisodeNoMustBeLessThanTotal": "It cannot exceed the final episode number.",
         "monthlyProductionAvailableRounds": "Monthly Production Available Rounds",
         "episodesPossible": "episodes possible",
         "finishedEpisode": "episodes (finished)",

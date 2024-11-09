@@ -7,7 +7,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/shadcn/Pagination";
+} from "@/shadcn/ui/pagination";
 
 export default function Paginator({
   currentPage,
@@ -38,7 +38,7 @@ export default function Paginator({
   };
 
   return (
-    <Pagination>
+    <Pagination className="mt-6">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious

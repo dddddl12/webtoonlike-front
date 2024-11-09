@@ -23,10 +23,9 @@ export const BidRoundBaseSchema = z.object({
   contractRange: ContractRange,
   isOriginal: z.boolean(),
   isNew: z.boolean(),
-  // TODO optional 체크
-  currentEpisodeNo: z.number().min(1).optional(),
-  episodeCount: z.number().min(1).optional(),
-  monthlyEpisodeCount: z.number().min(1).optional(),
+  currentEpisodeNo: z.number().min(0).optional(),
+  totalEpisodeCount: z.number().min(0).optional(),
+  monthlyEpisodeCount: z.number().min(0).optional(),
 });
 
 export const BidRoundFormSchema = BidRoundBaseSchema;

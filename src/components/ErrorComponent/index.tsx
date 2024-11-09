@@ -1,5 +1,5 @@
-import { Row } from "@/components/ui/layouts";
-import { Text } from "@/components/ui/texts";
+import { Row } from "@/shadcn/ui/layouts";
+import { Text } from "@/shadcn/ui/texts";
 
 export function ErrorComponent() {
   return (

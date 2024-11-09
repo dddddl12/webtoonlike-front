@@ -1,11 +1,11 @@
 "use client";
 
-import { Col, Gap, Grid, Row } from "@/components/ui/layouts";
-import { Text } from "@/components/ui/texts";
-import { Link, useRouter } from "@/i18n/routing";
+import { Col, Grid, Row } from "@/shadcn/ui/layouts";
+import { Text } from "@/shadcn/ui/texts";
+import { Link } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import { buildImgUrl } from "@/utils/media";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/shadcn/Avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/ui/avatar";
 import { HomeArtistItem } from "@/resources/webtoons/webtoon.types";
 import { displayName } from "@/utils/displayName";
 
@@ -25,7 +25,6 @@ export default function ArtistGrid({ artists }: {
 export function ArtistItem({ artist }: {
   artist: HomeArtistItem
 }) {
-  const router = useRouter();
   const t = useTranslations("howMany");
   const locale = useLocale();
 

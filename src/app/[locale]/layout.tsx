@@ -5,7 +5,6 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { NextIntlClientProvider } from "next-intl";
 import { enUS, koKR } from "@clerk/localizations";
-import { SnackbarProvider } from "@/hooks/Snackbar";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { getLocale, getMessages } from "next-intl/server";
@@ -32,13 +31,11 @@ export default async function RootLayout({
       <ClerkProvider localization={locale === "en" ? enUS : koKR}>
         <NextIntlClientProvider messages={messages}>
           <body className={`h-[100%] ${inter.className}`}>
-            <SnackbarProvider>
-              <Header/>
-              <main className="h-auto min-h-[100%] flex justify-center">
-                {children}
-              </main>
-              <Footer/>
-            </SnackbarProvider>
+            <Header/>
+            <main className="h-auto min-h-[100%] flex justify-center">
+              {children}
+            </main>
+            <Footer/>
           </body>
         </NextIntlClientProvider>
       </ClerkProvider>

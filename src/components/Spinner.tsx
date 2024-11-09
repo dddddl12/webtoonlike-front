@@ -1,4 +1,4 @@
-import { Gap, Row } from "@/components/ui/layouts";
+import { Gap, Row } from "@/shadcn/ui/layouts";
 
 export default function Spinner() {
   return (

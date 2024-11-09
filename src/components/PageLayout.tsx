@@ -6,8 +6,8 @@ export default function PageLayout({ children, bgColor = "dark", className }: {
   bgColor?: "dark" | "light";
   className?: string;
 }) {
-  return <div className={clsx("flex w-full pt-10 pb-24 px-10 justify-center", {
-    "bg-black text-white": bgColor === "dark"
+  return <div className={clsx("flex w-full pt-10 pb-24 px-10 justify-center bg-background text-primary", {
+    "dark": bgColor === "dark"
   })}>
     {/*TODO 불필요한 text-white 제거*/}
     <div className={clsx(className, "max-w-screen-xl w-full flex flex-col")}>

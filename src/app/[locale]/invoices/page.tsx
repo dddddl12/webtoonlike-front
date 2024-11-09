@@ -2,7 +2,7 @@ import React from "react";
 import { ManageInvoiceList } from "@/app/[locale]/invoices/ManageInvoiceList";
 import PageLayout from "@/components/PageLayout";
 import { getTranslations } from "next-intl/server";
-import { Heading } from "@/components/ui/texts";
+import { Heading } from "@/shadcn/ui/texts";
 import { listInvoices } from "@/resources/invoices/invoice.service";
 
 

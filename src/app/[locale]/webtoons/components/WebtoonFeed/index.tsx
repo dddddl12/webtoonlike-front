@@ -1,7 +1,7 @@
 import React from "react";
 import PageLayout from "@/components/PageLayout";
-import { Gap, Row } from "@/components/ui/layouts";
-import { Heading } from "@/components/ui/texts";
+import { Gap, Row } from "@/shadcn/ui/layouts";
+import { Heading } from "@/shadcn/ui/texts";
 import { getTranslations } from "next-intl/server";
 import WebtooonFeedList from "@/app/[locale]/webtoons/components/WebtoonFeed/WebtooonFeedList";
 import { listGenres } from "@/resources/genres/genre.service";

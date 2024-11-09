@@ -1,34 +1,8 @@
 import React, {
-  ReactNode,
-  MouseEvent,
   DetailedHTMLProps,
   HTMLAttributes,
 } from "react";
-import { cn } from "@/components/ui/lib/utils";
-
-
-interface ClickableProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}
-
-export function Clickable({ className, ...props }: ClickableProps) {
-  return (
-    <div
-      className={cn("cursor-pointer hover:bg-gray-500 hover:bg-opacity-10", className)}
-      {...props}
-    />
-  );
-}
-
-
-interface CenterProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}
-
-export function Center({ className, ...props }: CenterProps): JSX.Element {
-  return (
-    <div
-      className={cn("flex items-center justify-center", className)}
-      {...props}
-    />
-  );
-}
+import { cn } from "@/shadcn/lib/utils";
 
 
 interface GapProps {

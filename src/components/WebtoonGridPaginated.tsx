@@ -1,7 +1,7 @@
 import Image from "next/image";
-import { Gap, Grid, Row } from "@/components/ui/layouts";
+import { Gap, Grid, Row } from "@/shadcn/ui/layouts";
 import { buildImgUrl } from "@/utils/media";
-import { Text } from "@/components/ui/texts";
+import { Text } from "@/shadcn/ui/texts";
 import { useLocale } from "next-intl";
 import { WebtoonPreviewT } from "@/resources/webtoons/webtoon.types";
 import { Link } from "@/i18n/routing";

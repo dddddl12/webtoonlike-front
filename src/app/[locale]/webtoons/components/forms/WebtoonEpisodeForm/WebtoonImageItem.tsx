@@ -1,10 +1,10 @@
 "use client";
 
 import React, { FormEvent } from "react";
-import { Text } from "@/components/ui/texts";
-import { Col, Gap, Row } from "@/components/ui/layouts";
-import { Checkbox } from "@/components/ui/shadcn/CheckBox";
-import { Button } from "@/components/ui/shadcn/Button";
+import { Text } from "@/shadcn/ui/texts";
+import { Col, Gap, Row } from "@/shadcn/ui/layouts";
+import { Checkbox } from "@/shadcn/ui/checkbox";
+import { Button } from "@/shadcn/ui/button";
 import { buildImgUrl } from "@/utils/media";
 import { IconClose } from "@/components/svgs/IconClose";
 import { useAlertDialog, useConfirmDialog } from "@/hooks/ConfirmDialog";

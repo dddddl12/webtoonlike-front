@@ -1,33 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Heading2 } from "@/components/ui/texts";
-import { Gap, Row } from "@/components/ui/layouts";
-import { Input } from "@/components/ui/shadcn/Input";
-import { Button } from "@/components/ui/shadcn/Button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/shadcn/RadioGroup";
+import { useState } from "react";
+import { Heading2 } from "@/shadcn/ui/texts";
+import { Gap, Row } from "@/shadcn/ui/layouts";
+import { Input } from "@/shadcn/ui/input";
+import { Button } from "@/shadcn/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/shadcn/ui/radio-group";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { IconExclamation } from "@/components/svgs/IconExclamation";
-import { Checkbox } from "@/components/ui/shadcn/CheckBox";
+import { Checkbox } from "@/shadcn/ui/checkbox";
 import { useTranslations } from "next-intl";
 import { BidRoundFormSchema, BidRoundFormT, BidRoundT } from "@/resources/bidRounds/bidRound.types";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { useForm, UseFormReturn, FieldValues, FieldPath, FieldPathValue, useWatch } from "react-hook-form";
 import { useRouter } from "@/i18n/routing";
 import BidRoundFormContractRange from "@/app/[locale]/webtoons/components/forms/BidRoundForm/BidRoundFormContractRange";
-import { TemplatedForm } from "@/components/TemplatedForm";
-import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/shadcn/Form";
+import { FieldSet, Form, FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
 import { updateBidRound } from "@/resources/bidRounds/bidRound.service";
+import { formResolver } from "@/utils/forms";
 
 export default function BidRoundForm({ webtoonId, prev }: {
   webtoonId: number
   prev?: BidRoundT
 }) {
   const t = useTranslations("updateOrCreateBidRoundsPage");
-  // TODO
-  // const [invalidFields, setInvalidFields] = useState<
-  //   { index: number; field: string }[]
-  // >([]);
   const [isAgreed, setIsAgreed] = useState(false);
   const form = useForm<BidRoundFormT>({
     defaultValues: {
@@ -35,27 +31,45 @@ export default function BidRoundForm({ webtoonId, prev }: {
       contractRange: prev?.contractRange,
       isOriginal: prev?.isOriginal,
       isNew: prev?.isNew,
-      episodeCount: prev?.episodeCount || 0,
-      currentEpisodeNo: prev?.currentEpisodeNo || 0,
-      monthlyEpisodeCount: prev?.monthlyEpisodeCount || 0,
+      totalEpisodeCount: prev?.totalEpisodeCount,
+      currentEpisodeNo: prev?.currentEpisodeNo,
+      monthlyEpisodeCount: prev?.monthlyEpisodeCount,
+    },
+    mode: "onChange",
+    resolver: (values) => {
+      const { isNew, currentEpisodeNo, totalEpisodeCount } = values;
+      if (isNew
+        && typeof currentEpisodeNo === "number"
+        && typeof totalEpisodeCount === "number"
+        && currentEpisodeNo > totalEpisodeCount
+      ) {
+        return {
+          values: {},
+          errors: {
+            currentEpisodeNo: {
+              type: "invalidNumber",
+              message: t("currentEpisodeNoMustBeLessThanTotal")
+            },
+          }
+        };
+      }
+      return formResolver(BidRoundFormSchema, values);
     }
   });
 
-  // 필수 필드 체크
-  const fieldValues = form.watch();
-  const [allRequiredFilled, setAllRequiredFilled] = useState(false);
-  useEffect(() => {
-    const { success } = BidRoundFormSchema.safeParse(fieldValues);
-    setAllRequiredFilled(success && isAgreed);
-  }, [fieldValues]);
+  // 조건부 필드
+  const isNew = useWatch({
+    control: form.control,
+    name: "isNew"
+  });
 
   // 제출 이후 동작
+  const { formState } = form;
   const router = useRouter();
-  async function onSubmit(bidRoundForm: BidRoundFormT) {
-    setSubmissionInProgress(true);
-    await updateBidRound(bidRoundForm);
+  async function onSubmit(values: BidRoundFormT) {
+    await updateBidRound(values);
     // TODO
-    if(prev) {
+    if (prev) {
       router.replace(`/webtoons/${webtoonId}`);
     } else {
       router.replace("/webtoons");
@@ -63,13 +77,12 @@ export default function BidRoundForm({ webtoonId, prev }: {
   }
 
   // 스피너
-  const [submissionInProgress, setSubmissionInProgress] = useState(false);
-  if (submissionInProgress) {
+  if (formState.isSubmitting) {
     return <Spinner/>;
   }
 
   return (
-    <TemplatedForm {...form}>
+    <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         {/* 기본 정보 */}
         <Heading2>
@@ -79,10 +92,10 @@ export default function BidRoundForm({ webtoonId, prev }: {
 
         <IsNewFieldSet form={form}/>
 
-        {fieldValues.isNew
+        {isNew
           ? (
             <>
-              <EpisodeCountFieldSet form={form}/>
+              <EpisodeCountFieldSet form={form} />
               <MonthlyCountFieldSet form={form}/>
             </>
           ) : <FinishedFieldSet form={form}/>}
@@ -117,18 +130,17 @@ export default function BidRoundForm({ webtoonId, prev }: {
         {/* 등록 버튼 */}
         <Row className="justify-end">
           <Button
-            disabled={!allRequiredFilled}
+            disabled={!formState.isValid || !isAgreed}
             type="submit"
             className="rounded-full bg-mint text-white"
           >
             {t("register")}
-            <Gap x={2}/>
             <IconRightBrackets className="fill-white"/>
           </Button>
         </Row>
 
       </form>
-    </TemplatedForm>
+    </Form>
   );
 }
 
@@ -148,42 +160,14 @@ function IsNewFieldSet({ form }: {
     }
   ];
   return (
-    <fieldset>
+    <FieldSet>
       <legend>{t("productType")}</legend>
-      <FormField
-        control={form.control}
-        name="isNew"
-        render={({ field }) => (
-          <FormItem className="mt-3">
-            <FormControl>
-              <RadioGroup
-                {...field}
-                defaultValue={field.value?.toString()}
-                value={undefined}
-                className="flex flex-wrap gap-3"
-                onValueChange={(value) => {
-                  field.onChange(JSON.parse(value));
-                }}
-              >
-                {items.map((item, index) => (
-                  <FormItem key={index} className="space-x-1 space-y-0 flex items-center">
-                    <FormControl>
-                      <RadioGroupItem
-                        className="border border-white"
-                        value={item.value.toString()}
-                      />
-                    </FormControl>
-                    <FormLabel>
-                      {item.label}
-                    </FormLabel>
-                  </FormItem>
-                ))}
-              </RadioGroup>
-            </FormControl>
-          </FormItem>
-        )}
+      <BooleanFormItem
+        form={form}
+        fieldName="isNew"
+        items={items}
       />
-    </fieldset>
+    </FieldSet>
   );
 }
 
@@ -192,53 +176,28 @@ function EpisodeCountFieldSet({ form }: {
   form: UseFormReturn<BidRoundFormT>;
 }) {
   const t = useTranslations("updateOrCreateBidRoundsPage");
+  const { errors } = form.formState;
+
   return (
-    <fieldset>
+    <FieldSet>
       <legend>{t("serialInformation")}</legend>
       <Row className="gap-4">
-
-        <FormField
-          control={form.control}
-          name="currentEpisodeNo"
-          render={({ field }) => (
-            <FormItem className="mt-3 flex items-center">
-              <FormControl>
-                <Input
-                  {...field}
-                  type="number"
-                  placeholder="_"
-                  className="bg-gray-light w-[30px] p-0 text-center placeholder:text-black text-black"
-                />
-              </FormControl>
-              <FormLabel className="ml-2">
-                {t("currentEpisode")}
-              </FormLabel>
-            </FormItem>
-          )}
+        <NumericFormItem
+          form={form}
+          fieldName="currentEpisodeNo"
+          unitName={t("currentEpisode")}
         />
-
-        <FormField
-          control={form.control}
-          name="episodeCount"
-          render={({ field }) => (
-            <FormItem className="mt-3 flex items-center">
-              <FormControl>
-                <Input
-                  {...field}
-                  type="number"
-                  placeholder="_"
-                  className="bg-gray-light w-[30px] p-0 text-center placeholder:text-black text-black"
-                />
-              </FormControl>
-              <FormLabel className="ml-2">
-                {t("expectingOrFinishedEpisode")}
-              </FormLabel>
-            </FormItem>
-          )}
+        <NumericFormItem
+          form={form}
+          fieldName="totalEpisodeCount"
+          unitName={t("expectingOrFinishedEpisode")}
         />
-
       </Row>
-    </fieldset>
+      {errors.currentEpisodeNo
+        && <div className="text-sm font-medium text-destructive">
+          {errors.currentEpisodeNo.message}
+        </div>}
+    </FieldSet>
   );
 }
 
@@ -247,32 +206,16 @@ function MonthlyCountFieldSet({ form }: {
 }) {
   const t = useTranslations("updateOrCreateBidRoundsPage");
   return (
-    <fieldset>
+    <FieldSet>
       <legend>{t("monthlyProductionAvailableRounds")}</legend>
       <Row>
-        <FormField
-          control={form.control}
-          name="monthlyEpisodeCount"
-          render={({ field }) => (
-            <FormItem className="mt-3 flex items-center">
-              <FormControl>
-                <Input
-                  {...field}
-                  type="number"
-                  placeholder="_"
-                  className="bg-gray-light w-[30px] p-0 text-center placeholder:text-black text-black"
-                />
-              </FormControl>
-              <FormLabel className="ml-2">
-                {t("episodesPossible")}
-              </FormLabel>
-            </FormItem>
-          )}
+        <NumericFormItem
+          form={form}
+          fieldName="monthlyEpisodeCount"
+          unitName={t("episodesPossible")}
         />
-
       </Row>
-    </fieldset>
-
+    </FieldSet>
   );
 }
 
@@ -281,33 +224,18 @@ function FinishedFieldSet({ form }: {
 }) {
   const t = useTranslations("updateOrCreateBidRoundsPage");
   return (
-    <fieldset>
+    <FieldSet>
       <legend>{t("serialInformation")}</legend>
       <Row>
-        <FormField
-          control={form.control}
-          name="episodeCount"
-          render={({ field }) => (
-            <FormItem className="mt-3 flex items-center">
-              <FormControl>
-                <Input
-                  {...field}
-                  type="number"
-                  placeholder="_"
-                  className="bg-gray-light w-[30px] p-0 text-center placeholder:text-black text-black"
-                />
-              </FormControl>
-              <FormLabel className="ml-2">
-                {t("finishedEpisode")}
-              </FormLabel>
-            </FormItem>
-          )}
+        <NumericFormItem
+          form={form}
+          fieldName="totalEpisodeCount"
+          unitName={t("finishedEpisode")}
         />
       </Row>
-    </fieldset>
+    </FieldSet>
   );
 }
-
 
 function OriginalityFieldSet({ form }: {
   form: UseFormReturn<BidRoundFormT>;
@@ -324,41 +252,98 @@ function OriginalityFieldSet({ form }: {
     }
   ];
   return (
-    <fieldset>
+    <FieldSet>
       <legend>{t("SerializationOfOtherPlatforms")}</legend>
-      <FormField
-        control={form.control}
-        name="isOriginal"
-        render={({ field }) => (
-          <FormItem className="mt-3">
-            <FormControl>
-              <RadioGroup
-                {...field}
-                defaultValue={field.value?.toString()}
-                value={undefined}
-                className="flex flex-wrap gap-3"
-                onValueChange={(value) => {
-                  field.onChange(JSON.parse(value));
-                }}
-              >
-                {items.map((item, index) => (
-                  <FormItem key={index} className="space-x-1 space-y-0 flex items-center">
-                    <FormControl>
-                      <RadioGroupItem
-                        className="border border-white"
-                        value={item.value.toString()}
-                      />
-                    </FormControl>
-                    <FormLabel>
-                      {item.label}
-                    </FormLabel>
-                  </FormItem>
-                ))}
-              </RadioGroup>
-            </FormControl>
-          </FormItem>
-        )}
+      <BooleanFormItem
+        form={form}
+        fieldName="isOriginal"
+        items={items}
       />
-    </fieldset>
+    </FieldSet>
+  );
+}
+
+type FieldName<TFieldValues extends FieldValues, AllowedFieldType> = {
+  [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K> extends AllowedFieldType | undefined ? K : never;
+}[FieldPath<TFieldValues>];
+
+function NumericFormItem<TFieldValues extends FieldValues>({ form, fieldName, unitName }: {
+  form: UseFormReturn<TFieldValues>;
+  fieldName: FieldName<TFieldValues, number>;
+  unitName: string;
+}) {
+  const [displayValue, setDisplayValue] = useState<string>("");
+  const field = form.register(fieldName, {
+    setValueAs: (rawInput) => {
+      const intValue = parseInt(rawInput);
+      if (intValue >= 0) {
+        setDisplayValue(intValue.toString());
+        return intValue;
+      } else if (!rawInput) {
+        setDisplayValue("");
+      }
+    }
+  });
+  return <FormItem className="flex items-center mt-3">
+    <FormControl>
+      <Input
+        {...field}
+        className="w-fit p-1 text-right"
+        type="text"
+        maxLength={4}
+        size={4}
+        value={displayValue}
+        placeholder="_"
+      />
+    </FormControl>
+    <FormLabel className="ml-2">
+      {unitName}
+    </FormLabel>
+  </FormItem>;
+}
+
+
+function BooleanFormItem<TFieldValues extends FieldValues>({ form, fieldName, items }: {
+  form: UseFormReturn<TFieldValues>;
+  fieldName: FieldName<TFieldValues, boolean>;
+  items: {
+    value: boolean;
+    label: string;
+  }[];
+}) {
+  return (
+    <FormField
+      control={form.control}
+      name={fieldName}
+      render={({ field }) => (
+        <FormItem className="mt-3">
+          <FormControl>
+            <RadioGroup
+              {...field}
+              value={field.value?.toString() || ""}
+              className="flex flex-wrap gap-3"
+              onValueChange={(value) => {
+                field.onChange(JSON.parse(value));
+              }}
+              onChange={undefined}
+            >
+              {items.map((item, index) => (
+                <FormItem key={index} className="space-x-1 space-y-0 flex items-center">
+                  <FormControl>
+                    <RadioGroupItem
+                      className="border border-white"
+                      value={item.value.toString()}
+                    />
+                  </FormControl>
+                  <FormLabel>
+                    {item.label}
+                  </FormLabel>
+                </FormItem>
+              ))}
+            </RadioGroup>
+          </FormControl>
+        </FormItem>
+      )}
+    />
   );
 }

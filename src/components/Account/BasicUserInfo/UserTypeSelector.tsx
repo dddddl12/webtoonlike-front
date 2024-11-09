@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
 import { UserTypeT } from "@/resources/users/user.types";
 import { useTranslations } from "next-intl";
-import { Col, Gap, Row } from "@/components/ui/layouts";
+import { Col, Gap, Row } from "@/shadcn/ui/layouts";
 import { IconSignupCreator } from "@/components/svgs/IconSignupCreatori";
-import { Button } from "@/components/ui/shadcn/Button";
+import { Button } from "@/shadcn/ui/button";
 import { IconSignupBuyer } from "@/components/svgs/IconSignupBuyer";
 
 export default function UserTypeSelector({ setUserType }: {

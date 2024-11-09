@@ -4,14 +4,14 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { useRouter } from "@/i18n/routing";
 import Spinner from "@/components/Spinner";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/shadcn/Form";
+import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import { createUser } from "@/resources/users/user.service";
-import { Col, Gap, Row } from "@/components/ui/layouts";
-import { Input } from "@/components/ui/shadcn/Input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/shadcn/Select";
-import { Text } from "@/components/ui/texts";
-import { Checkbox } from "@/components/ui/shadcn/CheckBox";
-import { Button } from "@/components/ui/shadcn/Button";
+import { Col, Gap, Row } from "@/shadcn/ui/layouts";
+import { Input } from "@/shadcn/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shadcn/ui/select";
+import { Text } from "@/shadcn/ui/texts";
+import { Checkbox } from "@/shadcn/ui/checkbox";
+import { Button } from "@/shadcn/ui/button";
 import TermsOfUse from "@/components/Account/BasicUserInfo/TermsOfUse";
 
 // TODO 이름도 필드에 포함

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Col, Gap, Row } from "@/components/ui/layouts";
-import { Text } from "@/components/ui/texts";
-import { Label } from "@/components/ui/shadcn/Label";
-import { Input } from "@/components/ui/shadcn/Input";
+import { Col, Gap, Row } from "@/shadcn/ui/layouts";
+import { Text } from "@/shadcn/ui/texts";
+import { Label } from "@/shadcn/ui/label";
+import { Input } from "@/shadcn/ui/input";
 import Image from "next/image";
 import { ImageObject } from "@/utils/media";
 import {
@@ -11,11 +11,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/shadcn/Select";
+} from "@/shadcn/ui/select";
 import { useTranslations } from "next-intl";
 import { CreatorFormSchema, CreatorFormT, CreatorT } from "@/resources/creators/creator.types";
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/shadcn/Form";
+import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "@/i18n/routing";
 import { createCreator } from "@/resources/creators/creator.service";

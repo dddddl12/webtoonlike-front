@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/shadcn/Button";
+import { Button } from "@/shadcn/ui/button";
 import { useTranslations } from "next-intl";
 
 export default function AccountBasicInfoSectionDeleteButton() {

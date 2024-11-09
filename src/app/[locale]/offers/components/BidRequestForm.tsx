@@ -1,11 +1,11 @@
 "use client";
 
-import { Col, Gap } from "@/components/ui/layouts";
-import { Button } from "@/components/ui/shadcn/Button";
-import { Input } from "@/components/ui/shadcn/Input";
+import { Col, Gap } from "@/shadcn/ui/layouts";
+import { Button } from "@/shadcn/ui/button";
+import { Input } from "@/shadcn/ui/input";
 import { ChangeEvent, useState } from "react";
 import { useSnackbar } from "notistack";
-import { Heading, Text } from "@/components/ui/texts";
+import { Heading, Text } from "@/shadcn/ui/texts";
 import {
   Table,
   TableBody,
@@ -13,7 +13,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/shadcn/Table";
+} from "@/shadcn/ui/table";
 import { IconCross } from "../../../../components/svgs/IconCross";
 import {
   Select,
@@ -23,8 +23,8 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/shadcn/Select";
-import { Textarea } from "@/components/ui/shadcn/Textarea";
+} from "@/shadcn/ui/select";
+import { Textarea } from "@/shadcn/ui/textarea";
 import { IconRightBrackets } from "../../../../components/svgs/IconRightBrackets";
 import { IconDelete } from "../../../../components/svgs/IconDelete";
 import { useRouter } from "@/i18n/routing";
@@ -133,12 +133,12 @@ export default function BidRequestForm({
 
         if (key === "contractType") {
           switch (value) {
-            case "웹툰 연재권":
-              updatedRow.businessField = "webtoon";
-              break;
-            case "2차 사업권":
-              updatedRow.businessField = "";
-              break;
+          case "웹툰 연재권":
+            updatedRow.businessField = "webtoon";
+            break;
+          case "2차 사업권":
+            updatedRow.businessField = "";
+            break;
           }
         }
 

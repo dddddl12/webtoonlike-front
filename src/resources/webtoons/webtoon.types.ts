@@ -32,8 +32,6 @@ const WebtoonBaseSchema = z.object({
   authorName_en: z.string().optional(),
   /** 외부 연재 중인 웹툰의 url */
   externalUrl: z.string().optional(),
-  /** 영어 번역 url */
-  englishUrl: z.string().optional(),
   targetAges: z.array(z.nativeEnum(TargetAge)),
   ageLimit: z.nativeEnum(AgeLimit),
   targetGender: z.nativeEnum(TargetGender),

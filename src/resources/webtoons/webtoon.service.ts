@@ -28,7 +28,6 @@ const convertToRecordInput = async (form: WebtoonFormT): Promise<
     description: form.description,
     description_en: form.description_en,
     externalUrl: form.externalUrl,
-    englishUrl: form.englishUrl,
     targetAges: form.targetAges,
     ageLimit: form.ageLimit,
     thumbPath: form.thumbPath,
@@ -69,7 +68,7 @@ export async function updateWebtoon(webtoonId: number, form: WebtoonFormT) {
 
     // 새로 선택된 장르 선택
     const genreIdsToAdd = form.genreIds.filter(id => !genreLinks.some(l => l.genreId === id));
-    if(genreIdsToAdd.length > 0) {
+    if (genreIdsToAdd.length > 0) {
       await tx.xWebtoonGenre.createMany({
         data: genreIdsToAdd.map(id => ({
           webtoonId,
@@ -117,7 +116,6 @@ const mapToWebtoonDTO = (record: WebtoonRecord): WebtoonT => ({
   description: record.description ?? undefined,
   description_en: record.description_en ?? undefined,
   externalUrl: record.externalUrl ?? undefined,
-  englishUrl: record.externalUrl ?? undefined,
   targetAges: record.targetAges
     .map(a => a as TargetAge),
   ageLimit: record.ageLimit as AgeLimit,
@@ -133,7 +131,7 @@ const mapToBidRoundDTO = (record: BidRoundRecord): BidRoundT => ({
   contractRange: ContractRange.safeParse(record.contractRange).data ?? [],
   isOriginal: record.isOriginal,
   isNew: record.isNew,
-  episodeCount: record.episodeCount ?? undefined,
+  totalEpisodeCount: record.totalEpisodeCount ?? undefined,
   currentEpisodeNo: record.currentEpisodeNo ?? undefined,
   monthlyEpisodeCount: record.monthlyEpisodeCount ?? undefined,
   status: record.status as BidRoundStatus,
@@ -342,7 +340,7 @@ export async function listMyWebtoonsNotOnSale({ page = 1 }: {
   createdAt: Date
 }>> {
   const { metadata, userId } = await getTokenInfo();
-  if(metadata.type !== UserTypeT.Creator) {
+  if (metadata.type !== UserTypeT.Creator) {
     throw new WrongUserTypeError();
   }
 
@@ -377,7 +375,7 @@ export async function listMyWebtoonsOnSale({ page = 1 }: {
   roundAddedAt: Date
 }>> {
   const { metadata, userId } = await getTokenInfo();
-  if(metadata.type !== UserTypeT.Creator) {
+  if (metadata.type !== UserTypeT.Creator) {
     throw new WrongUserTypeError();
   }
 

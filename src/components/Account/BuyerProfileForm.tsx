@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Col, Gap, Row } from "@/components/ui/layouts";
-import { Text } from "@/components/ui/texts";
-import { Label } from "@/components/ui/shadcn/Label";
-import { Input } from "@/components/ui/shadcn/Input";
+import { Col, Gap, Row } from "@/shadcn/ui/layouts";
+import { Text } from "@/shadcn/ui/texts";
+import { Label } from "@/shadcn/ui/label";
+import { Input } from "@/shadcn/ui/input";
 import Image from "next/image";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/shadcn/Select";
-import MultipleSelector from "@/components/ui/shadcn/MultipleSelector";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shadcn/ui/select";
+import MultipleSelector from "@/shadcn/ui/MultipleSelector";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { useForm } from "react-hook-form";
@@ -16,7 +16,7 @@ import {
   BuyerFormT, BuyerPurposeSchema,
   BuyerT
 } from "@/resources/buyers/buyer.types";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/shadcn/Form";
+import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
 import { createBuyer } from "@/resources/buyers/buyer.service";
 import { ImageObject } from "@/utils/media";

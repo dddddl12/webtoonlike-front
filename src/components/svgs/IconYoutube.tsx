@@ -1,4 +1,3 @@
-import { cn } from "@/components/ui/lib/utils";
 import * as React from "react";
 import type { SVGProps } from "react";
 
@@ -12,7 +11,7 @@ export const IconYoutube = ({
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
     fill="none"
-    className={cn(className)}
+    className={className}
     {...props}
   >
     <path fill="url(#a)" d="M0 0h40v40H0z" />

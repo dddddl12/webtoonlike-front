@@ -1,4 +1,3 @@
-import { cn } from "@/components/ui/lib/utils";
 import * as React from "react";
 import type { SVGProps } from "react";
 
@@ -11,7 +10,7 @@ export const KenazLogo = ({
     height={17}
     // viewBox="0 0 97 21"
     xmlns="http://www.w3.org/2000/svg"
-    className={cn(className)}
+    className={className}
     {...props}
   >
     <path

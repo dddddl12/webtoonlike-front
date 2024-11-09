@@ -1,13 +1,13 @@
 "use client";
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Input } from "@/components/ui/shadcn/Input";
-import { Button } from "@/components/ui/shadcn/Button";
-import { Textarea } from "@/components/ui/shadcn/Textarea";
-import { Gap, Row } from "@/components/ui/layouts";
-import { Checkbox } from "@/components/ui/shadcn/CheckBox";
-import { Text } from "@/components/ui/texts";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/shadcn/RadioGroup";
+import { Dispatch, SetStateAction, useState } from "react";
+import { Input } from "@/shadcn/ui/input";
+import { Button } from "@/shadcn/ui/button";
+import { Textarea } from "@/shadcn/ui/textarea";
+import { Gap, Row } from "@/shadcn/ui/layouts";
+import { Checkbox } from "@/shadcn/ui/checkbox";
+import { Text } from "@/shadcn/ui/texts";
+import { RadioGroup, RadioGroupItem } from "@/shadcn/ui/radio-group";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { IconUpload } from "@/components/svgs/IconUpload";
 import { useLocale, useTranslations } from "next-intl";
@@ -18,17 +18,17 @@ import {
   WebtoonFormSchema,
   WebtoonFormT
 } from "@/resources/webtoons/webtoon.types";
-import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/shadcn/Form";
+import { FieldSet, Form, FormControl, FormField, FormHeader, FormItem, FormLabel } from "@/shadcn/ui/form";
 import { useForm, UseFormReturn } from "react-hook-form";
 import Image from "next/image";
 import Spinner from "@/components/Spinner";
-import { FormHeader, TemplatedForm } from "@/components/TemplatedForm";
 import { GenreT } from "@/resources/genres/genre.types";
 import { displayName } from "@/utils/displayName";
 import { createWebtoon, updateWebtoon } from "@/resources/webtoons/webtoon.service";
 import { useRouter } from "@/i18n/routing";
 import { ImageObject } from "@/utils/media";
 import { FileDirectoryT } from "@/resources/files/files.type";
+import { formResolver } from "@/utils/forms";
 
 export function WebtoonForm({ selectableGenres, prev }: {
   selectableGenres: GenreT[];
@@ -48,62 +48,49 @@ export function WebtoonForm({ selectableGenres, prev }: {
       description: prev?.description || "",
       description_en: prev?.description_en || "",
       externalUrl: prev?.externalUrl || "",
-      // TODO 이걸 따로 두어야 하나
-      englishUrl: prev?.englishUrl || "",
       targetAges: prev?.targetAges || [],
       ageLimit: prev?.ageLimit,
       targetGender: prev?.targetGender,
       genreIds: prev?.genres.map(genre => genre.id) || [],
       thumbPath: prev?.thumbPath || "",
-    }
+    },
+    mode: "onChange",
+    resolver: (values) => formResolver(WebtoonFormSchema, values)
   });
 
-  // 필수 필드 체크
-  const fieldValues = form.watch();
-  const [allRequiredFilled, setAllRequiredFilled] = useState(false);
-  useEffect(() => {
-    const { success } = WebtoonFormSchema.safeParse({
-      ...fieldValues,
-      thumbPath: thumbnail.url,
-    });
-    setAllRequiredFilled(success);
-  }, [fieldValues, thumbnail]);
-
   // 제출 이후 동작
+  const { formState } = form;
   const router = useRouter();
-  const onSubmit = async (webtoonForm: WebtoonFormT) => {
-    setSubmissionInProgress(true);
+  const onSubmit = async (values: WebtoonFormT) => {
     const thumbPath = await thumbnail.uploadAndGetRemotePath(FileDirectoryT.WebtoonsThumbnails);
     if (!thumbPath) {
-      setSubmissionInProgress(false);
       return;
     }
-    webtoonForm.thumbPath = thumbPath;
-    if(prev) {
-      await updateWebtoon(prev.id, webtoonForm);
+    values.thumbPath = thumbPath;
+    if (prev) {
+      await updateWebtoon(prev.id, values);
       router.replace(`/webtoons/${prev.id}`);
     } else {
-      await createWebtoon(webtoonForm);
+      await createWebtoon(values);
       router.replace("/webtoons");
     }
   };
 
   // 스피너
-  const [submissionInProgress, setSubmissionInProgress] = useState(false);
-  if (submissionInProgress) {
+  if (formState.isSubmitting) {
     return <Spinner/>;
   }
 
   return (
-    <TemplatedForm {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-[600px]">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-[600px] mx-auto">
         <FormHeader
           title={prev ? t("editSeries") : t("addSeries")}
           goBackHref={prev ? `/webtoons/${prev.id}` : "/webtoons"}
         />
         <TitleFieldSet form={form}/>
         <AuthorFieldSet form={form}/>
-        <ThumbnailFieldSet thumbnail={thumbnail} setThumbnail={setThumbnail}/>
+        <ThumbnailFieldSet form={form} thumbnail={thumbnail} setThumbnail={setThumbnail}/>
         <DescriptionFieldSet form={form}/>
         <ExternalLinkFieldSet form={form}/>
         <GenresFieldSet form={form} selectableGenres={selectableGenres}/>
@@ -113,18 +100,17 @@ export function WebtoonForm({ selectableGenres, prev }: {
 
         <Row className="justify-end mt-14">
           <Button
-            disabled={!allRequiredFilled}
+            disabled={!formState.isValid}
             className="bg-mint text-white hover:bg-mint/70"
           >
             {prev
               ? `${tGeneral("edit")}`
               : `${tGeneral("submit")}`}
-            <Gap x={2}/>
             <IconRightBrackets className="fill-white"/>
           </Button>
         </Row>
       </form>
-    </TemplatedForm>
+    </Form>
   );
 }
 
@@ -133,7 +119,7 @@ function TitleFieldSet({ form }: {
 }) {
   const t = useTranslations("addSeries");
 
-  return <fieldset>
+  return <FieldSet>
     <legend>{t("seriesTitle")}</legend>
     <FormField
       control={form.control}
@@ -166,7 +152,7 @@ function TitleFieldSet({ form }: {
         </FormItem>
       )}
     />
-  </fieldset>;
+  </FieldSet>;
 }
 
 function AuthorFieldSet({ form }: {
@@ -174,7 +160,7 @@ function AuthorFieldSet({ form }: {
 }) {
   const t = useTranslations("addSeries");
 
-  return <fieldset>
+  return <FieldSet>
     <legend>{t("authorOptional")}</legend>
     <FormField
       control={form.control}
@@ -207,16 +193,17 @@ function AuthorFieldSet({ form }: {
         </FormItem>
       )}
     />
-  </fieldset>;
+  </FieldSet>;
 }
 
-function ThumbnailFieldSet({ thumbnail, setThumbnail }: {
+function ThumbnailFieldSet({ form, thumbnail, setThumbnail }: {
+  form: UseFormReturn<WebtoonFormT>
   thumbnail: ImageObject,
   setThumbnail: Dispatch<SetStateAction<ImageObject>>
 }) {
   const t = useTranslations("addSeries");
 
-  return <fieldset>
+  return <FieldSet>
     <legend>{t("seriesImage")}</legend>
     <FormItem className="mt-3">
       <FormControl>
@@ -227,6 +214,8 @@ function ThumbnailFieldSet({ thumbnail, setThumbnail }: {
           onChange={(event) => {
             const imageData = new ImageObject(event.target.files?.[0]);
             setThumbnail(imageData);
+            form.setValue("thumbPath", "filedAdded");
+            // 이 값은 실제 업로드 후 remote url로 대체되지만, {thumbPath: string} 조건의 validator를 통과하기 위함
           }}
         />
       </FormControl>
@@ -255,7 +244,7 @@ function ThumbnailFieldSet({ thumbnail, setThumbnail }: {
         )}
       </FormLabel>
     </FormItem>
-  </fieldset>;
+  </FieldSet>;
 }
 
 function DescriptionFieldSet({ form }: {
@@ -263,7 +252,7 @@ function DescriptionFieldSet({ form }: {
 }) {
   const t = useTranslations("addSeries");
 
-  return <fieldset>
+  return <FieldSet>
     <legend>{t("seriesIntro")}</legend>
     <FormField
       control={form.control}
@@ -308,7 +297,7 @@ function DescriptionFieldSet({ form }: {
         </div>
       )}
     />
-  </fieldset>;
+  </FieldSet>;
 }
 
 function ExternalLinkFieldSet({ form }: {
@@ -316,7 +305,7 @@ function ExternalLinkFieldSet({ form }: {
 }) {
   const t = useTranslations("addSeries");
 
-  return <fieldset>
+  return <FieldSet>
     <legend>{t("seriesLink")}</legend>
     <FormField
       control={form.control}
@@ -333,7 +322,7 @@ function ExternalLinkFieldSet({ form }: {
         </FormItem>
       )}
     />
-  </fieldset>;
+  </FieldSet>;
 }
 
 function GenresFieldSet({ form, selectableGenres }: {
@@ -343,13 +332,13 @@ function GenresFieldSet({ form, selectableGenres }: {
   const locale = useLocale();
   const t = useTranslations("addSeries");
 
-  return <fieldset>
+  return <FieldSet>
     <legend>{t("selectGenres")}</legend>
     <FormField
       control={form.control}
       name="genreIds"
       render={() => (
-        <FormItem className="flex flex-wrap gap-3 space-y-0 mt-3">
+        <FormItem className="flex flex-wrap gap-3 mt-3">
           {selectableGenres.map((genre) => (
             <FormField
               key={genre.id}
@@ -357,7 +346,7 @@ function GenresFieldSet({ form, selectableGenres }: {
               name="genreIds"
               render={({ field }) => {
                 return (
-                  <FormItem className="flex flex-row items-center space-x-1 space-y-0">
+                  <FormItem className="flex flex-row items-center gap-1.5">
                     <FormControl>
                       <Checkbox
                         checked={field.value?.includes(genre.id)}
@@ -388,7 +377,7 @@ function GenresFieldSet({ form, selectableGenres }: {
         </FormItem>
       )}
     />
-  </fieldset>;
+  </FieldSet>;
 }
 
 function GenderFieldSet({ form }: {
@@ -397,7 +386,7 @@ function GenderFieldSet({ form }: {
   const t = useTranslations("addSeries");
   const tGender = useTranslations("targetGender");
 
-  return <fieldset>
+  return <FieldSet>
     <legend>{t("targetGender")}</legend>
     <FormField
       control={form.control}
@@ -411,7 +400,7 @@ function GenderFieldSet({ form }: {
               onValueChange={field.onChange}
             >
               {Object.values(TargetGender).map((item, index) => (
-                <FormItem key={index} className="space-x-1 space-y-0 flex items-center">
+                <FormItem key={index} className="flex items-center gap-1.5">
                   <FormControl>
                     <RadioGroupItem
                       className="border border-white"
@@ -428,7 +417,7 @@ function GenderFieldSet({ form }: {
         </FormItem>
       )}
     />
-  </fieldset>;
+  </FieldSet>;
 }
 
 function TargetAgeFieldSet({ form }: {
@@ -437,13 +426,13 @@ function TargetAgeFieldSet({ form }: {
   const t = useTranslations("addSeries");
   const tTargetAge = useTranslations("targetAge");
 
-  return <fieldset>
+  return <FieldSet>
     <legend>{t("targetAge")}</legend>
     <FormField
       control={form.control}
       name="targetAges"
       render={() => (
-        <FormItem className="flex flex-wrap gap-3 space-y-0 mt-3">
+        <FormItem className="flex flex-wrap gap-3 mt-3">
           {Object.values(TargetAge).map((item, index) => (
             <FormField
               key={index}
@@ -451,7 +440,7 @@ function TargetAgeFieldSet({ form }: {
               name="targetAges"
               render={({ field }) => {
                 return (
-                  <FormItem className="flex flex-row items-center space-x-1 space-y-0">
+                  <FormItem className="flex flex-row items-center gap-1.5">
                     <FormControl>
                       <Checkbox
                         checked={field.value?.includes(item)}
@@ -477,7 +466,7 @@ function TargetAgeFieldSet({ form }: {
         </FormItem>
       )}
     />
-  </fieldset>;
+  </FieldSet>;
 }
 
 
@@ -487,7 +476,7 @@ function AgeLimitFieldSet({ form }: {
   const t = useTranslations("addSeries");
   const tAgeRestriction = useTranslations("ageRestriction");
 
-  return <fieldset>
+  return <FieldSet>
     <legend>{t("filmRating")}</legend>
 
     <FormField
@@ -502,7 +491,7 @@ function AgeLimitFieldSet({ form }: {
               onValueChange={field.onChange}
             >
               {Object.values(AgeLimit).map((item, index) => (
-                <FormItem key={index} className="space-x-1 space-y-0 flex items-center">
+                <FormItem key={index} className="flex items-center gap-1.5">
                   <FormControl>
                     <RadioGroupItem
                       className="border border-white"
@@ -519,7 +508,7 @@ function AgeLimitFieldSet({ form }: {
         </FormItem>
       )}
     />
-  </fieldset>;
+  </FieldSet>;
 }
 
 //TODO
