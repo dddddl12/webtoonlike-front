@@ -3,19 +3,21 @@
         "submit": "Submit",
         "edit": "Edit",
         "goBack": "Previous",
-        "goNext": "Next"
+        "goNext": "Next",
+        "selectFile": "Select File"
+    },
+    "userType": {
+        "CREATOR": "Creator",
+        "BUYER": "Buyer"
     },
     "setupPage": {
         "setupAccount": "Set Up Account",
         "selectMembershipType": "Select your membership type",
-        "membershipCopyrightHolder": "Membership for copyright holder",
-        "membershipBuyers": "Membership for buyers",
         "createAccount": "Create account"
     },
     "setupForm": {
         "selectedUserType": "User type: {userType}",
-        "selectedUserTypeCreator": "Creator",
-        "selectedUserTypeBuyer": "Buyer",
+        "insertName": "Name",
         "insertPhone": "Phone number",
         "insertCountry": "Country/Region",
         "insertPostalCode": "Postal Code / Zipcode",
@@ -28,7 +30,6 @@
     "setupPageNextForCreators": {
         "profileDesc": "Enter profile information",
         "uploadProfilePic": "Upload Profile Picture(1:1)",
-        "selectFile": "Select File",
         "affiliationWithAnotherAgencyQuestion": "Do you have an affiliation with an agency?",
         "selectYourWorkExperience": "Select your work experience: New / Experienced",
         "username": "Username",
@@ -37,13 +38,6 @@
         "noAffiliation": "No Affiliation",
         "rookie": "Rookie",
         "experienced": "Experienced"
-    },
-    "purpose": {
-        "privateContract": "Private Contract",
-        "publicContract": "Public Contract",
-        "publish": "Publish",
-        "secondaryProperty": "Secondary Property",
-        "investment": "Investment"
     },
     "homeMain": {
         "timeLeft": "<hl>{days}</hl> days <hl>{hours}</hl> hours <hl>{minutes}</hl> minutes",
@@ -194,14 +188,29 @@
         "allAges": "Any age",
         "adultsOnly": "Mature"
     },
-    "profilePage": {
+    "accountPage": {
         "editProfile": "Edit Profile",
         "withdrawal": "Withdrawal",
         "withdrawalDesc": "Are you sure you want to leave?",
+        "myLikes": {
+            "myLikedWebtoons": "Liked Webtoons",
+            "noLikedWebtoons": "No liked webtoons."
+        }
+    },
+    "buyerInfoPage": {
         "headerDesc": "Enter business information and employment information",
         "businessRegPlaceholder": "Insert Business Number",
         "businessFieldPlaceholder": "Business Field",
         "businessTypePlaceholder": "Business Type",
+        "businessTypeItems": {
+            "creator": "Creator",
+            "investor": "Investor",
+            "agent": "Agent",
+            "platform": "Platform",
+            "ott": "OTT",
+            "management": "Management",
+            "etc": "Etc."
+        },
         "uploadBusinessReg": "Upload Business Registration",
         "selectFile": "Select File",
         "insertCompanyName": "Insert Company Name",
@@ -210,7 +219,14 @@
         "insertBusinessPosition": "Insert your position in business",
         "insertInChargeOf": "In charge of",
         "attachEmploymentCert": "Attach file of your employment certificate or business card",
-        "goals": "Sign up for"
+        "purposePlaceholder": "Sign up for",
+        "purpose": {
+            "privateContract": "Private Contract",
+            "publicContract": "Public Contract",
+            "publish": "Publish",
+            "secondaryProperty": "Secondary Property",
+            "investment": "Investment"
+        }
     },
     "invoiceManagement": {
         "invoiceManagement": "Invoice Management",

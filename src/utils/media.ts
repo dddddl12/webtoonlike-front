@@ -9,15 +9,15 @@ type FallbackT = "user";
 
 // 이미지 path가 required일 때
 export function buildImgUrl(path: string, option?: {
-  size?: ImageSizeT
+  size?: ImageSizeT;
 }): string;
 // 이미지 path가 optional일 때
 export function buildImgUrl(path: string | undefined, option: {
-  fallback: FallbackT, size?: ImageSizeT
+  fallback: FallbackT; size?: ImageSizeT;
 }): string;
 export function buildImgUrl(
   path: string | undefined,
-  option?: { fallback?: FallbackT, size?: ImageSizeT },
+  option?: { fallback?: FallbackT; size?: ImageSizeT },
 ): string {
   if (path) {
     let url = new URL(path, RESOURCE_HOST).toString();
@@ -27,50 +27,53 @@ export function buildImgUrl(
     return url;
   }
   switch (option?.fallback) {
-    case "user":
-      return "/img/mock_profile_image.png";
+  case "user":
+    return "/img/mock_profile_image.png";
   }
   throw new Error("Invalid option");
 }
 
 function getResizeW(size: ImageSizeT): number{
   switch (size) {
-    case "xxs":
-      return 90;
-    case "xs":
-      return 180;
-    case "sm":
-      return 360;
-    case "md":
-      return 720;
-    case "lg":
-      return 1440;
-    default:
-      return 720;
+  case "xxs":
+    return 90;
+  case "xs":
+    return 180;
+  case "sm":
+    return 360;
+  case "md":
+    return 720;
+  case "lg":
+    return 1440;
+  default:
+    return 720;
   }
 }
 
 export class ImageObject {
   private readonly _fileOrPath?: File | string;
   url?: string;
+  displayUrl?: string;
 
   constructor(fileOrPath?: File | string) {
     this._fileOrPath = fileOrPath;
 
     if (fileOrPath instanceof File) {
       this.url = URL.createObjectURL(fileOrPath);
+      this.displayUrl = fileOrPath.name;
     } else if (typeof fileOrPath === "string") {
       this.url = buildImgUrl(fileOrPath, { size: "sm" });
+      this.displayUrl = this.url;
     }
   }
 
   async uploadAndGetRemotePath(directory: FileDirectoryT): Promise<string | undefined> {
-    if(!(this._fileOrPath instanceof File)) {
+    if (!(this._fileOrPath instanceof File)) {
       return this._fileOrPath;
     }
     const file = this._fileOrPath;
     const fileType = await fileTypeFromBlob(file);
-    if(!fileType) {
+    if (!fileType) {
       return;
     }
     const { preSignedUrl, urlPath } = await generatePreSignedUrl(directory, fileType);

@@ -1,6 +1,6 @@
 import { useLocale } from "next-intl";
-import TermsOfUseKo from "@/components/Account/BasicUserInfo/TermsOfUse/TermsOfUseKo";
-import TermsOfUseEn from "@/components/Account/BasicUserInfo/TermsOfUse/TermsOfUseEn";
+import TermsOfUseKo from "@/components/Account/TermsOfUse/TermsOfUseKo";
+import TermsOfUseEn from "@/components/Account/TermsOfUse/TermsOfUseEn";
 
 export default function TermsOfUse() {
   const locale = useLocale();

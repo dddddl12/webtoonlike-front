@@ -59,7 +59,7 @@ export function WebtoonForm({ selectableGenres, prev }: {
   });
 
   // 제출 이후 동작
-  const { formState } = form;
+  const { formState: { isValid, isSubmitting } } = form;
   const router = useRouter();
   const onSubmit = async (values: WebtoonFormT) => {
     const thumbPath = await thumbnail.uploadAndGetRemotePath(FileDirectoryT.WebtoonsThumbnails);
@@ -77,7 +77,7 @@ export function WebtoonForm({ selectableGenres, prev }: {
   };
 
   // 스피너
-  if (formState.isSubmitting) {
+  if (isSubmitting) {
     return <Spinner/>;
   }
 
@@ -100,7 +100,7 @@ export function WebtoonForm({ selectableGenres, prev }: {
 
         <Row className="justify-end mt-14">
           <Button
-            disabled={!formState.isValid}
+            disabled={!isValid}
             className="bg-mint text-white hover:bg-mint/70"
           >
             {prev
@@ -115,7 +115,7 @@ export function WebtoonForm({ selectableGenres, prev }: {
 }
 
 function TitleFieldSet({ form }: {
-  form: UseFormReturn<WebtoonFormT>
+  form: UseFormReturn<WebtoonFormT>;
 }) {
   const t = useTranslations("addSeries");
 
@@ -156,7 +156,7 @@ function TitleFieldSet({ form }: {
 }
 
 function AuthorFieldSet({ form }: {
-  form: UseFormReturn<WebtoonFormT>
+  form: UseFormReturn<WebtoonFormT>;
 }) {
   const t = useTranslations("addSeries");
 
@@ -197,9 +197,9 @@ function AuthorFieldSet({ form }: {
 }
 
 function ThumbnailFieldSet({ form, thumbnail, setThumbnail }: {
-  form: UseFormReturn<WebtoonFormT>
-  thumbnail: ImageObject,
-  setThumbnail: Dispatch<SetStateAction<ImageObject>>
+  form: UseFormReturn<WebtoonFormT>;
+  thumbnail: ImageObject;
+  setThumbnail: Dispatch<SetStateAction<ImageObject>>;
 }) {
   const t = useTranslations("addSeries");
 
@@ -214,7 +214,9 @@ function ThumbnailFieldSet({ form, thumbnail, setThumbnail }: {
           onChange={(event) => {
             const imageData = new ImageObject(event.target.files?.[0]);
             setThumbnail(imageData);
-            form.setValue("thumbPath", "filedAdded");
+            form.setValue("thumbPath", "filedAdded", {
+              shouldValidate: true
+            });
             // 이 값은 실제 업로드 후 remote url로 대체되지만, {thumbPath: string} 조건의 validator를 통과하기 위함
           }}
         />
@@ -248,7 +250,7 @@ function ThumbnailFieldSet({ form, thumbnail, setThumbnail }: {
 }
 
 function DescriptionFieldSet({ form }: {
-  form: UseFormReturn<WebtoonFormT>
+  form: UseFormReturn<WebtoonFormT>;
 }) {
   const t = useTranslations("addSeries");
 
@@ -301,7 +303,7 @@ function DescriptionFieldSet({ form }: {
 }
 
 function ExternalLinkFieldSet({ form }: {
-  form: UseFormReturn<WebtoonFormT>
+  form: UseFormReturn<WebtoonFormT>;
 }) {
   const t = useTranslations("addSeries");
 
@@ -326,7 +328,7 @@ function ExternalLinkFieldSet({ form }: {
 }
 
 function GenresFieldSet({ form, selectableGenres }: {
-  form: UseFormReturn<WebtoonFormT>
+  form: UseFormReturn<WebtoonFormT>;
   selectableGenres: GenreT[];
 }) {
   const locale = useLocale();
@@ -381,7 +383,7 @@ function GenresFieldSet({ form, selectableGenres }: {
 }
 
 function GenderFieldSet({ form }: {
-  form: UseFormReturn<WebtoonFormT>
+  form: UseFormReturn<WebtoonFormT>;
 }) {
   const t = useTranslations("addSeries");
   const tGender = useTranslations("targetGender");
@@ -421,7 +423,7 @@ function GenderFieldSet({ form }: {
 }
 
 function TargetAgeFieldSet({ form }: {
-  form: UseFormReturn<WebtoonFormT>
+  form: UseFormReturn<WebtoonFormT>;
 }) {
   const t = useTranslations("addSeries");
   const tTargetAge = useTranslations("targetAge");
@@ -471,7 +473,7 @@ function TargetAgeFieldSet({ form }: {
 
 
 function AgeLimitFieldSet({ form }: {
-  form: UseFormReturn<WebtoonFormT>
+  form: UseFormReturn<WebtoonFormT>;
 }) {
   const t = useTranslations("addSeries");
   const tAgeRestriction = useTranslations("ageRestriction");

@@ -175,6 +175,7 @@ model User {
   updatedAt    DateTime @updatedAt @map("updated_at")
   sub          String   @unique
   email        String
+  name         String
   phone        String
   userType     UserType @map("user_type")
   country      String?

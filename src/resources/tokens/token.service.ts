@@ -1,7 +1,7 @@
 import "server-only";
 // 클라이언트에서 접근을 절대 불허할 것
 import { PrismaTransaction } from "@/resources/globalTypes";
-import { AdminLevel, SignUpStatus, TokenInfo, TokenInfoSchema } from "@/resources/tokens/token.types";
+import { AdminLevel, TokenInfo, TokenInfoSchema } from "@/resources/tokens/token.types";
 import prisma from "@/utils/prisma";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { UserTypeT } from "@/resources/users/user.types";
@@ -21,7 +21,9 @@ export const getTokenInfo = async (): Promise<TokenInfo> => {
   return TokenInfoSchema.parse(clerkUser.sessionClaims.serviceInfo);
 };
 
-export async function updateTokenInfo(tx?: PrismaTransaction): Promise<SignUpStatus> {
+export async function updateTokenInfo(tx?: PrismaTransaction): Promise<{
+  signUpFinished: boolean;
+}> {
   const prismaClient = tx || prisma;
   const { userId: clerkUserId } = await getClerkUser();
   const user = await prismaClient.user.findUnique({
@@ -31,6 +33,7 @@ export async function updateTokenInfo(tx?: PrismaTransaction): Promise<SignUpSta
     select: {
       id: true,
       userType: true,
+      name: true,
       creator: {
         select: {
           id: true,
@@ -50,27 +53,24 @@ export async function updateTokenInfo(tx?: PrismaTransaction): Promise<SignUpSta
     },
   });
 
-  let signUpStatus: SignUpStatus;
-  if (!user) {
-    signUpStatus = SignUpStatus.NeedsBasicInfo;
-  } else if (user.userType == UserTypeT.Creator && !user.creator) {
-    signUpStatus = SignUpStatus.NeedsCreatorInfo;
-  } else if (user.userType == UserTypeT.Buyer && !user.buyer) {
-    signUpStatus = SignUpStatus.NeedsBuyerInfo;
-  } else {
-    signUpStatus = SignUpStatus.Complete;
-    // 유저 정보 업데이트
-    const clerkUserMetadata: TokenInfo["metadata"] = {
-      type: user.userType as UserTypeT,
-      adminLevel: getAdminLevel(user.admin),
-    };
-    await clerkClient().then(client =>
-      client.users.updateUser(clerkUserId, {
-        externalId: user.id.toString(),
-        publicMetadata: clerkUserMetadata
-      }));
+  if (!user
+    || (user.userType == UserTypeT.Creator && !user.creator)
+    || (user.userType == UserTypeT.Buyer && !user.buyer)) {
+    return { signUpFinished: false };
   }
-  return signUpStatus;
+  // 토큰 업데이트
+  const clerkUserMetadata: TokenInfo["metadata"] = {
+    type: user.userType as UserTypeT,
+    adminLevel: getAdminLevel(user.admin),
+  };
+  await clerkClient().then(client =>
+    client.users.updateUser(clerkUserId, {
+      firstName: user.name,
+      lastName: "",
+      externalId: user.id.toString(),
+      publicMetadata: clerkUserMetadata
+    }));
+  return { signUpFinished: true };
 }
 
 const getAdminLevel = (admin: {
@@ -96,7 +96,7 @@ export const getClerkUserMap = async (userIds: number[]): Promise<Map<number, Us
   const map = new Map<number, User>();
   clerkUsers.data.forEach(user => {
     const { externalId } = user;
-    if(externalId) {
+    if (externalId) {
       map.set(parseInt(externalId), user);
     }
   });

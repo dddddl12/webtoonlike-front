@@ -1,17 +1,24 @@
 "use client";
 import CreatorProfileForm from "@/components/Account/CreatorProfileForm";
 import BuyerProfileForm from "@/components/Account/BuyerProfileForm";
-import BasicUserInfo from "@/components/Account/BasicUserInfo";
 import { useRouter } from "@/i18n/routing";
 import { useSession } from "@clerk/nextjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { NotSignedInError } from "@/errors";
-import { SignUpStatus } from "@/resources/tokens/token.types";
+import { SignUpStage, UserExtendedFormT, UserTypeT } from "@/resources/users/user.types";
+import UserTypeSelector from "@/components/Account/UserTypeSelector";
+import UserProfileForm from "@/components/Account/UserProfileForm";
 
-export function SignUpCompleteForm ({ signUpStatus }: {
-  signUpStatus: SignUpStatus
+export function SignUpCompleteForm ({ clerkUserFullName, signUpFinished }: {
+  signUpFinished: boolean;
+  clerkUserFullName: string;
 }) {
   const router = useRouter();
+  const [signUpStage, setSignUpStage] = useState<SignUpStage>(
+    signUpFinished
+      ? SignUpStage.Finished
+      : SignUpStage.Begin
+  );
 
   // 토큰 재검증
   const { isSignedIn, session } = useSession();
@@ -21,24 +28,46 @@ export function SignUpCompleteForm ({ signUpStatus }: {
       // 로그인하지 않았다면 이 화면으로 넘어올 수 없음
       throw new NotSignedInError();
     }
-    if (signUpStatus !== SignUpStatus.Complete || !session){
+    if (signUpStage !== SignUpStage.Finished || !session){
       // 회원가입을 마치지 않았거나 세션 로딩을 기다리는 중
       return;
     }
     session.touch().then(() => router.replace("/"));
-  }, [isSignedIn, session]);
+  }, [isSignedIn, router, session, signUpStage]);
 
-  switch (signUpStatus) {
-    case SignUpStatus.NeedsBasicInfo:
-      return <BasicUserInfo />;
-    case SignUpStatus.NeedsCreatorInfo:
-      return <CreatorProfileForm />;
-    case SignUpStatus.NeedsBuyerInfo:
-      return <BuyerProfileForm />;
-    case SignUpStatus.Complete:
-      // 잠시 대기했다가 관련 동작 마친 후 리다이렉트
-      return null;
-    default:
-      throw new Error("Unexpected user state");
+  // User form과 관련한 회원가입 status 조절
+  const [userExtendedForm, setUserExtendedForm] = useState<Partial<UserExtendedFormT>>({
+    name: clerkUserFullName,
+  });
+
+
+  if (signUpStage === SignUpStage.Begin) {
+    return <UserTypeSelector
+      setUserExtendedForm={setUserExtendedForm}
+      setSignUpStage={setSignUpStage}
+    />;
+  } else if (signUpStage === SignUpStage.FillUserInfo) {
+    return <UserProfileForm
+      userExtendedForm={userExtendedForm}
+      setUserExtendedForm={setUserExtendedForm}
+      setSignUpStage={setSignUpStage}
+    />;
+  } else if (signUpStage === SignUpStage.FillRoleInfo) {
+    if (userExtendedForm.userType === UserTypeT.Creator) {
+      return <CreatorProfileForm
+        userExtendedForm={userExtendedForm}
+        setSignUpStage={setSignUpStage}
+      />;
+    } else if (userExtendedForm.userType === UserTypeT.Buyer) {
+      return <BuyerProfileForm
+        userExtendedForm={userExtendedForm}
+        setSignUpStage={setSignUpStage}
+      />;
+    }
+  } else if (signUpStage === SignUpStage.Finished) {
+    // 잠시 대기했다가 관련 동작 마친 후 리다이렉트
+    return null;
   }
+
+  throw new Error("Unexpected user state");
 }

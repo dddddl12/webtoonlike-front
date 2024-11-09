@@ -11,11 +11,7 @@ const CreatorBaseSchema = z.object({
   isExposed: z.boolean().default(false),
 });
 
-export const CreatorFormSchema = CreatorBaseSchema.extend({
-  files: z.object({
-    thumbnail: z.instanceof(File).optional(),
-  })
-});
+export const CreatorFormSchema = CreatorBaseSchema;
 export type CreatorFormT = z.infer<typeof CreatorFormSchema>;
 
 export const CreatorSchema = CreatorBaseSchema

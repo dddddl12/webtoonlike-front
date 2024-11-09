@@ -1,7 +1,7 @@
 "use client";
 
-import TermsOfUseEn from "@/components/Account/BasicUserInfo/TermsOfUse/TermsOfUseEn";
-import TermsOfUseKo from "@/components/Account/BasicUserInfo/TermsOfUse/TermsOfUseKo";
+import TermsOfUseEn from "@/components/Account/TermsOfUse/TermsOfUseEn";
+import TermsOfUseKo from "@/components/Account/TermsOfUse/TermsOfUseKo";
 import { Container } from "@/shadcn/ui/layouts";
 import { useLocale } from "next-intl";
 

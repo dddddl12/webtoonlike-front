@@ -64,7 +64,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
   });
 
   // 제출 이후 동작
-  const { formState } = form;
+  const { formState: { isSubmitting, isValid } } = form;
   const router = useRouter();
   async function onSubmit(values: BidRoundFormT) {
     await updateBidRound(values);
@@ -77,7 +77,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
   }
 
   // 스피너
-  if (formState.isSubmitting) {
+  if (isSubmitting) {
     return <Spinner/>;
   }
 
@@ -130,7 +130,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
         {/* 등록 버튼 */}
         <Row className="justify-end">
           <Button
-            disabled={!formState.isValid || !isAgreed}
+            disabled={!isValid || !isAgreed}
             type="submit"
             className="rounded-full bg-mint text-white"
           >

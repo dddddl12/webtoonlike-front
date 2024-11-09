@@ -4,14 +4,14 @@
         "next/typescript"
     ],
     "plugins": [
-        "@stylistic/js"
+        "@stylistic/js",
+        "@stylistic/ts"
     ],
     "rules": {
         "indent": [
             "warn",
             2
         ],
-        "semi": "warn",
         "quotes": [
             "warn",
             "double"
@@ -37,15 +37,21 @@
             "off"
         ],
         "react-hooks/rules-of-hooks": "warn",
-        "operator-linebreak": ["warn", "before"],
+        "operator-linebreak": [
+            "warn",
+            "before"
+        ],
         "@typescript-eslint/no-unused-vars": [
             "warn"
         ],
+        "@stylistic/js/keyword-spacing": ["warn", {
+            "before": true,
+            "after": true
+        }],
+        "@stylistic/ts/semi": "warn",
+        "@stylistic/ts/member-delimiter-style": "warn",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-require-imports": "off",
-        "@typescript-eslint/no-empty-object-type": "off",
-        "@stylistic/js/keyword-spacing": [
-            "warn"
-        ]
+        "@typescript-eslint/no-empty-object-type": "off"
     }
 }

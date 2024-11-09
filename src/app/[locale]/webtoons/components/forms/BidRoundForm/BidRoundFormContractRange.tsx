@@ -33,7 +33,9 @@ export default function BidRoundFormContractRange({ form }: {
           e.preventDefault();
           const newContractRange = form.getValues("contractRange") || [];
           newContractRange.push({} as any);
-          form.setValue("contractRange", newContractRange);
+          form.setValue("contractRange", newContractRange, {
+            shouldValidate: true
+          });
         }}>
           <IconCross className="fill-white" />
           <Text className="text-white">{t("addItem")}</Text>
@@ -101,9 +103,13 @@ function BusinessRightCell({ form, row, idx }: {
       defaultValue={defaultValue}
       onValueChange={(value) => {
         if (value === items[0].value) {
-          form.setValue(`contractRange.${idx}.businessField`, "WEBTOONS");
+          form.setValue(`contractRange.${idx}.businessField`, "WEBTOONS", {
+            shouldValidate: true
+          });
         } else if (row.businessField === "WEBTOONS"){
-          form.setValue(`contractRange.${idx}.businessField`, undefined as any);
+          form.setValue(`contractRange.${idx}.businessField`, undefined as any, {
+            shouldValidate: true
+          });
         }
       }}
     >
@@ -255,7 +261,9 @@ function DeleteCell({ form, idx }: {
         e.preventDefault();
         const newContractRange = form.getValues("contractRange");
         newContractRange.splice(idx, 1);
-        form.setValue("contractRange", newContractRange);
+        form.setValue("contractRange", newContractRange, {
+          shouldValidate: true
+        });
       }}
     >
       <IconDelete className="fill-white" />

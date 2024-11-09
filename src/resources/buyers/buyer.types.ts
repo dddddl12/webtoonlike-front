@@ -1,5 +1,4 @@
 import z from "zod";
-import { UserT } from "@/resources/users/user.types";
 import { BusinessFieldSchema } from "@/resources/globalTypes";
 
 export const BuyerCompanyFieldSchema = BusinessFieldSchema;
