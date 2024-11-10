@@ -16,11 +16,9 @@ export async function createLike(webtoonId: number): Promise<WebtoonLikeT> {
     });
     const { _count } = await tx.webtoonLike.aggregate({
       where: { webtoonId },
-      _count: {
-        id: true,
-      }
+      _count: true
     });
-    return _count.id;
+    return _count;
   });
   return {
     webtoonId,
@@ -37,11 +35,9 @@ export async function deleteLike(webtoonId: number): Promise<WebtoonLikeT> {
     });
     const { _count } = await tx.webtoonLike.aggregate({
       where: { webtoonId },
-      _count: {
-        id: true,
-      }
+      _count: true
     });
-    return _count.id;
+    return _count;
   });
   return {
     webtoonId,

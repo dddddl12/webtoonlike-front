@@ -1,12 +1,21 @@
 import z from "zod";
 import { BusinessFieldSchema, CountrySchema, ResourceSchema } from "@/resources/globalTypes";
 
+export enum BidRoundApprovalStatus {
+  Pending = "PENDING",
+  Approved = "APPROVED",
+  Rejected = "REJECTED"
+}
+
 export enum BidRoundStatus {
-  Idle = "IDLE",
-  Waiting = "WAITING",
-  Bidding = "BIDDING",
-  Negotiating = "NEGOTIATING",
-  Done = "DONE",
+  PendingApproval = "PENDING_APPROVAL",
+  Rejected = "REJECTED",
+
+  // 아래는 승인 이후 단계
+  Waiting = "WAITING", // < bidStartsAt
+  Bidding = "BIDDING", // >= bidStartsAt && < negoStartsAt
+  Negotiating = "NEGOTIATING", // >= negoStartsAt && < processEndsAt
+  Done = "DONE", // >= processEndsAt
 }
 
 export const ContractRangeItemSchema = z.object({
@@ -35,11 +44,6 @@ export const BidRoundSchema = ResourceSchema
   .merge(BidRoundBaseSchema)
   .extend({
     status: z.nativeEnum(BidRoundStatus),
-    bidStartsAt: z.date().optional(),
-    negoStartsAt: z.date().optional(),
-    processEndsAt: z.date().optional(),
-    approvedAt: z.date().optional(),
-    disapprovedAt: z.date().optional(),
     // adminNote: z.string().optional(), TODO 어드민용 별도
   });
 export type BidRoundT = z.infer<typeof BidRoundSchema>;

@@ -41,11 +41,11 @@ const WebtoonBaseSchema = z.object({
 export const WebtoonFormSchema = WebtoonBaseSchema.extend({
   genreIds: z.array(z.number()).min(1).max(2),
 });
-export type WebtoonFormT = z.infer<typeof WebtoonFormSchema>
+export type WebtoonFormT = z.infer<typeof WebtoonFormSchema>;
 
 export const WebtoonSchema = ResourceSchema
   .merge(WebtoonBaseSchema);
-export type WebtoonT = z.infer<typeof WebtoonSchema>
+export type WebtoonT = z.infer<typeof WebtoonSchema>;
 
 export const WebtoonExtendedSchema = WebtoonSchema
   .extend({
@@ -60,10 +60,10 @@ export const WebtoonExtendedSchema = WebtoonSchema
       label: z.string(),
       label_en: z.string().optional(),
     })),
-    bidRound: BidRoundExtendedSchema.optional(),
+    activeBidRound: BidRoundExtendedSchema.optional(),
     firstEpisodeId: z.number().optional()
   });
-export type WebtoonExtendedT = z.infer<typeof WebtoonExtendedSchema>
+export type WebtoonExtendedT = z.infer<typeof WebtoonExtendedSchema>;
 
 // 그리드에 표시하기 위한 기본폼
 export const WebtoonPreviewSchema = z.object({
@@ -74,7 +74,7 @@ export const WebtoonPreviewSchema = z.object({
   description_en: z.string().optional(),
   thumbPath: z.string()
 });
-export type WebtoonPreviewT = z.infer<typeof WebtoonPreviewSchema>
+export type WebtoonPreviewT = z.infer<typeof WebtoonPreviewSchema>;
 
 // 홈 화면
 export type HomeWebtoonItem = {
@@ -84,7 +84,7 @@ export type HomeWebtoonItem = {
   title_en: string;
   authorOrCreatorName: string;
   authorOrCreatorName_en?: string;
-}
+};
 
 export type HomeArtistItem = {
   id: number;
@@ -92,4 +92,4 @@ export type HomeArtistItem = {
   name: string;
   name_en?: string;
   numOfWebtoons: number;
-}
+};

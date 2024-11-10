@@ -3,7 +3,6 @@ import ContractRange from "@/app/[locale]/webtoons/[webtoonId]/ContractRange";
 import { getWebtoon } from "@/resources/webtoons/webtoon.service";
 import WebtoonDetails from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetails";
 import PageLayout from "@/components/PageLayout";
-import { getTranslations } from "next-intl/server";
 
 export default async function WebtoonDetailsPage({ params }:
 { params: Promise<{ webtoonId: string }> }) {

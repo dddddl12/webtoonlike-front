@@ -16,12 +16,12 @@ import { useRouter } from "@/i18n/routing";
 import BidRoundFormContractRange from "@/app/[locale]/webtoons/components/forms/BidRoundForm/BidRoundFormContractRange";
 import { FieldSet, Form, FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
-import { updateBidRound } from "@/resources/bidRounds/bidRound.service";
+import { createBidRound, updateBidRound } from "@/resources/bidRounds/bidRound.service";
 import { formResolver } from "@/utils/forms";
 
 export default function BidRoundForm({ webtoonId, prev }: {
-  webtoonId: number
-  prev?: BidRoundT
+  webtoonId: number;
+  prev?: BidRoundT;
 }) {
   const t = useTranslations("updateOrCreateBidRoundsPage");
   const [isAgreed, setIsAgreed] = useState(false);
@@ -67,11 +67,12 @@ export default function BidRoundForm({ webtoonId, prev }: {
   const { formState: { isSubmitting, isValid } } = form;
   const router = useRouter();
   async function onSubmit(values: BidRoundFormT) {
-    await updateBidRound(values);
     // TODO
     if (prev) {
+      await updateBidRound(prev.id, values);
       router.replace(`/webtoons/${webtoonId}`);
     } else {
+      await createBidRound(values);
       router.replace("/webtoons");
     }
   }

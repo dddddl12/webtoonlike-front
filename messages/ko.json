@@ -251,8 +251,14 @@
         "NEGOTIATING": "협상 중",
         "DONE": "절차 완료"
     },
+    "bidRoundApprovalStatus": {
+        "PENDING": "승인 대기",
+        "REJECTED": "반려",
+        "APPROVED": "승인"
+    },
     "bidRoundStatus": {
-        "IDLE": "승인 대기",
+        "PENDING_APPROVAL": "승인 대기",
+        "REJECTED": "반려",
         "WAITING": "노출 대기",
         "BIDDING": "노출 중",
         "NEGOTIATING": "협상 중",
@@ -284,7 +290,8 @@
         "seriesName": "작품명",
         "registrationDate": "등록일",
         "status": "상태",
-        "episodes": "회차"
+        "episodes": "{count} / 3 회차",
+        "registerForSale": "판매 등록"
     },
     "manageOffers": {
         "pendingSeries": "대기중인 작품",

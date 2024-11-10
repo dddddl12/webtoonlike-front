@@ -251,8 +251,14 @@
         "NEGOTIATING": "Negotiation",
         "DONE": "Procedure Completed"
     },
+    "bidRoundApprovalStatus": {
+        "PENDING": "Pending Approval",
+        "REJECTED": "Disapproved",
+        "APPROVED": "Approved"
+    },
     "bidRoundStatus": {
-        "IDLE": "Pending Approval",
+        "PENDING_APPROVAL": "Pending Approval",
+        "REJECTED": "Not Approved",
         "WAITING": "Waiting for Bidding",
         "BIDDING": "Bidding",
         "NEGOTIATING": "Negotiation",
@@ -284,7 +290,8 @@
         "seriesName": "Name of Series",
         "registrationDate": "Registration Date",
         "status": "Status",
-        "episodes": "Episodes"
+        "episodes": "{count} / 3 episodes",
+        "registerForSale": "Register for sale"
     },
     "manageOffers": {
         "pendingSeries": "Pending Series",

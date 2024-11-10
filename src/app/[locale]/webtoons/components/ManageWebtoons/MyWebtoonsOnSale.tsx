@@ -5,21 +5,17 @@ import { Text } from "@/shadcn/ui/texts";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { ListResponse } from "@/resources/globalTypes";
-import { WebtoonPreviewT } from "@/resources/webtoons/webtoon.types";
 import Paginator from "@/components/Paginator";
 import { useListData } from "@/hooks/listData";
 import { listMyWebtoonsOnSale } from "@/resources/webtoons/webtoon.service";
 import { Link } from "@/i18n/routing";
 import { displayName } from "@/utils/displayName";
 
-type WebtoonWithRoundT = WebtoonPreviewT & {
-  roundAddedAt: Date
-}
-type WebtoonListResponse = ListResponse<WebtoonWithRoundT>
+type WebtoonListResponse = Awaited<ReturnType<typeof listMyWebtoonsOnSale>>;
+type Webtoon = WebtoonListResponse["items"][number];
 
 export default function MyWebtoonsOnSale({ initialWebtoonListResponse }: {
-  initialWebtoonListResponse: WebtoonListResponse
+  initialWebtoonListResponse: WebtoonListResponse;
 }) {
   const { listResponse, filters, setFilters } = useListData(
     listMyWebtoonsOnSale, { page: 1 }, initialWebtoonListResponse);
@@ -64,9 +60,10 @@ function TableHeader() {
 }
 
 function TableRow({ webtoon }: {
-  webtoon: WebtoonWithRoundT
+  webtoon: Webtoon;
 }) {
   const locale = useLocale();
+  const tBidRoundStatus = useTranslations("bidRoundStatus");
   return (
     <div className="flex p-2 mb-2 text-white rounded-md bg-gray-darker items-center">
       <div className="w-[40%] p-2 flex justify-start items-center">
@@ -92,12 +89,11 @@ function TableRow({ webtoon }: {
       </div>
 
       <div className="w-[40%] p-2 flex justify-center">
-        {webtoon.roundAddedAt.toLocaleString(locale)}
+        {webtoon.bidRoundApprovedAt?.toLocaleString(locale)}
       </div>
 
       <div className="w-[20%] p-2 flex justify-center">
-        상태
-        {/*  TODO*/}
+        {tBidRoundStatus(webtoon.bidRoundStatus)}
       </div>
     </div>
   );

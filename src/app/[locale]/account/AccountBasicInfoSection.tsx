@@ -12,7 +12,7 @@ export default async function AccountBasicInfoSection() {
   const TeditProfile = await getTranslations("accountPage");
   const { userId } = await getTokenInfo();
   const clerkUser = await getClerkUserById(userId);
-  if(!clerkUser) {
+  if (!clerkUser) {
     throw new Error("clerkUser is null");
   }
   return <Row className="gap-12">
@@ -36,7 +36,7 @@ export default async function AccountBasicInfoSection() {
           {/*  {creators.filter((item) => item.id === me?.creator?.id)[0]?.numWebtoonLike || 0}*/}
           {/*  <IconHeartFill fill="red" />*/}
           {/*</Row>*/}
-          <Button className="rounded-sm bg-gray-darker hover:bg-gray-darker">
+          <Button variant="secondary">
             <Link href="/account/update">
               {TeditProfile("editProfile")}
             </Link>

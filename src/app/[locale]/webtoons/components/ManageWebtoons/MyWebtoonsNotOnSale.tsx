@@ -6,21 +6,17 @@ import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { IconCross } from "@/components/svgs/IconCross";
 import { useLocale, useTranslations } from "next-intl";
-import { WebtoonPreviewT } from "@/resources/webtoons/webtoon.types";
 import Paginator from "@/components/Paginator";
 import { listMyWebtoonsNotOnSale } from "@/resources/webtoons/webtoon.service";
 import { Link } from "@/i18n/routing";
-import { ListResponse } from "@/resources/globalTypes";
 import { useListData } from "@/hooks/listData";
 import { displayName } from "@/utils/displayName";
 
-type WebtoonWithCreatedAtT = WebtoonPreviewT & {
-  createdAt: Date
-}
-type WebtoonListResponse = ListResponse<WebtoonWithCreatedAtT>
+type WebtoonListResponse = Awaited<ReturnType<typeof listMyWebtoonsNotOnSale>>;
+type Webtoon = WebtoonListResponse["items"][number];
 
 export default function MyWebtoonsNotOnSale({ initialWebtoonListResponse }: {
-  initialWebtoonListResponse: WebtoonListResponse
+  initialWebtoonListResponse: WebtoonListResponse;
 }) {
   const t = useTranslations("manageContents");
   const { listResponse, filters, setFilters } = useListData(
@@ -68,7 +64,7 @@ export default function MyWebtoonsNotOnSale({ initialWebtoonListResponse }: {
 }
 
 function TableRow({ webtoon }: {
-  webtoon: WebtoonWithCreatedAtT
+  webtoon: Webtoon;
 }) {
   const locale = useLocale();
 
@@ -97,26 +93,33 @@ function TableRow({ webtoon }: {
       </div>
 
       <div className="w-[20%] p-2 flex justify-center">
-        상태
-        {/*TODO*/}
-        {/*{webtoon.bidRounds && webtoon.bidRounds?.length > 0*/}
-        {/*  ? webtoon.bidRounds[0].disapprovedAt ? (locale === "ko" ? "반려" : "Disapproved")*/}
-        {/*    : TbidRoundStatus(webtoon.bidRounds[0].status)*/}
-        {/*  : webtoon.episodes?.length && webtoon.episodes?.length >= 3 ? (*/}
-        {/*    <div*/}
-        {/*      className="text-mint underline cursor-pointer"*/}
-        {/*      onClick={() => {router.push(`/market/bid-rounds/${webtoon.id}/create`);}}*/}
-        {/*    >*/}
-        {/*      {locale === "ko" ? "판매 등록 하기" : "Register for sale"}*/}
-        {/*    </div>*/}
-        {/*  ) : (*/}
-        {/*    `${webtoon.episodes?.length} / 3 ${t("episodes")}`*/}
-        {/*  )}*/}
+        <StatusIndicator webtoon={webtoon} />
       </div>
     </div>
   );
 }
 
+function StatusIndicator({ webtoon }: {
+  webtoon: Webtoon;
+}) {
+  const t = useTranslations("manageContents");
+  const { bidRoundApprovalStatus } = webtoon;
+
+  if (bidRoundApprovalStatus) {
+    return <>{t(bidRoundApprovalStatus)}</>;
+  } else if (webtoon.episodeCount < 3) {
+    return <>{t("episodes", {
+      count: webtoon.episodeCount
+    })}</>;
+  } else {
+    return <Link
+      className="text-mint underline"
+      href={`/webtoons/${webtoon.id}/bid-round/create`}
+    >
+      {t("registerForSale")}
+    </Link>;
+  }
+}
 
 function NoItemsFound() {
   const t = useTranslations("manageContents");

@@ -29,6 +29,7 @@ export async function listBidRequestMessages(bidRequestId: number, {
         user: {
           select: {
             id: true,
+            name: true,
             userType: true
           }
         }
@@ -46,7 +47,7 @@ export async function listBidRequestMessages(bidRequestId: number, {
         user: {
           id: user.id,
           userType: user.userType as UserTypeT,
-          name: `${user.userType} 임시 이름` // TODO
+          name: user.name
         }
       };
     }),

@@ -9,7 +9,7 @@ import { useState } from "react";
 import NegotiationDetails from "@/app/[locale]/invoices/NegotiationDetails";
 
 export default function BidRequestMessageList({ bidRequestId }: {
-  bidRequestId: number
+  bidRequestId: number;
 }) {
   const { listResponse, filters, setFilters } = useListData(
     () => listBidRequestMessages(bidRequestId),
@@ -19,7 +19,7 @@ export default function BidRequestMessageList({ bidRequestId }: {
   if (!listResponse) {
     return <Spinner />;
   }
-  if(listResponse.items.length === 0) {
+  if (listResponse.items.length === 0) {
     return <Col className="rounded-md bg-gray-darker p-4 flex-row justify-center">
       {/*TODO*/}
       메시지가 없습니다.
@@ -45,8 +45,8 @@ export default function BidRequestMessageList({ bidRequestId }: {
 }
 
 function MessageRow({ message, index }: {
-  index: number
-  message: BidRequestMessageExtendedT
+  index: number;
+  message: BidRequestMessageExtendedT;
 }) {
   const locale = useLocale();
   const [showNegotiation, setShowNegotiation] = useState(false);
@@ -54,7 +54,7 @@ function MessageRow({ message, index }: {
     <Row>
       <div className="w-[20%] p-2 flex justify-center">{index + 1}</div>
       <div className="w-[20%] p-2 flex justify-center">{message.createdAt.toLocaleString(locale)}</div>
-      <div className="w-[20%] p-2 flex justify-center">유저 {message.user.name}</div>
+      <div className="w-[20%] p-2 flex justify-center">{message.user.name}</div>
       <div className="w-[20%] p-2 flex justify-center text-mint underline cursor-pointer"
         onClick={() => setShowNegotiation(!showNegotiation)}>
         {showNegotiation ? "접기" : "보기"}

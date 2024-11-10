@@ -24,7 +24,7 @@ export default function AccountBasicInfoSectionDeleteButton() {
   // }
   }
   return <Button
-    className="bg-red rounded-sm hover:bg-gray-darker"
+    variant="red"
     onClick={handleClickDeleteMe}
   >
     {TeditProfile("withdrawal")}

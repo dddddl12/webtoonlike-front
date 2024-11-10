@@ -62,35 +62,41 @@ model BidRequest {
   @@map("bid_requests")
 }
 
-enum BidRoundStatus {
-  IDLE        @map("idle")
-  WAITING     @map("waiting")
-  BIDDING     @map("bidding")
-  NEGOTIATING @map("negotiating")
-  DONE        @map("done")
+enum BidRoundApprovalStatus {
+  PENDING  @map("pending")
+  APPROVED @map("approved")
+  REJECTED @map("rejected")
 
-  @@map("bid_round_status")
+  @@map("bid_round_approval_status")
 }
 
 model BidRound {
-  id                  Int            @id @default(autoincrement())
-  createdAt           DateTime       @default(now()) @map("created_at")
-  updatedAt           DateTime       @updatedAt @map("updated_at")
-  webtoonId           Int            @unique @map("webtoon_id")
-  contractRange       Json           @map("contract_range")
-  status              BidRoundStatus @map("status")
-  isOriginal          Boolean        @map("is_original")
-  isNew               Boolean        @map("is_new")
-  totalEpisodeCount   Int?           @map("total_episode_count")
-  currentEpisodeNo    Int?           @map("current_episode_no")
-  monthlyEpisodeCount Int?           @map("monthly_episode_count")
-  bidStartsAt         DateTime?      @map("bid_starts_at")
-  negoStartsAt        DateTime?      @map("nego_starts_at")
-  processEndsAt       DateTime?      @map("process_ends_at")
-  approvedAt          DateTime?      @map("approved_at")
-  disapprovedAt       DateTime?      @map("disapproved_at")
-  adminNote           String?        @map("admin_note")
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  webtoonId Int      @map("webtoon_id")
+  // 실제로 노출할 최신 웹툰별 라운드 (TODO partial index 적용)
+  isActive  Boolean  @map("is_active")
 
+  // 사용자 입력
+  contractRange       Json    @map("contract_range")
+  isOriginal          Boolean @map("is_original")
+  isNew               Boolean @map("is_new")
+  totalEpisodeCount   Int?    @map("total_episode_count")
+  currentEpisodeNo    Int?    @map("current_episode_no")
+  monthlyEpisodeCount Int?    @map("monthly_episode_count")
+
+  // 관리자 승인
+  approvalStatus    BidRoundApprovalStatus @default(PENDING) @map("approval_status")
+  approvalDecidedAt DateTime?              @map("approval_decided_at")
+
+  // 관리자 투고 관리
+  bidStartsAt   DateTime? @map("bid_starts_at")
+  negoStartsAt  DateTime? @map("nego_starts_at")
+  processEndsAt DateTime? @map("process_ends_at")
+  adminNote     String?   @map("admin_note")
+
+  // join용
   webtoon     Webtoon      @relation(fields: [webtoonId], references: [id], onDelete: Cascade)
   bidRequests BidRequest[]
 
@@ -316,7 +322,7 @@ model Webtoon {
   isFeaturedAsNew Boolean      @default(false) @map("is_featured_as_new")
 
   user           User             @relation(fields: [userId], references: [id], onDelete: Restrict)
-  bidRound       BidRound?
+  bidRounds      BidRound[]
   episodes       WebtoonEpisode[]
   likes          WebtoonLike[]
   genreLinks     XWebtoonGenre[]
