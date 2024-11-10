@@ -1,6 +1,5 @@
 import z from "zod";
 import { ResourceSchema } from "@/resources/globalTypes";
-import { WebtoonPreviewSchema } from "@/resources/webtoons/webtoon.types";
 
 const CreatorBaseSchema = z.object({
   name: z.string().min(1),

@@ -12,13 +12,14 @@ export async function createUser(form: UserExtendedFormT) {
   // 저작권자/바이어까지 등록 후 생성으로 구조 변경
   await prisma.$transaction(async (tx) => {
     const user = await currentUser();
-    if (!user) {
+    const userEmail = user?.primaryEmailAddress?.emailAddress;
+    if (!user || !userEmail) {
       throw new NotSignedInError();
     }
     // 기본 유저 생성
     const insert = {
       sub: user.id,
-      email: user.emailAddresses[0].emailAddress,
+      email: userEmail,
       name: form.name,
       phone: form.phone,
       userType: form.userType,
