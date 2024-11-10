@@ -2,12 +2,12 @@ import { ContractRangeItemSchema } from "@/resources/bidRounds/bidRound.types";
 import z from "zod";
 import { ResourceSchema } from "@/resources/globalTypes";
 
-// TODO 상태
 export enum BidRequestStatus {
-  Idle = "IDLE",
+  Pending = "PENDING",
   Waiting = "WAITING",
-  Bidding = "BIDDING",
+  Declined = "DECLINED",
   Negotiating = "NEGOTIATING",
+  Aborted = "ABORTED",
   Done = "DONE",
 }
 
@@ -30,14 +30,7 @@ export const BidRequestSchema = BidRequestBaseSchema
   .merge(ResourceSchema)
   .extend({
     userId: z.number().optional(),
-    /** creator acceptance */
-    acceptedAt: z.date().optional(),
-    /** creator rejection */
-    rejectedAt: z.date().optional(),
-    /** admin approval */
-    approvedAt: z.date().optional(),
-    /** user cancel bid request */
-    cancelledAt: z.date().optional(),
+    // status: z.nativeEnum(BidRequestStatus),
   });
 export type BidRequestT = z.infer<typeof BidRequestSchema>;
 

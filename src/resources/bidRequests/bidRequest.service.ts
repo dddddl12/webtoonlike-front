@@ -6,21 +6,32 @@ import prisma from "@/utils/prisma";
 import { ListResponse } from "@/resources/globalTypes";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 
+// const getBidRequestStatus = (record: BidRequestRecord): string => {
+//   const { approvedAt, acceptedAt, cancelledAt, rejectedAt } = record;
+//   if (approvedAt && approvedAt > now) {}
+// }
 
-const mapToBidRequestDTO = (record: BidRequestRecord): BidRequestT => ({
-  id: record.id,
-  createdAt: record.createdAt,
-  updatedAt: record.updatedAt,
-  bidRoundId: record.bidRoundId,
-  message: record.message ?? undefined,
-  contractRange: BidRequestSchema.shape.contractRange
-    .safeParse(record.contractRange).data ?? [],
-  userId: record.userId ?? undefined,
-  acceptedAt: record.acceptedAt ?? undefined,
-  rejectedAt: record.rejectedAt ?? undefined,
-  approvedAt: record.approvedAt ?? undefined,
-  cancelledAt: record.cancelledAt ?? undefined,
-});
+const mapToBidRequestDTO = (record: BidRequestRecord): BidRequestT => {
+  return {
+    id: record.id,
+    createdAt: record.createdAt,
+    updatedAt: record.updatedAt,
+    bidRoundId: record.bidRoundId,
+    message: record.message ?? undefined,
+    contractRange: BidRequestSchema.shape.contractRange
+      .safeParse(record.contractRange).data ?? [],
+    userId: record.userId ?? undefined,
+    // status: record.approvedAt
+    //   ? "오퍼 승인"
+    //   : record.acceptedAt
+    //     ? "오퍼 수락"
+    //     : record.cancelledAt
+    //       ? "오퍼 취소"
+    //       : record.rejectedAt
+    //         ? "오퍼 거절"
+    //         : "진행 중"
+  };
+};
 
 export async function listBidRequests({
   page = 1,

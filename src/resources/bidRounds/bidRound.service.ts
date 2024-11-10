@@ -7,6 +7,7 @@ import {
 } from "@/resources/bidRounds/bidRound.types";
 import prisma from "@/utils/prisma";
 import { $Enums, BidRound as BidRoundRecord, Prisma } from "@prisma/client";
+import { ListResponse } from "@/resources/globalTypes";
 
 const convertToRecordInput = (form: BidRoundFormT): Prisma.BidRoundUncheckedCreateInput => {
   form = BidRoundFormSchema.parse(form);
@@ -96,7 +97,7 @@ export const mapToBidRoundDTO = async (record: BidRoundRecord): Promise<BidRound
 };
 
 
-export async function getBidRound(webtoonId: number): Promise<BidRoundT> {
+export async function getBidRoundByWebtoonId(webtoonId: number): Promise<BidRoundT> {
   const record = await prisma.bidRound.findFirstOrThrow({
     where: {
       webtoonId,
@@ -105,3 +106,120 @@ export async function getBidRound(webtoonId: number): Promise<BidRoundT> {
   });
   return mapToBidRoundDTO(record);
 }
+
+// 관리자 기능
+export type AdminPageBidRoundT = {
+  id: number;
+  createdAt: Date;
+  bidStartsAt?: Date;
+  negoStartsAt?: Date;
+  processEndsAt?: Date;
+  adminNote?: string;
+  status: BidRoundStatus;
+  webtoon: {
+    id: number;
+    title: string;
+    description?: string;
+    thumbPath: string;
+    username: string;
+  };
+};
+export async function listBidRoundsWithWebtoon({ page, approvalStatus }: {
+  page: number;
+  approvalStatus: BidRoundApprovalStatus;
+}): Promise<ListResponse<AdminPageBidRoundT>> {
+  const limit = 5;
+  const where: Prisma.BidRoundWhereInput = {
+    approvalStatus: approvalStatus as $Enums.BidRoundApprovalStatus,
+    isActive: true,
+  };
+  const [records, totalRecords] = await prisma.$transaction([
+    prisma.bidRound.findMany({
+      take: limit,
+      skip: (page - 1) * limit,
+      where,
+      include: {
+        webtoon: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            thumbPath: true,
+            user: {
+              select: {
+                name: true,
+              }
+            }
+          }
+        }
+      }
+    }),
+    prisma.bidRound.count({ where })
+  ]);
+
+  // getBidRoundStatus
+  const items: AdminPageBidRoundT[] = [];
+  for (const record of records) {
+    const status = await getBidRoundStatus(record);
+    items.push({
+      id: record.id,
+      createdAt: record.createdAt,
+      bidStartsAt: record.bidStartsAt ?? undefined,
+      negoStartsAt: record.negoStartsAt ?? undefined,
+      processEndsAt: record.processEndsAt ?? undefined,
+      adminNote: record.adminNote ?? undefined,
+      status,
+      webtoon: {
+        id: record.webtoon.id,
+        title: record.webtoon.title,
+        description: record.webtoon.description ?? undefined,
+        thumbPath: record.webtoon.thumbPath,
+        username: record.webtoon.user.name,
+      }
+    });
+  }
+  return {
+    items,
+    totalPages: Math.ceil(totalRecords / limit),
+  };
+}
+
+export async function approveBidRound(bidRoundId: number) {
+  await prisma.bidRound.update({
+    where: {
+      id: bidRoundId
+    },
+    data: {
+      approvalStatus: BidRoundApprovalStatus.Approved,
+      approvalDecidedAt: new Date(),
+    }
+  });
+}
+
+// TODO 사유 포함
+export async function declineBidRound(bidRoundId: number) {
+  await prisma.bidRound.update({
+    where: {
+      id: bidRoundId
+    },
+    data: {
+      approvalStatus: BidRoundApprovalStatus.Rejected,
+      approvalDecidedAt: new Date(),
+    }
+  });
+}
+
+export async function editBidRoundPlan(bidRoundId: number, plan: {
+  bidStartsAt: Date;
+  negoStartsAt: Date;
+  processEndsAt: Date;
+  adminNote: string;
+}) {
+  await prisma.bidRound.update({
+    where: {
+      id: bidRoundId
+    },
+    data: plan
+  });
+}
+

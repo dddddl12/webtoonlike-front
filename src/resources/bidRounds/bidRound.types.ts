@@ -5,6 +5,7 @@ export enum BidRoundApprovalStatus {
   Pending = "PENDING",
   Approved = "APPROVED",
   Rejected = "REJECTED"
+//   TODO DECLINE로 변경
 }
 
 export enum BidRoundStatus {

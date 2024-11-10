@@ -5,9 +5,9 @@ export function useListData<Filters, ResourceType>(
   listFetcherFunction: (filters: Filters) => Promise<ListResponse<ResourceType>>,
   initialFilters: Filters,
 ): {
-  listResponse: ListResponse<ResourceType> | undefined,
-  filters: Filters,
-  setFilters: Dispatch<SetStateAction<Filters>>
+  listResponse: ListResponse<ResourceType> | undefined;
+  filters: Filters;
+  setFilters: Dispatch<SetStateAction<Filters>>;
 };
 
 export function useListData<Filters, ResourceType>(
@@ -15,9 +15,9 @@ export function useListData<Filters, ResourceType>(
   initialFilters: Filters,
   initialResponse: ListResponse<ResourceType>
 ): {
-  listResponse: ListResponse<ResourceType>,
-  filters: Filters,
-  setFilters: Dispatch<SetStateAction<Filters>>
+  listResponse: ListResponse<ResourceType>;
+  filters: Filters;
+  setFilters: Dispatch<SetStateAction<Filters>>;
 };
 
 export function useListData<Filters, ResourceType>(
@@ -25,9 +25,9 @@ export function useListData<Filters, ResourceType>(
   initialFilters: Filters,
   initialResponse?: ListResponse<ResourceType>
 ): {
-    listResponse: ListResponse<ResourceType> | undefined,
-    filters: Filters,
-    setFilters: Dispatch<SetStateAction<Filters>>
+    listResponse: ListResponse<ResourceType> | undefined;
+    filters: Filters;
+    setFilters: Dispatch<SetStateAction<Filters>>;
   } {
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [listResponse, setListResponse] = useState<ListResponse<ResourceType>|undefined>(initialResponse);

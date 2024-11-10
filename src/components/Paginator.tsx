@@ -18,10 +18,11 @@ export default function Paginator({
   currentPage: number;
   totalPages: number;
   pageWindowLen?: number;
-  setFilters: Dispatch<SetStateAction<{
-    page: number;
-    [extra_key: string]: any;
-  }>>;
+  setFilters: Dispatch<SetStateAction<any>>;
+  // setFilters: Dispatch<SetStateAction<{
+  //   page: number;
+  //   [extra_key: string]: any;
+  // }>>; //TODO
 }) {
   const pageArray = useMemo(() => {
     const arr = [];
@@ -29,10 +30,10 @@ export default function Paginator({
       arr.push(i);
     }
     return arr;
-  }, [currentPage, totalPages]);
+  }, [currentPage, pageWindowLen, totalPages]);
 
   const changePage = (page: number) => {
-    setFilters(prev => ({
+    setFilters((prev: any) => ({
       ...prev, page
     }));
   };

@@ -8,6 +8,7 @@ import { enUS, koKR } from "@clerk/localizations";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { getLocale, getMessages } from "next-intl/server";
+import { Toaster } from "@/shadcn/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,6 +37,7 @@ export default async function RootLayout({
               {children}
             </main>
             <Footer/>
+            <Toaster />
           </body>
         </NextIntlClientProvider>
       </ClerkProvider>
