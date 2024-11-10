@@ -203,6 +203,20 @@ enum UserType {
   @@map("user_type")
 }
 
+model WebtoonBanner {
+  id           String   @id @db.VarChar(255)
+  webtoonId    Int      @map("webtoon_id")
+  bannerUrl    String   @map("banner_url")
+  displayStart DateTime @map("display_start") @db.Timestamp(6)
+  displayEnd   DateTime @map("display_end") @db.Timestamp(6)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt    DateTime @map("updated_at") @db.Timestamp(6)
+
+  webtoon Webtoon @relation(fields: [webtoonId], references: [id], onDelete: Cascade)
+
+  @@map("banners")
+}
+
 model WebtoonEpisodeImage {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
@@ -301,11 +315,12 @@ model Webtoon {
   targetGender    TargetGender @map("target_gender")
   isFeaturedAsNew Boolean      @default(false) @map("is_featured_as_new")
 
-  user       User             @relation(fields: [userId], references: [id], onDelete: Restrict)
-  bidRound   BidRound?
-  episodes   WebtoonEpisode[]
-  likes      WebtoonLike[]
-  genreLinks XWebtoonGenre[]
+  user           User             @relation(fields: [userId], references: [id], onDelete: Restrict)
+  bidRound       BidRound?
+  episodes       WebtoonEpisode[]
+  likes          WebtoonLike[]
+  genreLinks     XWebtoonGenre[]
+  webtoonBanners WebtoonBanner[]
 
   @@map("webtoons")
 }
