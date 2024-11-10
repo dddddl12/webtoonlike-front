@@ -1,7 +1,7 @@
 import { WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
 import { Row } from "@/shadcn/ui/layouts";
 import { Link } from "@/i18n/routing";
-import { BidRoundStatus, BidRoundT } from "@/resources/bidRounds/bidRound.types";
+import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 import { Button } from "@/shadcn/ui/button";
 import { ReactNode } from "react";
 import { clsx } from "clsx";
@@ -34,7 +34,7 @@ async function BidRoundButton ({ webtoon }: {
   webtoon: WebtoonExtendedT;
 }) {
   const t = await getTranslations("seriesManagement");
-  if(webtoon.bidRound) {
+  if (webtoon.activeBidRound) {
     return <ControlButton className="bg-mint text-white">
       <Link href={`/webtoons/${webtoon.id}/bid-round/update`}>
         {t("reregisterOfContentTransactions")}
@@ -52,12 +52,12 @@ async function BidRoundButton ({ webtoon }: {
 async function OfferButton ({ webtoon }: {
   webtoon: WebtoonExtendedT;
 }) {
-  const { bidRound } = webtoon;
+  const { activeBidRound } = webtoon;
   const t = await getTranslations("webtoonDetails");
 
-  const isPossibleToOffer = bidRound
+  const isPossibleToOffer = activeBidRound
     && [BidRoundStatus.Bidding, BidRoundStatus.Negotiating]
-      .includes(bidRound.status);
+      .includes(activeBidRound.status);
   // TODO 시간으로 변경
   return <ControlButton
     className="bg-mint text-white"
@@ -66,7 +66,7 @@ async function OfferButton ({ webtoon }: {
     <Link href={`/offers/${webtoon.id}/create`}>
       {isPossibleToOffer
         ? t("makeOffer")
-        : (bidRound
+        : (activeBidRound
           ? t("notPossibleToOffer")
           : t("unableToMakeOffer"))}
     </Link>
@@ -76,7 +76,7 @@ async function OfferButton ({ webtoon }: {
 function ControlButton({ children, className, disabled }: {
   children: ReactNode;
   className?: string;
-  disabled?: boolean
+  disabled?: boolean;
 }) {
   return <Button
     disabled={disabled}

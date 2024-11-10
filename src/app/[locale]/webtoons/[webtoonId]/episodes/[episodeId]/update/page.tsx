@@ -4,7 +4,7 @@ import { getEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
 
 export default async function UpdateWebtoonEpisode(
   { params }:
-  {params: Promise<{webtoonId: string, episodeId: string}>},
+  {params: Promise<{webtoonId: string; episodeId: string}>},
 ) {
 
   const { episodeId } = await params;

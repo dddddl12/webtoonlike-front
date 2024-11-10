@@ -292,7 +292,6 @@ enum AgeLimit {
 }
 
 enum TargetAge {
-  ALL      @map("all")
   TEENS    @map("teens")
   TWENTIES @map("twenties")
   THIRTIES @map("thirties")

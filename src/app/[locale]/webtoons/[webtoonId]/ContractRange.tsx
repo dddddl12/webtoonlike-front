@@ -10,14 +10,14 @@ import { Pencil1Icon } from "@radix-ui/react-icons";
 import { Text } from "@/shadcn/ui/texts";
 
 export default async function ContractRange({ webtoon }: {
-  webtoon: WebtoonExtendedT
+  webtoon: WebtoonExtendedT;
 }) {
 
   const t = await getTranslations("contractRangeData");
   const tGeneral = await getTranslations("general");
 
-  const { bidRound } = webtoon;
-  if(!bidRound) {
+  const { activeBidRound } = webtoon;
+  if (!activeBidRound) {
     return <>
       {/*TODO*/}
       등록된 판매 정보가 없습니다.
@@ -38,10 +38,10 @@ export default async function ContractRange({ webtoon }: {
           </Link>
         }
       </Row>
-      <ContractRangeBasic bidRound={bidRound}/>
+      <ContractRangeBasic bidRound={activeBidRound}/>
       <div className="flex justify-between gap-20">
-        <ContractRangeCountries bidRound={bidRound}/>
-        <ContractRangeDerivative bidRound={bidRound}/>
+        <ContractRangeCountries bidRound={activeBidRound}/>
+        <ContractRangeDerivative bidRound={activeBidRound}/>
       </div>
     </Col>
   );

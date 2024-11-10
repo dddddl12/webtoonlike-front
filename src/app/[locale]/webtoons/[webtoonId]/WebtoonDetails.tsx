@@ -15,11 +15,9 @@ import { displayName } from "@/utils/displayName";
 export default async function WebtoonDetails({ webtoon }: {
   webtoon: WebtoonExtendedT;
 }) {
-  const t = await getTranslations("webtoonDetails");
   const tGeneral = await getTranslations("general");
-  const tAgeRestriction = await getTranslations("ageRestriction");
-  const targetAge = await formatTargetAge(webtoon.targetAges);
   const locale = await getLocale();
+  const extraInfoRowText = await extraInfoRow(webtoon);
 
   return (
     <Row className="items-center md:items-start md:flex-row md:justify-start gap-12">
@@ -27,7 +25,7 @@ export default async function WebtoonDetails({ webtoon }: {
         src={buildImgUrl(webtoon.thumbPath, { size: "md" })}
         alt={webtoon.thumbPath}
         width={300}
-        height={450}
+        height={45}
         style={{ objectFit: "cover" }}
         priority={true}
         className="rounded-sm"
@@ -42,7 +40,8 @@ export default async function WebtoonDetails({ webtoon }: {
         <Gap y={7.5} />
         <Col>
           <Row className="justify-between">
-            <Text className="text-white text-2xl">
+            {/*TODO gap 및 Text 모두 제거*/}
+            <Text className="text-2xl">
               {displayName(locale, webtoon.title, webtoon.title_en)}
             </Text>
             {webtoon.isEditable && (
@@ -57,34 +56,12 @@ export default async function WebtoonDetails({ webtoon }: {
           </Row>
           <Gap y={4} />
           <Row className="gap-2">
-            {/* 작가 */}
-            <Text className="text-base text-white">
-              {displayName(locale, webtoon.authorOrCreatorName, webtoon.authorOrCreatorName_en)}
+            <Text className="text-base">
+              {extraInfoRowText}
             </Text>
-            {/* 총 에피소드 */}
-            {webtoon.bidRound?.totalEpisodeCount && <>
-              <Text className="text-base text-white">|</Text>
-              <Text className="text-base text-white">
-                {t("episodeCount", {
-                  count: webtoon.bidRound.totalEpisodeCount
-                })}
-              </Text>
-            </>}
-            {/* 연령 제한 */}
-            <Text className="text-base text-white">|</Text>
-            <Text className="text-base text-white">
-              {tAgeRestriction(webtoon.ageLimit)}
-            </Text>
-            {/* 타겟 연령 TODO */}
-            {targetAge && <>
-              <Text className="text-base text-white">|</Text>
-              <Text className="text-base text-white">
-                {targetAge}
-              </Text>
-            </>}
           </Row>
           <Gap y={4} />
-          <Text className="text-sm text-white">
+          <Text className="text-sm">
             {displayName(locale, webtoon.description, webtoon.description_en)}
           </Text>
           <ExternalLink webtoon={webtoon} />
@@ -100,10 +77,7 @@ export default async function WebtoonDetails({ webtoon }: {
 async function ExternalLink({ webtoon }: {
   webtoon: WebtoonExtendedT;
 }) {
-  const locale = await getLocale();
-  const link = locale === "ko"
-    ? webtoon.externalUrl
-    : webtoon.englishUrl ?? webtoon.externalUrl;
+  const link = webtoon.externalUrl;
   if (!link) {
     return null;
   }
@@ -127,13 +101,38 @@ async function Genres({ webtoon }: {
     <Gap y={13} />
     <Row className="flex-wrap gap-2 content-stretch">
       {(webtoon.genres).map((item) => (
-        <Badge key={item.id} className="bg-gray-dark text-white">
+        <Badge key={item.id} className="bg-gray-dark">
           {displayName(locale, item.label, item.label_en)}
         </Badge>
       ))}
     </Row>
   </>;
 }
+
+async function extraInfoRow(webtoon: WebtoonExtendedT) {
+  const t = await getTranslations("webtoonDetails");
+  const tAgeRestriction = await getTranslations("ageRestriction");
+  const locale = await getLocale();
+
+  const infoArray = [
+    // 작가
+    displayName(locale, webtoon.authorOrCreatorName, webtoon.authorOrCreatorName_en),
+
+    // 총 에피소드 TODO 연재중인 경우라면?
+    webtoon.activeBidRound?.totalEpisodeCount !== undefined ? t("episodeCount", {
+      count: webtoon.activeBidRound.totalEpisodeCount
+    }) : undefined,
+
+    //   연령 제한
+    tAgeRestriction(webtoon.ageLimit),
+
+    //   타겟 연령
+    await formatTargetAge(webtoon.targetAges)
+  ];
+
+  return infoArray.filter(p => !!p).join(" | ");
+}
+
 
 async function formatTargetAge(targetAges: TargetAge[]) {
   const t = await getTranslations("webtoonDetails");
