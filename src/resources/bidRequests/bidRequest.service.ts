@@ -67,6 +67,11 @@ export async function listBidRequests({
               }
             }
           }
+        },
+        user: {
+          select: {
+            name: true,
+          }
         }
       },
       orderBy: {
@@ -87,7 +92,8 @@ export async function listBidRequests({
           title: webtoon.title,
           title_en: webtoon.title_en ?? undefined,
           thumbPath: webtoon.thumbPath,
-        }
+        },
+        username: record.user.name,
       };
     }),
     totalPages: Math.ceil(totalRecords / limit),

@@ -51,16 +51,7 @@ export default function BidRequestListRow({ bidRequest }:{
         </div>
       </div>
       {showMessages
-        && <BidRequestContents bidRequest={bidRequest}/>}
+        && <BidRequestMessageList bidRequest={bidRequest}/>}
     </>
   );
-}
-
-function BidRequestContents({ bidRequest }: {
-  bidRequest: BidRequestExtendedT;
-}) {
-  return <div className="my-14">
-    <ViewOfferSection bidRequest={bidRequest}/>
-    <BidRequestMessageList bidRequestId={bidRequest.id}/>
-  </div>;
 }

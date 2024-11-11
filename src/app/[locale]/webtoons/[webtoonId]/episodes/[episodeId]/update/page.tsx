@@ -1,5 +1,4 @@
 import React from "react";
-import { UpdateWebtoonEpisodetPage } from "@/app/[locale]/webtoons/[webtoonId]/update/UpdateWebtoonEpisodetPage";
 import { getEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
 
 export default async function UpdateWebtoonEpisode(
@@ -12,7 +11,7 @@ export default async function UpdateWebtoonEpisode(
 
   return (
     <div className="bg-[#121212] min-h-screen">
-      <UpdateWebtoonEpisodetPage episode={episode}/>
+      {/*<UpdateWebtoonEpisodetPage episode={episode}/>*/}
     </div>
   );
 }

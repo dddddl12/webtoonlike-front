@@ -103,10 +103,11 @@ function StatusIndicator({ webtoon }: {
   webtoon: Webtoon;
 }) {
   const t = useTranslations("manageContents");
+  const tBidRoundApprovalStatus = useTranslations("bidRoundApprovalStatus");
   const { bidRoundApprovalStatus } = webtoon;
 
   if (bidRoundApprovalStatus) {
-    return <>{t(bidRoundApprovalStatus)}</>;
+    return <>{tBidRoundApprovalStatus(bidRoundApprovalStatus)}</>;
   } else if (webtoon.episodeCount < 3) {
     return <>{t("episodes", {
       count: webtoon.episodeCount

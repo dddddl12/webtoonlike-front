@@ -18,7 +18,7 @@ import NegotiationDetails from "@/app/[locale]/invoices/NegotiationDetails";
 type InvoiceListResponse = ListResponse<InvoiceExtendedT>;
 
 export function ManageInvoiceList({ initialInvoiceListResponse }: {
-  initialInvoiceListResponse: InvoiceListResponse
+  initialInvoiceListResponse: InvoiceListResponse;
 }) {
   const t = useTranslations("invoiceManagement");
   const { listResponse, filters, setFilters } = useListData(
@@ -108,7 +108,7 @@ function TableRow({ invoice }: { invoice: InvoiceExtendedT }) {
           {/*<PreviewInvoiceUser invoice={invoice} />*/}
         </div>
       </div>
-      {showNegotiation && <NegotiationDetails/>}
+      {showNegotiation && <NegotiationDetails content={"인보이스 내용"}/>}
     </>
   );
 }

@@ -46,14 +46,14 @@ function Sidebar() {
       <IconDocs/>
       <p>투고 관리</p>
     </MenuItem>
-    <MenuItem pathname="/admin/offers">
-      <IconDocs/>
-      <p>오퍼 관리</p>
-    </MenuItem>
-    <MenuItem pathname="/admin/invoices">
-      <IconLetter/>
-      <p>인보이스 관리</p>
-    </MenuItem>
+    {/*<MenuItem pathname="/admin/offers">*/}
+    {/*  <IconDocs/>*/}
+    {/*  <p>오퍼 관리</p>*/}
+    {/*</MenuItem>*/}
+    {/*<MenuItem pathname="/admin/invoices">*/}
+    {/*  <IconLetter/>*/}
+    {/*  <p>인보이스 관리</p>*/}
+    {/*</MenuItem>*/}
     {/*<MenuItem pathname="/admin/genres">*/}
     {/*  <IconAlbum/>*/}
     {/*  <p>장르 관리</p>*/}

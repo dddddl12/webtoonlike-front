@@ -1,3 +1,5 @@
-export default function NegotiationDetails() {
-  return <div>협상 내용</div>;
+export default function NegotiationDetails({ content }: {
+  content: string;
+}) {
+  return <div>{content}</div>;
 }
