@@ -36,7 +36,7 @@ export default async function AccountBasicInfoSection() {
           {/*  {creators.filter((item) => item.id === me?.creator?.id)[0]?.numWebtoonLike || 0}*/}
           {/*  <IconHeartFill fill="red" />*/}
           {/*</Row>*/}
-          <Button variant="secondary">
+          <Button variant="secondary" asChild>
             <Link href="/account/update">
               {TeditProfile("editProfile")}
             </Link>

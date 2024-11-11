@@ -24,7 +24,7 @@ export default function WebtoonPageContents({ webtoon }: {
       <hr className="border-gray-shade my-10"/>
 
       <ContractRange webtoon={webtoon}/>
-      {webtoon.isEditable && <Button>
+      {webtoon.isEditable && <Button asChild>
         <Link href={`/webtoons/${webtoon.id}/episodes/create`}>
         에피소드 추가
         </Link>

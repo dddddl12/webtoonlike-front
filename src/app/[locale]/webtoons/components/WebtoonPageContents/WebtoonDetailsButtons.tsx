@@ -84,7 +84,7 @@ function ControlButton({ children, className, disabled, onClick }: {
     onClick={onClick}
     disabled={disabled}
     className={clsx("rounded-sm h-12 flex justify-center items-center flex-1 font-bold text-base", className)}
-  >
+    asChild>
     {children}
   </Button>;
 }

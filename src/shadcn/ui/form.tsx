@@ -25,8 +25,8 @@ type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 > = {
-  name: TName
-}
+  name: TName;
+};
 
 const FormFieldContext = React.createContext<FormFieldContextValue>(
   {} as FormFieldContextValue
@@ -69,8 +69,8 @@ const useFormField = () => {
 };
 
 type FormItemContextValue = {
-  id: string
-}
+  id: string;
+};
 
 const FormItemContext = React.createContext<FormItemContextValue>(
   {} as FormItemContextValue
@@ -195,7 +195,7 @@ function FormHeader({ title, goBackHref }: {
   goBackHref: string;
 }) {
   return <Row className="items-center mb-14">
-    <Button variant='ghost'>
+    <Button variant='ghost' asChild>
       <Link href={goBackHref}>
         <ArrowLeftIcon width={32} height={32} />
       </Link>
