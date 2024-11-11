@@ -99,9 +99,9 @@ const offerableBidRoundFilter = (): Prisma.BidRoundListRelationFilter => {
       bidStartsAt: {
         lte: now
       },
-      processEndsAt: {
-        gt: now
-      }
+      // processEndsAt: {
+      //   gt: now
+      // }
     }
   };
 };

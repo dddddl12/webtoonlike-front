@@ -113,3 +113,25 @@ export async function createBidRequest(form: BidRequestFormT) {
     }
   });
 }
+
+export async function acceptBidRequest(bidRequestId: number) {
+  await prisma.bidRequest.update({
+    data: {
+      acceptedAt: new Date(),
+    },
+    where: {
+      id: bidRequestId,
+    }
+  });
+}
+
+export async function declineBidRequest(bidRequestId: number) {
+  await prisma.bidRequest.update({
+    data: {
+      rejectedAt: new Date(),
+    },
+    where: {
+      id: bidRequestId,
+    }
+  });
+}

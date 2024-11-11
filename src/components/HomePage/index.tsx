@@ -5,8 +5,6 @@ import ArtistGrid from "@/components/HomePage/ArtistGrid";
 import BannerSection from "@/components/HomePage/BannerSection";
 import { homeItems } from "@/resources/webtoons/webtoon.service";
 import PageLayout from "@/components/PageLayout";
-import Image from "next/image";
-import LezhinBannerImage from "./images/lezhin_banner.png";
 
 export async function HomePage() {
   const t = await getTranslations("homeMain");

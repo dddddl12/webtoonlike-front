@@ -5,6 +5,7 @@ import { BidRequestMessageExtendedT, BidRequestMessageT } from "@/resources/bidR
 import prisma from "@/utils/prisma";
 import { UserTypeT } from "@/resources/users/user.types";
 import { ListResponse } from "@/resources/globalTypes";
+import { getTokenInfo } from "@/resources/tokens/token.service";
 
 const mapToBidRequestMessageDTO = (record: BidRequestMessageRecord): BidRequestMessageT => ({
   id: record.id,
@@ -53,4 +54,15 @@ export async function listBidRequestMessages(bidRequestId: number, {
     }),
     totalPages: Math.ceil(totalRecords / limit),
   };
+}
+
+export async function createBidRequestMessage(bidRequestId: number, content: string) {
+  const { userId } = await getTokenInfo();
+  await prisma.bidRequestMessage.create({
+    data: {
+      bidRequestId,
+      content,
+      userId
+    }
+  });
 }

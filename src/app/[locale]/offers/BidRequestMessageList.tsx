@@ -9,6 +9,7 @@ import { useState } from "react";
 import NegotiationDetails from "@/app/[locale]/invoices/NegotiationDetails";
 import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
 import ViewOfferSection from "@/app/[locale]/offers/components/OfferDetails";
+import Controls from "@/app/[locale]/offers/components/Controls";
 
 export default function BidRequestMessageList({ bidRequest }: {
   bidRequest: BidRequestExtendedT;
@@ -60,7 +61,10 @@ function FirstRow({ bidRequest }: {
       </div>
       <div className="w-[20%] p-2 flex justify-center">제안</div>
     </Row>
-    {showContent && <ViewOfferSection bidRequest={bidRequest}/>}
+    {showContent && <Col>
+      <ViewOfferSection bidRequest={bidRequest}/>
+      <Controls bidRequestId={bidRequest.id} />
+    </Col>}
   </>;
 
 }
@@ -82,6 +86,9 @@ function MessageRow({ message, index }: {
       </div>
       <div className="w-[20%] p-2 flex justify-center">수정 요청</div>
     </Row>
-    {showNegotiation && <NegotiationDetails content={message.content}/>}
+    {showNegotiation && <Col>
+      <NegotiationDetails content={message.content}/>
+      <Controls bidRequestId={message.bidRequestId} />
+    </Col>}
   </>;
 }

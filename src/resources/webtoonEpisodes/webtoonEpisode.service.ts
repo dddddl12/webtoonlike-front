@@ -2,9 +2,14 @@
 
 import { WebtoonEpisode as WebtoonEpisodeRecord } from "@prisma/client";
 import prisma from "@/utils/prisma";
-import { WebtoonEpisodeExtendedT, WebtoonEpisodeT } from "@/resources/webtoonEpisodes/webtoonEpisode.types";
+import {
+  WebtoonEpisodeExtendedT,
+  WebtoonEpisodeFormT,
+  WebtoonEpisodeT
+} from "@/resources/webtoonEpisodes/webtoonEpisode.types";
 import { AdminLevel } from "@/resources/tokens/token.types";
 import { getTokenInfo } from "@/resources/tokens/token.service";
+import { WebtoonEpisodeImageFormT } from "@/resources/webtoonEpisodeImages/webtoonEpisodeImage.types";
 
 const mapToWebtoonEpisodeDTO = (record: WebtoonEpisodeRecord): WebtoonEpisodeT => ({
   id: record.id,
@@ -74,3 +79,41 @@ export async function getEpisode(id: number): Promise<WebtoonEpisodeExtendedT> {
 //   const putUrl = await createSignedUrl(key, mimeType);
 //   return { putUrl, key };
 // }
+
+
+export async function createEpisode(form: WebtoonEpisodeFormT, images: WebtoonEpisodeImageFormT[]) {
+  const episodeId = await prisma.$transaction(async (tx) => {
+    const { id } = await tx.webtoonEpisode.create({
+      data: form,
+      select: {
+        id: true,
+      }
+    });
+    await tx.webtoonEpisodeImage.createMany({
+      data: images.map(image => ({
+        ...image,
+        episodeId: id,
+      }))
+    });
+    return id;
+  });
+  return episodeId;
+}
+
+
+export async function updateEpisode(episodeId: number, form: WebtoonEpisodeFormT, images: WebtoonEpisodeImageFormT[]) {
+  await prisma.$transaction(async (tx) => {
+    await tx.webtoonEpisode.update({
+      data: form,
+      where: {
+        id: episodeId,
+      }
+    });
+    await tx.webtoonEpisodeImage.createMany({
+      data: images.map(image => ({
+        ...image,
+        episodeId,
+      }))
+    });
+  });
+}

@@ -1,6 +1,7 @@
 import PageLayout from "@/components/PageLayout";
 import { Gap, Row } from "@/shadcn/ui/layouts";
 import { getTranslations } from "next-intl/server";
+import WebtoonEpisodeForm from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm";
 
 export default async function CreateWebtoonPost({ params } : {
   params: Promise<{webtoonId: string}>;
@@ -17,7 +18,7 @@ export default async function CreateWebtoonPost({ params } : {
 
       <Gap y={15}/>
 
-      {/*<CreateWebtoonEpisodeForm webtoonId={webtoonId} />*/}
+      <WebtoonEpisodeForm webtoonId={webtoonId} />
     </PageLayout>
   );
 }

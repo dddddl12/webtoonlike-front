@@ -6,6 +6,8 @@ import PageLayout from "@/components/PageLayout";
 import BidRequestForm from "@/app/[locale]/webtoons/components/forms/BidRequestForm";
 import { WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
 import { useState } from "react";
+import { Link } from "@/i18n/routing";
+import { Button } from "@/shadcn/ui/button";
 
 export default function WebtoonPageContents({ webtoon }: {
   webtoon: WebtoonExtendedT;
@@ -22,6 +24,11 @@ export default function WebtoonPageContents({ webtoon }: {
       <hr className="border-gray-shade my-10"/>
 
       <ContractRange webtoon={webtoon}/>
+      {webtoon.isEditable && <Button>
+        <Link href={`/webtoons/${webtoon.id}/episodes/create`}>
+        에피소드 추가
+        </Link>
+      </Button>}
 
       {openBidRequestForm
         && <>

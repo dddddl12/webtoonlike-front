@@ -1,4 +1,3 @@
-import { WebtoonEpisodeImageT } from "@/resources/webtoonEpisodeImages/webtoonEpisodeImage.types";
 import z from "zod";
 import { ResourceSchema } from "@/resources/globalTypes";
 
@@ -11,6 +10,9 @@ const WebtoonEpisodeBaseSchema = z.object({
   // thumbPath: z.string().optional(),
   englishUrl: z.string().optional()
 });
+
+export const WebtoonEpisodeFormSchema = WebtoonEpisodeBaseSchema;
+export type WebtoonEpisodeFormT = z.infer<typeof WebtoonEpisodeFormSchema>;
 
 
 export const WebtoonEpisodeSchema = WebtoonEpisodeBaseSchema

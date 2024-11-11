@@ -15,7 +15,7 @@ export default function NavBanner({ webtoonId, episodeId, children }: {
     disabled={isDisabled}
     className={clsx(
       "sticky top-[50%] z-10 p-2 rounded-full flex gap-2 items-center text-base h-12 px-4")}
-    variant={isDisabled ? "disabled" : "mint"}
+    variant={isDisabled ? "gray" : "mint"}
   >
     <Link
       className="flex items-center gap-2"
