@@ -2,14 +2,14 @@ import { BidRoundT, ContractRangeItemSchema } from "@/resources/bidRounds/bidRou
 import { Col } from "@/shadcn/ui/layouts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shadcn/ui/table";
 import React from "react";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
-export default async function ContractRangeDerivative({ bidRound }: {
-  bidRound: BidRoundT
+export default function ContractRangeDerivative({ bidRound }: {
+  bidRound: BidRoundT;
 }) {
-  const t = await getTranslations("contractRangeData");
-  const tCountries = await getTranslations("countries");
-  const tBusinessFields = await getTranslations("businessFields");
+  const t = useTranslations("contractRangeData");
+  const tCountries = useTranslations("countries");
+  const tBusinessFields = useTranslations("businessFields");
 
   return <Col className="flex-1">
     <h2 className="text-lg font-bold">

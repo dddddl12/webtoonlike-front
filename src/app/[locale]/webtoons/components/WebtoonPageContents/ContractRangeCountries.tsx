@@ -2,18 +2,18 @@ import { Col, Row } from "@/shadcn/ui/layouts";
 import { RadioGroup, RadioGroupItem } from "@/shadcn/ui/radio-group";
 import { Label } from "@/shadcn/ui/label";
 import { BidRoundT, ContractRange, ContractRangeItemSchema } from "@/resources/bidRounds/bidRound.types";
-import { getTranslations } from "next-intl/server";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shadcn/ui/table";
 import React from "react";
 import z from "zod";
+import { useTranslations } from "next-intl";
 
-export default async function ContractRangeCountries({ bidRound }: {
-  bidRound: BidRoundT
+export default function ContractRangeCountries({ bidRound }: {
+  bidRound: BidRoundT;
 }) {
 
-  const t = await getTranslations("contractRangeData");
-  const tCountries = await getTranslations("countries");
-  const tContractType = await getTranslations("contractType");
+  const t = useTranslations("contractRangeData");
+  const tCountries = useTranslations("countries");
+  const tContractType = useTranslations("contractType");
 
   return <Col className="flex-1">
     <Row className="justify-between">
@@ -68,8 +68,8 @@ export default async function ContractRangeCountries({ bidRound }: {
 
 // todo 데이터 형태 재검토
 function WhetherExclusive({ data, countryCode }: {
-  countryCode: z.infer<typeof ContractRangeItemSchema.shape.country>,
-  data: z.infer<typeof ContractRange>
+  countryCode: z.infer<typeof ContractRangeItemSchema.shape.country>;
+  data: z.infer<typeof ContractRange>;
 }) {
   const target = data.find((item) => item.businessField === "WEBTOONS" && item.country === countryCode);
   if (!target) {

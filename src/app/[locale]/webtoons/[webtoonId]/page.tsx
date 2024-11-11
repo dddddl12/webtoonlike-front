@@ -1,22 +1,10 @@
-import React from "react";
-import ContractRange from "@/app/[locale]/webtoons/[webtoonId]/ContractRange";
+import WebtoonPageContents from "../components/WebtoonPageContents";
 import { getWebtoon } from "@/resources/webtoons/webtoon.service";
-import WebtoonDetails from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetails";
-import PageLayout from "@/components/PageLayout";
 
 export default async function WebtoonDetailsPage({ params }:
 { params: Promise<{ webtoonId: string }> }) {
   const { webtoonId } = await params;
+
   const webtoon = await getWebtoon(Number(webtoonId));
-
-  return (
-    <PageLayout>
-      <WebtoonDetails webtoon={webtoon}/>
-
-      <hr className="border-gray-shade my-10"/>
-
-      <ContractRange webtoon={webtoon}/>
-
-    </PageLayout>
-  );
+  return <WebtoonPageContents webtoon={webtoon} />;
 }

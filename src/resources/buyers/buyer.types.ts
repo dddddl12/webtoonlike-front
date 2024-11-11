@@ -58,3 +58,14 @@ export type BuyerFormT = z.infer<typeof BuyerFormSchema>;
 export const BuyerSchema = BuyerBaseSchema
   .merge(BuyerBaseSchema);
 export type BuyerT = z.infer<typeof BuyerSchema>;
+
+export const PublicBuyerInfoSchema = z.object({
+  username: z.string(),
+  company: z.object({
+    name: z.string(),
+    thumbPath: z.string().optional(),
+    dept: z.string().optional(),
+    position: z.string().optional(),
+  })
+});
+export type PublicBuyerInfoT = z.infer<typeof PublicBuyerInfoSchema>;

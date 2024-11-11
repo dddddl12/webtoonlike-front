@@ -4,7 +4,7 @@ import PageLayout from "@/components/PageLayout";
 import { getTranslations } from "next-intl/server";
 
 export default async function CreateBidRoundPage({ params }: {
-  params: Promise<{webtoonId: string}>
+  params: Promise<{webtoonId: string}>;
 }) {
   const webtoonId = await params.then(p => Number(p.webtoonId));
   const t = await getTranslations("seriesManagement");

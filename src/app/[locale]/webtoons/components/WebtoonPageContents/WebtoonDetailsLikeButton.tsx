@@ -1,5 +1,3 @@
-"use client";
-
 import { IconHeart } from "@/components/svgs/IconHeart";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";
 import { Row } from "@/shadcn/ui/layouts";

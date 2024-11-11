@@ -13,11 +13,11 @@ import { useTranslations } from "next-intl";
 import { BidRoundFormSchema, BidRoundFormT, BidRoundT } from "@/resources/bidRounds/bidRound.types";
 import { useForm, UseFormReturn, FieldValues, FieldPath, FieldPathValue, useWatch } from "react-hook-form";
 import { useRouter } from "@/i18n/routing";
-import BidRoundFormContractRange from "@/app/[locale]/webtoons/components/forms/BidRoundForm/BidRoundFormContractRange";
 import { FieldSet, Form, FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
 import { createBidRound, updateBidRound } from "@/resources/bidRounds/bidRound.service";
 import { formResolver } from "@/utils/forms";
+import ContractRangeForm from "@/app/[locale]/webtoons/components/forms/ContractRangeForm";
 
 export default function BidRoundForm({ webtoonId, prev }: {
   webtoonId: number;
@@ -109,7 +109,8 @@ export default function BidRoundForm({ webtoonId, prev }: {
           <IconExclamation className="fill-white ml-1"/>
         </Heading2>
 
-        <BidRoundFormContractRange form={form}/>
+        <ContractRangeForm form={form as never} formType="bidRound"/>
+        {/*TODO never*/}
 
         {/* 동의 박스 */}
         <FormItem className="flex justify-center gap-2 items-center mt-16">

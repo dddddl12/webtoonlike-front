@@ -100,20 +100,11 @@
     },
     "makeAnOffer": {
         "makeOffer": "Make an Offer",
-        "addItem": "Add Item",
-        "typeOfBusinessRight": "Type of Business Right",
-        "businessRightClassification": "Business Rights Classification",
-        "exclusiveRights": "Exclusive Rights",
-        "serviceRegion": "Service Region",
-        "contractCondition": "Conditions of Contract",
-        "contractConditionDesc": "Please enter MG, duration, RS, manuscript fee, etc.",
-        "delete": "Delete",
-        "exclusive": "Exclusive",
-        "nonExclusive": "Non Exclusive",
         "toCreator": "To Creator",
         "inputAdditionalRequirements": "Please enter additional requirements",
         "note": "*If you provide an alternative contact method, such as a phone number or social media account, it may limit your access to Webtoons.",
-        "next": "Next"
+        "offerDetails": "Offer Details",
+        "offerer": "Offerer"
     },
     "typeBusinessRight": {
         "webtoonRights": "Webtoon Service Rights",
@@ -394,6 +385,20 @@
         "all": "All",
         "webtoonServiceRegion": "Webtoon Service Region"
     },
+    "contractRangeDataForm": {
+        "typeOfBusinessRight": "Type of Business Right",
+        "businessRightClassification": "Business Right Classification",
+        "exclusiveRights": "Exclusive Rights",
+        "serviceRegion": "Service Region",
+        "delete": "Delete",
+        "addItem": "Add Item",
+        "selectTypeOfBusinessRight": "Select Type of Business Right",
+        "webtoonSerialRights": "Webtoon Serial Rights",
+        "secondBusinessRight": "Second Business Right",
+        "selectBusinessRightClassifications": "Select Business Classifications",
+        "contractCondition": "Conditions of Contract",
+        "contractConditionDesc": "Please enter MG, duration, RS, manuscript fee, etc."
+    },
     "updateOrCreateBidRoundsPage": {
         "generalInformation": "General Information",
         "productType": "Type of Work",
@@ -403,12 +408,6 @@
         "yes": "Yes",
         "no": "No",
         "currentStatusOfCopyrightAgreement": "Current status of copyright agreement",
-        "typeOfBusinessRight": "Type of Business Right",
-        "businessRightClassification": "Business Right Classification",
-        "exclusiveRights": "Exclusive Rights",
-        "serviceRegion": "Service Region",
-        "delete": "Delete",
-        "addItem": "Add Item",
         "agreement": "If there is a problem with the copyright ownership of the registered content, the applicant shall bear all responsibility.",
         "register": "Register",
         "serialInformation": "Serial Information",
@@ -417,11 +416,7 @@
         "currentEpisodeNoMustBeLessThanTotal": "It cannot exceed the final episode number.",
         "monthlyProductionAvailableRounds": "Monthly Production Available Rounds",
         "episodesPossible": "episodes possible",
-        "finishedEpisode": "episodes (finished)",
-        "selectTypeOfBusinessRight": "Select Type of Business Right",
-        "webtoonSerialRights": "Webtoon Serial Rights",
-        "secondBusinessRight": "Second Business Right",
-        "selectBusinessRightClassifications": "Select Business Classifications"
+        "finishedEpisode": "episodes (finished)"
     },
     "creatorBidRequestConditionPage": {
         "buyerInformation": "Buyer Information",

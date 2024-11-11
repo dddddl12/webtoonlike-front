@@ -6,18 +6,20 @@ import { Text } from "@/shadcn/ui/texts";
 import { Badge } from "@/shadcn/ui/badge";
 import { Link } from "@/i18n/routing";
 import { TargetAge, WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
-import { getLocale, getTranslations } from "next-intl/server";
-import WebtoonDetailsButtons from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetailsButtons";
-import WebtoonDetailsLikeButton from "@/app/[locale]/webtoons/[webtoonId]/WebtoonDetailsLikeButton";
+import WebtoonDetailsButtons from "@/app/[locale]/webtoons/components/WebtoonPageContents/WebtoonDetailsButtons";
+import WebtoonDetailsLikeButton from "@/app/[locale]/webtoons/components/WebtoonPageContents/WebtoonDetailsLikeButton";
 import { IconLink } from "@/components/svgs/IconLink";
 import { displayName } from "@/utils/displayName";
+import { useLocale, useTranslations } from "next-intl";
+import { Dispatch, SetStateAction } from "react";
 
-export default async function WebtoonDetails({ webtoon }: {
+export default function WebtoonDetails({ webtoon, openBidRequestForm, setOpenBidRequestForm }: {
   webtoon: WebtoonExtendedT;
+  openBidRequestForm: boolean;
+  setOpenBidRequestForm: Dispatch<SetStateAction<boolean>>;
 }) {
-  const tGeneral = await getTranslations("general");
-  const locale = await getLocale();
-  const extraInfoRowText = await extraInfoRow(webtoon);
+  const tGeneral = useTranslations("general");
+  const locale = useLocale();
 
   return (
     <Row className="items-center md:items-start md:flex-row md:justify-start gap-12">
@@ -57,7 +59,7 @@ export default async function WebtoonDetails({ webtoon }: {
           <Gap y={4} />
           <Row className="gap-2">
             <Text className="text-base">
-              {extraInfoRowText}
+              <ExtraInfoRow webtoon={webtoon} />
             </Text>
           </Row>
           <Gap y={4} />
@@ -65,8 +67,10 @@ export default async function WebtoonDetails({ webtoon }: {
             {displayName(locale, webtoon.description, webtoon.description_en)}
           </Text>
           <ExternalLink webtoon={webtoon} />
-          <Gap y={7} />
-          <WebtoonDetailsButtons webtoon={webtoon} />
+          {!openBidRequestForm && <>
+            <Gap y={7} />
+            <WebtoonDetailsButtons webtoon={webtoon} setOpenBidRequestForm={setOpenBidRequestForm} />
+          </>}
           <Genres webtoon={webtoon} />
         </Col>
       </Col>
@@ -74,7 +78,7 @@ export default async function WebtoonDetails({ webtoon }: {
   );
 }
 
-async function ExternalLink({ webtoon }: {
+function ExternalLink({ webtoon }: {
   webtoon: WebtoonExtendedT;
 }) {
   const link = webtoon.externalUrl;
@@ -90,10 +94,10 @@ async function ExternalLink({ webtoon }: {
   </>;
 }
 
-async function Genres({ webtoon }: {
+function Genres({ webtoon }: {
   webtoon: WebtoonExtendedT;
 }) {
-  const locale = await getLocale();
+  const locale = useLocale();
   if (webtoon.genres.length === 0) {
     return null;
   }
@@ -109,10 +113,25 @@ async function Genres({ webtoon }: {
   </>;
 }
 
-async function extraInfoRow(webtoon: WebtoonExtendedT) {
-  const t = await getTranslations("webtoonDetails");
-  const tAgeRestriction = await getTranslations("ageRestriction");
-  const locale = await getLocale();
+function ExtraInfoRow({ webtoon }: {
+  webtoon: WebtoonExtendedT;
+}) {
+  const t = useTranslations("webtoonDetails");
+  const tAgeRestriction = useTranslations("ageRestriction");
+  const locale = useLocale();
+
+  const numericAges = formatTargetAge(webtoon.targetAges);
+  let targetAge = "";
+  if (numericAges?.length === 1) {
+    targetAge = t("targetAge", {
+      age: numericAges[0]
+    });
+  } else if (numericAges) {
+    targetAge = t("targetAgeRanged", {
+      lowerLimit: numericAges[0],
+      upperLimit: numericAges[numericAges.length - 1],
+    });
+  }
 
   const infoArray = [
     // 작가
@@ -123,23 +142,24 @@ async function extraInfoRow(webtoon: WebtoonExtendedT) {
       count: webtoon.activeBidRound.totalEpisodeCount
     }) : undefined,
 
-    //   연령 제한
+    // 연령 제한
     tAgeRestriction(webtoon.ageLimit),
 
-    //   타겟 연령
-    await formatTargetAge(webtoon.targetAges)
+    // 타겟 연령
+    targetAge
   ];
 
-  return infoArray.filter(p => !!p).join(" | ");
+  return <>
+    {infoArray.filter(p => !!p).join(" | ")}
+  </>;
 }
 
 
-async function formatTargetAge(targetAges: TargetAge[]) {
-  const t = await getTranslations("webtoonDetails");
+function formatTargetAge(targetAges: TargetAge[]) {
   if (targetAges.length === 0) {
     return undefined;
   }
-  const numericAges = targetAges.map(age => {
+  return targetAges.map(age => {
     switch (age) {
     case TargetAge.Teens:
       return 10;
@@ -155,14 +175,4 @@ async function formatTargetAge(targetAges: TargetAge[]) {
       throw new Error(`Unknown age ${targetAges.join(",")}`);
     }
   }).sort((a, b) => a - b);
-  if (numericAges.length === 1) {
-    return t("targetAge", {
-      age: numericAges[0]
-    });
-  } else {
-    return t("targetAgeRanged", {
-      lowerLimit: numericAges[0],
-      upperLimit: numericAges[numericAges.length - 1],
-    });
-  }
 }

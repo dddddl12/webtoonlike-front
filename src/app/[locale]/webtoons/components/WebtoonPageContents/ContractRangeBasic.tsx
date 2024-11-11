@@ -7,13 +7,13 @@ import { RadioGroupItem } from "@/shadcn/ui/radio-group";
 import { Label } from "@/shadcn/ui/label";
 import { Input } from "@/shadcn/ui/input";
 import React from "react";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
-export default async function ContractRangeBasic({ bidRound }: {
-  bidRound: BidRoundT
+export default function ContractRangeBasic({ bidRound }: {
+  bidRound: BidRoundT;
 }) {
 
-  const t = await getTranslations("contractRangeData");
+  const t = useTranslations("contractRangeData");
 
   return <Col>
     <Row>
@@ -52,10 +52,10 @@ export default async function ContractRangeBasic({ bidRound }: {
   </Col>;
 }
 
-async function IsNewIndicator({ isNew }: {
-  isNew: boolean
+function IsNewIndicator({ isNew }: {
+  isNew: boolean;
 }) {
-  const t = await getTranslations("contractRangeData");
+  const t = useTranslations("contractRangeData");
   return <Col>
     <Text className="text-white">{t("seriesType")}</Text>
     <Gap y={2} />
@@ -75,10 +75,10 @@ async function IsNewIndicator({ isNew }: {
   </Col>;
 }
 
-async function IsOriginalIndicator({ isOriginal }: {
-  isOriginal: boolean
+function IsOriginalIndicator({ isOriginal }: {
+  isOriginal: boolean;
 }) {
-  const t = await getTranslations("contractRangeData");
+  const t = useTranslations("contractRangeData");
   return <Col>
     <Text className="text-white">{t("serviceOnOtherPlatforms")}</Text>
     <Gap y={2}/>
@@ -97,10 +97,10 @@ async function IsOriginalIndicator({ isOriginal }: {
   </Col>;
 }
 
-async function ProgressIndicator({ episodeNo }: {
-  episodeNo?: number
+function ProgressIndicator({ episodeNo }: {
+  episodeNo?: number;
 }) {
-  const t = await getTranslations("contractRangeData");
+  const t = useTranslations("contractRangeData");
   // TODO 완결은 그냥 하드코딩된 글자인지?
 
   return <Col>

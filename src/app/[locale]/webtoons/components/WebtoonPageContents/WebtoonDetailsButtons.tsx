@@ -3,25 +3,26 @@ import { Row } from "@/shadcn/ui/layouts";
 import { Link } from "@/i18n/routing";
 import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 import { Button } from "@/shadcn/ui/button";
-import { ReactNode } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import { clsx } from "clsx";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
-export default async function WebtoonDetailsButtons({ webtoon }: {
+export default function WebtoonDetailsButtons({ webtoon, setOpenBidRequestForm }: {
   webtoon: WebtoonExtendedT;
+  setOpenBidRequestForm: Dispatch<SetStateAction<boolean>>;
 }) {
   return <Row className="gap-4 w-full">
     <ViewButton webtoon={webtoon} />
     {webtoon.isEditable
       ? <BidRoundButton webtoon={webtoon}/>
-      : <OfferButton webtoon={webtoon}/>}
+      : <OfferButton webtoon={webtoon} setOpenBidRequestForm={setOpenBidRequestForm}/>}
   </Row>;
 }
 
-async function ViewButton ({ webtoon }: {
+function ViewButton ({ webtoon }: {
   webtoon: WebtoonExtendedT;
 }) {
-  const t = await getTranslations("webtoonDetails");
+  const t = useTranslations("webtoonDetails");
   return <ControlButton className="bg-[#C3C3C3] text-black"
     disabled={!webtoon.firstEpisodeId}>
     <Link href={`/webtoons/${webtoon.id}/episodes/${webtoon.firstEpisodeId}`}>
@@ -30,10 +31,10 @@ async function ViewButton ({ webtoon }: {
   </ControlButton>;
 }
 
-async function BidRoundButton ({ webtoon }: {
+function BidRoundButton ({ webtoon }: {
   webtoon: WebtoonExtendedT;
 }) {
-  const t = await getTranslations("seriesManagement");
+  const t = useTranslations("seriesManagement");
   if (webtoon.activeBidRound) {
     return <ControlButton className="bg-mint text-white">
       <Link href={`/webtoons/${webtoon.id}/bid-round/update`}>
@@ -49,11 +50,12 @@ async function BidRoundButton ({ webtoon }: {
   }
 }
 
-async function OfferButton ({ webtoon }: {
+function OfferButton ({ webtoon, setOpenBidRequestForm }: {
   webtoon: WebtoonExtendedT;
+  setOpenBidRequestForm: Dispatch<SetStateAction<boolean>>;
 }) {
   const { activeBidRound } = webtoon;
-  const t = await getTranslations("webtoonDetails");
+  const t = useTranslations("webtoonDetails");
 
   const isPossibleToOffer = activeBidRound
     && [BidRoundStatus.Bidding, BidRoundStatus.Negotiating]
@@ -62,23 +64,24 @@ async function OfferButton ({ webtoon }: {
   return <ControlButton
     className="bg-mint text-white"
     disabled={!isPossibleToOffer}
+    onClick={() => setOpenBidRequestForm(true)}
   >
-    <Link href={`/offers/${webtoon.id}/create`}>
-      {isPossibleToOffer
-        ? t("makeOffer")
-        : (activeBidRound
-          ? t("notPossibleToOffer")
-          : t("unableToMakeOffer"))}
-    </Link>
+    {isPossibleToOffer
+      ? t("makeOffer")
+      : (activeBidRound
+        ? t("notPossibleToOffer")
+        : t("unableToMakeOffer"))}
   </ControlButton>;
 }
 
-function ControlButton({ children, className, disabled }: {
+function ControlButton({ children, className, disabled, onClick }: {
   children: ReactNode;
   className?: string;
   disabled?: boolean;
+  onClick?: () => void;
 }) {
   return <Button
+    onClick={onClick}
     disabled={disabled}
     className={clsx("rounded-sm h-12 flex justify-center items-center flex-1 font-bold text-base", className)}
   >

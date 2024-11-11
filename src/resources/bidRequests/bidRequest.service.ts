@@ -1,7 +1,12 @@
 "use server";
 
 import { BidRequest as BidRequestRecord, Prisma } from "@prisma/client";
-import { BidRequestExtendedT, BidRequestSchema, BidRequestT } from "@/resources/bidRequests/bidRequest.types";
+import {
+  BidRequestExtendedT, BidRequestFormSchema,
+  BidRequestFormT,
+  BidRequestSchema,
+  BidRequestT
+} from "@/resources/bidRequests/bidRequest.types";
 import prisma from "@/utils/prisma";
 import { ListResponse } from "@/resources/globalTypes";
 import { getTokenInfo } from "@/resources/tokens/token.service";
@@ -64,6 +69,9 @@ export async function listBidRequests({
           }
         }
       },
+      orderBy: {
+        createdAt: "desc"
+      },
       take: limit,
       skip: (page - 1) * limit,
     }),
@@ -84,5 +92,18 @@ export async function listBidRequests({
     }),
     totalPages: Math.ceil(totalRecords / limit),
   };
+}
 
+
+export async function createBidRequest(form: BidRequestFormT) {
+  const { userId } = await getTokenInfo();
+  form = BidRequestFormSchema.parse(form);
+  await prisma.bidRequest.create({
+    data: {
+      bidRoundId: form.bidRoundId,
+      message: form.message,
+      contractRange: form.contractRange,
+      userId,
+    }
+  });
 }

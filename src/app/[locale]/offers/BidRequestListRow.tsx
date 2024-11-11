@@ -7,9 +7,10 @@ import { Gap } from "@/shadcn/ui/layouts";
 import { Link } from "@/i18n/routing";
 import BidRequestMessageList from "@/app/[locale]/offers/BidRequestMessageList";
 import { displayName } from "@/utils/displayName";
+import ViewOfferSection from "@/app/[locale]/offers/components/OfferDetails";
 
 export default function BidRequestListRow({ bidRequest }:{
-  bidRequest: BidRequestExtendedT
+  bidRequest: BidRequestExtendedT;
 }) {
   const locale = useLocale();
   const [showMessages, setShowMessages] = useState<boolean>(false);
@@ -50,8 +51,16 @@ export default function BidRequestListRow({ bidRequest }:{
         </div>
       </div>
       {showMessages
-        && <BidRequestMessageList bidRequestId={bidRequest.id}/>}
+        && <BidRequestContents bidRequest={bidRequest}/>}
     </>
   );
 }
 
+function BidRequestContents({ bidRequest }: {
+  bidRequest: BidRequestExtendedT;
+}) {
+  return <div className="my-14">
+    <ViewOfferSection bidRequest={bidRequest}/>
+    <BidRequestMessageList bidRequestId={bidRequest.id}/>
+  </div>;
+}

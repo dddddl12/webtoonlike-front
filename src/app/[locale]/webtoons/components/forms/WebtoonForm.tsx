@@ -265,7 +265,6 @@ function DescriptionFieldSet({ form }: {
             <FormControl>
               <Textarea
                 {...field}
-                onChange={field.onChange}
                 placeholder={t("enterKoreanIntro")}
                 maxLength={1000}
               />

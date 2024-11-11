@@ -1,20 +1,20 @@
-import { Col, Gap, Row } from "@/shadcn/ui/layouts";
+import { Col, Row } from "@/shadcn/ui/layouts";
 import { WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
 import { Link } from "@/i18n/routing";
-import ContractRangeBasic from "@/app/[locale]/webtoons/[webtoonId]/ContractRangeBasic";
+import ContractRangeBasic from "@/app/[locale]/webtoons/components/WebtoonPageContents/ContractRangeBasic";
 import React from "react";
-import { getTranslations } from "next-intl/server";
-import ContractRangeCountries from "@/app/[locale]/webtoons/[webtoonId]/ContractRangeCountries";
-import ContractRangeDerivative from "@/app/[locale]/webtoons/[webtoonId]/ContractRangeDerivative";
+import ContractRangeCountries from "@/app/[locale]/webtoons/components/WebtoonPageContents/ContractRangeCountries";
+import ContractRangeDerivative from "@/app/[locale]/webtoons/components/WebtoonPageContents/ContractRangeDerivative";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { Text } from "@/shadcn/ui/texts";
+import { useTranslations } from "next-intl";
 
-export default async function ContractRange({ webtoon }: {
+export default function ContractRange({ webtoon }: {
   webtoon: WebtoonExtendedT;
 }) {
 
-  const t = await getTranslations("contractRangeData");
-  const tGeneral = await getTranslations("general");
+  const t = useTranslations("contractRangeData");
+  const tGeneral = useTranslations("general");
 
   const { activeBidRound } = webtoon;
   if (!activeBidRound) {

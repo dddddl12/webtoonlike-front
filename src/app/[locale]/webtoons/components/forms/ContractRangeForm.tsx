@@ -15,11 +15,16 @@ import { IconDelete } from "@/components/svgs/IconDelete";
 import { UseFormReturn, useWatch } from "react-hook-form";
 import { BidRoundFormT, ContractRangeItemSchema, ContractRangeItemT } from "@/resources/bidRounds/bidRound.types";
 import { FormControl, FormField, FormItem } from "@/shadcn/ui/form";
+import { BidRequestFormT } from "@/resources/bidRequests/bidRequest.types";
+import { Input } from "@/shadcn/ui/input";
 
-export default function BidRoundFormContractRange({ form }: {
-  form: UseFormReturn<BidRoundFormT>;
+type FormT = BidRoundFormT | BidRequestFormT;
+
+export default function ContractRangeForm({ form, formType }: {
+  form: UseFormReturn<FormT>;
+  formType: "bidRound" | "bidRequest";
 }) {
-  const t = useTranslations("updateOrCreateBidRoundsPage");
+  const t = useTranslations("contractRangeDataForm");
 
   const contractRange = useWatch({
     control: form.control,
@@ -45,17 +50,26 @@ export default function BidRoundFormContractRange({ form }: {
       <Table>
         <TableHeader>
           <TableRow className="bg-gray-dark">
-            {[
-              "typeOfBusinessRight",
-              "businessRightClassification",
-              "exclusiveRights",
-              "serviceRegion",
-              "delete"
-            ].map((key) => (
-              <TableHead key={key} className="text-center text-gray-text">
-                {t(key)}
-              </TableHead>
-            ))}
+            <TableHead className="text-center text-gray-text">
+              {t("typeOfBusinessRight")}
+            </TableHead>
+            <TableHead className="text-center text-gray-text">
+              {t("businessRightClassification")}
+            </TableHead>
+            <TableHead className="text-center text-gray-text">
+              {t("exclusiveRights")}
+            </TableHead>
+            <TableHead className="text-center text-gray-text">
+              {t("serviceRegion")}
+            </TableHead>
+            {formType === "bidRequest"
+              // 오퍼 폼일 때만 사용하는 컬럼
+              && <TableHead className="text-center text-gray-text">
+                {t("contractCondition")}
+              </TableHead>}
+            <TableHead className="text-center text-gray-text">
+              {t("delete")}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -65,6 +79,11 @@ export default function BidRoundFormContractRange({ form }: {
               <BusinessFieldCell form={form} row={row} idx={idx} />
               <ExclusiveCell form={form} idx={idx} />
               <CountryCell form={form} idx={idx} />
+
+              {formType === "bidRequest"
+              // 오퍼 폼일 때만 사용하는 컬럼
+              && <ContractConditionCell form={form as UseFormReturn<BidRequestFormT>} idx={idx} />}
+
               <DeleteCell form={form} idx={idx} />
             </TableRow>
           ))}
@@ -75,11 +94,11 @@ export default function BidRoundFormContractRange({ form }: {
 }
 
 function BusinessRightCell({ form, row, idx }: {
-  form: UseFormReturn<BidRoundFormT>;
+  form: UseFormReturn<FormT>;
   row: ContractRangeItemT;
   idx: number;
 }) {
-  const t = useTranslations("updateOrCreateBidRoundsPage");
+  const t = useTranslations("contractRangeDataForm");
   const items = [
     {
       value: "webtoons",
@@ -129,11 +148,11 @@ function BusinessRightCell({ form, row, idx }: {
 }
 
 function BusinessFieldCell({ form, row, idx }: {
-  form: UseFormReturn<BidRoundFormT>;
+  form: UseFormReturn<FormT>;
   row: ContractRangeItemT;
   idx: number;
 }) {
-  const t = useTranslations("updateOrCreateBidRoundsPage");
+  const t = useTranslations("contractRangeDataForm");
   const tBusinessFields = useTranslations("businessFields");
   if (row.businessField === "WEBTOONS") {
     return <TableCell className="text-center w-[200px]">
@@ -174,10 +193,10 @@ function BusinessFieldCell({ form, row, idx }: {
 }
 
 function ExclusiveCell({ form, idx }: {
-  form: UseFormReturn<BidRoundFormT>;
+  form: UseFormReturn<FormT>;
   idx: number;
 }) {
-  const t = useTranslations("updateOrCreateBidRoundsPage");
+  const t = useTranslations("contractRangeDataForm");
   const tContractType = useTranslations("contractType");
   return <TableCell className="text-center w-[200px]">
     <FormField
@@ -212,10 +231,10 @@ function ExclusiveCell({ form, idx }: {
 }
 
 function CountryCell({ form, idx }: {
-  form: UseFormReturn<BidRoundFormT>;
+  form: UseFormReturn<FormT>;
   idx: number;
 }) {
-  const t = useTranslations("updateOrCreateBidRoundsPage");
+  const t = useTranslations("contractRangeDataForm");
   const tCountry = useTranslations("countries");
 
   return <TableCell className="text-center w-[200px]">
@@ -250,8 +269,34 @@ function CountryCell({ form, idx }: {
   </TableCell>;
 }
 
+// BidRequestForm에만 사용
+function ContractConditionCell({ form, idx }: {
+  form: UseFormReturn<BidRequestFormT>;
+  idx: number;
+}) {
+  const t = useTranslations("contractRangeDataForm");
+  return <TableCell className="text-center w-[200px]">
+    <FormField
+      control={form.control}
+      name={`contractRange.${idx}.message`}
+      render={({ field }) => (
+        <FormItem>
+          <FormControl>
+            <Input
+              {...field}
+              value={field.value || ""}
+              type="text"
+              placeholder={t("contractConditionDesc")}
+            />
+          </FormControl>
+        </FormItem>
+      )}
+    />
+  </TableCell>;
+}
+
 function DeleteCell({ form, idx }: {
-  form: UseFormReturn<BidRoundFormT>;
+  form: UseFormReturn<FormT>;
   idx: number;
 }) {
   return <TableCell className="text-center w-[50px]">

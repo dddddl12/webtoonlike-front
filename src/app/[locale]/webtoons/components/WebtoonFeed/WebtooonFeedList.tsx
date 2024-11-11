@@ -23,9 +23,9 @@ import WebtoonGridPaginated from "@/components/WebtoonGridPaginated";
 type Filters = {
   statuses?: BidRoundStatus[];
   genreId?: number;
-  ageLimit?: AgeLimit,
+  ageLimit?: AgeLimit;
   page: number;
-}
+};
 
 type WebtoonListResponse = ListResponse<WebtoonPreviewT>;
 
@@ -51,7 +51,6 @@ export default function WebtooonFeedList({
   return (
     <>
       <Row className="gap-4">
-        <TypeSelector handleChange={handleChange}/>
         <GenreSelector handleChange={handleChange} genres={genres}/>
         <AgeLimitSelector handleChange={handleChange}/>
       </Row>
@@ -66,39 +65,6 @@ export default function WebtooonFeedList({
       />;
     </>
   );
-}
-
-function TypeSelector({
-  handleChange,
-}: {
-  handleChange: (newFilters: Filters) => void;
-}) {
-  const TallSeries = useTranslations("allSeries");
-  const Tstatus = useTranslations("bidRoundStatus");
-
-  return <Select onValueChange={(status) => handleChange({
-    statuses: [status] as BidRoundStatus[],
-    page: 1
-  })}>
-    {/*TODO select 해제*/}
-    <SelectTrigger className="w-[180px] bg-transparent text-white border-white">
-      <SelectValue placeholder={TallSeries("seriesType")}/>
-    </SelectTrigger>
-    <SelectContent>
-      <SelectGroup>
-        <SelectLabel>{TallSeries("seriesType")}</SelectLabel>
-        {Object.values(BidRoundStatus).map((item) => {
-          if ([BidRoundStatus.Idle, BidRoundStatus.Waiting].includes(item)) {
-            // TODO 기획 확인
-            return null;
-          }
-          return <SelectItem key={item} value={item}>
-            {Tstatus(item)}
-          </SelectItem>;
-        })}
-      </SelectGroup>
-    </SelectContent>
-  </Select>;
 }
 
 function GenreSelector({

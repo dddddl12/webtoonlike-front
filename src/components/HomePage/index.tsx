@@ -27,13 +27,6 @@ export async function HomePage() {
         <SectionHeading path="/webtoons" title={t("recommendedNewSeries")}/>
         <WebtoonGrid webtoons={brandNew} cols={5} height={330}/>
       </section>
-      <section className="w-full relative">
-        <Image
-          src={LezhinBannerImage}
-          alt="LezhinBanner image"
-          className="w-full"
-        />
-      </section>
       <section className="w-full">
         <SectionHeading path="/webtoons" title={t("organizedByGenre")}/>
         <WebtoonGrid webtoons={perGenre} cols={5} height={220}/>

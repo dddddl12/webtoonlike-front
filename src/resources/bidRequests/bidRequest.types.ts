@@ -29,7 +29,7 @@ export type BidRequestFormT = z.infer<typeof BidRequestFormSchema>;
 export const BidRequestSchema = BidRequestBaseSchema
   .merge(ResourceSchema)
   .extend({
-    userId: z.number().optional(),
+    userId: z.number(),
     // status: z.nativeEnum(BidRequestStatus),
   });
 export type BidRequestT = z.infer<typeof BidRequestSchema>;
