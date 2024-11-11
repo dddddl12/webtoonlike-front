@@ -497,7 +497,9 @@ export async function homeItems() {
 
       // 최신
       tx.webtoon.findMany({
-        where,
+        where: {
+          isFeaturedAsNew: true
+        },
         select,
         orderBy: [
           { createdAt: "desc" },

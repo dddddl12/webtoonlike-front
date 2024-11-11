@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import SectionHeading from "@/components/HomePage/SectionHeading";
 import WebtoonGrid from "@/components/HomePage/WebtoonGrid";
 import ArtistGrid from "@/components/HomePage/ArtistGrid";
@@ -10,6 +10,7 @@ export async function HomePage() {
   const t = await getTranslations("homeMain");
 
   const { popular, brandNew, perGenre, artists } = await homeItems();
+  const locale = await getLocale();
 
   return (
     <PageLayout className="flex flex-col gap-20">
@@ -22,7 +23,9 @@ export async function HomePage() {
         <WebtoonGrid webtoons={popular} numbered={true} cols={4} height={420}/>
       </section>
       <section className="w-full">
-        <SectionHeading path="/webtoons" title={t("recommendedNewSeries")}/>
+        <SectionHeading path="/webtoons" title={t("recommendedNewSeries", {
+          month: new Date().toLocaleString(locale, { month: "long" })
+        })}/>
         <WebtoonGrid webtoons={brandNew} cols={5} height={330}/>
       </section>
       <section className="w-full">

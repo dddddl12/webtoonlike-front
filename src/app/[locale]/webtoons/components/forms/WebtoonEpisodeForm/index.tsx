@@ -403,7 +403,7 @@ export default function WebtoonEpisodeForm({
       </Row>
       <Gap y={3} />
       <Input
-        className="text-black [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        className="[&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
         id="title"
         value={episodeNo}
         type="number"
