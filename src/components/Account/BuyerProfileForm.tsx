@@ -9,7 +9,6 @@ import {
   BuyerCompanyTypeSchema,
   BuyerFormSchema,
   BuyerFormT, BuyerPurposeSchema,
-  BuyerT
 } from "@/resources/buyers/buyer.types";
 import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
@@ -21,8 +20,7 @@ import { formResolver } from "@/utils/forms";
 import { createUser } from "@/resources/users/user.service";
 
 
-export default function BuyerProfileForm({ prev, userExtendedForm, setSignUpStage } : {
-  prev?: BuyerT;
+export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : {
   userExtendedForm: Partial<UserExtendedFormT>;
   setSignUpStage: Dispatch<SetStateAction<SignUpStage>>;
 }) {
@@ -30,6 +28,7 @@ export default function BuyerProfileForm({ prev, userExtendedForm, setSignUpStag
   const t = useTranslations("buyerInfoPage");
   const tGeneral = useTranslations("general");
 
+  const prev = (userExtendedForm as any)?.buyer;
   const prevCompany = prev?.company;
   const [thumbnail, setThumbnail] = useState(
     new ImageObject(prevCompany?.thumbPath));

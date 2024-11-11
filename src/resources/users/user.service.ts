@@ -1,10 +1,11 @@
 "use server";
 
-import { UserExtendedFormSchema, UserExtendedFormT, UserTypeT } from "@/resources/users/user.types";
+import { UserExtendedFormSchema, UserExtendedFormT, UserFormT, UserTypeT } from "@/resources/users/user.types";
 import prisma from "@/utils/prisma";
-import { updateTokenInfo } from "@/resources/tokens/token.service";
+import { getTokenInfo, updateTokenInfo } from "@/resources/tokens/token.service";
 import { currentUser } from "@clerk/nextjs/server";
 import { NotSignedInError } from "@/errors";
+import { BuyerCompanySchema, BuyerFormT } from "@/resources/buyers/buyer.types";
 
 export async function createUser(form: UserExtendedFormT) {
   // TODO 400 에러 처리
@@ -73,4 +74,53 @@ export async function createUser(form: UserExtendedFormT) {
 
     await updateTokenInfo(tx);
   });
+}
+
+export async function getUser(): Promise<UserExtendedFormT> {
+  const { userId } = await getTokenInfo();
+  const record = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userId
+    },
+    include: {
+      buyer: true,
+      creator: true
+    }
+  });
+  const user: UserFormT = {
+    name: record.name,
+    phone: record.phone ?? undefined,
+    userType: record.userType as UserTypeT,
+    country: record.country as UserFormT["country"],
+    postcode: record.postcode ?? "",
+    addressLine1: record.addressLine1 ?? "",
+    addressLine2: record.addressLine2 ?? "",
+    agreed: true
+  };
+  if (record.userType === UserTypeT.Creator && record.creator) {
+    const creatorRecord = record.creator;
+    return {
+      ...user,
+      userType: UserTypeT.Creator,
+      creator: {
+        name: creatorRecord.name,
+        name_en: creatorRecord.name_en ?? undefined,
+        thumbPath: creatorRecord.thumbPath ?? undefined,
+        isAgencyAffiliated: creatorRecord.isAgencyAffiliated,
+        isExperienced: creatorRecord.isExperienced,
+        isExposed: creatorRecord.isExposed
+      }
+    };
+  } else if (record.userType === UserTypeT.Buyer && record.buyer) {
+    const buyerRecord = record.buyer;
+    return {
+      ...user,
+      userType: UserTypeT.Buyer,
+      buyer: {
+        company: BuyerCompanySchema.parse(buyerRecord.company),
+        purpose: buyerRecord.purpose as BuyerFormT["purpose"] ?? undefined,
+      }
+    };
+  }
+  throw new Error("User not found");
 }

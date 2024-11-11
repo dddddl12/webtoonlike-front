@@ -3,7 +3,7 @@ import { Input } from "@/shadcn/ui/input";
 import { ImageObject } from "@/utils/media";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/shadcn/ui/select";
 import { useTranslations } from "next-intl";
-import { CreatorFormSchema, CreatorFormT, CreatorT } from "@/resources/creators/creator.types";
+import { CreatorFormSchema, CreatorFormT } from "@/resources/creators/creator.types";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
@@ -13,8 +13,7 @@ import { formResolver } from "@/utils/forms";
 import { createUser } from "@/resources/users/user.service";
 import { AccountFormFooter, AccountFormImageField } from "@/components/Account/common";
 
-export default function CreatorProfileForm({ prev, userExtendedForm, setSignUpStage }: {
-  prev?: CreatorT;
+export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }: {
   userExtendedForm: Partial<UserExtendedFormT>;
   setSignUpStage: Dispatch<SetStateAction<SignUpStage>>;
 }) {
@@ -22,6 +21,7 @@ export default function CreatorProfileForm({ prev, userExtendedForm, setSignUpSt
   const t = useTranslations("setupPageNextForCreators");
   const tGeneral = useTranslations("general");
 
+  const prev = (userExtendedForm as any)?.creator;
   const [thumbnail, setThumbnail] = useState(
     new ImageObject(prev?.thumbPath));
   const form = useForm<CreatorFormT>({
