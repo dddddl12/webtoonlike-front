@@ -5,15 +5,27 @@ import { useListData } from "@/hooks/listData";
 import { listBidRequestMessages } from "@/resources/bidRequestMessages/bidRequestMessage.service";
 import Paginator from "@/components/Paginator";
 import { BidRequestMessageExtendedT } from "@/resources/bidRequestMessages/bidRequestMessage.types";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import NegotiationDetails from "@/app/[locale]/invoices/NegotiationDetails";
 import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
 import ViewOfferSection from "@/app/[locale]/offers/components/OfferDetails";
 import Controls from "@/app/[locale]/offers/components/Controls";
 
-export default function BidRequestMessageList({ bidRequest }: {
+export default function BidRequestMessageList({ bidRequest, setRerender }: {
   bidRequest: BidRequestExtendedT;
+  setRerender: Dispatch<SetStateAction<number>>;
 }) {
+  const finished = !!(bidRequest.approvedAt || bidRequest.rejectedAt);
+
+  // Create a ref for the Heading component
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  // Scroll to the Heading component when rendered
+  useEffect(() => {
+    headingRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [headingRef]);
+
+
   const { listResponse, filters, setFilters } = useListData(
     () => listBidRequestMessages(bidRequest.id),
     { page: 1, limit: 100 }
@@ -23,7 +35,7 @@ export default function BidRequestMessageList({ bidRequest }: {
     return <Spinner />;
   }
 
-  return <Col className="rounded-md p-4">
+  return <Col className="rounded-md p-4" ref={headingRef}>
     <Row className="border-b border-gray-text text-gray-text bg-gray-darker">
       <div className="w-[20%] p-2 flex justify-center">No.</div>
       <div className="w-[20%] p-2 flex justify-center">일자</div>
@@ -31,10 +43,13 @@ export default function BidRequestMessageList({ bidRequest }: {
       <div className="w-[20%] p-2 flex justify-center">협의 내용</div>
       <div className="w-[20%] p-2 flex justify-center">현황</div>
     </Row>
-    <FirstRow bidRequest={bidRequest} />
+    <FirstRow bidRequest={bidRequest} setRerender={setRerender} finished={finished} />
     {listResponse.items.map((message, index) => (
-      <MessageRow message={message} index={index + 1} key={index} />
+      <MessageRow message={message} index={index + 1} key={index} setRerender={setRerender} finished={finished} />
     ))}
+    {finished
+      && <LastRow bidRequest={bidRequest} index={listResponse.items.length + 1} />}
+
     {/*<Paginator*/}
     {/*  currentPage={filters.page}*/}
     {/*  totalPages={listResponse.totalPages}*/}
@@ -44,8 +59,10 @@ export default function BidRequestMessageList({ bidRequest }: {
   </Col>;
 }
 
-function FirstRow({ bidRequest }: {
+function FirstRow({ bidRequest, setRerender, finished }: {
   bidRequest: BidRequestExtendedT;
+  setRerender: Dispatch<SetStateAction<number>>;
+  finished: boolean;
 }) {
   const [showContent, setShowContent] = useState(false);
   const locale = useLocale();
@@ -63,15 +80,17 @@ function FirstRow({ bidRequest }: {
     </Row>
     {showContent && <Col>
       <ViewOfferSection bidRequest={bidRequest}/>
-      <Controls bidRequestId={bidRequest.id} />
+      {!finished && <Controls bidRequestId={bidRequest.id} setRerender={setRerender}/>}
     </Col>}
   </>;
 
 }
 
-function MessageRow({ message, index }: {
+function MessageRow({ message, index, setRerender, finished }: {
   index: number;
   message: BidRequestMessageExtendedT;
+  setRerender: Dispatch<SetStateAction<number>>;
+  finished: boolean;
 }) {
   const locale = useLocale();
   const [showNegotiation, setShowNegotiation] = useState(false);
@@ -88,7 +107,31 @@ function MessageRow({ message, index }: {
     </Row>
     {showNegotiation && <Col>
       <NegotiationDetails content={message.content}/>
-      <Controls bidRequestId={message.bidRequestId} />
+      {!finished && <Controls bidRequestId={message.bidRequestId} setRerender={setRerender}/>}
+    </Col>}
+  </>;
+}
+
+function LastRow({ bidRequest, index }: {
+  bidRequest: BidRequestExtendedT;
+  index: number;
+}) {
+  const [showContent, setShowContent] = useState(false);
+  const locale = useLocale();
+  const message = bidRequest.approvedAt ? "협상 완료" : "협상 중단";
+  return <>
+    <Row className="bg-gray-darker">
+      <div className="w-[20%] p-2 flex justify-center">{index + 1}</div>
+      <div className="w-[20%] p-2 flex justify-center">{(bidRequest.approvedAt || bidRequest.rejectedAt)?.toLocaleString(locale)}</div>
+      <div className="w-[20%] p-2 flex justify-center">저작권자</div>
+      <div className="w-[20%] p-2 flex justify-center text-mint underline cursor-pointer"
+        onClick={() => setShowContent(!showContent)}>
+        {showContent ? "접기" : "보기"}
+      </div>
+      <div className="w-[20%] p-2 flex justify-center">{message}</div>
+    </Row>
+    {showContent && <Col>
+      <NegotiationDetails content={message + "되었습니다."}/>
     </Col>}
   </>;
 }

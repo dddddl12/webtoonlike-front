@@ -43,5 +43,7 @@ export const BidRequestSchemaExtendedSchema = BidRequestSchema
       thumbPath: z.string(),
     }),
     username: z.string(),
+    approvedAt: z.date().optional(),
+    rejectedAt: z.date().optional(),
   });
 export type BidRequestExtendedT = z.infer<typeof BidRequestSchemaExtendedSchema>;

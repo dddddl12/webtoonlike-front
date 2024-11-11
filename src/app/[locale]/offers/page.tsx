@@ -11,7 +11,7 @@ export default async function OffersPage() {
   return (
     <PageLayout>
       <Heading>
-        {t("pendingSeries")}
+        오퍼 관리
       </Heading>
       <BidRequestList initialBidRequestListResponse={initialBidRequestListResponse} />
     </PageLayout>

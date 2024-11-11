@@ -2,7 +2,8 @@
 
 import { BidRequest as BidRequestRecord, Prisma } from "@prisma/client";
 import {
-  BidRequestExtendedT, BidRequestFormSchema,
+  BidRequestExtendedT,
+  BidRequestFormSchema,
   BidRequestFormT,
   BidRequestSchema,
   BidRequestT
@@ -10,6 +11,7 @@ import {
 import prisma from "@/utils/prisma";
 import { ListResponse } from "@/resources/globalTypes";
 import { getTokenInfo } from "@/resources/tokens/token.service";
+import { UserTypeT } from "@/resources/users/user.types";
 
 // const getBidRequestStatus = (record: BidRequestRecord): string => {
 //   const { approvedAt, acceptedAt, cancelledAt, rejectedAt } = record;
@@ -45,10 +47,16 @@ export async function listBidRequests({
   page?: number;
   limit?: number;
 } = {}): Promise<ListResponse<BidRequestExtendedT>> {
-  const { userId } = await getTokenInfo();
+  const { userId, metadata } = await getTokenInfo();
+  const { type } = metadata;
 
   const where: Prisma.BidRequestWhereInput = {
-    // userId
+    userId: type === UserTypeT.Buyer ? userId : undefined,
+    bidRound: type === UserTypeT.Creator ? {
+      webtoon: {
+        userId
+      }
+    } : undefined,
   //   TODO
   };
 
@@ -94,6 +102,8 @@ export async function listBidRequests({
           thumbPath: webtoon.thumbPath,
         },
         username: record.user.name,
+        approvedAt: record.approvedAt ?? undefined,
+        rejectedAt: record.rejectedAt ?? undefined,
       };
     }),
     totalPages: Math.ceil(totalRecords / limit),
@@ -115,23 +125,53 @@ export async function createBidRequest(form: BidRequestFormT) {
 }
 
 export async function acceptBidRequest(bidRequestId: number) {
-  await prisma.bidRequest.update({
-    data: {
-      acceptedAt: new Date(),
-    },
-    where: {
-      id: bidRequestId,
+  await prisma.$transaction(async (tx) => {
+    const { approvedAt, rejectedAt } = await tx.bidRequest.findUniqueOrThrow({
+      where: {
+        id: bidRequestId,
+      },
+      select: {
+        approvedAt: true,
+        rejectedAt: true,
+      }
+    });
+    if (approvedAt || rejectedAt) {
+      throw new Error("Already approved or rejected.");
     }
+    await tx.bidRequest.update({
+      data: {
+        acceptedAt: new Date(),
+      },
+      where: {
+        id: bidRequestId,
+      }
+    });
+
   });
 }
 
 export async function declineBidRequest(bidRequestId: number) {
-  await prisma.bidRequest.update({
-    data: {
-      rejectedAt: new Date(),
-    },
-    where: {
-      id: bidRequestId,
+  await prisma.$transaction(async (tx) => {
+    const { approvedAt, rejectedAt } = await tx.bidRequest.findUniqueOrThrow({
+      where: {
+        id: bidRequestId,
+      },
+      select: {
+        approvedAt: true,
+        rejectedAt: true,
+      }
+    });
+    if (approvedAt || rejectedAt) {
+      throw new Error("Already approved or rejected.");
     }
+    await tx.bidRequest.update({
+      data: {
+        rejectedAt: new Date(),
+      },
+      where: {
+        id: bidRequestId,
+      }
+    });
+
   });
 }

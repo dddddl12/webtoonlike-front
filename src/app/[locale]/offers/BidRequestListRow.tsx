@@ -1,6 +1,6 @@
 import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import { Gap } from "@/shadcn/ui/layouts";
@@ -14,6 +14,17 @@ export default function BidRequestListRow({ bidRequest }:{
 }) {
   const locale = useLocale();
   const [showMessages, setShowMessages] = useState<boolean>(false);
+  const [rerender, setRerender] = useState(1); //TODO
+
+  useEffect(() => {
+    console.log("rerender", rerender);
+    if (rerender > 1) {
+      setRerender(0);
+    } else if (rerender < 1) {
+      setRerender(1);
+    }
+  }, [rerender]);
+
   const TbidRequestStatus = useTranslations("bidRequestStatus");
   const { webtoon } = bidRequest;
   return (
@@ -50,8 +61,9 @@ export default function BidRequestListRow({ bidRequest }:{
           상태
         </div>
       </div>
-      {showMessages
-        && <BidRequestMessageList bidRequest={bidRequest}/>}
+      {showMessages && !!rerender
+        && <BidRequestMessageList bidRequest={bidRequest}
+          setRerender={setRerender}/>}
     </>
   );
 }

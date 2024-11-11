@@ -62,7 +62,7 @@ export default function WebtooonFeedList({
         filters={filters}
         setFilters={setFilters}
         noItemsMessage="관련 웹툰 없음" //TODO
-      />;
+      />
     </>
   );
 }
