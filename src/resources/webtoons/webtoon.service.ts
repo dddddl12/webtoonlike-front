@@ -13,6 +13,7 @@ import { getTokenInfo } from "@/resources/tokens/token.service";
 import { AdminLevel } from "@/resources/tokens/token.types";
 import { getBidRoundStatus, mapToBidRoundDTO } from "@/resources/bidRounds/bidRound.service";
 import prisma from "@/utils/prisma";
+import { offerableBidRoundFilter } from "@/resources/bidRounds/bidRound.filters";
 
 const convertToRecordInput = async (form: WebtoonFormT): Promise<
   Prisma.XOR<Prisma.WebtoonCreateInput, Prisma.WebtoonUncheckedCreateInput>
@@ -87,19 +88,6 @@ export async function updateWebtoon(webtoonId: number, form: WebtoonFormT) {
     });
   });
 }
-
-const offerableBidRoundFilter = (): Prisma.BidRoundListRelationFilter => {
-  const now = new Date();
-  return {
-    some: {
-      isActive: true,
-      approvalStatus: $Enums.BidRoundApprovalStatus.APPROVED,
-      bidStartsAt: {
-        lte: now
-      }
-    }
-  };
-};
 
 const mapToWebtoonPreviewDTO = (record: {
   id: number;
@@ -243,7 +231,9 @@ export async function listWebtoons({
   const limit = 10;
   const where: Prisma.WebtoonWhereInput = {
     ageLimit: ageLimit,
-    bidRounds: offerableBidRoundFilter(),
+    bidRounds: {
+      some: offerableBidRoundFilter()
+    },
     genreLinks: genreId ? {
       some: { genreId }
     } : undefined,

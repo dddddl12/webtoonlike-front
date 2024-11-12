@@ -40,6 +40,6 @@ export function useListData<Filters, ResourceType>(
       return;
     }
     listFetcherFunction(filters).then(setListResponse);
-  }, [filters]);
+  }, [filters, initialResponse, listFetcherFunction]);
   return { listResponse, filters, setFilters };
 }

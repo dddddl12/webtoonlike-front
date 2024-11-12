@@ -17,8 +17,13 @@ export type BannerWebtoonItem = HomeWebtoonItem & {
   isNew: boolean;
 };
 
+export type HomeGenreItem = {
+  id: number;
+  label: string;
+  label_en?: string;
+};
 
-export type HomeArtistItem = {
+export type HomeCreatorItem = {
   id: number;
   thumbPath?: string;
   name: string;

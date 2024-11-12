@@ -1,15 +1,16 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import SectionHeading from "@/components/HomePage/SectionHeading";
 import WebtoonGrid from "@/components/HomePage/WebtoonGrid";
-import ArtistGrid from "@/components/HomePage/ArtistGrid";
+import CreatorGrid from "@/components/HomePage/CreatorGrid";
 import BannerSection from "@/components/HomePage/BannerSection";
 import PageLayout from "@/components/PageLayout";
 import { homeItems } from "@/resources/home/home.service";
+import GenreWrapper from "@/components/HomePage/GenreWrapper";
 
 export async function HomePage() {
   const t = await getTranslations("homeMain");
 
-  const { banners, popular, brandNew, perGenre, artists } = await homeItems();
+  const { banners, popular, brandNew, genreSets, creators } = await homeItems();
   const locale = await getLocale();
 
   return (
@@ -19,22 +20,25 @@ export async function HomePage() {
         <BannerSection banners={banners}/>
       </section>
       <section className="w-full">
-        <SectionHeading path="/webtoons" title={t("recommendedPopularSeries")}/>
-        <WebtoonGrid webtoons={popular} numbered={true} cols={4} height={420}/>
-      </section>
-      <section className="w-full">
         <SectionHeading path="/webtoons" title={t("recommendedNewSeries", {
           month: new Date().toLocaleString(locale, { month: "long" })
         })}/>
-        <WebtoonGrid webtoons={brandNew} cols={5} height={330}/>
+        <WebtoonGrid webtoons={brandNew}/>
+      </section>
+      <section className="w-full">
+        <SectionHeading path="/webtoons" title={t("recommendedPopularSeries")}/>
+        <WebtoonGrid webtoons={popular}/>
       </section>
       <section className="w-full">
         <SectionHeading path="/webtoons" title={t("organizedByGenre")}/>
-        <WebtoonGrid webtoons={perGenre} cols={5} height={220}/>
+        <GenreWrapper
+          genres={genreSets.genres}
+          firstGenreItems={genreSets.firstGenreItems}
+        />
       </section>
       <section className="w-full">
         <SectionHeading title={t("recommendedCreators")}/>
-        <ArtistGrid artists={artists}/>
+        <CreatorGrid creators={creators}/>
       </section>
     </PageLayout>
   );

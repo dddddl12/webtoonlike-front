@@ -7,43 +7,43 @@ import { useLocale, useTranslations } from "next-intl";
 import { buildImgUrl } from "@/utils/media";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/ui/avatar";
 import { displayName } from "@/utils/displayName";
-import { HomeArtistItem } from "@/resources/home/home.types";
+import { HomeCreatorItem } from "@/resources/home/home.types";
 
-export default function ArtistGrid({ artists }: {
-  artists: HomeArtistItem[];
+export default function CreatorGrid({ creators }: {
+  creators: HomeCreatorItem[];
 }) {
   return <Row className="w-full">
-    {artists.length > 0
+    {creators.length > 0
       ? <Grid className="grid grid-cols-5 gap-7 w-full">{
-        artists.map((artist) =>
-          <ArtistItem key={artist.id} artist={artist}/>)
+        creators.map((creator) =>
+          <CreatorItem key={creator.id} creator={creator}/>)
       }</Grid>
       : <Text className="text-gray-shade">등록된 작가가 없습니다.</Text>}
   </Row>;
 }
 
-export function ArtistItem({ artist }: {
-  artist: HomeArtistItem;
+export function CreatorItem({ creator }: {
+  creator: HomeCreatorItem;
 }) {
   const t = useTranslations("howMany");
   const locale = useLocale();
 
   return (
-    <Link href={`/creators/${artist.id}`}>
+    <Link href={`/creators/${creator.id}`}>
       <Col className="text-white bg-black-texts w-full h-[320px] rounded-md items-center justify-center transition ease-in-out delay-50 hover:bg-mint duration-300">
         <Avatar className="w-[100px] h-[100px]">
-          <AvatarImage src={buildImgUrl(artist.thumbPath, {
+          <AvatarImage src={buildImgUrl(creator.thumbPath, {
             size: "sm",
             fallback: "user"
           })} />
-          <AvatarFallback>{artist.thumbPath}</AvatarFallback>
+          <AvatarFallback>{creator.thumbPath}</AvatarFallback>
         </Avatar>
         <span className="text-base font-bold mt-10">
-          {displayName(locale, artist.name, artist.name_en)}
+          {displayName(locale, creator.name, creator.name_en)}
         </span>
         <span className="text-sm">
           {t("howMany", {
-            number: artist.numOfWebtoons
+            number: creator.numOfWebtoons
           })}
         </span>
       </Col>
