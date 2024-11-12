@@ -193,7 +193,7 @@ export async function homeItems() {
         title_en: webtoon.title_en,
         authorOrCreatorName: webtoon.authorName ?? creator.name,
         authorOrCreatorName_en: webtoon.authorName_en ?? creator.name_en ?? undefined,
-        thumbPath: webtoon.thumbPath,
+        thumbPath: record.bannerUrl,
         isNew: bidRound.isNew,
         offers: bidRound._count.bidRequests,
         ageLimit: webtoon.ageLimit as AgeLimit,

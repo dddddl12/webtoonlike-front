@@ -8,7 +8,6 @@ import { clsx } from "clsx";
 import OffersIcon from "./icons/offers.svg";
 import { BannerWebtoonItem } from "@/resources/home/home.types";
 import { displayName } from "@/utils/displayName";
-import { buildImgUrl } from "@/utils/media";
 
 export default function BannerSection({ banners }: {
   banners: BannerWebtoonItem[];
@@ -67,7 +66,7 @@ function Slide({
       onClick={onClick}
     >
       <Image
-        src={buildImgUrl(webtoon.thumbPath)}
+        src={webtoon.thumbPath}
         alt="Item thumbnail"
         draggable={false}
         loading="eager"
