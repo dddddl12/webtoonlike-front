@@ -81,7 +81,7 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-5"
       >
-        <span className="text-black mb-10">{t("headerDesc")}</span>
+        <span className="mb-10">{t("headerDesc")}</span>
         <BusinessNumberField form={form}/>
         <FieldTypeField form={form}/>
         <BusinessTypeField form={form}/>
@@ -138,7 +138,6 @@ function BusinessNumberField({ form }: {
         <FormControl>
           <Input
             {...field}
-            className="border-gray"
             type='text'
             inputMode="numeric"
             placeholder={t("businessRegPlaceholder") + " *"}
@@ -156,11 +155,19 @@ function FieldTypeField({ form }: {
   const t = useTranslations("buyerInfoPage");
   const tBusinessFields = useTranslations("businessFields");
 
+  const fieldName = "company.fieldType";
+  const options = BuyerCompanyFieldSchema.options
+    .map(value => ({
+      label: tBusinessFields(value, { plural: false }), value
+    }));
+  const preSelectValue = form.getValues(fieldName);
+  const preSelectOptions = options.filter(option => preSelectValue.includes(option.value));
+
   return <FormItem>
     <FormControl>
       <MultipleSelector
         onChange={(options) => {
-          form.setValue("company.fieldType",
+          form.setValue(fieldName,
             options.map(o => BuyerCompanyFieldSchema.parse(o.value)), {
               shouldValidate: true
             }
@@ -169,10 +176,8 @@ function FieldTypeField({ form }: {
         inputProps={{
           name: "company.fieldType"
         }}
-        defaultOptions={BuyerCompanyFieldSchema.options
-          .map(value => ({
-            label: tBusinessFields(value, { plural: false }), value
-          }))}
+        value={preSelectOptions}
+        defaultOptions={options}
         placeholder={t("businessFieldPlaceholder")}
         hidePlaceholderWhenSelected
       />
@@ -222,7 +227,6 @@ function BusinessNameField({ form }: {
         <FormControl>
           <Input
             {...field}
-            className="border-gray"
             type="text"
             placeholder={t("insertCompanyName") + " *"}
           />
@@ -245,7 +249,6 @@ function DepartmentField({ form }: {
         <FormControl>
           <Input
             {...field}
-            className="border-gray"
             type="text"
             placeholder={t("insertBusinessUnit")}
           />
@@ -267,7 +270,6 @@ function PositionField({ form }: {
         <FormControl>
           <Input
             {...field}
-            className="border-gray"
             type="text"
             placeholder={t("insertBusinessPosition")}
           />
@@ -290,7 +292,6 @@ function PositionDetailField({ form }: {
         <FormControl>
           <Input
             {...field}
-            className="border-gray"
             type="text"
             placeholder={t("insertInChargeOf")}
           />
@@ -315,7 +316,7 @@ function PurposeField({ form }: {
             onValueChange={field.onChange}
             name={field.name}
           >
-            <SelectTrigger className="bg-white border-gray text-[#94A4B8] rounded-sm">
+            <SelectTrigger>
               <SelectValue placeholder={t("purposePlaceholder")}/>
             </SelectTrigger>
             <SelectContent>

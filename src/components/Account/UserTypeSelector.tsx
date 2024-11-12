@@ -13,7 +13,7 @@ export default function UserTypeSelector({ setUserExtendedForm, setSignUpStage }
   const t = useTranslations("setupPage");
 
   return <>
-    <span className="text-black mb-10">{t("selectMembershipType")}</span>
+    <span className="mb-10">{t("selectMembershipType")}</span>
 
     <Row className="justify-evenly">
       <RoleColumn

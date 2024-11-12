@@ -9,7 +9,6 @@ import {
 } from "@/resources/webtoonEpisodes/webtoonEpisode.types";
 import { AdminLevel } from "@/resources/tokens/token.types";
 import { getTokenInfo } from "@/resources/tokens/token.service";
-import { WebtoonEpisodeImageFormT } from "@/resources/webtoonEpisodeImages/webtoonEpisodeImage.types";
 
 const mapToWebtoonEpisodeDTO = (record: WebtoonEpisodeRecord): WebtoonEpisodeT => ({
   id: record.id,
@@ -17,10 +16,8 @@ const mapToWebtoonEpisodeDTO = (record: WebtoonEpisodeRecord): WebtoonEpisodeT =
   updatedAt: record.updatedAt,
   webtoonId: record.webtoonId,
   episodeNo: record.episodeNo,
-  title: record.title ?? undefined,
-  title_en: record.title_en ?? undefined,
-  description: record.description ?? undefined,
   englishUrl: record.englishUrl ?? undefined,
+  imagePaths: record.imagePaths as string[]
 });
 
 export async function getEpisode(id: number): Promise<WebtoonEpisodeExtendedT> {
@@ -29,7 +26,6 @@ export async function getEpisode(id: number): Promise<WebtoonEpisodeExtendedT> {
   const record = await prisma.webtoonEpisode.findUniqueOrThrow({
     where: { id },
     include: {
-      images: true,
       webtoon: {
         select: {
           id: true,
@@ -65,55 +61,32 @@ export async function getEpisode(id: number): Promise<WebtoonEpisodeExtendedT> {
       title: record.webtoon.title,
       title_en: record.webtoon.title_en ?? undefined,
     },
-    images: record.images.map(image => ({
-      id: image.id,
-      path: image.path
-    })),
     navigation
   };
 }
 
-// export async function getThumbnailPresignedUrl(mimeType: string) {
-//   let key = `webtoon_episodes/thumbnails/thumbnail_${new Date().getTime()}.${mime.extension(mimeType)}`;
-//   key = putDevPrefix(key);
-//   const putUrl = await createSignedUrl(key, mimeType);
-//   return { putUrl, key };
-// }
-
-
-export async function createEpisode(form: WebtoonEpisodeFormT, images: WebtoonEpisodeImageFormT[]) {
-  const episodeId = await prisma.$transaction(async (tx) => {
+export async function createEpisode(webtoonId: number, form: WebtoonEpisodeFormT) {
+  await prisma.$transaction(async (tx) => {
     const { id } = await tx.webtoonEpisode.create({
-      data: form,
+      data: {
+        webtoonId,
+        ...form,
+      },
       select: {
         id: true,
       }
     });
-    await tx.webtoonEpisodeImage.createMany({
-      data: images.map(image => ({
-        ...image,
-        episodeId: id,
-      }))
-    });
     return id;
   });
-  return episodeId;
 }
 
-
-export async function updateEpisode(episodeId: number, form: WebtoonEpisodeFormT, images: WebtoonEpisodeImageFormT[]) {
+export async function updateEpisode(episodeId: number, form: WebtoonEpisodeFormT) {
   await prisma.$transaction(async (tx) => {
     await tx.webtoonEpisode.update({
       data: form,
       where: {
         id: episodeId,
       }
-    });
-    await tx.webtoonEpisodeImage.createMany({
-      data: images.map(image => ({
-        ...image,
-        episodeId,
-      }))
     });
   });
 }

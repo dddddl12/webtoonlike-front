@@ -1,432 +1,268 @@
 "use client";
 
-import {
-  useState,
-  useRef,
-  ChangeEvent,
-  ReactNode, useEffect,
-} from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import { Text } from "@/shadcn/ui/texts";
 import { Label } from "@/shadcn/ui/label";
-import { Input } from "@/shadcn/ui/input";
+import { Input, NumericInput } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
-import { Col, Row, Gap } from "@/shadcn/ui/layouts";
-// logic
-import { buildImgUrl, ImageObject } from "@/utils/media";
-import { useLocale, useTranslations } from "next-intl";
-import { WebtoonEpisodeFormT, WebtoonEpisodeT } from "@/resources/webtoonEpisodes/webtoonEpisode.types";
-import { WebtoonEpisodeImageFormT } from "@/resources/webtoonEpisodeImages/webtoonEpisodeImage.types";
-import { useToast } from "@/shadcn/hooks/use-toast";
+import { Col, Row } from "@/shadcn/ui/layouts";
+import { ImageObject } from "@/utils/media";
+import { useTranslations } from "next-intl";
+import {
+  WebtoonEpisodeFormSchema,
+  WebtoonEpisodeFormT,
+  WebtoonEpisodeT
+} from "@/resources/webtoonEpisodes/webtoonEpisode.types";
+import { toast, useToast } from "@/shadcn/hooks/use-toast";
 import { FileDirectoryT } from "@/resources/files/files.type";
-import WebtoonImageItem from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/WebtoonImageItem";
+import EpisodeImageItem from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/EpisodeImageItem";
 import { IconUpArrow } from "@/components/svgs/IconUpArrow";
 import { IconDownArrow } from "@/components/svgs/IconDownArrow";
 import { IconUpload } from "@/components/svgs/IconUpload";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { createEpisode, updateEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
 import { useRouter } from "@/i18n/routing";
-
-type WebtoonEpisodeFormProps = {
-  webtoonId: number;
-  episode?: WebtoonEpisodeT & {
-    images: WebtoonEpisodeImageFormT[];
-  };
-};
+import { useForm } from "react-hook-form";
+import { formResolver } from "@/utils/forms";
+import Spinner from "@/components/Spinner";
+import { Form, FormControl, FormHeader, FormItem, FormLabel } from "@/shadcn/ui/form";
+import EpisodeImagePreview from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/EpisodeImagePreview";
+import {
+  reorderImages,
+  ReorderImagesError
+} from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/reorderImages";
+import { EpisodeImageSet } from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/types";
 
 const MAX_THUMBNAIL_SIZE = 5 * 1024 * 1024; // 5MB
 
 export default function WebtoonEpisodeForm({
   webtoonId,
-  episode
-}: WebtoonEpisodeFormProps) {
-  const router = useRouter();
-  const [episodeNo, setEpisodeNo] = useState<string>("");
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const [episodeImages, setEpisodeImages] = useState<
-    (WebtoonEpisodeImageFormT | File)[]
-      >([]);
-  const [selectedImages, setSelectedImages] = useState<boolean[]>(
-    episodeImages.map(() => false)
-  );
-  const locale = useLocale();
-  const submitDisabled = isSubmitting || episodeNo === null || episodeNo === "" || episodeImages.length == 0;
-  const t = useTranslations("detailedInfoPage");
+  prev
+}: {
+  webtoonId: number;
+  prev?: WebtoonEpisodeT;
+}) {
+  const [episodeImageSets, setEpisodeImageSets] = useState<EpisodeImageSet[]>(
+    prev?.imagePaths.map((path) => ({
+      image: new ImageObject(path),
+      selected: false
+    })) ?? []);
+  const t = useTranslations("episodeForm");
   const { toast } = useToast();
-  useEffect(() => {
-    if (episode) {
-      // episode.title && setTitle(episode.title);
-      // episode.title_en && setTitle_en(episode.title_en);
-      if (episode.episodeNo)
-        setEpisodeNo(String(episode.episodeNo));
-    }
-    if (episode?.images) {
-      setEpisodeImages(episode.images);
-    }
-  }, [episode]);
 
-  function handleEpisodeNumberChange(e: ChangeEvent<HTMLInputElement>): void {
-    const val = e.target.value;
-    setEpisodeNo(val);
-  }
+  const form = useForm<WebtoonEpisodeFormT>({
+    defaultValues: {
+      episodeNo: prev?.episodeNo,
+      imagePaths: prev?.imagePaths || [],
+    },
+    mode: "onChange",
+    resolver: (values) => formResolver(WebtoonEpisodeFormSchema, values)
+  });
 
-  function preventLetters(e: React.KeyboardEvent<HTMLInputElement>) {
-    ["e", "E", "+", "-"].includes(e.key) && e.preventDefault();
-  }
+  // 제출 이후 동작
+  const { formState: { isValid, isSubmitting } } = form;
+  const router = useRouter();
+  async function onSubmit(values: WebtoonEpisodeFormT) {
 
-  async function handleInputImageChange(e: ChangeEvent<HTMLInputElement>) {
-    const newFiles = Array.from(e.target.files ?? []);
-    if (newFiles.length == 0) {
-      return;
-    }
-    const hasFileExceedingMaxSize = newFiles.some(
-      (item) => item.size > MAX_THUMBNAIL_SIZE
+    values.imagePaths = await Promise.all(
+      episodeImageSets.map(({ image }) => image.uploadAndGetRemotePath(FileDirectoryT.WebtoonEpisodeImages))
+    ).then((paths) => paths
+      .filter((path) => path !== undefined)
     );
-    if (hasFileExceedingMaxSize) {
+    // todo error handling
+
+    if (prev){
+      const episodeId = prev.id;
+      await updateEpisode(episodeId, values);
       toast({
-        description: "파일 중 5MB가 넘는 파일이 있습니다.",
+        description: "성공적으로 업데이트되었습니다."
       });
-    }
-    const filteredFiles = newFiles.filter(
-      (item) => item.size <= MAX_THUMBNAIL_SIZE
-    );
-    setEpisodeImages([...episodeImages, ...filteredFiles]);
-  }
-
-  function handleUploadImageClick(): void {
-    if (inputRef.current) {
-      inputRef.current.value = ""; // to prevent duplicated value
-      inputRef.current.click();
-    }
-  }
-
-  async function handleSubmit() {
-    try {
-      if (!episodeNo) {
-        toast({
-          description: "에피소드 번호를 입력해주세요",
-        });
-        return;
-      }
-      setIsSubmitting(true);
-
-      // episode images upload
-      const promises = episodeImages.map((img, idx) => {
-        if (img instanceof File) {
-          return async (): Promise<WebtoonEpisodeImageFormT> => {
-            const imageObj = new ImageObject(img);
-            const key = await imageObj.uploadAndGetRemotePath(FileDirectoryT.WebtoonEpisodeImages);
-            if (!key) {
-              throw new Error("Image upload failed");
-            }
-            return {
-              episodeId: -1, // dummy
-              path: key,
-              mimeType: img.type,
-              rank: idx,
-            };
-          };
-        } else {
-          return async (): Promise<WebtoonEpisodeImageFormT> => ({
-            ...img,
-            rank: idx,
-          });
-        }
-      });
-
-      const newImgForms = await Promise.all(
-        promises.map((promise) => promise())
-      );
-
-      const form: WebtoonEpisodeFormT = {
-        webtoonId: webtoonId,
-        // title,
-        // title_en,
-        episodeNo: Number(episodeNo),
-      };
-      let episodeId: number;
-      if (episode){
-        await updateEpisode(episode.id, form, newImgForms);
-        toast({
-          description: "성공적으로 업데이트되었습니다."
-        });
-        episodeId = episode.id;
-      } else {
-        episodeId = await createEpisode(form, newImgForms);
-        toast({
-          description: "성공적으로 생성되었습니다."
-        });
-      }
       router.replace(`/webtoons/${webtoonId}/episodes/${episodeId}`);
-    } catch (e) {
-      console.warn(e);
-    } finally {
-      setIsSubmitting(false);
+    } else {
+      await createEpisode(webtoonId, values);
+      toast({
+        description: "성공적으로 생성되었습니다."
+      });
+      router.replace(`/webtoons/${webtoonId}`);
     }
   }
 
-  function handleDeleteEpisode(data: number) {
-    setEpisodeImages((prevImage) =>
-      prevImage.filter((cur, idx) => idx !== data)
-    );
-  }
-
-  function renderFullEpisode() {
-    return (
-      <Col>
-        {episodeImages.map((image, i) => (
-          <img
-            key={i}
-            src={(() => {
-              if (image instanceof File) {
-                return URL.createObjectURL(image);
-              } else {
-                return buildImgUrl(image.path);
-              }
-            })()}
-            alt={(() => {
-              if (image instanceof File) {
-                return URL.createObjectURL(image);
-              } else {
-                return buildImgUrl(image.path);
-              }
-            })()}
-            className="w-full"
-          />
-        ))}
-      </Col>
-    );
-  }
-
-  async function handleOpenEpisodeImageClick() {
-    console.warn("handleOpenEpisodeImageClick");
-    // const isOk = await showConfirmDialog({
-    //   main: renderFullEpisode(),
-    //   // useCancel: true,
-    // });
-    // if (!isOk) return;
-  }
-
-  function getSelectedIndexes() {
-    return selectedImages.flatMap((isSelected, index) =>
-      isSelected ? index : []
-    );
-  }
-
-  function areIndexesConsecutive(indexes: number[]) {
-    for (let i = 1; i < indexes.length; i++) {
-      if (indexes[i] !== indexes[i - 1] + 1) {
-        return false; // 체크한 항목이 연속되지 않았을 때
-      }
-    }
-    return true; // 체크한 항목이 연속될 때
-  }
-
-  function handleReorderButtonClick(isUp: boolean) {
-    setEpisodeImages((prevImages: (WebtoonEpisodeImageFormT | File)[]) => {
-      const newImages = [...prevImages];
-      const selectedIndexes = getSelectedIndexes();
-
-      if (
-        selectedIndexes.length > 0
-        && !areIndexesConsecutive(selectedIndexes)
-      ) {
-        toast({
-          description: "연속되지 않은 항목들은 이동할 수 없습니다. 연속되는 항목들만 선택해 주세요"
-        });
-        return prevImages;
-      }
-
-      if (selectedIndexes.length > 0) {
-        const firstIndex = selectedIndexes[0];
-        const lastIndex = selectedIndexes[selectedIndexes.length - 1];
-
-        if (isUp && firstIndex > 0) {
-          // Move to up
-          const moveGroup = newImages.splice(
-            firstIndex,
-            selectedIndexes.length
-          );
-          newImages.splice(firstIndex - 1, 0, ...moveGroup);
-          updateSelectedImagesIndexes(firstIndex - 1, lastIndex - 1);
-        } else if (!isUp && lastIndex < newImages.length - 1) {
-          // Move to down
-          const moveGroup = newImages.splice(
-            firstIndex,
-            selectedIndexes.length
-          );
-          newImages.splice(firstIndex + 1, 0, ...moveGroup);
-          updateSelectedImagesIndexes(firstIndex + 1, lastIndex + 1);
-        }
-      }
-
-      return newImages;
-    });
-  }
-
-  function updateSelectedImagesIndexes(firstIndex: number, lastIndex: number) {
-    setSelectedImages((prevSelectedImages) => {
-      const updatedSelectedImages = new Array(prevSelectedImages.length).fill(
-        false
-      );
-      for (let i = firstIndex; i <= lastIndex; i++) {
-        updatedSelectedImages[i] = true;
-      }
-      return updatedSelectedImages;
-    });
-  }
-
-  function renderWebtoonImageList(): ReactNode {
-    return (
-      <>
-        <Row>
-          <Label htmlFor="episodes">{t("episodeImage")}</Label>
-          <Gap x={2} />
-          <Text className="text-mint text-[10pt]">{locale === "ko" ? "*필수" : "*Required"}</Text>
-        </Row>
-        <Gap y={3} />
-        <Col>
-          {episodeImages.length != 0 ? (
-            <Row className="bg-gray-darker rounded-md px-5 py-2 relative overflow-hidden min-h-[80px]">
-              <Col className="w-full">
-                {episodeImages.map((image, idx) => (
-                  <WebtoonImageItem
-                    key={idx}
-                    image={image}
-                    index={idx}
-                    isSelected={selectedImages[idx]}
-                    onToggleSelection={() => {
-                      setSelectedImages((prevSelected) => {
-                        const updatedSelected = [...prevSelected];
-                        updatedSelected[idx] = !updatedSelected[idx];
-                        return updatedSelected;
-                      });
-                    }}
-                    onDeleteEpisode={handleDeleteEpisode}
-                  />
-                ))}
-                <Col className="absolute right-0 top-0 overflow-hidden h-full">
-                  <Button
-                    onClick={() => {
-                      handleReorderButtonClick(true);
-                    }}
-                    className="h-full rounded-none bg-gray-text"
-                  >
-                    <IconUpArrow className="fill-white" />
-                  </Button>
-                  <hr className="border-black" />
-                  <Button
-                    onClick={() => {
-                      handleReorderButtonClick(false);
-                    }}
-                    className="h-full rounded-none bg-gray-text"
-                  >
-                    <IconDownArrow className="fill-white" />
-                  </Button>
-                </Col>
-              </Col>
-            </Row>
-          ) : (
-            <Label
-              htmlFor="episodes"
-              className="flex flex-col justify-center items-center bg-gray-darker rounded-sm overflow-hidden cursor-pointer w-full h-[340px]"
-            >
-              <IconUpload className="fill-gray-text " />
-              <Gap y={3} />
-              <Text className="text-[12pt] text-gray-text">
-                {t("dragDesc")}
-              </Text>
-            </Label>
-          )}
-        </Col>
-        <Gap y={4} />
-        <Row className="justify-between">
-          <Button
-            onClick={handleUploadImageClick}
-            className="bg-gray-text text-white"
-          >
-            {t("imageUpload")}
-          </Button>
-          <Button
-            onClick={handleOpenEpisodeImageClick}
-            className="bg-mint text-white"
-          >
-            {t("episodePreview")}
-          </Button>
-        </Row>
-        <ul className="list-disc p-5 text-gray-text">
-          <li>{t("noteDesc1")}</li>
-          <li>{t("noteDesc2")}</li>
-        </ul>
-
-        <Input
-          className="invisible h-0"
-          ref={inputRef}
-          id="episodes"
-          multiple
-          type="file"
-          accept=".png, .jpg, .jpeg"
-          onChange={handleInputImageChange}
-        />
-      </>
-    );
+  // 스피너
+  if (isSubmitting) {
+    return <Spinner/>;
   }
 
   return (
-    <Col>
-      {/* <Label htmlFor="title">{t("episodeTitle")}</Label>
-      <Gap y={3} />
-      <Input
-        className="text-black"
-        id="title"
-        value={title}
-        onChange={handleTitleChange}
-        placeholder={t("episodeTitlePlaceholder")}
-      />
-      <Gap y={4} />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-[500px] mx-auto">
+        <FormHeader
+          title={prev ? t("editEpisode") : t("addEpisode")}
+          goBackHref={prev ? `/webtoons/${webtoonId}/episodes/$` : "/webtoons"}
+        />
 
-      <Label htmlFor="title">{t("episodeEnTitle")}</Label>
-      <Gap y={3} />
-      <Input
-        className="text-black"
-        id="title"
-        value={title_en}
-        onChange={handleEnTitleChange}
-        placeholder={t("episodeEnTitlePlaceholder")}
-      />
-      <Gap y={10} /> */}
+        <FormItem>
+          <FormLabel>
+            {t("episodeNumber")}
+          </FormLabel>
+          <FormControl>
+            <NumericInput
+              register={form.register}
+              name="episodeNo"
+              placeholder={t("episodeNumberPlaceholder")}
+            />
+          </FormControl>
+        </FormItem>
 
-      <Row>
-        <Label htmlFor="title">{t("episodeNumber")}</Label>
-        <Gap x={2} />
-        <Text className="text-mint text-[10pt]">{locale === "ko" ? "*필수" : "*Required"}</Text>
-      </Row>
-      <Gap y={3} />
-      <Input
-        className="[&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-        id="title"
-        value={episodeNo}
-        type="number"
-        onChange={handleEpisodeNumberChange}
-        onKeyDown={preventLetters}
-        placeholder={t("episodeNumberPlaceholder")}
-      />
-      <Gap y={10} />
-
-      {renderWebtoonImageList()}
-      <Gap y={4} />
-      <Row className="justify-end">
-        <Button
-          disabled={submitDisabled}
-          onClick={handleSubmit}
-          className="rounded-full bg-mint text-white"
-        >
-          {isSubmitting ? "processing.." : `${t("register")}`}
-          <Gap x={2} />
-          <IconRightBrackets className="fill-white" />
-        </Button>
-      </Row>
-      <Gap y={40} />
-    </Col>
+        <ImageListField episodeImageSets={episodeImageSets} setEpisodeImageSets={setEpisodeImageSets} />
+        <Row className="justify-end">
+          <Button
+            disabled={!isValid}
+            className="rounded-full"
+            variant="mint"
+          >
+            {t("register")}
+            <IconRightBrackets />
+          </Button>
+        </Row>
+      </form>
+    </Form>
   );
+}
+
+function ImageListField({ episodeImageSets, setEpisodeImageSets }: {
+  episodeImageSets: EpisodeImageSet[];
+  setEpisodeImageSets: Dispatch<SetStateAction<EpisodeImageSet[]>>;
+}) {
+  const t = useTranslations("episodeForm");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleInputImageChange(e: ChangeEvent<HTMLInputElement>) {
+    let hasFileExceedingMaxSize = false;
+    const newImageSets = Array.from(e.target.files ?? [])
+      .filter(
+        (file) => {
+          if (file.size > MAX_THUMBNAIL_SIZE){
+            hasFileExceedingMaxSize = true;
+            return false;
+          }
+          return true;
+        }
+      )
+      .map((file) => ({
+        image: new ImageObject(file),
+        selected: false
+      }));
+    if (hasFileExceedingMaxSize) {
+      toast({
+        description: "5MB가 넘는 파일은 포함할 없습니다.",
+      });
+    }
+    setEpisodeImageSets(prev => [
+      ...prev,
+      ...newImageSets
+    ]);
+  }
+
+  return (
+    <>
+      <FormItem>
+        <FormLabel>
+          {t("episodeImage")}
+        </FormLabel>
+        <FormControl>
+          <Input
+            className="hidden"
+            multiple
+            type="file"
+            accept=".png, .jpg, .jpeg"
+            onChange={handleInputImageChange}
+            ref={fileInputRef}
+          />
+        </FormControl>
+      </FormItem>
+      <ImageListCanvas episodeImageSets={episodeImageSets} setEpisodeImageSets={setEpisodeImageSets} />
+      <Row className="justify-between mt-4">
+        <Button
+          variant="gray"
+          onClick={(e) => {
+            e.preventDefault();
+            fileInputRef.current?.click();
+          }}>
+          {t("imageUpload")}
+        </Button>
+
+        <EpisodeImagePreview imageSets={episodeImageSets}>
+          <Button variant="mint" onClick={(e) => e.preventDefault()}>
+            {t("episodePreview")}
+          </Button>
+        </EpisodeImagePreview>
+      </Row>
+      <ul className="list-disc p-5 text-gray-text">
+        <li>{t("noteDesc1")}</li>
+        <li>{t("noteDesc2")}</li>
+      </ul>
+    </>
+  );
+}
+
+function ImageListCanvas({ episodeImageSets, setEpisodeImageSets }: {
+  episodeImageSets: EpisodeImageSet[];
+  setEpisodeImageSets: Dispatch<SetStateAction<EpisodeImageSet[]>>;
+}) {
+  const { toast } = useToast();
+
+  function handleReorderButtonClick(isUp: boolean) {
+    try {
+      setEpisodeImageSets(prev => reorderImages(prev, isUp));
+    } catch (e) {
+      if (e instanceof ReorderImagesError) {
+        toast({
+          description: e.message
+        });
+      }
+    }
+  }
+
+  const t = useTranslations("episodeForm");
+  if (episodeImageSets.length === 0) {
+    return <Label
+      htmlFor="episodes"
+      className="flex flex-col justify-center items-center bg-gray-darker rounded-sm overflow-hidden cursor-pointer w-full h-[340px]"
+    >
+      <IconUpload className="fill-gray-text" />
+      <Text className="text-[12pt] text-gray-text mt-3">
+        {t("dragDesc")}
+      </Text>
+    </Label>;
+  }
+  return <Row className="min-h-[80px] items-stretch">
+    <Col className="bg-gray-darker rounded-l-md flex-1 px-5 py-2">
+      {episodeImageSets.map((imageSet, cInx) => (
+        <EpisodeImageItem
+          key={cInx}
+          imageSet={imageSet}
+          removeHandler={() => {
+            setEpisodeImageSets((prev) =>
+              prev.filter((prevImageSet) => prevImageSet !== imageSet)
+            );
+          }}
+        />
+      ))}
+    </Col>
+    <Col className="w-[50px]">
+      <div
+        onClick={() => handleReorderButtonClick(true)}
+        className="flex-1 rounded-tr-md bg-gray-text flex justify-center items-center"
+      >
+        <IconUpArrow className="fill-white" />
+      </div>
+      <hr className="border-black" />
+      <div
+        onClick={() => handleReorderButtonClick(false)}
+        className="flex-1 rounded-br-md bg-gray-text flex justify-center items-center"
+      >
+        <IconDownArrow className="fill-white" />
+      </div>
+    </Col>
+  </Row>;
 }

@@ -15,7 +15,7 @@ export default async function Admin({ children }: {
 }) {
   // TODO 관리자 보호
   return (
-    <div className="flex w-full bg-background text-primary">
+    <div className="flex w-full light bg-background text-primary">
       <Sidebar/>
       <Col className="flex-1 bg-gray-light p-10">
         {children}

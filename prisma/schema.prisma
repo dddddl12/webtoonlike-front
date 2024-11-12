@@ -223,38 +223,16 @@ model WebtoonBanner {
   @@map("banners")
 }
 
-model WebtoonEpisodeImage {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  episodeId Int      @map("episode_id")
-  host      String?
-  path      String
-  mimeType  String   @map("mime_type")
-  width     Int?
-  height    Int?
-  rank      Int?
-
-  episode WebtoonEpisode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
-
-  @@map("webtoon_episode_images")
-}
-
 model WebtoonEpisode {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  webtoonId   Int      @map("webtoon_id")
-  englishUrl  String?  @map("english_url")
-  episodeNo   Int      @map("episode_no")
-  title       String?
-  title_en    String?
-  description String?
-  // TODO 사용 여부 확인
-  thumbPath   String?  @map("thumb_path")
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  webtoonId  Int      @map("webtoon_id")
+  englishUrl String?  @map("english_url")
+  episodeNo  Int      @map("episode_no")
+  imagePaths Json     @map("image_paths")
 
-  webtoon Webtoon               @relation(fields: [webtoonId], references: [id], onDelete: Cascade)
-  images  WebtoonEpisodeImage[]
+  webtoon Webtoon @relation(fields: [webtoonId], references: [id], onDelete: Cascade)
 
   @@unique([webtoonId, episodeNo])
   @@map("webtoon_episodes")

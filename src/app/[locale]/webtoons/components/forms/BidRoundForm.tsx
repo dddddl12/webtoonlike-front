@@ -3,21 +3,27 @@
 import { useState } from "react";
 import { Heading2 } from "@/shadcn/ui/texts";
 import { Gap, Row } from "@/shadcn/ui/layouts";
-import { Input } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/shadcn/ui/radio-group";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { IconExclamation } from "@/components/svgs/IconExclamation";
 import { Checkbox } from "@/shadcn/ui/checkbox";
 import { useTranslations } from "next-intl";
 import { BidRoundFormSchema, BidRoundFormT, BidRoundT } from "@/resources/bidRounds/bidRound.types";
-import { useForm, UseFormReturn, FieldValues, FieldPath, FieldPathValue, useWatch } from "react-hook-form";
+import { useForm, UseFormReturn, useWatch } from "react-hook-form";
 import { useRouter } from "@/i18n/routing";
-import { FieldSet, Form, FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
+import {
+  BooleanFormField,
+  FieldSet,
+  Form,
+  FormControl,
+  FormItem,
+  FormLabel
+} from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
 import { createBidRound, updateBidRound } from "@/resources/bidRounds/bidRound.service";
 import { formResolver } from "@/utils/forms";
 import ContractRangeForm from "@/app/[locale]/webtoons/components/forms/ContractRangeForm";
+import { NumericInput } from "@/shadcn/ui/input";
 
 export default function BidRoundForm({ webtoonId, prev }: {
   webtoonId: number;
@@ -133,11 +139,11 @@ export default function BidRoundForm({ webtoonId, prev }: {
         <Row className="justify-end">
           <Button
             disabled={!isValid || !isAgreed}
-            type="submit"
-            className="rounded-full bg-mint text-white"
+            className="rounded-full"
+            variant="mint"
           >
             {t("register")}
-            <IconRightBrackets className="fill-white"/>
+            <IconRightBrackets />
           </Button>
         </Row>
 
@@ -164,10 +170,11 @@ function IsNewFieldSet({ form }: {
   return (
     <FieldSet>
       <legend>{t("productType")}</legend>
-      <BooleanFormItem
-        form={form}
-        fieldName="isNew"
+      <BooleanFormField
+        control={form.control}
+        name="isNew"
         items={items}
+        className="mt-3"
       />
     </FieldSet>
   );
@@ -184,16 +191,39 @@ function EpisodeCountFieldSet({ form }: {
     <FieldSet>
       <legend>{t("serialInformation")}</legend>
       <Row className="gap-4">
-        <NumericFormItem
-          form={form}
-          fieldName="currentEpisodeNo"
-          unitName={t("currentEpisode")}
-        />
-        <NumericFormItem
-          form={form}
-          fieldName="totalEpisodeCount"
-          unitName={t("expectingOrFinishedEpisode")}
-        />
+
+        <FormItem className="flex items-center mt-3">
+          <FormControl>
+            <NumericInput
+              register={form.register}
+              name="currentEpisodeNo"
+              className="w-fit p-1 text-right"
+              maxLength={4}
+              size={4}
+              placeholder="_"
+            />
+          </FormControl>
+          <FormLabel className="ml-2">
+            {t("currentEpisode")}
+          </FormLabel>
+        </FormItem>
+
+        <FormItem className="flex items-center mt-3">
+          <FormControl>
+            <NumericInput
+              register={form.register}
+              name="totalEpisodeCount"
+              className="w-fit p-1 text-right"
+              maxLength={4}
+              size={4}
+              placeholder="_"
+            />
+          </FormControl>
+          <FormLabel className="ml-2">
+            {t("expectingOrFinishedEpisode")}
+          </FormLabel>
+        </FormItem>
+
       </Row>
       {errors.currentEpisodeNo
         && <div className="text-sm font-medium text-destructive">
@@ -211,11 +241,23 @@ function MonthlyCountFieldSet({ form }: {
     <FieldSet>
       <legend>{t("monthlyProductionAvailableRounds")}</legend>
       <Row>
-        <NumericFormItem
-          form={form}
-          fieldName="monthlyEpisodeCount"
-          unitName={t("episodesPossible")}
-        />
+
+        <FormItem className="flex items-center mt-3">
+          <FormControl>
+            <NumericInput
+              register={form.register}
+              name="monthlyEpisodeCount"
+              className="w-fit p-1 text-right"
+              maxLength={4}
+              size={4}
+              placeholder="_"
+            />
+          </FormControl>
+          <FormLabel className="ml-2">
+            {t("episodesPossible")}
+          </FormLabel>
+        </FormItem>
+
       </Row>
     </FieldSet>
   );
@@ -229,11 +271,23 @@ function FinishedFieldSet({ form }: {
     <FieldSet>
       <legend>{t("serialInformation")}</legend>
       <Row>
-        <NumericFormItem
-          form={form}
-          fieldName="totalEpisodeCount"
-          unitName={t("finishedEpisode")}
-        />
+
+        <FormItem className="flex items-center mt-3">
+          <FormControl>
+            <NumericInput
+              register={form.register}
+              name="totalEpisodeCount"
+              className="w-fit p-1 text-right"
+              maxLength={4}
+              size={4}
+              placeholder="_"
+            />
+          </FormControl>
+          <FormLabel className="ml-2">
+            {t("finishedEpisode")}
+          </FormLabel>
+        </FormItem>
+
       </Row>
     </FieldSet>
   );
@@ -256,96 +310,12 @@ function OriginalityFieldSet({ form }: {
   return (
     <FieldSet>
       <legend>{t("SerializationOfOtherPlatforms")}</legend>
-      <BooleanFormItem
-        form={form}
-        fieldName="isOriginal"
+      <BooleanFormField
+        control={form.control}
+        name="isOriginal"
         items={items}
+        className="mt-3"
       />
     </FieldSet>
-  );
-}
-
-type FieldName<TFieldValues extends FieldValues, AllowedFieldType> = {
-  [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K> extends AllowedFieldType | undefined ? K : never;
-}[FieldPath<TFieldValues>];
-
-function NumericFormItem<TFieldValues extends FieldValues>({ form, fieldName, unitName }: {
-  form: UseFormReturn<TFieldValues>;
-  fieldName: FieldName<TFieldValues, number>;
-  unitName: string;
-}) {
-  const [displayValue, setDisplayValue] = useState<string>("");
-  const field = form.register(fieldName, {
-    setValueAs: (rawInput) => {
-      const intValue = parseInt(rawInput);
-      if (intValue >= 0) {
-        setDisplayValue(intValue.toString());
-        return intValue;
-      } else if (!rawInput) {
-        setDisplayValue("");
-      }
-    }
-  });
-  return <FormItem className="flex items-center mt-3">
-    <FormControl>
-      <Input
-        {...field}
-        className="w-fit p-1 text-right"
-        type="text"
-        maxLength={4}
-        size={4}
-        value={displayValue}
-        placeholder="_"
-      />
-    </FormControl>
-    <FormLabel className="ml-2">
-      {unitName}
-    </FormLabel>
-  </FormItem>;
-}
-
-
-function BooleanFormItem<TFieldValues extends FieldValues>({ form, fieldName, items }: {
-  form: UseFormReturn<TFieldValues>;
-  fieldName: FieldName<TFieldValues, boolean>;
-  items: {
-    value: boolean;
-    label: string;
-  }[];
-}) {
-  return (
-    <FormField
-      control={form.control}
-      name={fieldName}
-      render={({ field }) => (
-        <FormItem className="mt-3">
-          <FormControl>
-            <RadioGroup
-              {...field}
-              value={field.value?.toString() || ""}
-              className="flex flex-wrap gap-3"
-              onValueChange={(value) => {
-                field.onChange(JSON.parse(value));
-              }}
-              onChange={undefined}
-            >
-              {items.map((item, index) => (
-                <FormItem key={index} className="space-x-1 space-y-0 flex items-center">
-                  <FormControl>
-                    <RadioGroupItem
-                      className="border border-white"
-                      value={item.value.toString()}
-                    />
-                  </FormControl>
-                  <FormLabel>
-                    {item.label}
-                  </FormLabel>
-                </FormItem>
-              ))}
-            </RadioGroup>
-          </FormControl>
-        </FormItem>
-      )}
-    />
   );
 }

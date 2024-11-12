@@ -2,22 +2,17 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Text } from "@/shadcn/ui/texts";
 import { Col, Row } from "@/shadcn/ui/layouts";
-import { getClerkUserById, getTokenInfo } from "@/resources/tokens/token.service";
 import { Button } from "@/shadcn/ui/button";
-import { IconHeartFill } from "@/components/svgs/IconHeartFill";
 import { Link } from "@/i18n/routing";
 import AccountBasicInfoSectionDeleteButton from "@/app/[locale]/account/AccountBasicInfoSectionDeleteButton";
+import { getSimpleUserProfile } from "@/resources/users/user.service";
 
 export default async function AccountBasicInfoSection() {
   const TeditProfile = await getTranslations("accountPage");
-  const { userId } = await getTokenInfo();
-  const clerkUser = await getClerkUserById(userId);
-  if (!clerkUser) {
-    throw new Error("clerkUser is null");
-  }
+  const user = await getSimpleUserProfile();
   return <Row className="gap-12">
     <Image
-      src={clerkUser.imageUrl ?? "/img/mock_profile_image.png"}
+      src={user.thumbPath ?? "/img/mock_profile_image.png"}
       alt="profile_image"
       style={{ objectFit: "cover" }}
       className="rounded-full"
@@ -26,7 +21,7 @@ export default async function AccountBasicInfoSection() {
     />
     <Col className="items-center justify-center w-full sm:items-start gap-5">
       <Text className="font-bold text-[26pt]">
-        {clerkUser.username}
+        {user.name}
       </Text>
       <Row className="w-full justify-between sm:flex-row">
         <Col className="sm:flex-row">

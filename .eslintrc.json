@@ -4,14 +4,9 @@
         "next/typescript"
     ],
     "plugins": [
-        "@stylistic/js",
         "@stylistic/ts"
     ],
     "rules": {
-        "indent": [
-            "warn",
-            2
-        ],
         "quotes": [
             "warn",
             "double"
@@ -44,10 +39,17 @@
         "@typescript-eslint/no-unused-vars": [
             "warn"
         ],
-        "@stylistic/js/keyword-spacing": ["warn", {
-            "before": true,
-            "after": true
-        }],
+        "@stylistic/ts/indent": [
+            "warn",
+            2
+        ],
+        "@stylistic/ts/keyword-spacing": [
+            "warn",
+            {
+                "before": true,
+                "after": true
+            }
+        ],
         "@stylistic/ts/semi": "warn",
         "@stylistic/ts/member-delimiter-style": "warn",
         "@typescript-eslint/no-explicit-any": "off",

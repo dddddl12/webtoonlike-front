@@ -2,13 +2,9 @@ import z from "zod";
 import { ResourceSchema } from "@/resources/globalTypes";
 
 const WebtoonEpisodeBaseSchema = z.object({
-  webtoonId: z.number(),
   episodeNo: z.number(),
-  title: z.string().optional(),
-  title_en: z.string().optional(),
-  description: z.string().optional(),
-  // thumbPath: z.string().optional(),
-  englishUrl: z.string().optional()
+  englishUrl: z.string().optional(),
+  imagePaths: z.array(z.string()),
 });
 
 export const WebtoonEpisodeFormSchema = WebtoonEpisodeBaseSchema;
@@ -16,7 +12,10 @@ export type WebtoonEpisodeFormT = z.infer<typeof WebtoonEpisodeFormSchema>;
 
 
 export const WebtoonEpisodeSchema = WebtoonEpisodeBaseSchema
-  .merge(ResourceSchema);
+  .merge(ResourceSchema)
+  .extend({
+    webtoonId: z.number(),
+  });
 export type WebtoonEpisodeT = z.infer<typeof WebtoonEpisodeSchema>;
 
 export const WebtoonEpisodeExtendedSchema = WebtoonEpisodeSchema
@@ -27,12 +26,6 @@ export const WebtoonEpisodeExtendedSchema = WebtoonEpisodeSchema
       title: z.string(),
       title_en: z.string().optional(),
     }),
-    images: z.array(
-      z.object({
-        id: z.number(),
-        path: z.string(),
-      })
-    ),
     navigation: z.object({
       previousId: z.number().optional(),
       nextId: z.number().optional(),

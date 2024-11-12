@@ -101,12 +101,12 @@ export function WebtoonForm({ selectableGenres, prev }: {
         <Row className="justify-end mt-14">
           <Button
             disabled={!isValid}
-            className="bg-mint text-white hover:bg-mint/70"
+            variant="mint"
           >
             {prev
               ? `${tGeneral("edit")}`
               : `${tGeneral("submit")}`}
-            <IconRightBrackets className="fill-white"/>
+            <IconRightBrackets />
           </Button>
         </Row>
       </form>

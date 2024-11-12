@@ -1,9 +1,13 @@
 import * as React from "react";
 
 import { cn } from "@/shadcn/lib/utils";
+import { FieldValues, UseFormRegister } from "react-hook-form";
+import { FieldName } from "@/shadcn/ui/form";
+import { useState } from "react";
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
@@ -23,3 +27,33 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = "Input";
 
 export { Input };
+
+//여기서부터 커스텀
+interface NumericInputProps<TFieldValues extends FieldValues>
+  extends Omit<InputProps, "type" | "value"> {
+  register: UseFormRegister<TFieldValues>;
+  name: FieldName<TFieldValues, number>;
+}
+
+export function NumericInput<TFieldValues extends FieldValues>(
+  { register, name, ...props }: NumericInputProps<TFieldValues>
+) {
+  const [displayValue, setDisplayValue] = useState<string>("");
+  const field = register(name, {
+    setValueAs: (rawInput: string) => {
+      const intValue = parseInt(rawInput);
+      if (intValue >= 0) {
+        setDisplayValue(intValue.toString());
+        return intValue;
+      } else if (!rawInput) {
+        setDisplayValue("");
+      }
+    }
+  });
+  return <Input
+    {...props}
+    {...field}
+    type="text"
+    value={displayValue}
+  />;
+}

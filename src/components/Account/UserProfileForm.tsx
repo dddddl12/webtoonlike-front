@@ -1,4 +1,4 @@
-import { SignUpStage, UserExtendedFormT, UserFormSchema, UserFormT, UserTypeT } from "@/resources/users/user.types";
+import { SignUpStage, UserExtendedFormT, UserFormSchema, UserFormT } from "@/resources/users/user.types";
 import { Dispatch, SetStateAction } from "react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";

@@ -4,7 +4,10 @@
         "edit": "수정",
         "goBack": "이전",
         "goNext": "다음",
-        "selectFile": "파일 선택"
+        "selectFile": "파일 선택",
+        "dismiss": "확인",
+        "close": "닫기",
+        "cancel": "취소"
     },
     "userType": {
         "CREATOR": "저작권자",
@@ -111,17 +114,16 @@
         "secondaryRights": "2차 사업권"
     },
     "detailedInfoPage": {
-        "episodePreview": "회차 미리보기",
         "episodeSeq": "{number}화",
+        "viewPreviousEpisode": "이전화 보기",
+        "viewNextEpisode": "다음화 보기"
+    },
+    "episodeForm": {
+        "episodePreview": "회차 미리보기",
         "addEpisode": "회차 추가하기",
         "editEpisode": "회차 수정하기",
-        "episodeTitle": "회차 제목",
-        "episodeEnTitle": "회차 제목 (영문)",
         "episodeNumber": "회차 번호",
-        "episodeTitlePlaceholder": "회차 제목을 입력해 주세요",
-        "episodeEnTitlePlaceholder": "영문 회차 제목을 입력해 주세요",
         "episodeNumberPlaceholder": "회차 번호을 입력해 주세요",
-        "episodeThumbnail": "회차 썸네일",
         "episodeImage": "회차 이미지",
         "preview": "미리보기",
         "imageUpload": "이미지 업로드",
@@ -129,12 +131,9 @@
         "noteDesc1": "가로 사이즈는 600~800px을 권장합니다.",
         "noteDesc2": "파일 1개 용량 5MB, 총 용량 50MB이하로 제한합니다.",
         "register": "등록하기",
-        "episodeDelete": "회차 삭제",
-        "areYouSure": "해당 회차를 삭제하시겠습니까?"
-    },
-    "shared": {
-        "close": "닫기",
-        "confirm": "확인"
+        "removeImageTitle": "이미지 제거",
+        "removeImageDescription": "해당 이미지를 제거하시겠습니까?",
+        "removeConfirm": "제거"
     },
     "addSeries": {
         "addSeries": "작품 추가하기",

@@ -59,7 +59,7 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
         className="flex flex-col gap-5"
       >
 
-        <span className="text-black mb-10">{t("profileDesc")}</span>
+        <span className="mb-10">{t("profileDesc")}</span>
         <AccountFormImageField image={thumbnail} setImage={setThumbnail} placeholder={t("uploadProfilePic")}/>
 
         <FormField
@@ -72,7 +72,7 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
                   defaultValue={prev?.isAgencyAffiliated?.toString()}
                   onValueChange={(value) => field.onChange(JSON.parse(value))}
                 >
-                  <SelectTrigger className="bg-white border-gray text-black-texts rounded-sm">
+                  <SelectTrigger>
                     <SelectValue
                       placeholder={t("affiliationWithAnotherAgencyQuestion")}
                     />
@@ -97,7 +97,7 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
                   defaultValue={prev?.isExperienced?.toString()}
                   onValueChange={(value) => field.onChange(JSON.parse(value))}
                 >
-                  <SelectTrigger className="bg-white border-gray text-black-texts rounded-sm">
+                  <SelectTrigger>
                     <SelectValue
                       placeholder={t("selectYourWorkExperience")}
                     />
@@ -120,7 +120,6 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
               <FormControl>
                 <Input
                   {...field}
-                  className="border-gray"
                   type="text"
                   placeholder={t("username")}
                 />
@@ -137,7 +136,6 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
               <FormControl>
                 <Input
                   {...field}
-                  className="border-gray"
                   type="text"
                   placeholder={t("usernameInEnglish")}
                 />

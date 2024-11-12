@@ -8,12 +8,12 @@ import { Heading } from "@/shadcn/ui/texts";
 export default async function UpdateAccount () {
   const user = await getUser();
   return (
-    <PageLayout bgColor="light" className="items-center flex flex-col">
-      <Col className="w-[400px]">
+    <PageLayout lightTheme={true}>
+      <Col className="w-[400px] mx-auto">
         <KenazLogo className="fill-black" />
         <Gap y={10} />
         <Heading className="text-black font-bold text-[20pt]">
-        회원 정보 업데이트
+          회원 정보 업데이트
         </Heading>
         <UpdateAccountWrapper userExtendedForm={user} />
       </Col>

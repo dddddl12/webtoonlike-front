@@ -6,10 +6,10 @@ import { Slot } from "@radix-ui/react-slot";
 import {
   Controller,
   ControllerProps,
-  FieldPath,
+  FieldPath, FieldPathValue,
   FieldValues,
   FormProvider,
-  useFormContext,
+  useFormContext, Control,
 } from "react-hook-form";
 
 import { cn } from "@/shadcn/lib/utils";
@@ -18,6 +18,7 @@ import { Row } from "@/shadcn/ui/layouts";
 import { Button } from "@/shadcn/ui/button";
 import { Link } from "@/i18n/routing";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import { RadioGroup, RadioGroupItem } from "@/shadcn/ui/radio-group";
 
 const Form = FormProvider;
 
@@ -170,11 +171,23 @@ const FormMessage = React.forwardRef<
 });
 FormMessage.displayName = "FormMessage";
 
-// 여기는 커스텀
+export {
+  useFormField,
+  Form,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+  FormField,
+};
+
+
+// 여기서부터 커스텀
 interface FieldSetProps
   extends React.FieldsetHTMLAttributes<HTMLFieldSetElement> {}
 
-const FieldSet = React.forwardRef<HTMLFieldSetElement, FieldSetProps>(
+export const FieldSet = React.forwardRef<HTMLFieldSetElement, FieldSetProps>(
   ({ className, ...props }, ref) => {
     return (
       <fieldset
@@ -190,7 +203,7 @@ const FieldSet = React.forwardRef<HTMLFieldSetElement, FieldSetProps>(
 );
 FieldSet.displayName = "FieldSet";
 
-function FormHeader({ title, goBackHref }: {
+export function FormHeader({ title, goBackHref }: {
   title: string;
   goBackHref: string;
 }) {
@@ -204,17 +217,52 @@ function FormHeader({ title, goBackHref }: {
   </Row>;
 }
 
-export {
-  useFormField,
-  Form,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormDescription,
-  FormMessage,
-  FormField,
+export type FieldName<TFieldValues extends FieldValues, AllowedFieldType> = {
+  [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K> extends AllowedFieldType | undefined ? K : never;
+}[FieldPath<TFieldValues>];
 
-  // 커스텀
-  FieldSet,
-  FormHeader
-};
+export function BooleanFormField<TFieldValues extends FieldValues>({ control, name, items, className }: {
+  control: Control<TFieldValues>;
+  name: FieldName<TFieldValues, boolean>;
+  items: {
+    value: boolean;
+    label: string;
+  }[];
+  className?: string;
+}) {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className={className}>
+          <FormControl>
+            <RadioGroup
+              {...field}
+              value={field.value?.toString() || ""}
+              className="flex flex-wrap gap-3"
+              onValueChange={(value) => {
+                field.onChange(JSON.parse(value));
+              }}
+              onChange={undefined}
+            >
+              {items.map((item, index) => (
+                <FormItem key={index} className="space-x-1 space-y-0 flex items-center">
+                  <FormControl>
+                    <RadioGroupItem
+                      className="border border-white"
+                      value={item.value.toString()}
+                    />
+                  </FormControl>
+                  <FormLabel>
+                    {item.label}
+                  </FormLabel>
+                </FormItem>
+              ))}
+            </RadioGroup>
+          </FormControl>
+        </FormItem>
+      )}
+    />
+  );
+}

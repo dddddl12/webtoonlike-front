@@ -31,7 +31,7 @@ export default async function RootLayout({
     <html lang={locale} className="h-[100%]">
       <ClerkProvider localization={locale === "en" ? enUS : koKR}>
         <NextIntlClientProvider messages={messages}>
-          <body className={`h-[100%] ${inter.className}`}>
+          <body className={`h-[100%] ${inter.className} bg-background text-primary`}>
             <Header/>
             <main className="h-auto min-h-[100%] flex justify-center">
               {children}

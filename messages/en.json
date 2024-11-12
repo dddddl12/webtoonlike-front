@@ -4,7 +4,10 @@
         "edit": "Edit",
         "goBack": "Previous",
         "goNext": "Next",
-        "selectFile": "Select File"
+        "selectFile": "Select File",
+        "dismiss": "Dismiss",
+        "close": "Close",
+        "cancel": "Cancel"
     },
     "userType": {
         "CREATOR": "Creator",
@@ -111,15 +114,15 @@
         "secondaryRights": "Secondary Business Rights"
     },
     "detailedInfoPage": {
-        "episodePreview": "Episode Preview",
         "episodeSeq": "Episode {number}",
+        "viewPreviousEpisode": "Next",
+        "viewNextEpisode": "Previous"
+    },
+    "episodeForm": {
+        "episodePreview": "Episode Preview",
         "addEpisode": "Add Episode",
         "editEpisode": "Edit Episode",
-        "episodeTitle": "Episode Title",
-        "episodeEnTitle": "Episode Title (English)",
         "episodeNumber": "Episode Number",
-        "episodeTitlePlaceholder": "Please enter the title of the episode",
-        "episodeEnTitlePlaceholder": "Please enter the title of the episode in English",
         "episodeNumberPlaceholder": "Please enter the episode number",
         "episodeThumbnail": "Episode Thumbnail",
         "episodeImage": "Episode Image",
@@ -129,12 +132,9 @@
         "noteDesc1": "The horizontal size is recommended to be between 600~800px.",
         "noteDesc2": "Limit 1 file capaciy to 5MB and total capacity to 50MB or less.",
         "register": "Register",
-        "episodeDelete": "Delete Episode",
-        "areYouSure": "Are you sure you want to delete this episode?"
-    },
-    "shared": {
-        "close": "Close",
-        "confirm": "Confirm"
+        "removeImageTitle": "Remove Image",
+        "removeImageDescription": "Are you sure you want to remove this image?",
+        "removeConfirm": "Remove"
     },
     "addSeries": {
         "addSeries": "Add Series",
@@ -490,4 +490,4 @@
         "acceptedOffer": "Accepted Offer",
         "anErrorOccurredWhileSendingTheMessage": "An error occured while sending the message"
     }
-}
+},

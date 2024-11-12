@@ -95,8 +95,8 @@ export default function BidRequestForm({ bidRoundId }: {
             variant="secondary"
             disabled={!isValid}
           >
-            <span className="gap-2">{tGeneral("submit")}</span>
-            <IconRightBrackets className="fill-white"/>
+            {tGeneral("submit")}
+            <IconRightBrackets />
           </Button>
 
         </Row>

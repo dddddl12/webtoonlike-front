@@ -25,8 +25,8 @@ export default async function SignUpComplete() {
     .filter((name) => name)
     .join(" ");
 
-  return <PageLayout bgColor="light" className="items-center flex flex-col">
-    <Col className="w-[400px]">
+  return <PageLayout lightTheme={true}>
+    <Col className="w-[400px] mx-auto">
       <KenazLogo className="fill-black" />
       <Gap y={10} />
       <Heading className="text-black font-bold text-[20pt]">

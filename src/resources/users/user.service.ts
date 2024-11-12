@@ -12,14 +12,14 @@ export async function createUser(form: UserExtendedFormT) {
   form = UserExtendedFormSchema.parse(form);
   // 저작권자/바이어까지 등록 후 생성으로 구조 변경
   await prisma.$transaction(async (tx) => {
-    const user = await currentUser();
-    const userEmail = user?.primaryEmailAddress?.emailAddress;
-    if (!user || !userEmail) {
+    const clerkUser = await currentUser();
+    const userEmail = clerkUser?.primaryEmailAddress?.emailAddress;
+    if (!clerkUser || !userEmail) {
       throw new NotSignedInError();
     }
     // 기본 유저 생성
     const insert = {
-      sub: user.id,
+      sub: clerkUser.id,
       email: userEmail,
       name: form.name,
       phone: form.phone,
@@ -33,7 +33,7 @@ export async function createUser(form: UserExtendedFormT) {
       create: insert,
       update: insert,
       where: {
-        sub: user.id
+        sub: clerkUser.id
       },
       select: {
         id: true
@@ -74,6 +74,29 @@ export async function createUser(form: UserExtendedFormT) {
 
     await updateTokenInfo(tx);
   });
+}
+
+type SimpleUserProfile = {
+  name: string;
+  thumbPath?: string;
+};
+export async function getSimpleUserProfile(): Promise<SimpleUserProfile> {
+  const clerkUser = await currentUser();
+  if (!clerkUser || !clerkUser.externalId) {
+    throw new NotSignedInError();
+  }
+  const { name } = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: parseInt(clerkUser.externalId)
+    },
+    select: {
+      name: true
+    }
+  });
+  return {
+    name,
+    thumbPath: clerkUser.imageUrl
+  };
 }
 
 export async function getUser(): Promise<UserExtendedFormT> {
