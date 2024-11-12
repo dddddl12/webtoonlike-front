@@ -3,20 +3,20 @@ import SectionHeading from "@/components/HomePage/SectionHeading";
 import WebtoonGrid from "@/components/HomePage/WebtoonGrid";
 import ArtistGrid from "@/components/HomePage/ArtistGrid";
 import BannerSection from "@/components/HomePage/BannerSection";
-import { homeItems } from "@/resources/webtoons/webtoon.service";
 import PageLayout from "@/components/PageLayout";
+import { homeItems } from "@/resources/home/home.service";
 
 export async function HomePage() {
   const t = await getTranslations("homeMain");
 
-  const { popular, brandNew, perGenre, artists } = await homeItems();
+  const { banners, popular, brandNew, perGenre, artists } = await homeItems();
   const locale = await getLocale();
 
   return (
     <PageLayout className="flex flex-col gap-20">
       <section className="w-full">
         <SectionHeading title={t("contentNearingDeadline")}/>
-        <BannerSection/>
+        <BannerSection banners={banners}/>
       </section>
       <section className="w-full">
         <SectionHeading path="/webtoons" title={t("recommendedPopularSeries")}/>

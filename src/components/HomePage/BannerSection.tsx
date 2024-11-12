@@ -1,29 +1,31 @@
 "use client";
 
 import { Col, Row } from "@/shadcn/ui/layouts";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { BannerWebtoon, bannerWebtoons } from "@/components/HomePage/banners/bannerData";
 import { ReactNode, useEffect, useState } from "react";
 import { clsx } from "clsx";
-import ClockIcon from "./icons/clock.svg";
 import OffersIcon from "./icons/offers.svg";
-import BarIcon from "./icons/bar.svg";
+import { BannerWebtoonItem } from "@/resources/home/home.types";
+import { displayName } from "@/utils/displayName";
+import { buildImgUrl } from "@/utils/media";
 
-export default function BannerSection() {
+export default function BannerSection({ banners }: {
+  banners: BannerWebtoonItem[];
+}) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [firstVisibleIndex, setFirstVisibleIndex] = useState(0);
-  const lastIndex = bannerWebtoons.length - 1;
+  const lastIndex = banners.length - 1;
 
   useEffect(() => {
     let targetIndex = Math.max(activeIndex - 1, 0);
     targetIndex = Math.min(targetIndex, lastIndex - 2);
     setFirstVisibleIndex(targetIndex);
-  }, [activeIndex]);
+  }, [activeIndex, lastIndex]);
 
   return (
     <Row className="h-[400px]">
-      {bannerWebtoons.map((webtoon, index) => {
+      {banners.map((webtoon, index) => {
         return (
           <Slide
             key={webtoon.id}
@@ -42,7 +44,7 @@ export default function BannerSection() {
 function Slide({
   webtoon, isVisible, isFirstVisible, isActive, onClick
 }: {
-  webtoon: BannerWebtoon;
+  webtoon: BannerWebtoonItem;
   isVisible: boolean;
   isFirstVisible: boolean;
   isActive: boolean;
@@ -50,8 +52,8 @@ function Slide({
 }) {
 
   const t = useTranslations("homeMain");
+  const locale = useLocale();
   const ageRestrictionT = useTranslations("ageRestriction");
-  const time = convertTimeLeft(webtoon.hoursLeft);
 
   return (
     <Col
@@ -65,7 +67,9 @@ function Slide({
       onClick={onClick}
     >
       <Image
-        src={webtoon.thumbnail} alt="Item thumbnail" draggable={false}
+        src={buildImgUrl(webtoon.thumbPath)}
+        alt="Item thumbnail"
+        draggable={false}
         loading="eager"
         fill={true}
         className="object-cover object-center"
@@ -76,32 +80,16 @@ function Slide({
           height: "50%",
           width: "100%",
           bottom: 0,
-          background: `linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, ${webtoon.bgColor} 100%)`
         }}></div>
         {isActive && <div style={{
           position: "absolute",
           height: "100%",
           width: "25%",
           left: 0,
-          background: `linear-gradient(270deg, rgba(0, 0, 0, 0) 0%, ${webtoon.bgColor} 100%)`
         }}></div>}
       </div>}
       {isActive && <div className="z-20 text-white">
         <div className="flex px-3 py-2 bg-white w-fit rounded-full font-bold text-black text-xs left-8 top-8 absolute">
-          <div className="flex items-center">
-            <Image src={ClockIcon} alt="clock" className="mr-2"/>
-            <span>
-              {t.rich("timeLeft", {
-                days: time.days,
-                hours: time.hours,
-                minutes: time.minutes,
-                hl: (chunks) => <HighlightedText>{chunks}</HighlightedText>
-              })}
-            </span>
-          </div>
-          <div className="flex items-center mx-2">
-            <Image src={BarIcon} alt="bar"/>
-          </div>
           <div className="flex items-center">
             <Image src={OffersIcon} alt="offers" className="mr-2"/>
             <span>
@@ -114,11 +102,13 @@ function Slide({
         </div>
         <div className="left-8 bottom-8 absolute flex flex-col gap-1">
           <div className="flex gap-1">
-            <Badge>연재중</Badge>
+            <Badge>{webtoon.isNew ? "연재중" : "완결"}</Badge>
             <Badge>{ageRestrictionT(webtoon.ageLimit)}</Badge>
           </div>
           <div className="text-3xl font-bold">{webtoon.title}</div>
-          <div className="text-base">{webtoon.creatorName}</div>
+          <div className="text-base">
+            {displayName(locale, webtoon.authorOrCreatorName, webtoon.authorOrCreatorName_en)}
+          </div>
         </div>
       </div>}
     </Col>
@@ -140,11 +130,3 @@ function Badge({ children, className }: {
     {children}
   </div>;
 }
-
-const convertTimeLeft = (totalHours: number) => {
-  const days = Math.floor(totalHours / 24);
-  const hours = Math.floor(totalHours % 24);
-  const minutes = Math.floor((totalHours % 1) * 60);
-
-  return { days, hours, minutes };
-};

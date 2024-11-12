@@ -75,21 +75,3 @@ export const WebtoonPreviewSchema = z.object({
   thumbPath: z.string()
 });
 export type WebtoonPreviewT = z.infer<typeof WebtoonPreviewSchema>;
-
-// 홈 화면
-export type HomeWebtoonItem = {
-  id: number;
-  thumbPath: string;
-  title: string;
-  title_en: string;
-  authorOrCreatorName: string;
-  authorOrCreatorName_en?: string;
-};
-
-export type HomeArtistItem = {
-  id: number;
-  thumbPath?: string;
-  name: string;
-  name_en?: string;
-  numOfWebtoons: number;
-};

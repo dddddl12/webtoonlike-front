@@ -3,8 +3,6 @@
 import { Prisma, $Enums, Webtoon as WebtoonRecord } from "@prisma/client";
 import {
   AgeLimit,
-  HomeArtistItem,
-  HomeWebtoonItem,
   TargetAge, TargetGender, WebtoonExtendedT, WebtoonFormSchema, WebtoonFormT, WebtoonPreviewT, WebtoonT,
 } from "@/resources/webtoons/webtoon.types";
 import { BidRoundApprovalStatus, BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
@@ -98,10 +96,7 @@ const offerableBidRoundFilter = (): Prisma.BidRoundListRelationFilter => {
       approvalStatus: $Enums.BidRoundApprovalStatus.APPROVED,
       bidStartsAt: {
         lte: now
-      },
-      // processEndsAt: {
-      //   gt: now
-      // }
+      }
     }
   };
 };
@@ -440,159 +435,5 @@ export async function listMyWebtoonsOnSale({ page = 1 }: {
   return {
     items,
     totalPages: Math.ceil(totalRecords / limit),
-  };
-}
-
-export async function homeItems() {
-  const where: Prisma.WebtoonWhereInput = {
-    bidRounds: offerableBidRoundFilter(),
-    user: {
-      creator: {
-        isNot: null
-      }
-    }
-  };
-  const select = {
-    id: true,
-    title: true,
-    title_en: true,
-    authorName: true,
-    authorName_en: true,
-    user: {
-      select: {
-        creator: {
-          select: {
-            id: true,
-            name: true,
-            name_en: true,
-          },
-        }
-      }
-    },
-    thumbPath: true,
-  };
-  const [popularRecords, brandNewRecords, perGenreRecords, artists] = await prisma.$transaction(async (tx) => {
-    return Promise.all([
-      // 인기 웹툰
-      tx.webtoon.findMany({
-        where,
-        select: {
-          ...select,
-          _count: {
-            select: {
-              likes: true
-            }
-          }
-        },
-        orderBy: [
-          {
-            likes: {
-              _count: "desc"
-            }
-          },
-          { createdAt: "desc" },
-        ],
-        take: 4
-      }),
-
-      // 최신
-      tx.webtoon.findMany({
-        where: {
-          isFeaturedAsNew: true
-        },
-        select,
-        orderBy: [
-          { createdAt: "desc" },
-        ],
-        take: 5
-      }),
-
-      // 장르
-      tx.webtoon.findMany({
-        where,
-        select,
-        take: 10
-      }),
-
-      // 작가
-      tx.webtoon.groupBy({
-        by: "userId",
-        _count: {
-          userId: true,
-        },
-        where: {
-          user: {
-            creator: {
-              isNot: null
-            },
-          },
-        },
-        orderBy: {
-          _count: {
-            userId: "desc",
-          },
-        },
-        take: 5
-      }).then(async (records) => {
-        const userRecords = await tx.user.findMany({
-          select: {
-            id: true,
-            creator: {
-              select: {
-                id: true,
-                name: true,
-                name_en: true,
-                thumbPath: true
-              }
-            }
-          },
-          where: {
-            id: {
-              in: records
-                .map((r) => r.userId)
-                .filter(r => r !== null)
-            }
-          }
-        });
-        const artists: HomeArtistItem[] = userRecords
-          .map(userRecord => {
-            if (!userRecord.creator) return;
-            return {
-              id: userRecord.id,
-              name: userRecord.creator.name,
-              name_en: userRecord.creator.name_en ?? undefined,
-              numOfWebtoons: records.find(r => r.userId === userRecord.id)?._count.userId || 0,
-              thumbPath: userRecord.creator.thumbPath ?? undefined,
-            };
-          })
-          .filter(artist => !!artist);
-        return artists;
-      })
-    ]);
-  });
-
-  const [popular, brandNew, perGenre]: HomeWebtoonItem[][] = [popularRecords, brandNewRecords, perGenreRecords]
-    .map(group => {
-      return group.map(item => {
-        const { creator } = item.user;
-        if (!creator) {
-          throw new Error("Unknown situation");
-        }
-        return {
-          id: item.id,
-          title: item.title,
-          title_en: item.title_en,
-          authorOrCreatorName: item.authorName ?? creator.name,
-          authorOrCreatorName_en: item.authorName_en ?? creator.name_en ?? undefined,
-          thumbPath: item.thumbPath,
-        };
-      });
-    });
-
-  return {
-    popular,
-    brandNew,
-    perGenre,
-    artists
   };
 }

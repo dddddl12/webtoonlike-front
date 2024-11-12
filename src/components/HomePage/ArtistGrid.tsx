@@ -6,11 +6,11 @@ import { Link } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import { buildImgUrl } from "@/utils/media";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/ui/avatar";
-import { HomeArtistItem } from "@/resources/webtoons/webtoon.types";
 import { displayName } from "@/utils/displayName";
+import { HomeArtistItem } from "@/resources/home/home.types";
 
 export default function ArtistGrid({ artists }: {
-  artists: HomeArtistItem[]
+  artists: HomeArtistItem[];
 }) {
   return <Row className="w-full">
     {artists.length > 0
@@ -23,7 +23,7 @@ export default function ArtistGrid({ artists }: {
 }
 
 export function ArtistItem({ artist }: {
-  artist: HomeArtistItem
+  artist: HomeArtistItem;
 }) {
   const t = useTranslations("howMany");
   const locale = useLocale();

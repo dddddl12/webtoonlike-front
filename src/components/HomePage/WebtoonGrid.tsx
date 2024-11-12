@@ -7,9 +7,9 @@ import { useLocale } from "next-intl";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import { useState } from "react";
-import { HomeWebtoonItem } from "@/resources/webtoons/webtoon.types";
 import { GenreT } from "@/resources/genres/genre.types";
 import { displayName } from "@/utils/displayName";
+import { HomeWebtoonItem } from "@/resources/home/home.types";
 
 export default function WebtoonGrid({ webtoons, numbered, cols, height }: {
   webtoons: HomeWebtoonItem[];
@@ -48,7 +48,7 @@ export default function WebtoonGrid({ webtoons, numbered, cols, height }: {
 function WebtoonItem({ webtoon, height, index }: {
   webtoon: HomeWebtoonItem;
   height: number;
-  index: number
+  index: number;
 }) {
   const locale = useLocale();
 
