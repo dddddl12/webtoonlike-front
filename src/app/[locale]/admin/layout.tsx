@@ -8,20 +8,24 @@ import { IconLetter } from "@/components/svgs/IconLetter";
 import { Link } from "@/i18n/routing";
 import { clsx } from "clsx";
 import { ReactNode } from "react";
+import LightThemeProvider from "@/providers/LightThemeProvider";
+import { getTranslations } from "next-intl/server";
 
 export default async function Admin({ children }: {
   children: ReactNode;
 }) {
   // TODO 관리자 보호
   return (
-    <div className="flex w-full light bg-background text-primary">
-      <div className="mx-auto max-w-[1200px] w-full flex">
-        <Sidebar/>
-        <Col className="flex-1 bg-gray-light p-10">
-          {children}
-        </Col>
+    <LightThemeProvider>
+      <div className="flex w-full light bg-background text-primary">
+        <div className="mx-auto max-w-[1200px] w-full flex">
+          <Sidebar/>
+          <Col className="flex-1 bg-gray-light p-10">
+            {children}
+          </Col>
+        </div>
       </div>
-    </div>
+    </LightThemeProvider>
   );
 }
 
@@ -66,7 +70,9 @@ function MenuItem({ pathname, children }: {
   pathname: string;
   children: ReactNode;
 }) {
+  // TODO
   const currentPathname = "currentPathname";
+
   return <Row key={pathname}
     className={clsx("w-full h-[48px] px-5 rounded-full justify-center", {
       "bg-mint": pathname === currentPathname,

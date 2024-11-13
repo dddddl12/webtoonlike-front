@@ -7,6 +7,7 @@ import { updateTokenInfo } from "@/resources/tokens/token.service";
 import { SignUpCompleteForm } from "@/app/[locale]/sign-up-complete/SignUpCompleteForm";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "@/i18n/routing";
+import LightThemeProvider from "@/providers/LightThemeProvider";
 
 export default async function SignUpComplete() {
   const user = await currentUser();
@@ -25,18 +26,20 @@ export default async function SignUpComplete() {
     .filter((name) => name)
     .join(" ");
 
-  return <PageLayout lightTheme={true}>
-    <Col className="w-[400px] mx-auto">
-      <KenazLogo className="fill-black" />
-      <Gap y={10} />
-      <Heading className="text-black font-bold text-[20pt]">
-        {t("setupAccount")}
-      </Heading>
-      <SignUpCompleteForm
-        signUpFinished={signUpFinished}
-        clerkUserFullName={clerkUserFullName}
-      />
-    </Col>
-  </PageLayout>;
+  return <LightThemeProvider>
+    <PageLayout lightTheme={true}>
+      <Col className="w-[400px] mx-auto">
+        <KenazLogo className="fill-black" />
+        <Gap y={10} />
+        <Heading className="text-black font-bold text-[20pt]">
+          {t("setupAccount")}
+        </Heading>
+        <SignUpCompleteForm
+          signUpFinished={signUpFinished}
+          clerkUserFullName={clerkUserFullName}
+        />
+      </Col>
+    </PageLayout>
+  </LightThemeProvider>;
 }
 
