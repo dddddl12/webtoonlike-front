@@ -50,10 +50,10 @@ function SendMessage({ bidRequestId, setRerender }: {
   >
     <DialogTrigger asChild>
       <Button variant="gray">
-      협의 요청
+        협의 요청
       </Button>
     </DialogTrigger>
-    <DialogContent className="bg-white">
+    <DialogContent>
       <DialogHeader>
         <DialogTitle>메시지 보내기</DialogTitle>
       </DialogHeader>
@@ -74,7 +74,7 @@ function SendMessage({ bidRequestId, setRerender }: {
             className="bg-red"
             onClick={() => setEditorOpen(false)}
           >
-                취소
+            취소
           </Button>
           <Gap x={2} />
           <Button
@@ -82,7 +82,7 @@ function SendMessage({ bidRequestId, setRerender }: {
             onClick={handleSubmit}
             disabled={!message}
           >
-                전송
+            전송
           </Button>
         </Row>
       </Col>
