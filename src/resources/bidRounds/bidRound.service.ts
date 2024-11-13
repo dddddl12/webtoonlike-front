@@ -184,6 +184,89 @@ export async function listBidRoundsWithWebtoon({ page, approvalStatus }: {
   };
 }
 
+export type AdminPageBidRoundWithOffersT = {
+  bidRoundId: number;
+  webtoon: {
+    id: number;
+    title: string;
+    title_en?: string;
+    thumbPath: string;
+  };
+  // todo 혼동을 피하기 위해 유저는 모두 username이라고 쓸 것
+  creatorUser: {
+    username: string;
+  };
+  offerCount: number;
+  negoStartsAt?: Date;
+};
+export async function listBidRoundsWithOffers({ page }: {
+  page: number;
+}): Promise<ListResponse<AdminPageBidRoundWithOffersT>> {
+  const limit = 5;
+  const now = new Date();
+  const where: Prisma.BidRoundWhereInput = {
+    approvalStatus: BidRoundApprovalStatus.Approved,
+    isActive: true,
+    bidRequests: {
+      some: {}
+    },
+    negoStartsAt: {
+      gt: now
+    },
+    bidStartsAt: {
+      lte: now
+    }
+  };
+  const [records, totalRecords] = await prisma.$transaction([
+    prisma.bidRound.findMany({
+      take: limit,
+      skip: (page - 1) * limit,
+      where,
+      select: {
+        id: true,
+        _count: {
+          select: {
+            bidRequests: true,
+          }
+        },
+        negoStartsAt: true,
+        webtoon: {
+          select: {
+            id: true,
+            title: true,
+            title_en: true,
+            thumbPath: true,
+            user: {
+              select: {
+                name: true,
+              }
+            }
+          }
+        }
+      }
+    }),
+    prisma.bidRound.count({ where })
+  ]);
+  const items = records.map(r => ({
+    bidRoundId: r.id,
+    webtoon: {
+      id: r.webtoon.id,
+      title: r.webtoon.title,
+      title_en: r.webtoon.title_en,
+      thumbPath: r.webtoon.thumbPath,
+    },
+    creatorUser: {
+      username: r.webtoon.user.name,
+    },
+    offerCount: r._count.bidRequests,
+    negoStartsAt: r.negoStartsAt ?? undefined,
+  }));
+  return {
+    items,
+    totalPages: Math.ceil(totalRecords / limit),
+  };
+}
+
 export async function approveBidRound(bidRoundId: number) {
   await prisma.bidRound.update({
     where: {

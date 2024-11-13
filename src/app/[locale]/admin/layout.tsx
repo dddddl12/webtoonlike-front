@@ -1,4 +1,3 @@
-import PageLayout from "@/components/PageLayout";
 import { Col, Row } from "@/shadcn/ui/layouts";
 import { IconDashboard } from "@/components/svgs/IconDashboard";
 import { IconUser } from "@/components/svgs/IconUser";
@@ -16,10 +15,12 @@ export default async function Admin({ children }: {
   // TODO 관리자 보호
   return (
     <div className="flex w-full light bg-background text-primary">
-      <Sidebar/>
-      <Col className="flex-1 bg-gray-light p-10">
-        {children}
-      </Col>
+      <div className="mx-auto max-w-[1200px] w-full flex">
+        <Sidebar/>
+        <Col className="flex-1 bg-gray-light p-10">
+          {children}
+        </Col>
+      </div>
     </div>
   );
 }
@@ -46,10 +47,10 @@ function Sidebar() {
       <IconDocs/>
       <p>투고 관리</p>
     </MenuItem>
-    {/*<MenuItem pathname="/admin/offers">*/}
-    {/*  <IconDocs/>*/}
-    {/*  <p>오퍼 관리</p>*/}
-    {/*</MenuItem>*/}
+    <MenuItem pathname="/admin/offers">
+      <IconDocs/>
+      <p>오퍼 관리</p>
+    </MenuItem>
     <MenuItem pathname="/admin/invoices">
       <IconLetter/>
       <p>인보이스 관리</p>

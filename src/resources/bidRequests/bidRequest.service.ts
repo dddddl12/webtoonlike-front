@@ -12,13 +12,8 @@ import prisma from "@/utils/prisma";
 import { ListResponse } from "@/resources/globalTypes";
 import { getClerkUserMap, getTokenInfo } from "@/resources/tokens/token.service";
 import { UserTypeT } from "@/resources/users/user.types";
-import { AgeLimit, TargetAge, TargetGender, WebtoonFormT, WebtoonT } from "@/resources/webtoons/webtoon.types";
+import { AgeLimit, TargetAge, TargetGender, WebtoonT } from "@/resources/webtoons/webtoon.types";
 import { BuyerCompanySchema } from "@/resources/buyers/buyer.types";
-
-// const getBidRequestStatus = (record: BidRequestRecord): string => {
-//   const { approvedAt, acceptedAt, cancelledAt, rejectedAt } = record;
-//   if (approvedAt && approvedAt > now) {}
-// }
 
 const mapToBidRequestDTO = (record: BidRequestRecord): BidRequestT => {
   return {
@@ -42,21 +37,25 @@ const mapToBidRequestDTO = (record: BidRequestRecord): BidRequestT => {
   };
 };
 
+
 export async function listBidRequests({
   page = 1,
   limit = 10,
   excludeInvoiced = false,
   isAdmin = false,
+  bidRoundId
 }: {
   page?: number;
   limit?: number;
   excludeInvoiced?: boolean;
   isAdmin?: boolean;
+  bidRoundId?: number;
 } = {}): Promise<ListResponse<BidRequestExtendedT>> {
   const { userId, metadata } = await getTokenInfo();
   const { type } = metadata;
 
   const where: Prisma.BidRequestWhereInput = {
+    bidRoundId,
     invoices: excludeInvoiced ? {
       none: {}
     } : undefined,
@@ -105,7 +104,7 @@ export async function listBidRequests({
       orderBy: {
         createdAt: "desc"
       },
-      take: limit,
+      take: limit > 0 ? limit : undefined,
       skip: (page - 1) * limit,
     }),
     prisma.bidRequest.count({ where })
@@ -363,3 +362,10 @@ export async function declineBidRequest(bidRequestId: number) {
 
   });
 }
+
+//바이어명
+// 오퍼 발송일
+// 현재 상태
+// 희망 판권
+
+// async function list

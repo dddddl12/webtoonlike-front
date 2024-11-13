@@ -6,8 +6,8 @@ import { cn } from "@/shadcn/lib/utils";
 
 
 interface GapProps {
-  x?: number|string
-  y?: number|string
+  x?: number|string;
+  y?: number|string;
 }
 
 export function Gap({ x, y }: GapProps): JSX.Element {
@@ -49,18 +49,6 @@ interface ColProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTM
 
 export function Col({ className, ...props }: ColProps) {
   return <div className={cn("flex flex-col", className)} {...props} />;
-}
-
-
-interface ContainerProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}
-
-export function Container({ className, ...props }: ContainerProps) {
-  return (
-    <div
-      className={cn("container mx-auto max-w-[1280px] pt-2 md:pt-4", className)}
-      {...props}
-    />
-  );
 }
 
 

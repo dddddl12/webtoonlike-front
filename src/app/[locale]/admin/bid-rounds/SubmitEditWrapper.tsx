@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useLocale } from "next-intl";
 import { enUS, ko } from "date-fns/locale";
-import { format } from "date-fns";
 
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/shadcn/ui/dialog";
 import { Input } from "@/shadcn/ui/input";
@@ -63,10 +62,10 @@ export default function SubmitEditWrapper({
     >
       <DialogTrigger asChild>
         <Button>
-            edit
+          edit
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-white">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit dates</DialogTitle>
         </DialogHeader>
@@ -182,14 +181,14 @@ export default function SubmitEditWrapper({
               className="bg-red"
               onClick={() => handleOpenChange(false)}
             >
-                취소
+              취소
             </Button>
             <Gap x={2} />
             <Button
               className="bg-mint"
               onClick={handleSubmit}
             >
-                적용
+              적용
             </Button>
           </Row>
         </Col>
