@@ -9,6 +9,7 @@ import {
 } from "@/resources/webtoonEpisodes/webtoonEpisode.types";
 import { AdminLevel } from "@/resources/tokens/token.types";
 import { getTokenInfo } from "@/resources/tokens/token.service";
+import { UserTypeT } from "@/resources/users/user.types";
 
 const mapToWebtoonEpisodeDTO = (record: WebtoonEpisodeRecord): WebtoonEpisodeT => ({
   id: record.id,
@@ -55,7 +56,7 @@ export async function getEpisode(id: number): Promise<WebtoonEpisodeExtendedT> {
 
   return {
     ...mapToWebtoonEpisodeDTO(record),
-    isEditable: metadata.adminLevel >= AdminLevel.Admin || record.webtoon.userId === userId,
+    isEditable: metadata.type === UserTypeT.Creator && record.webtoon.userId === userId,
     webtoon: {
       id: record.webtoon.id,
       title: record.webtoon.title,

@@ -3,8 +3,7 @@ import { Row } from "@/shadcn/ui/layouts";
 import { Link } from "@/i18n/routing";
 import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 import { Button } from "@/shadcn/ui/button";
-import { Dispatch, ReactNode, SetStateAction } from "react";
-import { clsx } from "clsx";
+import { Dispatch, SetStateAction } from "react";
 import { useTranslations } from "next-intl";
 
 export default function WebtoonDetailsButtons({ webtoon, setOpenBidRequestForm }: {
@@ -23,12 +22,12 @@ function ViewButton ({ webtoon }: {
   webtoon: WebtoonExtendedT;
 }) {
   const t = useTranslations("webtoonDetails");
-  return <ControlButton className="bg-[#C3C3C3] text-black"
-    disabled={!webtoon.firstEpisodeId}>
+  return <Button variant="darkGray" className="flex-1" size="lg"
+    disabled={!webtoon.firstEpisodeId} asChild>
     <Link href={`/webtoons/${webtoon.id}/episodes/${webtoon.firstEpisodeId}`}>
       {webtoon.firstEpisodeId ? t("viewEpisodes") : t("unableToView")}
     </Link>
-  </ControlButton>;
+  </Button>;
 }
 
 function BidRoundButton ({ webtoon }: {
@@ -36,17 +35,17 @@ function BidRoundButton ({ webtoon }: {
 }) {
   const t = useTranslations("seriesManagement");
   if (webtoon.activeBidRound) {
-    return <ControlButton className="bg-mint text-white">
+    return <Button variant="mint" className="flex-1" size="lg" asChild>
       <Link href={`/webtoons/${webtoon.id}/bid-round/update`}>
         {t("reregisterOfContentTransactions")}
       </Link>
-    </ControlButton>;
+    </Button>;
   } else {
-    return <ControlButton className="bg-mint text-white">
+    return <Button variant="mint" className="flex-1" size="lg" asChild>
       <Link href={`/webtoons/${webtoon.id}/bid-round/create`}>
         {t("registerOfContentTransactions")}
       </Link>
-    </ControlButton>;
+    </Button>;
   }
 }
 
@@ -61,8 +60,10 @@ function OfferButton ({ webtoon, setOpenBidRequestForm }: {
     && [BidRoundStatus.Bidding, BidRoundStatus.Negotiating]
       .includes(activeBidRound.status);
   // TODO 시간으로 변경
-  return <ControlButton
-    className="bg-mint text-white"
+  return <Button
+    variant="mint"
+    className="flex-1"
+    size="lg"
     disabled={!isPossibleToOffer}
     onClick={() => setOpenBidRequestForm(true)}
   >
@@ -71,20 +72,5 @@ function OfferButton ({ webtoon, setOpenBidRequestForm }: {
       : (activeBidRound
         ? t("notPossibleToOffer")
         : t("unableToMakeOffer"))}
-  </ControlButton>;
-}
-
-function ControlButton({ children, className, disabled, onClick }: {
-  children: ReactNode;
-  className?: string;
-  disabled?: boolean;
-  onClick?: () => void;
-}) {
-  return <Button
-    onClick={onClick}
-    disabled={disabled}
-    className={clsx("rounded-sm h-12 flex justify-center items-center flex-1 font-bold text-base", className)}
-    asChild>
-    {children}
   </Button>;
 }
