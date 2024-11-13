@@ -15,7 +15,7 @@ import { displayName } from "@/utils/displayName";
 import { useState } from "react";
 import BidRequestDetailsForInvoice from "@/app/[locale]/invoices/BidRequestDetailsForInvoice";
 import { Button } from "@/shadcn/ui/button";
-import { downloadAsPDF } from "@/resources/invoices/downloadAsPDF";
+import { jsPDF } from "jspdf";
 
 type InvoiceListResponse = ListResponse<InvoiceExtendedT>;
 
@@ -37,9 +37,9 @@ export function ManageInvoiceList({ initialInvoiceListResponse }: {
 
   return <>
     <Col>
-      <TableHeader />
+      <TableHeader/>
       {listResponse.items.map((invoice) => (
-        <TableRow key={invoice.id} invoice={invoice} />
+        <TableRow key={invoice.id} invoice={invoice}/>
       ))}
     </Col>
     <Paginator
@@ -98,7 +98,8 @@ function TableRow({ invoice }: { invoice: InvoiceExtendedT }) {
           {invoice.buyerUsername}
         </div>
 
-        <div className="w-[20%] p-2 flex justify-center text-mint underline cursor-pointer" onClick={() => setShowNegotiation(!showNegotiation)}>
+        <div className="w-[20%] p-2 flex justify-center text-mint underline cursor-pointer"
+          onClick={() => setShowNegotiation(!showNegotiation)}>
           {showNegotiation ? "접기" : "보기"}
         </div>
 
@@ -112,12 +113,21 @@ function TableRow({ invoice }: { invoice: InvoiceExtendedT }) {
           <Button
             variant="mint"
             onClick={async () => {
-              const uint8Array = await downloadInvoiceContent(invoice.id);
-              const blob = new Blob([uint8Array], { type: "application/pdf" });
-              const url = URL.createObjectURL(blob);
-              downloadAsPDF(
-                url,
-                `${displayName(locale, invoice.webtoon.title, invoice.webtoon.title_en)}_${invoice.creatorUsername}_${invoice.buyerUsername}_invoice`);
+              const html = await downloadInvoiceContent(invoice.id);
+              const a = document.createElement("div");
+              a.innerHTML = html;
+              a.style.color = "black";
+              const doc = new jsPDF();
+              doc.html(a, {
+                callback: function(doc) {
+                  // Save the PDF
+                  doc.save(`${displayName(locale, invoice.webtoon.title, invoice.webtoon.title_en)}_${invoice.creatorUsername}_${invoice.buyerUsername}_invoice.pdf`);
+                },
+                x: 15,
+                y: 15,
+                width: 170, //target width in the PDF document
+                windowWidth: 650 //window width in CSS pixels
+              });
             }}>
             {t("downloadInvoice")}
           </Button>

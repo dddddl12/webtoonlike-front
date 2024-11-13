@@ -215,5 +215,6 @@ export async function downloadInvoiceContent(invoiceId: number) {
       contentInHtml: true
     }
   });
-  return convertHtmlToPdfBuffer(contentInHtml);
+  return contentInHtml;
+  // return convertHtmlToPdfBuffer(contentInHtml);
 }
