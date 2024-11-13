@@ -56,7 +56,8 @@ export async function getEpisode(id: number): Promise<WebtoonEpisodeExtendedT> {
 
   return {
     ...mapToWebtoonEpisodeDTO(record),
-    isEditable: metadata.type === UserTypeT.Creator && record.webtoon.userId === userId,
+    isEditable: metadata.type === UserTypeT.Creator
+      && (record.webtoon.userId === userId || metadata.adminLevel >= AdminLevel.Admin),
     webtoon: {
       id: record.webtoon.id,
       title: record.webtoon.title,

@@ -203,7 +203,8 @@ export async function getWebtoon(id: number): Promise<WebtoonExtendedT> {
     : undefined;
   return {
     ...mapToWebtoonDTO(record),
-    isEditable: metadata.type === UserTypeT.Creator && record.userId === userId,
+    isEditable: metadata.type === UserTypeT.Creator
+      && (record.userId === userId || metadata.adminLevel >= AdminLevel.Admin),
     authorOrCreatorName: record.authorName ?? creator.name,
     authorOrCreatorName_en: record.authorName_en ?? creator.name_en ?? undefined,
     likeCount: record._count.likes,
