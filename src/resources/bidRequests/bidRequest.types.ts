@@ -13,14 +13,14 @@ export enum BidRequestStatus {
 
 // 대기 중, 거절 완료, 협상 중, 성사 완료, 협상 종료
 
+
+export const BidRequestContractRangeItemSchema = ContractRangeItemSchema.extend({
+  message: z.string().optional(),
+});
 const BidRequestBaseSchema = z.object({
   bidRoundId: z.number(),
   message: z.string().optional(),
-  contractRange: z.array(
-    ContractRangeItemSchema.extend({
-      message: z.string().optional(),
-    })
-  ),
+  contractRange: z.array(BidRequestContractRangeItemSchema),
 });
 
 export const BidRequestFormSchema = BidRequestBaseSchema;
@@ -41,6 +41,7 @@ export const BidRequestSchemaExtendedSchema = BidRequestSchema
       title: z.string(),
       title_en: z.string().optional(),
       thumbPath: z.string(),
+      creatorUsername: z.string(),
     }),
     username: z.string(),
     approvedAt: z.date().optional(),

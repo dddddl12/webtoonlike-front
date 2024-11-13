@@ -1,13 +1,13 @@
 "use client";
 
 import ContractRange from "@/app/[locale]/webtoons/components/WebtoonPageContents/ContractRange";
-import WebtoonDetails from "@/app/[locale]/webtoons/components/WebtoonPageContents/WebtoonDetails";
 import PageLayout from "@/components/PageLayout";
 import BidRequestForm from "@/app/[locale]/webtoons/components/forms/BidRequestForm";
 import { WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/shadcn/ui/button";
+import WebtoonDetails from "@/app/[locale]/webtoons/components/WebtoonPageContents/WebtoonDetails";
 
 export default function WebtoonPageContents({ webtoon }: {
   webtoon: WebtoonExtendedT;
@@ -26,7 +26,7 @@ export default function WebtoonPageContents({ webtoon }: {
       <ContractRange webtoon={webtoon}/>
       {webtoon.isEditable && <Button asChild>
         <Link href={`/webtoons/${webtoon.id}/episodes/create`}>
-        에피소드 추가
+          에피소드 추가
         </Link>
       </Button>}
 

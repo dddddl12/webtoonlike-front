@@ -6,40 +6,38 @@ import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { InvoiceExtendedT } from "@/resources/invoices/invoice.types";
 import Paginator from "@/components/Paginator";
 import { useListData } from "@/hooks/listData";
 import { ListResponse } from "@/resources/globalTypes";
-import { downloadInvoiceContent, listInvoices } from "@/resources/invoices/invoice.service";
 import { displayName } from "@/utils/displayName";
 import { useState } from "react";
 import BidRequestDetailsForInvoice from "@/app/[locale]/invoices/BidRequestDetailsForInvoice";
-import { Button } from "@/shadcn/ui/button";
-import { downloadAsPDF } from "@/resources/invoices/downloadAsPDF";
+import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
+import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
 
-type InvoiceListResponse = ListResponse<InvoiceExtendedT>;
+type UninvoicedBidRequestList = ListResponse<BidRequestExtendedT>;
 
-export function ManageInvoiceList({ initialInvoiceListResponse }: {
-  initialInvoiceListResponse: InvoiceListResponse;
+export function UninvoicedBidRequestList({ initialBidRequestListResponse }: {
+  initialBidRequestListResponse: UninvoicedBidRequestList;
 }) {
   const t = useTranslations("invoiceManagement");
   const { listResponse, filters, setFilters } = useListData(
-    listInvoices,
-    { page: 1 },
-    initialInvoiceListResponse
+    listBidRequests,
+    { page: 1, excludeInvoiced: true, limit: 5 },
+    initialBidRequestListResponse
   );
 
   if (listResponse.items.length === 0) {
     return <Row className="rounded-md bg-gray-darker h-[84px] justify-center">
-      <Text className="text-white">{t("noInvoiceIssued")}</Text>
+      <Text className="text-white">인보이스 발행 대기 중인 오퍼가 없습니다.</Text>
     </Row>;
   }
 
   return <>
     <Col>
       <TableHeader />
-      {listResponse.items.map((invoice) => (
-        <TableRow key={invoice.id} invoice={invoice} />
+      {listResponse.items.map((bidRequest) => (
+        <TableRow key={bidRequest.id} bidRequest={bidRequest} />
       ))}
     </Col>
     <Paginator
@@ -59,13 +57,13 @@ function TableHeader() {
       <div className="w-[20%] p-2 flex justify-center font-bold">{t("authorName")}</div>
       <div className="w-[20%] p-2 flex justify-center font-bold">{t("buyerName")}</div>
       <div className="w-[20%] p-2 flex justify-center font-bold">협상 개요</div>
-      <div className="w-[20%] p-2 flex justify-center font-bold">{t("issueDate")}</div>
+      <div className="w-[20%] p-2 flex justify-center font-bold">신청 일자</div>
       <div className="w-[20%] p-2 flex justify-center font-bold">{t("downloadInvoice")}</div>
     </div>
   );
 }
 
-function TableRow({ invoice }: { invoice: InvoiceExtendedT }) {
+function TableRow({ bidRequest }: { bidRequest: BidRequestExtendedT }) {
   const locale = useLocale();
   const [showNegotiation, setShowNegotiation] = useState(false);
   const t = useTranslations("invoiceManagement");
@@ -76,26 +74,26 @@ function TableRow({ invoice }: { invoice: InvoiceExtendedT }) {
         <div className="w-[20%] p-2 flex justify-start items-center">
           <div className="w-[60px] h-[60px] overflow-hidden relative rounded-sm">
             <Image
-              src={buildImgUrl(invoice.webtoon.thumbPath, { size: "xxs" })}
-              alt={invoice.webtoon.thumbPath}
+              src={buildImgUrl(bidRequest.webtoon.thumbPath, { size: "xxs" })}
+              alt={bidRequest.webtoon.thumbPath}
               style={{ objectFit: "cover" }}
               fill
             />
           </div>
           <Link
             className="text-mint underline cursor-pointer ml-4"
-            href={`/webtoons/${invoice.webtoon.id}`}
+            href={`/webtoons/${bidRequest.webtoon.id}`}
           >
-            {displayName(locale, invoice.webtoon.title, invoice.webtoon.title_en)}
+            {displayName(locale, bidRequest.webtoon.title, bidRequest.webtoon.title_en)}
           </Link>
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {invoice.creatorUsername}
+          {bidRequest.webtoon.creatorUsername}
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {invoice.buyerUsername}
+          {bidRequest.username}
         </div>
 
         <div className="w-[20%] p-2 flex justify-center text-mint underline cursor-pointer" onClick={() => setShowNegotiation(!showNegotiation)}>
@@ -103,30 +101,17 @@ function TableRow({ invoice }: { invoice: InvoiceExtendedT }) {
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {invoice.createdAt.toLocaleDateString(locale)}
+          {bidRequest.createdAt.toLocaleDateString(locale)}
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {/*<InvoiceDownload invoice={invoice}/>*/}
-          {/*  TODO*/}
-          <Button
-            variant="mint"
-            onClick={async () => {
-              const uint8Array = await downloadInvoiceContent(invoice.id);
-              const blob = new Blob([uint8Array], { type: "application/pdf" });
-              const url = URL.createObjectURL(blob);
-              downloadAsPDF(
-                url,
-                `${displayName(locale, invoice.webtoon.title, invoice.webtoon.title_en)}_${invoice.creatorUsername}_${invoice.buyerUsername}_invoice`);
-            }}>
-            {t("downloadInvoice")}
-          </Button>
+          -
         </div>
       </div>
       {showNegotiation
         && <BidRequestDetailsForInvoice
-          bidRequestId={invoice.bidRequestId}
-          isInvoice={true}/>}
+          bidRequestId={bidRequest.id}
+          isInvoice={false}/>}
     </>
   );
 }

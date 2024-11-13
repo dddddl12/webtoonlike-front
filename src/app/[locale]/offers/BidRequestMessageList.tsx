@@ -6,10 +6,10 @@ import { listBidRequestMessages } from "@/resources/bidRequestMessages/bidReques
 import Paginator from "@/components/Paginator";
 import { BidRequestMessageExtendedT } from "@/resources/bidRequestMessages/bidRequestMessage.types";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import NegotiationDetails from "@/app/[locale]/invoices/NegotiationDetails";
 import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
 import ViewOfferSection from "@/app/[locale]/offers/components/OfferDetails";
 import Controls from "@/app/[locale]/offers/components/Controls";
+import BidRequestMessageNegotiationDetails from "@/app/[locale]/offers/BidRequestMessageNegotiationDetails";
 
 export default function BidRequestMessageList({ bidRequest, setRerender }: {
   bidRequest: BidRequestExtendedT;
@@ -106,7 +106,7 @@ function MessageRow({ message, index, setRerender, finished }: {
       <div className="w-[20%] p-2 flex justify-center">수정 요청</div>
     </Row>
     {showNegotiation && <Col>
-      <NegotiationDetails content={message.content}/>
+      <BidRequestMessageNegotiationDetails content={message.content}/>
       {!finished && <Controls bidRequestId={message.bidRequestId} setRerender={setRerender}/>}
     </Col>}
   </>;
@@ -131,7 +131,7 @@ function LastRow({ bidRequest, index }: {
       <div className="w-[20%] p-2 flex justify-center">{message}</div>
     </Row>
     {showContent && <Col>
-      <NegotiationDetails content={message + "되었습니다."}/>
+      <BidRequestMessageNegotiationDetails content={message + "되었습니다."}/>
     </Col>}
   </>;
 }

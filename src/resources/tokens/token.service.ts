@@ -87,25 +87,17 @@ const getAdminLevel = (admin: {
   throw new Error("Unexpected admin level");
 };
 
-export const getClerkUserMap = async (userIds: number[]): Promise<Map<number, User>> => {
-  const userIdsSet = new Set(userIds);
+export const getClerkUserMap = async (clerkUserIds: string[]): Promise<Map<string, User>> => {
+  const clerkUserIdSet = new Set(clerkUserIds);
   const clerkUsers = await clerkClient().then(client =>
     client.users.getUserList({
-      externalId: [...userIdsSet].map(id => id.toString())
+      userId: [...clerkUserIdSet]
     }));
-  const map = new Map<number, User>();
+  const map = new Map<string, User>();
   clerkUsers.data.forEach(user => {
-    const { externalId } = user;
-    if (externalId) {
-      map.set(parseInt(externalId), user);
-    }
+    map.set(user.id, user);
   });
   return map;
 //   TODO 계정 탈퇴 시 남겨야 할 유저 정보
 //   TODO 웹훅 검토
-};
-
-export const getClerkUserById = async (userId: number): Promise<User|undefined> => {
-  const userMap = await getClerkUserMap([userId]);
-  return userMap.get(userId);
 };

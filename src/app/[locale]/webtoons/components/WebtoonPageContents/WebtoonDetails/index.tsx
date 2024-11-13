@@ -6,8 +6,8 @@ import { Text } from "@/shadcn/ui/texts";
 import { Badge } from "@/shadcn/ui/badge";
 import { Link } from "@/i18n/routing";
 import { TargetAge, WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
-import WebtoonDetailsButtons from "@/app/[locale]/webtoons/components/WebtoonPageContents/WebtoonDetailsButtons";
-import WebtoonDetailsLikeButton from "@/app/[locale]/webtoons/components/WebtoonPageContents/WebtoonDetailsLikeButton";
+import WebtoonDetailsButtons from "@/app/[locale]/webtoons/components/WebtoonPageContents/WebtoonDetails/WebtoonDetailsButtons";
+import WebtoonDetailsLikeButton from "@/app/[locale]/webtoons/components/WebtoonPageContents/WebtoonDetails/WebtoonDetailsLikeButton";
 import { IconLink } from "@/components/svgs/IconLink";
 import { displayName } from "@/utils/displayName";
 import { useLocale, useTranslations } from "next-intl";
@@ -161,18 +161,18 @@ function formatTargetAge(targetAges: TargetAge[]) {
   }
   return targetAges.map(age => {
     switch (age) {
-    case TargetAge.Teens:
-      return 10;
-    case TargetAge.Twenties:
-      return 20;
-    case TargetAge.Thirties:
-      return 30;
-    case TargetAge.Forties:
-      return 40;
-    case TargetAge.Fifties:
-      return 50;
-    default:
-      throw new Error(`Unknown age ${targetAges.join(",")}`);
+      case TargetAge.Teens:
+        return 10;
+      case TargetAge.Twenties:
+        return 20;
+      case TargetAge.Thirties:
+        return 30;
+      case TargetAge.Forties:
+        return 40;
+      case TargetAge.Fifties:
+        return 50;
+      default:
+        throw new Error(`Unknown age ${targetAges.join(",")}`);
     }
   }).sort((a, b) => a - b);
 }

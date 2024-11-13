@@ -226,7 +226,7 @@
         "authorName": "작가명",
         "buyerName": "바이어명",
         "issueDate": "발급일",
-        "downloadInvoice": "인보이스 다운로드"
+        "downloadInvoice": "다운로드"
     },
     "allSeries": {
         "allSeries": "작품 전체보기",

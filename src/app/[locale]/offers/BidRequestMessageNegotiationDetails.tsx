@@ -1,3 +1,3 @@
-export default function BidRequestMessageNegotiationDetails() {
-  return <div>협상 내용</div>;
+export default function BidRequestMessageNegotiationDetails({ content }: {content: string}) {
+  return <div>{content}</div>;
 }
