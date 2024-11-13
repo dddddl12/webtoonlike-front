@@ -13,9 +13,9 @@ export default function EpisodeImagePreview({ imageSets, children }: {
       {children}
     </DialogTrigger>
     <DialogContent>
-      <DialogTitle>
-        <VisuallyHidden asChild />
-      </DialogTitle>
+      <VisuallyHidden>
+        <DialogTitle/>
+      </VisuallyHidden>
       {imageSets.map(({ image }, i) => {
         if (!image.url) {
           return null;

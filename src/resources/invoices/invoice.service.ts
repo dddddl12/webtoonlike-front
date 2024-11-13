@@ -9,7 +9,7 @@ import { UserTypeT } from "@/resources/users/user.types";
 import z from "zod";
 import { BuyerCompanySchema } from "@/resources/buyers/buyer.types";
 import { BidRequestContractRangeItemSchema } from "@/resources/bidRequests/bidRequest.types";
-import { convertHtmlToPdfBuffer, convertInvoiceToHtml } from "@/resources/invoices/invoice.utils";
+import { convertInvoiceToHtml } from "@/resources/invoices/invoice.utils";
 
 const mapToInvoiceDTO = (record: InvoiceRecord): InvoiceT => {
   return {
@@ -20,8 +20,8 @@ const mapToInvoiceDTO = (record: InvoiceRecord): InvoiceT => {
   };
 };
 
-export async function createInvoice(bidRequestId: number) {
-  await prisma.$transaction(async (tx) => {
+export async function previewOrCreateInvoice(bidRequestId: number, storeToDb: boolean): Promise<string> {
+  return prisma.$transaction(async (tx) => {
     const record = await tx.bidRequest.findUniqueOrThrow({
       where: { id: bidRequestId },
       select: {
@@ -118,22 +118,28 @@ export async function createInvoice(bidRequestId: number) {
 
     const invoiceContentValidated = InvoiceContent.parse(invoiceContent);
     const contentInHtml = await convertInvoiceToHtml(invoiceContentValidated);
-    await tx.invoice.create({
-      data: {
-        bidRequestId,
-        content: invoiceContentValidated,
-        contentInHtml
-      }
-    });
+
+    if (storeToDb) {
+      await tx.invoice.create({
+        data: {
+          bidRequestId,
+          content: invoiceContentValidated,
+          contentInHtml
+        }
+      });
+    }
+    return contentInHtml;
   });
 }
 
 export async function listInvoices({
   page = 1,
-  limit = 5
+  limit = 5,
+  isAdmin = false,
 }: {
   page?: number;
   limit?: number;
+  isAdmin?: boolean;
 } = {}): Promise<ListResponse<InvoiceExtendedT>> {
   // TODO join 최적화
   // https://www.prisma.io/blog/prisma-orm-now-lets-you-choose-the-best-join-strategy-preview
@@ -150,7 +156,7 @@ export async function listInvoices({
   };
   const [records, totalRecords] = await prisma.$transaction([
     prisma.invoice.findMany({
-      where,
+      where: isAdmin ? undefined : where,
       skip: (page - 1) * limit,
       take: limit,
       include: {

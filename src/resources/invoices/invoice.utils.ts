@@ -1,25 +1,24 @@
-import puppeteer from "puppeteer";
 import { InvoiceContentT } from "@/resources/invoices/invoice.types";
 import { getTranslations } from "next-intl/server";
 
-export async function convertHtmlToPdfBuffer(html: string) {
-  const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
-
-  const page = await browser.newPage();
-
-  await page.setContent(html);
-
-  const result = await page.pdf({
-    format: "A4",
-    width: "2480px",
-    height: "3508px",
-    printBackground: true
-  });
-
-  await browser.close();
-
-  return result;
-}
+// export async function convertHtmlToPdfBuffer(html: string) {
+//   const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+//
+//   const page = await browser.newPage();
+//
+//   await page.setContent(html);
+//
+//   const result = await page.pdf({
+//     format: "A4",
+//     width: "2480px",
+//     height: "3508px",
+//     printBackground: true
+//   });
+//
+//   await browser.close();
+//
+//   return result;
+// }
 
 export async function convertInvoiceToHtml(content: InvoiceContentT) {
   const locale = "ko";

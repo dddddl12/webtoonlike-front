@@ -46,21 +46,17 @@ export async function listBidRequests({
   page = 1,
   limit = 10,
   excludeInvoiced = false,
+  isAdmin = false,
 }: {
   page?: number;
   limit?: number;
   excludeInvoiced?: boolean;
+  isAdmin?: boolean;
 } = {}): Promise<ListResponse<BidRequestExtendedT>> {
   const { userId, metadata } = await getTokenInfo();
   const { type } = metadata;
 
   const where: Prisma.BidRequestWhereInput = {
-    userId: type === UserTypeT.Buyer ? userId : undefined,
-    bidRound: type === UserTypeT.Creator ? {
-      webtoon: {
-        userId
-      }
-    } : undefined,
     invoices: excludeInvoiced ? {
       none: {}
     } : undefined,
@@ -69,6 +65,15 @@ export async function listBidRequests({
     } : undefined,
   //   TODO
   };
+  if (!isAdmin && type === UserTypeT.Buyer) {
+    where.userId = userId;
+  } else if (!isAdmin && type === UserTypeT.Creator) {
+    where.bidRound = {
+      webtoon: {
+        userId
+      }
+    };
+  }
 
   const [records, totalRecords] = await prisma.$transaction([
     prisma.bidRequest.findMany({

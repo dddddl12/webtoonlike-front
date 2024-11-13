@@ -28,9 +28,9 @@ export default function InvoiceDownload({
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogTitle>
-          <VisuallyHidden asChild />
-        </DialogTitle>
+        <VisuallyHidden>
+          <DialogTitle/>
+        </VisuallyHidden>
         <DialogContentBody
           invoice={invoice}
           closeDialog={() => setInvoiceDownloadOpen(false)}

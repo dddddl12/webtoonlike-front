@@ -5,7 +5,7 @@ import { AdminPageBidRoundT } from "@/resources/bidRounds/bidRound.service";
 import BidRoundDetail from "@/app/[locale]/admin/webtoons/BidRoundDetail";
 import BidRoundPendingList from "@/app/[locale]/admin/webtoons/BidRoundPendingList";
 import BidRoundList from "@/app/[locale]/admin/webtoons/BidRoundList";
-import { Col, Row } from "@/shadcn/ui/layouts";
+import { Col } from "@/shadcn/ui/layouts";
 
 
 export default function ManageBidRoundPage() {
