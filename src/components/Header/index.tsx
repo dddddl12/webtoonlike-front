@@ -1,5 +1,4 @@
 import { Gap, Row } from "@/shadcn/ui/layouts";
-import { KenazLogo } from "@/components/svgs/KenazLogo";
 import { NotificationDropdown } from "./NotificationDropdown";
 import { TranslationDropdown } from "./TranslationDropdown";
 import { Link } from "@/i18n/routing";
@@ -9,6 +8,7 @@ import { NavBar } from "@/components/Header/NavBar";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Account } from "@/components/Header/Account";
 import { SelectItem } from "@/shadcn/ui/select";
+import Image from "next/image";
 
 export async function Header() {
   const locale = await getLocale();
@@ -20,7 +20,12 @@ export async function Header() {
       <Row className="w-full h-[60px] justify-between">
         <Row>
           <Link href="/">
-            <KenazLogo className="fill-white cursor-pointer" />
+            <Image
+              src="/img/KIPstock_logo.png"
+              alt="logo"
+              width={150}
+              height={17}
+            />
           </Link>
         </Row>
         <Row>

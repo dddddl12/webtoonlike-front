@@ -1,11 +1,11 @@
 "use client";
 
 import { Col, Gap, Row } from "@/shadcn/ui/layouts";
-import { KenazLogo } from "./svgs/KenazLogo";
 import { Text } from "@/shadcn/ui/texts";
 import React, { Fragment } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
+import Image from "next/image";
 
 export function Footer() {
   const router = useRouter();
@@ -20,7 +20,12 @@ export function Footer() {
     <section className="bg-footer px-[60px] py-[40px] flex justify-center">
       <Row className="w-[1280px]">
         <Col className="w-[40%]">
-          <KenazLogo className="fill-white" />
+          <Image
+            src="/img/KIPstock_logo.png"
+            alt="logo"
+            width={150}
+            height={17}
+          />
           <Gap y={4} />
           <Text className="text-gray-text font-bold">
             {t("kenazCoLtd")}
