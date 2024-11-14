@@ -1,5 +1,6 @@
 import z from "zod";
 import { ResourceSchema } from "@/resources/globalTypes";
+import { UserSchema } from "@/resources/users/user.types";
 
 const CreatorBaseSchema = z.object({
   name: z.string().min(1),
@@ -15,7 +16,6 @@ export type CreatorFormT = z.infer<typeof CreatorFormSchema>;
 
 export const CreatorSchema = CreatorBaseSchema
   .merge(ResourceSchema);
-export type CreatorT = z.infer<typeof CreatorSchema>;
 
 export const PublicCreatorSchema = z.object({
   name: z.string(),

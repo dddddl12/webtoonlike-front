@@ -8,6 +8,7 @@ import { Link } from "@/i18n/routing";
 import { useListData } from "@/hooks/listData";
 import { Col, Gap, Row } from "@/shadcn/ui/layouts";
 import { InvoiceExtendedT } from "@/resources/invoices/invoice.types";
+import InvoiceDownload from "@/app/[locale]/invoices/InvoiceDownload";
 
 export default function ManageInvoice() {
   const { listResponse, filters, setFilters } = useListData(
@@ -74,8 +75,8 @@ function TableRow({ invoice }: {
       </div>
       <div className="w-[20%] p-2 flex justify-center">{invoice.createdAt.toLocaleString("ko")}</div>
       <div className="w-[20%] p-2 flex justify-center">
-        다운로드
-        {/*<PreviewInvoiceAdmin invoice={invoice} />*/}
+        {/*컴포넌트화*/}
+        <InvoiceDownload invoice={invoice} />
       </div>
     </div>
   );

@@ -41,11 +41,11 @@ export function IssuanceInvoiceSubmit({
       onOpenChange={handleOpenChange}
     >
       <DialogTrigger asChild>
-        <Button variant="mint" className="text-white" onClick={handlePreview}>
+        <Button variant="mint" onClick={handlePreview}>
           발행
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-white h-[90%]">
+      <DialogContent className="h-[90%] max-w-3xl">
         <VisuallyHidden>
           <DialogTitle/>
         </VisuallyHidden>

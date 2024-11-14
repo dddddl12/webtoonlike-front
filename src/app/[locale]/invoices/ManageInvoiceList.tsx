@@ -16,6 +16,7 @@ import { useState } from "react";
 import BidRequestDetailsForInvoice from "@/app/[locale]/invoices/BidRequestDetailsForInvoice";
 import { Button } from "@/shadcn/ui/button";
 import { jsPDF } from "jspdf";
+import InvoiceDownload from "@/app/[locale]/invoices/InvoiceDownload";
 
 type InvoiceListResponse = ListResponse<InvoiceExtendedT>;
 
@@ -108,29 +109,7 @@ function TableRow({ invoice }: { invoice: InvoiceExtendedT }) {
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {/*<InvoiceDownload invoice={invoice}/>*/}
-          {/*  TODO*/}
-          <Button
-            variant="mint"
-            onClick={async () => {
-              const html = await downloadInvoiceContent(invoice.id);
-              const a = document.createElement("div");
-              a.innerHTML = html;
-              a.style.color = "black";
-              const doc = new jsPDF();
-              doc.html(a, {
-                callback: function(doc) {
-                  // Save the PDF
-                  doc.save(`${displayName(locale, invoice.webtoon.title, invoice.webtoon.title_en)}_${invoice.creatorUsername}_${invoice.buyerUsername}_invoice.pdf`);
-                },
-                x: 15,
-                y: 15,
-                width: 170, //target width in the PDF document
-                windowWidth: 650 //window width in CSS pixels
-              });
-            }}>
-            {t("downloadInvoice")}
-          </Button>
+          <InvoiceDownload invoice={invoice}/>
         </div>
       </div>
       {showNegotiation

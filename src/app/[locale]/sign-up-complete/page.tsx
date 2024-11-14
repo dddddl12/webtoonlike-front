@@ -1,5 +1,4 @@
 import { Col, Gap } from "@/shadcn/ui/layouts";
-import { KenazLogo } from "@/components/svgs/KenazLogo";
 import { Heading } from "@/shadcn/ui/texts";
 import { getLocale, getTranslations } from "next-intl/server";
 import PageLayout from "@/components/PageLayout";
@@ -8,6 +7,7 @@ import { SignUpCompleteForm } from "@/app/[locale]/sign-up-complete/SignUpComple
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "@/i18n/routing";
 import LightThemeProvider from "@/providers/LightThemeProvider";
+import Logo from "@/components/Logo";
 
 export default async function SignUpComplete() {
   const user = await currentUser();
@@ -29,7 +29,7 @@ export default async function SignUpComplete() {
   return <LightThemeProvider>
     <PageLayout lightTheme={true}>
       <Col className="w-[400px] mx-auto">
-        <KenazLogo className="fill-black" />
+        <Logo lightTheme={true} />
         <Gap y={10} />
         <Heading className="text-black font-bold text-[20pt]">
           {t("setupAccount")}

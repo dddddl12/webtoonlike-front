@@ -1,11 +1,19 @@
 "use server";
 
-import { UserExtendedFormSchema, UserExtendedFormT, UserFormT, UserTypeT } from "@/resources/users/user.types";
+import {
+  UserExtendedFormSchema,
+  UserExtendedFormT,
+  UserFormT,
+  UserSchema,
+  UserTypeT
+} from "@/resources/users/user.types";
 import prisma from "@/utils/prisma";
-import { getTokenInfo, updateTokenInfo } from "@/resources/tokens/token.service";
+import { assertAdmin, getTokenInfo, updateTokenInfo } from "@/resources/tokens/token.service";
 import { currentUser } from "@clerk/nextjs/server";
 import { NotSignedInError } from "@/errors";
 import { BuyerCompanySchema, BuyerFormT } from "@/resources/buyers/buyer.types";
+import { ListResponse } from "@/resources/globalTypes";
+import z from "zod";
 
 export async function createUser(form: UserExtendedFormT) {
   // TODO 400 에러 처리
@@ -146,4 +154,46 @@ export async function getUser(): Promise<UserExtendedFormT> {
     };
   }
   throw new Error("User not found");
+}
+
+const AdminPageAccountSchema = UserSchema.pick({
+  id: true,
+  name: true,
+  userType: true,
+  createdAt: true,
+});
+export type AdminPageAccountT = z.infer<typeof AdminPageAccountSchema>;
+export async function listUsers({ page }: {
+  page: number;
+}): Promise<ListResponse<AdminPageAccountT>> {
+  await assertAdmin();
+  const limit = 5;
+  const [records, totalRecords] = await prisma.$transaction([
+    prisma.user.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: {
+        createdAt: "desc"
+      },
+      select: {
+        id: true,
+        name: true,
+        userType: true,
+        createdAt: true
+      }
+    }),
+    prisma.user.count()
+  ]);
+  const items: AdminPageAccountT[] = records.map(r => {
+    return {
+      id: r.id,
+      name: r.name,
+      userType: r.userType as UserTypeT,
+      createdAt: r.createdAt
+    };
+  });
+  return {
+    items,
+    totalPages: Math.ceil(totalRecords / limit),
+  };
 }

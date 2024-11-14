@@ -87,7 +87,7 @@ const getAdminLevel = (admin: {
   throw new Error("Unexpected admin level");
 };
 
-export const checkForAdmin = async () => {
+export const assertAdmin = async () => {
   const { metadata } = await getTokenInfo();
   if (metadata.adminLevel < AdminLevel.Admin) {
     throw new InsufficientPermissions("Admin level is none");

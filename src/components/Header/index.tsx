@@ -9,6 +9,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Account } from "@/components/Header/Account";
 import { SelectItem } from "@/shadcn/ui/select";
 import Image from "next/image";
+import Logo from "@/components/Logo";
 
 export async function Header() {
   const locale = await getLocale();
@@ -20,12 +21,7 @@ export async function Header() {
       <Row className="w-full h-[60px] justify-between">
         <Row>
           <Link href="/">
-            <Image
-              src="/img/KIPstock_logo.png"
-              alt="logo"
-              width={150}
-              height={17}
-            />
+            <Logo/>
           </Link>
         </Row>
         <Row>

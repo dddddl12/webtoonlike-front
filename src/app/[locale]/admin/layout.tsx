@@ -35,10 +35,10 @@ function Sidebar() {
       <IconDashboard/>
       <p>대시보드</p>
     </MenuItem>
-    {/*<MenuItem pathname="/admin/users">*/}
-    {/*  <IconUser/>*/}
-    {/*  <p>유저 관리</p>*/}
-    {/*</MenuItem>*/}
+    <MenuItem pathname="/admin/users">
+      <IconUser/>
+      <p>유저 관리</p>
+    </MenuItem>
     {/*<MenuItem pathname="/admin/admins">*/}
     {/*  <IconAddUser/>*/}
     {/*  <p>관리자 목록</p>*/}

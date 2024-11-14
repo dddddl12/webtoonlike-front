@@ -10,7 +10,7 @@ import {
 } from "@/resources/bidRequests/bidRequest.types";
 import prisma from "@/utils/prisma";
 import { ListResponse } from "@/resources/globalTypes";
-import { checkForAdmin, getClerkUserMap, getTokenInfo } from "@/resources/tokens/token.service";
+import { assertAdmin, getClerkUserMap, getTokenInfo } from "@/resources/tokens/token.service";
 import { UserSchema, UserTypeT } from "@/resources/users/user.types";
 import { AgeLimit, TargetAge, TargetGender, WebtoonSchema, WebtoonT } from "@/resources/webtoons/webtoon.types";
 import { BuyerCompanySchema } from "@/resources/buyers/buyer.types";
@@ -84,7 +84,7 @@ export async function listBidRequests(
   }
 
   if (isFromAdminPage) {
-    await checkForAdmin();
+    await assertAdmin();
   } else if (type === UserTypeT.Buyer) {
     where.userId = userId;
   } else if (type === UserTypeT.Creator) {

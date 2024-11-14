@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { downloadAsPDF } from "@/resources/invoices/downloadAsPDF";
 import { useLocale, useTranslations } from "next-intl";
 import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "@/shadcn/ui/dialog";
 import { Button } from "@/shadcn/ui/button";
@@ -8,6 +7,8 @@ import Spinner from "@/components/Spinner";
 import { InvoiceExtendedT } from "@/resources/invoices/invoice.types";
 import { displayName } from "@/utils/displayName";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { jsPDF } from "jspdf";
+import { Col } from "@/shadcn/ui/layouts";
 
 export default function InvoiceDownload({
   invoice
@@ -27,7 +28,7 @@ export default function InvoiceDownload({
           {t("downloadInvoice")}
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="h-[90%] max-w-3xl">
         <VisuallyHidden>
           <DialogTitle/>
         </VisuallyHidden>
@@ -46,31 +47,28 @@ function DialogContentBody({
   invoice: InvoiceExtendedT;
   closeDialog: () => void;
 }) {
-  const [invoiceContentUrl, setInvoiceContentUrl] = useState<string>();
+  const [previewContent, setPreviewContent] = useState<string>("");
 
   useEffect(() => {
     // fetch(`/api/invoices/${invoice.id}`)
     downloadInvoiceContent(invoice.id)
-      .then(async (uint8Array) => {
-        const blob = new Blob([uint8Array], { type: "application/pdf" });
-        const url = URL.createObjectURL(blob);
-        setInvoiceContentUrl(url);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      .then(setPreviewContent);
   }, [invoice.id]);
 
   const locale = useLocale();
   const t = useTranslations("invoiceManagement");
   const tGeneral = useTranslations("general");
 
-  if (!invoiceContentUrl) {
+  if (!previewContent) {
     return <Spinner/>;
   }
-  return <>
-    <embed src={invoiceContentUrl} width="100%" height="500px"/>
-    <DialogFooter className="justify-end gap-2">
+  return <Col className="w-full">
+    <iframe width="100%" height="90%"
+      srcDoc={previewContent}
+      sandbox="allow-same-origin"
+      className="bg-white"
+    />
+    <DialogFooter className="justify-end gap-2 mt-10">
       <Button
         variant="red"
         onClick={closeDialog}
@@ -79,13 +77,25 @@ function DialogContentBody({
       </Button>
       <Button
         variant="mint"
-        onClick={() => {
-          downloadAsPDF(
-            invoiceContentUrl,
-            `${displayName(locale, invoice.webtoon.title, invoice.webtoon.title_en)}_${invoice.creatorUsername}_${invoice.buyerUsername}_invoice`);
+        onClick={async () => {
+          const html = await downloadInvoiceContent(invoice.id);
+          const a = document.createElement("div");
+          a.innerHTML = html;
+          a.style.color = "black";
+          const doc = new jsPDF();
+          doc.html(a, {
+            callback: function(doc) {
+              // Save the PDF
+              doc.save(`${displayName(locale, invoice.webtoon.title, invoice.webtoon.title_en)}_${invoice.creatorUsername}_${invoice.buyerUsername}_invoice.pdf`);
+            },
+            x: 15,
+            y: 15,
+            width: 170, //target width in the PDF document
+            windowWidth: 650 //window width in CSS pixels
+          });
         }}>
-        {t("downloadInvoice")}
+        {t("downloadInvoice")} (한글 인코딩 이슈 해결 중...)
       </Button>
     </DialogFooter>
-  </>;
+  </Col>;
 }
