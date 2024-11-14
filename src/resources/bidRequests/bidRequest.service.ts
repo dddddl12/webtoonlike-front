@@ -1,19 +1,20 @@
 "use server";
 
-import { BidRequest as BidRequestRecord, Prisma } from "@prisma/client";
+import { $Enums, Prisma, BidRequest as BidRequestRecord } from "@prisma/client";
 import {
-  BidRequestExtendedT,
+  BidRequestExtendedSchema,
   BidRequestFormSchema,
   BidRequestFormT,
   BidRequestSchema,
-  BidRequestT
+  BidRequestStatus, BidRequestT
 } from "@/resources/bidRequests/bidRequest.types";
 import prisma from "@/utils/prisma";
 import { ListResponse } from "@/resources/globalTypes";
-import { getClerkUserMap, getTokenInfo } from "@/resources/tokens/token.service";
-import { UserTypeT } from "@/resources/users/user.types";
-import { AgeLimit, TargetAge, TargetGender, WebtoonT } from "@/resources/webtoons/webtoon.types";
+import { checkForAdmin, getClerkUserMap, getTokenInfo } from "@/resources/tokens/token.service";
+import { UserSchema, UserTypeT } from "@/resources/users/user.types";
+import { AgeLimit, TargetAge, TargetGender, WebtoonSchema, WebtoonT } from "@/resources/webtoons/webtoon.types";
 import { BuyerCompanySchema } from "@/resources/buyers/buyer.types";
+import z from "zod";
 
 const mapToBidRequestDTO = (record: BidRequestRecord): BidRequestT => {
   return {
@@ -25,48 +26,68 @@ const mapToBidRequestDTO = (record: BidRequestRecord): BidRequestT => {
     contractRange: BidRequestSchema.shape.contractRange
       .safeParse(record.contractRange).data ?? [],
     userId: record.userId ?? undefined,
-    // status: record.approvedAt
-    //   ? "오퍼 승인"
-    //   : record.acceptedAt
-    //     ? "오퍼 수락"
-    //     : record.cancelledAt
-    //       ? "오퍼 취소"
-    //       : record.rejectedAt
-    //         ? "오퍼 거절"
-    //         : "진행 중"
+    status: record.status as BidRequestStatus
   };
 };
 
-
-export async function listBidRequests({
-  page = 1,
-  limit = 10,
-  excludeInvoiced = false,
-  isAdmin = false,
-  bidRoundId
-}: {
-  page?: number;
-  limit?: number;
-  excludeInvoiced?: boolean;
-  isAdmin?: boolean;
-  bidRoundId?: number;
-} = {}): Promise<ListResponse<BidRequestExtendedT>> {
+const SimpleBidRequestSchema = BidRequestExtendedSchema.pick({
+  id: true,
+  createdAt: true,
+  status: true,
+  decidedAt: true,
+  contractRange: true,
+  message: true
+}).extend({
+  webtoon: WebtoonSchema.pick({
+    id: true,
+    title: true,
+    title_en: true,
+    thumbPath: true
+  }),
+  creator: z.object({
+    user: UserSchema.pick({
+      id: true,
+      name: true
+    })
+  }),
+  buyer: z.object({
+    user: UserSchema.pick({
+      id: true,
+      name: true
+    })
+  })
+});
+export type SimpleBidRequestT = z.infer<typeof SimpleBidRequestSchema>;
+export async function listBidRequests(
+  {
+    page = 1,
+    limit = 10,
+    isFromAdminPage = false,
+    uninvoicedOnly = false,
+  }: {
+    page?: number;
+    limit?: number;
+    isFromAdminPage?: boolean;
+    uninvoicedOnly?: boolean;
+  } = {}
+): Promise<ListResponse<SimpleBidRequestT>> {
   const { userId, metadata } = await getTokenInfo();
   const { type } = metadata;
 
-  const where: Prisma.BidRequestWhereInput = {
-    bidRoundId,
-    invoices: excludeInvoiced ? {
-      none: {}
-    } : undefined,
-    NOT: excludeInvoiced ? {
-      approvedAt: null
-    } : undefined,
-  //   TODO
-  };
-  if (!isAdmin && type === UserTypeT.Buyer) {
+  const where: Prisma.BidRequestWhereInput = {};
+
+  if (uninvoicedOnly) {
+    where.status = $Enums.BidRequestStatus.ACCEPTED;
+    where.invoice = {
+      is: null
+    };
+  }
+
+  if (isFromAdminPage) {
+    await checkForAdmin();
+  } else if (type === UserTypeT.Buyer) {
     where.userId = userId;
-  } else if (!isAdmin && type === UserTypeT.Creator) {
+  } else if (type === UserTypeT.Creator) {
     where.bidRound = {
       webtoon: {
         userId
@@ -88,6 +109,7 @@ export async function listBidRequests({
                 thumbPath: true,
                 user: {
                   select: {
+                    id: true,
                     name: true,
                   }
                 }
@@ -97,6 +119,7 @@ export async function listBidRequests({
         },
         user: {
           select: {
+            id: true,
             name: true,
           }
         }
@@ -110,27 +133,89 @@ export async function listBidRequests({
     prisma.bidRequest.count({ where })
   ]);
   return {
-    items: records.map(record => {
-      const { webtoon } = record.bidRound;
+    items: records.map(r => {
+      const { webtoon } = r.bidRound;
+      const creatingUser = webtoon.user;
+      const buyingUser = r.user;
       return {
-        ...mapToBidRequestDTO(record),
+        id: r.id,
+        createdAt: r.createdAt,
+        status: r.status as BidRequestStatus,
+        decidedAt: r.decidedAt ?? undefined,
+        contractRange: BidRequestSchema.shape.contractRange
+          .safeParse(r.contractRange).data ?? [],
+        message: r.message ?? undefined,
         webtoon: {
           id: webtoon.id,
           title: webtoon.title,
           title_en: webtoon.title_en ?? undefined,
           thumbPath: webtoon.thumbPath,
-          creatorUsername: webtoon.user.name,
         },
-        username: record.user.name,
-        approvedAt: record.approvedAt ?? undefined,
-        rejectedAt: record.rejectedAt ?? undefined,
+        creator: {
+          user: {
+            id: creatingUser.id,
+            name: creatingUser.name
+          }
+        },
+        buyer: {
+          user: {
+            id: buyingUser.id,
+            name: buyingUser.name
+          }
+        }
       };
     }),
     totalPages: Math.ceil(totalRecords / limit),
   };
 }
 
-export type BidRequestDetailsT = BidRequestT & {
+const AdminOffersBidRequestSchema = BidRequestExtendedSchema.pick({
+  id: true,
+  createdAt: true,
+  status: true,
+  contractRange: true
+}).extend({
+  buyer: z.object({
+    user: UserSchema.pick({
+      name: true
+    })
+  })
+});
+export type AdminOffersBidRequestT = z.infer<typeof AdminOffersBidRequestSchema>;
+export async function listAdminOffersBidRequests(
+  bidRoundId: number
+): Promise<AdminOffersBidRequestT[]> {
+  const records = await prisma.bidRequest.findMany({
+    where: {
+      bidRoundId
+    },
+    include: {
+      user: {
+        select: {
+          name: true,
+        }
+      }
+    },
+    orderBy: {
+      createdAt: "desc"
+    }
+  });
+  return records.map(r => ({
+    id: r.id,
+    createdAt: r.createdAt,
+    status: r.status as BidRequestStatus,
+    contractRange: BidRequestSchema.shape.contractRange
+      .safeParse(r.contractRange).data ?? [],
+    buyer: {
+      user: {
+        name: r.user.name,
+      }
+    }
+  }));
+}
+
+
+export type BidRequestDetailsT = z.infer<typeof BidRequestSchema> & {
   webtoon: WebtoonT & {
     activeBidRound: {
       isNew: boolean;
@@ -293,7 +378,7 @@ export async function getBidRequest(bidRequestId: number, isInvoiced: boolean): 
     ...mapToBidRequestDTO(r),
     webtoon: webtoonDto,
     creator: creatorDto,
-    buyer: buyerDto,
+    buyer: buyerDto
   };
 }
 
@@ -311,61 +396,50 @@ export async function createBidRequest(form: BidRequestFormT) {
   });
 }
 
-export async function acceptBidRequest(bidRequestId: number) {
-  await prisma.$transaction(async (tx) => {
-    const { approvedAt, rejectedAt } = await tx.bidRequest.findUniqueOrThrow({
+export async function changeBidRequestStatus(
+  bidRequestId: number,
+  changeTo: BidRequestStatus.Accepted | BidRequestStatus.Declined
+): Promise<BidRequestT> {
+  return prisma.$transaction(async (tx) => {
+    const { status, ...record } = await tx.bidRequest.findUniqueOrThrow({
       where: {
         id: bidRequestId,
       },
       select: {
-        approvedAt: true,
-        rejectedAt: true,
+        status: true,
+        bidRound: {
+          select: {
+            webtoon: {
+              select: {
+                user: {
+                  select: {
+                    id: true
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     });
-    if (approvedAt || rejectedAt) {
+    const { userId } = await getTokenInfo();
+    if (record.bidRound.webtoon.user.id !== userId) {
+      throw new Error("Only the creator of the webtoon can perform this action.");
+    }
+    if (status === BidRequestStatus.Declined
+      || status === BidRequestStatus.Accepted) {
       throw new Error("Already approved or rejected.");
     }
-    await tx.bidRequest.update({
+    const r = await tx.bidRequest.update({
       data: {
-        acceptedAt: new Date(),
+        status: changeTo === BidRequestStatus.Accepted
+          ? $Enums.BidRequestStatus.ACCEPTED
+          : $Enums.BidRequestStatus.DECLINED,
       },
       where: {
         id: bidRequestId,
       }
     });
-
+    return mapToBidRequestDTO(r);
   });
 }
-
-export async function declineBidRequest(bidRequestId: number) {
-  await prisma.$transaction(async (tx) => {
-    const { approvedAt, rejectedAt } = await tx.bidRequest.findUniqueOrThrow({
-      where: {
-        id: bidRequestId,
-      },
-      select: {
-        approvedAt: true,
-        rejectedAt: true,
-      }
-    });
-    if (approvedAt || rejectedAt) {
-      throw new Error("Already approved or rejected.");
-    }
-    await tx.bidRequest.update({
-      data: {
-        rejectedAt: new Date(),
-      },
-      where: {
-        id: bidRequestId,
-      }
-    });
-
-  });
-}
-
-//바이어명
-// 오퍼 발송일
-// 현재 상태
-// 희망 판권
-
-// async function list

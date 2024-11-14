@@ -39,33 +39,39 @@ model BidRequestMessage {
   @@map("bid_request_messages")
 }
 
+enum BidRequestStatus {
+  PENDING  @map("pending")
+  ACCEPTED @map("accepted")
+  DECLINED @map("declined")
+
+  @@map("bid_request_status")
+}
+
 model BidRequest {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // TODO buyer
-  userId        Int       @map("user_id")
-  bidRoundId    Int       @map("bid_round_id")
-  message       String?   @map("message")
-  contractRange Json      @map("contract_range")
-  acceptedAt    DateTime? @map("accepted_at")
-  rejectedAt    DateTime? @map("rejected_at")
-  approvedAt    DateTime? @map("approved_at")
-  cancelledAt   DateTime? @map("cancelled_at")
+  userId        Int              @map("user_id")
+  bidRoundId    Int              @map("bid_round_id")
+  message       String?          @map("message")
+  contractRange Json             @map("contract_range")
+  status        BidRequestStatus @default(PENDING)
+  decidedAt     DateTime?        @map("decided_at")
 
   user     User                @relation(fields: [userId], references: [id], onDelete: Restrict)
   bidRound BidRound            @relation(fields: [bidRoundId], references: [id], onDelete: Restrict)
   messages BidRequestMessage[]
-  invoices Invoice[]
+  invoice  Invoice?
 
   @@map("bid_requests")
 }
 
 enum BidRoundApprovalStatus {
-  PENDING  @map("pending")
-  APPROVED @map("approved")
-  REJECTED @map("rejected")
+  PENDING     @map("pending")
+  APPROVED    @map("approved")
+  DISAPPROVED @map("disapproved")
 
   @@map("bid_round_approval_status")
 }
@@ -153,7 +159,7 @@ model Invoice {
   id            Int      @id @default(autoincrement())
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
-  bidRequestId  Int      @map("request_id")
+  bidRequestId  Int      @unique @map("request_id")
   content       Json
   contentInHtml String
 

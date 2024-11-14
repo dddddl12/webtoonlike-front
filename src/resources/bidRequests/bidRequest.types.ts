@@ -1,18 +1,18 @@
 import { ContractRangeItemSchema } from "@/resources/bidRounds/bidRound.types";
 import z from "zod";
 import { ResourceSchema } from "@/resources/globalTypes";
+import { WebtoonSchema } from "@/resources/webtoons/webtoon.types";
+import { BuyerSchema } from "@/resources/buyers/buyer.types";
+import { CreatorSchema } from "@/resources/creators/creator.types";
+import { UserSchema } from "@/resources/users/user.types";
 
 export enum BidRequestStatus {
   Pending = "PENDING",
   Waiting = "WAITING",
-  Declined = "DECLINED",
   Negotiating = "NEGOTIATING",
-  Aborted = "ABORTED",
-  Done = "DONE",
+  Declined = "DECLINED",
+  Accepted = "ACCEPTED",
 }
-
-// 대기 중, 거절 완료, 협상 중, 성사 완료, 협상 종료
-
 
 export const BidRequestContractRangeItemSchema = ContractRangeItemSchema.extend({
   message: z.string().optional(),
@@ -30,21 +30,18 @@ export const BidRequestSchema = BidRequestBaseSchema
   .merge(ResourceSchema)
   .extend({
     userId: z.number(),
-    // status: z.nativeEnum(BidRequestStatus),
+    status: z.nativeEnum(BidRequestStatus),
+    decidedAt: z.date().optional(),
   });
 export type BidRequestT = z.infer<typeof BidRequestSchema>;
 
-export const BidRequestSchemaExtendedSchema = BidRequestSchema
+export const BidRequestExtendedSchema = BidRequestSchema
   .extend({
-    webtoon: z.object({
-      id: z.number(),
-      title: z.string(),
-      title_en: z.string().optional(),
-      thumbPath: z.string(),
-      creatorUsername: z.string(),
+    webtoon: WebtoonSchema,
+    buyer: BuyerSchema.extend({
+      user: UserSchema
     }),
-    username: z.string(),
-    approvedAt: z.date().optional(),
-    rejectedAt: z.date().optional(),
+    creator: CreatorSchema.extend({
+      user: UserSchema
+    }),
   });
-export type BidRequestExtendedT = z.infer<typeof BidRequestSchemaExtendedSchema>;

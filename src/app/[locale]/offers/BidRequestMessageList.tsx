@@ -1,137 +1,151 @@
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Col, Row } from "@/shadcn/ui/layouts";
-import Spinner from "@/components/Spinner";
-import { useListData } from "@/hooks/listData";
-import { listBidRequestMessages } from "@/resources/bidRequestMessages/bidRequestMessage.service";
-import Paginator from "@/components/Paginator";
-import { BidRequestMessageExtendedT } from "@/resources/bidRequestMessages/bidRequestMessage.types";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
+import {
+  BidRequestMessagesResponse,
+  listBidRequestMessages
+} from "@/resources/bidRequestMessages/bidRequestMessage.service";
+import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react";
+import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
+import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
+import { UserTypeT } from "@/resources/users/user.types";
+import { useTokenInfo } from "@/hooks/tokenInfo";
+import { Skeleton } from "@/shadcn/ui/skeleton";
 import ViewOfferSection from "@/app/[locale]/offers/components/OfferDetails";
 import Controls from "@/app/[locale]/offers/components/Controls";
-import BidRequestMessageNegotiationDetails from "@/app/[locale]/offers/BidRequestMessageNegotiationDetails";
 
-export default function BidRequestMessageList({ bidRequest, setRerender }: {
-  bidRequest: BidRequestExtendedT;
-  setRerender: Dispatch<SetStateAction<number>>;
+// TODO 페이지네이션 없음
+export default function BidRequestMessageList({ curBidRequest, setCurBidRequest }: {
+  curBidRequest: SimpleBidRequestT;
+  setCurBidRequest: Dispatch<SetStateAction<SimpleBidRequestT>>;
 }) {
-  const finished = !!(bidRequest.approvedAt || bidRequest.rejectedAt);
-
-  // Create a ref for the Heading component
   const headingRef = useRef<HTMLHeadingElement>(null);
-
-  // Scroll to the Heading component when rendered
   useEffect(() => {
     headingRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [headingRef]);
 
+  const [reloadMessages, setReloadMessages] = useState(true);
+  const [messagesResponse, setMessagesResponse] = useState<BidRequestMessagesResponse>();
+  useEffect(() => {
+    if (!reloadMessages){
+      return;
+    }
+    listBidRequestMessages(curBidRequest.id)
+      .then(newMessages => {
+        setMessagesResponse(newMessages);
+        setReloadMessages(false);
+      });
 
-  const { listResponse, filters, setFilters } = useListData(
-    () => listBidRequestMessages(bidRequest.id),
-    { page: 1, limit: 100 }
-  );
+  }, [curBidRequest.id, reloadMessages]);
 
-  if (!listResponse) {
-    return <Spinner />;
+  const tBidRequestStatus = useTranslations("bidRequestStatus");
+  if (!messagesResponse) {
+    return <div>
+      <Skeleton className="w-full h-[40px] my-[20px]" />
+      <Skeleton className="w-full h-[40px] my-[20px]" />
+    </div>;
   }
 
-  return <Col className="rounded-md p-4" ref={headingRef}>
-    <Row className="border-b border-gray-text text-gray-text bg-gray-darker">
+  const { messages, invoice } = messagesResponse;
+  const isDone = curBidRequest.status === BidRequestStatus.Accepted
+    || curBidRequest.status === BidRequestStatus.Declined;
+
+  return <Col className="rounded-md p-4 bg-gray-darker" ref={headingRef}>
+    <Row className="border-b border-gray-text text-gray-text">
       <div className="w-[20%] p-2 flex justify-center">No.</div>
       <div className="w-[20%] p-2 flex justify-center">일자</div>
       <div className="w-[20%] p-2 flex justify-center">보낸 사람</div>
       <div className="w-[20%] p-2 flex justify-center">협의 내용</div>
       <div className="w-[20%] p-2 flex justify-center">현황</div>
     </Row>
-    <FirstRow bidRequest={bidRequest} setRerender={setRerender} finished={finished} />
-    {listResponse.items.map((message, index) => (
-      <MessageRow message={message} index={index + 1} key={index} setRerender={setRerender} finished={finished} />
-    ))}
-    {finished
-      && <LastRow bidRequest={bidRequest} index={listResponse.items.length + 1} />}
 
-    {/*<Paginator*/}
-    {/*  currentPage={filters.page}*/}
-    {/*  totalPages={listResponse.totalPages}*/}
-    {/*  setFilters={setFilters}*/}
-    {/*/>*/}
-    {/*todo*/}
+    <MessageRow
+      seq={0}
+      user={curBidRequest.buyer.user}
+      createdAt={curBidRequest.createdAt}
+      statusLabel={"제안"}
+    >
+      <ViewOfferSection bidRequest={curBidRequest} />
+      {(messages.length === 0 && !isDone)
+        && <Controls bidRequestId={curBidRequest.id}
+          setReloadMessages={setReloadMessages}
+          setCurBidRequest={setCurBidRequest}
+        />}
+    </MessageRow>
+
+    {messages.map((message, index) => (
+      <MessageRow
+        key={index}
+        seq={index}
+        user={message.user}
+        createdAt={message.createdAt}
+        statusLabel={message.user.userType === UserTypeT.Creator
+          ? "수정 요청" : "제안"}
+      >
+        <MessageContentBox content={message.content} />
+        {(messages.length - 1 === index && !isDone)
+          && <Controls bidRequestId={curBidRequest.id}
+            setReloadMessages={setReloadMessages}
+            setCurBidRequest={setCurBidRequest}
+          />}
+      </MessageRow>
+    ))}
+    {isDone
+      && <MessageRow
+        seq={messages.length + 1}
+        user={curBidRequest.creator.user}
+        createdAt={curBidRequest.createdAt}
+        statusLabel={tBidRequestStatus(curBidRequest.status)}>
+        <MessageContentBox content={tBidRequestStatus(curBidRequest.status)} />
+      </MessageRow>}
+
+    {!!invoice
+    && <MessageRow
+      seq={messages.length + 2}
+      user={{
+        id: -1,
+        name: "관리자"
+      }}
+      createdAt={invoice.createdAt}
+      statusLabel={"인보이스 발생"}>
+      <MessageContentBox content={"인보이스 발생"} />
+    </MessageRow>}
   </Col>;
 }
 
-function FirstRow({ bidRequest, setRerender, finished }: {
-  bidRequest: BidRequestExtendedT;
-  setRerender: Dispatch<SetStateAction<number>>;
-  finished: boolean;
+function MessageRow({ seq, createdAt, user, statusLabel, children }: {
+  seq: number;
+  createdAt: Date;
+  user: {
+    id: number;
+    name: string;
+  };
+  statusLabel: string;
+  children: ReactNode;
 }) {
-  const [showContent, setShowContent] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const locale = useLocale();
-
+  const { tokenInfo } = useTokenInfo();
   return <>
-    <Row className="bg-gray-darker">
-      <div className="w-[20%] p-2 flex justify-center">{1}</div>
-      <div className="w-[20%] p-2 flex justify-center">{bidRequest.createdAt.toLocaleString(locale)}</div>
-      <div className="w-[20%] p-2 flex justify-center">{bidRequest.username}</div>
-      <div className="w-[20%] p-2 flex justify-center text-mint underline cursor-pointer"
-        onClick={() => setShowContent(!showContent)}>
-        {showContent ? "접기" : "보기"}
+    <Row>
+      <div className="w-[20%] p-2 flex justify-center">{seq + 1}</div>
+      <div className="w-[20%] p-2 flex justify-center">{createdAt.toLocaleString(locale)}</div>
+      <div className="w-[20%] p-2 flex justify-center">
+        {tokenInfo?.userId === user.id ? "나" : user.name}
       </div>
-      <div className="w-[20%] p-2 flex justify-center">제안</div>
-    </Row>
-    {showContent && <Col>
-      <ViewOfferSection bidRequest={bidRequest}/>
-      {!finished && <Controls bidRequestId={bidRequest.id} setRerender={setRerender}/>}
-    </Col>}
-  </>;
-
-}
-
-function MessageRow({ message, index, setRerender, finished }: {
-  index: number;
-  message: BidRequestMessageExtendedT;
-  setRerender: Dispatch<SetStateAction<number>>;
-  finished: boolean;
-}) {
-  const locale = useLocale();
-  const [showNegotiation, setShowNegotiation] = useState(false);
-  return <>
-    <Row className="bg-gray-darker">
-      <div className="w-[20%] p-2 flex justify-center">{index + 1}</div>
-      <div className="w-[20%] p-2 flex justify-center">{message.createdAt.toLocaleString(locale)}</div>
-      <div className="w-[20%] p-2 flex justify-center">{message.user.name}</div>
       <div className="w-[20%] p-2 flex justify-center text-mint underline cursor-pointer"
-        onClick={() => setShowNegotiation(!showNegotiation)}>
-        {showNegotiation ? "접기" : "보기"}
+        onClick={() => setShowDetails(prev => !prev)}>
+        {showDetails ? "접기" : "보기"}
       </div>
-      <div className="w-[20%] p-2 flex justify-center">수정 요청</div>
+      <div className="w-[20%] p-2 flex justify-center">{statusLabel}</div>
     </Row>
-    {showNegotiation && <Col>
-      <BidRequestMessageNegotiationDetails content={message.content}/>
-      {!finished && <Controls bidRequestId={message.bidRequestId} setRerender={setRerender}/>}
+    {showDetails && <Col className="mx-16">
+      {children}
     </Col>}
   </>;
 }
 
-function LastRow({ bidRequest, index }: {
-  bidRequest: BidRequestExtendedT;
-  index: number;
-}) {
-  const [showContent, setShowContent] = useState(false);
-  const locale = useLocale();
-  const message = bidRequest.approvedAt ? "협상 완료" : "협상 중단";
-  return <>
-    <Row className="bg-gray-darker">
-      <div className="w-[20%] p-2 flex justify-center">{index + 1}</div>
-      <div className="w-[20%] p-2 flex justify-center">{(bidRequest.approvedAt || bidRequest.rejectedAt)?.toLocaleString(locale)}</div>
-      <div className="w-[20%] p-2 flex justify-center">저작권자</div>
-      <div className="w-[20%] p-2 flex justify-center text-mint underline cursor-pointer"
-        onClick={() => setShowContent(!showContent)}>
-        {showContent ? "접기" : "보기"}
-      </div>
-      <div className="w-[20%] p-2 flex justify-center">{message}</div>
-    </Row>
-    {showContent && <Col>
-      <BidRequestMessageNegotiationDetails content={message + "되었습니다."}/>
-    </Col>}
-  </>;
+function MessageContentBox({ content }: {content: string}) {
+  return <div className="bg-black-texts p-4 rounded-sm my-5">
+    {content}
+  </div>;
 }

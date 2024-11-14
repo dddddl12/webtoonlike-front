@@ -4,9 +4,8 @@ import Spinner from "@/components/Spinner";
 import { IssuanceInvoiceSubmit } from "./IssuanceInvoiceSubmit";
 import { useListData } from "@/hooks/listData";
 import { Gap, Row } from "@/shadcn/ui/layouts";
-import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
+import { listBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
 import Paginator from "@/components/Paginator";
-import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
@@ -15,7 +14,8 @@ export default function IssuanceInvoice() {
   const { listResponse, filters, setFilters } = useListData(
     listBidRequests, {
       page: 1,
-      isAdmin: true
+      isAdmin: true,
+      uninvoicedOnly: true
     });
 
   if (!listResponse) {
@@ -52,7 +52,7 @@ export default function IssuanceInvoice() {
 
 
 function TableRow({ bidRequest }: {
-  bidRequest: BidRequestExtendedT;
+  bidRequest: SimpleBidRequestT;
 }) {
   return (
     <Row className="flex bg-white rounded-sm p-2 my-2">
@@ -74,10 +74,10 @@ function TableRow({ bidRequest }: {
         </Link>
       </Row>
       <div className="w-[15%] p-2 flex justify-center">
-        <p className="text-mint underline cursor-pointer">{bidRequest.webtoon.creatorUsername}</p>
+        <p className="text-mint underline cursor-pointer">{bidRequest.creator.user.name}</p>
       </div>
       <div className="w-[15%] p-2 flex justify-center">
-        <p className="text-mint underline cursor-pointer">{bidRequest.username}</p>
+        <p className="text-mint underline cursor-pointer">{bidRequest.buyer.user.name}</p>
       </div>
       <div className="w-[25%] p-2 flex justify-center">
         <p className=" cursor-pointer">{bidRequest.createdAt.toLocaleString("ko")}</p>

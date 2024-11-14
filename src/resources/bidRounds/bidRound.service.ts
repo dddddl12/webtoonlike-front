@@ -67,8 +67,8 @@ export const getBidRoundStatus = async (record: {
   const approvalStatus = record.approvalStatus as BidRoundApprovalStatus;
   if (approvalStatus === BidRoundApprovalStatus.Pending) {
     return BidRoundStatus.PendingApproval;
-  } else if (approvalStatus === BidRoundApprovalStatus.Rejected) {
-    return BidRoundStatus.Rejected;
+  } else if (approvalStatus === BidRoundApprovalStatus.Disapproved) {
+    return BidRoundStatus.Disapproved;
   } else if (!bidStartsAt || bidStartsAt > now) {
     return BidRoundStatus.Waiting;
   } else if (!negoStartsAt || negoStartsAt > now) {
@@ -286,7 +286,7 @@ export async function declineBidRound(bidRoundId: number) {
       id: bidRoundId
     },
     data: {
-      approvalStatus: BidRoundApprovalStatus.Rejected,
+      approvalStatus: BidRoundApprovalStatus.Disapproved,
       approvalDecidedAt: new Date(),
     }
   });

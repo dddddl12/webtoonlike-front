@@ -236,20 +236,21 @@
         "ageRestriction": "Age Restriction"
     },
     "bidRequestStatus": {
-        "IDLE": "Waiting for Closing",
+        "PENDING": "Waiting for Closing",
         "WAITING": "Waiting for Response",
         "BIDDING": "Bidding",
         "NEGOTIATING": "Negotiation",
-        "DONE": "Procedure Completed"
+        "DECLINED": "Declined",
+        "ACCEPTED": "Procedure Completed"
     },
     "bidRoundApprovalStatus": {
         "PENDING": "Pending Approval",
-        "REJECTED": "Disapproved",
+        "DISAPPROVED": "Disapproved",
         "APPROVED": "Approved"
     },
     "bidRoundStatus": {
         "PENDING_APPROVAL": "Pending Approval",
-        "REJECTED": "Not Approved",
+        "DISAPPROVED": "Not Approved",
         "WAITING": "Waiting for Bidding",
         "BIDDING": "Bidding",
         "NEGOTIATING": "Negotiation",

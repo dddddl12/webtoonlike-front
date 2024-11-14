@@ -1,6 +1,5 @@
 import { useTranslations } from "next-intl";
 import { Col } from "@/shadcn/ui/layouts";
-import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
 import { Heading } from "@/shadcn/ui/texts";
 import { getPublicBuyerInfoByUserId } from "@/resources/buyers/buyer.service";
 import { useEffect, useState } from "react";
@@ -8,16 +7,18 @@ import { PublicBuyerInfoT } from "@/resources/buyers/buyer.types";
 import Spinner from "@/components/Spinner";
 import OfferDetails from "@/components/Details/OfferDetails";
 import Profile from "@/components/Details/Profile";
+import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
 
 export default function ViewOfferSection({ bidRequest }: {
-  bidRequest: BidRequestExtendedT;
+  bidRequest: SimpleBidRequestT;
 }) {
   const [buyer, setBuyer] = useState<PublicBuyerInfoT>();
+  const buyerUserId = bidRequest.buyer.user.id;
 
   useEffect(() => {
-    getPublicBuyerInfoByUserId(bidRequest.userId)
+    getPublicBuyerInfoByUserId(buyerUserId)
       .then(setBuyer);
-  }, [bidRequest.userId]);
+  }, [buyerUserId]);
 
   if (!buyer) {
     return <Spinner />;
@@ -25,7 +26,10 @@ export default function ViewOfferSection({ bidRequest }: {
   return <Col className="w-full my-10">
     <Offerer buyer={buyer} />
     <hr className="my-10" />
-    <OfferDetails bidRequest={bidRequest} />
+    <OfferDetails
+      contractRange={bidRequest.contractRange}
+      message={bidRequest.message}
+    />
   </Col>;
 }
 

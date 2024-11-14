@@ -36,7 +36,9 @@ export default function BidRequestDetailsForInvoice({ bidRequestId, isInvoice }:
       <BuyerProfile buyer={bidRequest.buyer} />
     </Row>
     <hr className="border-gray-dark"/>
-    <OfferDetails bidRequest={bidRequest}/>
+    <OfferDetails
+      contractRange={bidRequest.contractRange}
+      message={bidRequest.message} />
   </Col>;
 }
 

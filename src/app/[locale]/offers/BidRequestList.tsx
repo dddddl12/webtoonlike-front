@@ -3,17 +3,16 @@
 import { Col, Row } from "@/shadcn/ui/layouts";
 import { Text } from "@/shadcn/ui/texts";
 import { useTranslations } from "next-intl";
-import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
-import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
+import { listBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
 import Paginator from "@/components/Paginator";
 import { ListResponse } from "@/resources/globalTypes";
 import { useListData } from "@/hooks/listData";
 import BidRequestListRow from "@/app/[locale]/offers/BidRequestListRow";
 
-type BidRequestListResponse = ListResponse<BidRequestExtendedT>;
+type BidRequestListResponse = ListResponse<SimpleBidRequestT>;
 
 export default function BidRequestList({ initialBidRequestListResponse }: {
-  initialBidRequestListResponse: BidRequestListResponse
+  initialBidRequestListResponse: BidRequestListResponse;
 }) {
   const t = useTranslations("manageOffers");
   const { listResponse, filters, setFilters } = useListData(

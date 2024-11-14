@@ -1,31 +1,32 @@
 "use server";
 
-import { BidRequestMessage as BidRequestMessageRecord, Prisma } from "@prisma/client";
-import { BidRequestMessageExtendedT, BidRequestMessageT } from "@/resources/bidRequestMessages/bidRequestMessage.types";
+import {
+  BidRequestMessageT
+} from "@/resources/bidRequestMessages/bidRequestMessage.types";
 import prisma from "@/utils/prisma";
 import { UserTypeT } from "@/resources/users/user.types";
-import { ListResponse } from "@/resources/globalTypes";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 
-const mapToBidRequestMessageDTO = (record: BidRequestMessageRecord): BidRequestMessageT => ({
-  id: record.id,
-  createdAt: record.createdAt,
-  updatedAt: record.updatedAt,
-  bidRequestId: record.bidRequestId,
-  content: record.content
-});
-
-export async function listBidRequestMessages(bidRequestId: number, {
-  page = 1,
-  limit = 10
-} = {}): Promise<ListResponse<BidRequestMessageExtendedT>> {
-  const where: Prisma.BidRequestMessageWhereInput = {
-    bidRequestId
+export type BidRequestMessagesResponse = {
+  messages: (BidRequestMessageT & {
+    user: {
+      id: number;
+      name: string;
+      userType: UserTypeT;
+    };
+  })[];
+  invoice?: {
+    id: number;
+    createdAt: Date;
   };
+};
 
-  const [records, totalRecords] = await prisma.$transaction([
+export async function listBidRequestMessages(bidRequestId: number): Promise<BidRequestMessagesResponse> {
+  const [records, invoiceRecord] = await prisma.$transaction([
     prisma.bidRequestMessage.findMany({
-      where,
+      where: {
+        bidRequestId
+      },
       include: {
         user: {
           select: {
@@ -33,27 +34,47 @@ export async function listBidRequestMessages(bidRequestId: number, {
             name: true,
             userType: true
           }
+        },
+        bidRequest: {
+          select: {
+            invoice: {
+              select: {
+                id: true,
+                createdAt: true
+              }
+            }
+          }
         }
-      },
-      take: limit,
-      skip: (page - 1) * limit,
+      }
     }),
-    prisma.bidRequestMessage.count({ where })
+    prisma.invoice.findUnique({
+      where: { bidRequestId }
+    })
   ]);
-  return {
-    items: records.map(record => {
+  const bidRequestMessagesResponse: BidRequestMessagesResponse = {
+    messages: records.map(record => {
       const { user } = record;
       return {
-        ...mapToBidRequestMessageDTO(record),
+        id: record.id,
+        createdAt: record.createdAt,
+        updatedAt: record.updatedAt,
+        bidRequestId: record.bidRequestId,
+        content: record.content,
         user: {
           id: user.id,
           userType: user.userType as UserTypeT,
           name: user.name
         }
       };
-    }),
-    totalPages: Math.ceil(totalRecords / limit),
+    })
   };
+  if (invoiceRecord){
+    bidRequestMessagesResponse.invoice = {
+      id: invoiceRecord.id,
+      createdAt: invoiceRecord.createdAt,
+    };
+  }
+  return bidRequestMessagesResponse;
 }
 
 export async function createBidRequestMessage(bidRequestId: number, content: string) {

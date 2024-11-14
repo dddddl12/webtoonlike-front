@@ -235,20 +235,21 @@
         "ageRestriction": "이용 등급"
     },
     "bidRequestStatus": {
-        "IDLE": "마감 대기",
+        "PENDING": "마감 대기",
         "WAITING": "답변 대기",
         "BIDDING": "노출 중",
         "NEGOTIATING": "협상 중",
-        "DONE": "절차 완료"
+        "DECLINED": "협상 중단",
+        "ACCEPTED": "절차 완료"
     },
     "bidRoundApprovalStatus": {
         "PENDING": "승인 대기",
-        "REJECTED": "반려",
+        "DISAPPROVED": "반려",
         "APPROVED": "승인"
     },
     "bidRoundStatus": {
         "PENDING_APPROVAL": "승인 대기",
-        "REJECTED": "반려",
+        "DISAPPROVED": "반려",
         "WAITING": "노출 대기",
         "BIDDING": "노출 중",
         "NEGOTIATING": "협상 중",

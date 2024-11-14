@@ -4,13 +4,12 @@ import { BusinessFieldSchema, CountrySchema, ResourceSchema } from "@/resources/
 export enum BidRoundApprovalStatus {
   Pending = "PENDING",
   Approved = "APPROVED",
-  Rejected = "REJECTED"
-//   TODO DECLINE로 변경
+  Disapproved = "DISAPPROVED"
 }
 
 export enum BidRoundStatus {
   PendingApproval = "PENDING_APPROVAL",
-  Rejected = "REJECTED",
+  Disapproved = "Disapproved",
 
   // 아래는 승인 이후 단계
   Waiting = "WAITING", // < bidStartsAt

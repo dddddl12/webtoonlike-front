@@ -9,10 +9,9 @@ import Paginator from "@/components/Paginator";
 import { buildImgUrl } from "@/utils/media";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/shadcn/ui/button";
-import { useState } from "react";
-import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
-import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { AdminOffersBidRequestT, listAdminOffersBidRequests } from "@/resources/bidRequests/bidRequest.service";
 
 export default function AdminOffersPage() {
   return (
@@ -104,13 +103,14 @@ function TableRow({ bidRound }:{
 function BidRequestList({ bidRoundId }: {
   bidRoundId: number;
 }) {
-  const { listResponse } = useListData(
-    listBidRequests, {
-      limit: 0,
-      bidRoundId
-    });
+  const [items, setItems] = useState<AdminOffersBidRequestT[]>();
 
-  if (!listResponse) {
+  useEffect(() => {
+    listAdminOffersBidRequests(bidRoundId)
+      .then(setItems);
+  }, [bidRoundId]);
+
+  if (!items) {
     return <Spinner />;
   }
 
@@ -122,32 +122,26 @@ function BidRequestList({ bidRoundId }: {
       <div className="w-[40%] p-2 flex justify-center font-bold text-gray-shade">희망 판권</div>
       <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade"></div>
     </Row>
-    {listResponse.items
+    {items
       .map((item) => <BidRequestListItem key={item.id} bidRequest={item} />)}
   </Col>;
 }
 
 function BidRequestListItem({ bidRequest }: {
-  bidRequest: BidRequestExtendedT;
+  bidRequest: AdminOffersBidRequestT;
 }) {
   const tBusinessFields = useTranslations("businessFields");
   const tCountries = useTranslations("countries");
-  const priorityStatus = bidRequest.approvedAt
-    ? "오퍼 승인"
-    // : bidRequest.acceptedAt
-    //   ? "오퍼 수락"
-    //   : bidRequest.cancelledAt
-    //     ? "오퍼 취소"
-    : bidRequest.rejectedAt
-      ? "오퍼 거절"
-      : "진행 중";
+  const tBidRequestStatus = useTranslations("bidRequestStatus");
   return (
     <Row className="w-full bg-white rounded-sm p-2 items-center">
-      <div className="w-[10%] p-2 flex justify-start">{bidRequest.username}</div>
+      <div className="w-[10%] p-2 flex justify-start">{bidRequest.buyer.user.name}</div>
       <div className="w-[20%] p-2 flex justify-center">
         {bidRequest.createdAt.toLocaleDateString("ko")}
       </div>
-      <div className="w-[15%] p-2 flex justify-center">{priorityStatus}</div>
+      <div className="w-[15%] p-2 flex justify-center">
+        {tBidRequestStatus(bidRequest.status)}
+      </div>
       <div className="w-[40%] p-2 flex justify-center">
         {bidRequest.contractRange.map((item) =>
           item.businessField === "WEBTOONS"

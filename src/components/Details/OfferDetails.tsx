@@ -1,13 +1,14 @@
-import { BidRequestT } from "@/resources/bidRequests/bidRequest.types";
 import { useTranslations } from "next-intl";
 import { Col } from "@/shadcn/ui/layouts";
 import { Heading, Heading2 } from "@/shadcn/ui/texts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shadcn/ui/table";
 import { ContractRangeItemSchema } from "@/resources/bidRounds/bidRound.types";
 import z from "zod";
+import { BidRequestT } from "@/resources/bidRequests/bidRequest.types";
 
-export default function OfferDetails({ bidRequest }: {
-  bidRequest: BidRequestT;
+export default function OfferDetails({ contractRange, message }: {
+  contractRange: BidRequestT["contractRange"];
+  message?: string;
 }) {
   const t = useTranslations("contractRangeDataForm");
   const tCountries = useTranslations("countries");
@@ -15,7 +16,7 @@ export default function OfferDetails({ bidRequest }: {
   const tMakeAnOffer = useTranslations("makeAnOffer");
   const tBusinessFields = useTranslations("businessFields");
 
-  const { webtoonRights, derivativeRights } = mapContractRange(bidRequest.contractRange);
+  const { webtoonRights, derivativeRights } = mapContractRange(contractRange);
   return <Col>
     <Heading>{tMakeAnOffer("offerDetails")}</Heading>
     <Col className="gap-14">
@@ -107,7 +108,7 @@ export default function OfferDetails({ bidRequest }: {
       <div>
         <Heading2>{tMakeAnOffer("toCreator")}</Heading2>
         <div className="min-h-[100px] rounded-sm bg-gray-darker p-2">
-          {bidRequest.message || "추가 메시지가 없습니다."}
+          {message || "추가 메시지가 없습니다."}
         </div>
         <p className="text-[10pt] text-gray-shade mt-3">
           {tMakeAnOffer("note")}

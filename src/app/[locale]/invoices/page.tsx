@@ -8,11 +8,10 @@ import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
 import { Col } from "@/shadcn/ui/layouts";
 import { UninvoicedBidRequestList } from "@/app/[locale]/invoices/UninvoicedBidRequestList";
 
-
 export default async function Invoice() {
   const t = await getTranslations("invoiceManagement");
   const [initialBidRequestListResponse, initialInvoiceListResponse] = await Promise.all([
-    listBidRequests({ excludeInvoiced: true, limit: 5 }),
+    listBidRequests({ uninvoicedOnly: true, limit: 5 }),
     listInvoices()
   ]);
   return (

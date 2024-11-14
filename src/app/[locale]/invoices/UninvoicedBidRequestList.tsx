@@ -12,13 +12,10 @@ import { ListResponse } from "@/resources/globalTypes";
 import { displayName } from "@/utils/displayName";
 import { useState } from "react";
 import BidRequestDetailsForInvoice from "@/app/[locale]/invoices/BidRequestDetailsForInvoice";
-import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
-import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
-
-type UninvoicedBidRequestList = ListResponse<BidRequestExtendedT>;
+import { listBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
 
 export function UninvoicedBidRequestList({ initialBidRequestListResponse }: {
-  initialBidRequestListResponse: UninvoicedBidRequestList;
+  initialBidRequestListResponse: ListResponse<SimpleBidRequestT>;
 }) {
   const t = useTranslations("invoiceManagement");
   const { listResponse, filters, setFilters } = useListData(
@@ -63,7 +60,7 @@ function TableHeader() {
   );
 }
 
-function TableRow({ bidRequest }: { bidRequest: BidRequestExtendedT }) {
+function TableRow({ bidRequest }: { bidRequest: SimpleBidRequestT }) {
   const locale = useLocale();
   const [showNegotiation, setShowNegotiation] = useState(false);
   const t = useTranslations("invoiceManagement");
@@ -89,11 +86,11 @@ function TableRow({ bidRequest }: { bidRequest: BidRequestExtendedT }) {
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {bidRequest.webtoon.creatorUsername}
+          {bidRequest.creator.user.name}
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {bidRequest.username}
+          {bidRequest.buyer.user.name}
         </div>
 
         <div className="w-[20%] p-2 flex justify-center text-mint underline cursor-pointer" onClick={() => setShowNegotiation(!showNegotiation)}>

@@ -5,7 +5,7 @@ import { AdminLevel, TokenInfo, TokenInfoSchema } from "@/resources/tokens/token
 import prisma from "@/utils/prisma";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { UserTypeT } from "@/resources/users/user.types";
-import { NotSignedInError } from "@/errors";
+import { InsufficientPermissions, NotSignedInError } from "@/errors";
 import { User } from "@clerk/backend";
 
 export const getClerkUser = async () => {
@@ -85,6 +85,13 @@ const getAdminLevel = (admin: {
     return AdminLevel.SuperAdmin;
   }
   throw new Error("Unexpected admin level");
+};
+
+export const checkForAdmin = async () => {
+  const { metadata } = await getTokenInfo();
+  if (metadata.adminLevel < AdminLevel.Admin) {
+    throw new InsufficientPermissions("Admin level is none");
+  }
 };
 
 export const getClerkUserMap = async (clerkUserIds: string[]): Promise<Map<string, User>> => {

@@ -1,32 +1,23 @@
-import { BidRequestExtendedT } from "@/resources/bidRequests/bidRequest.types";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import { Gap } from "@/shadcn/ui/layouts";
 import { Link } from "@/i18n/routing";
 import BidRequestMessageList from "@/app/[locale]/offers/BidRequestMessageList";
 import { displayName } from "@/utils/displayName";
-import ViewOfferSection from "@/app/[locale]/offers/components/OfferDetails";
+import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
+import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
+import { Badge } from "@/shadcn/ui/badge";
 
 export default function BidRequestListRow({ bidRequest }:{
-  bidRequest: BidRequestExtendedT;
+  bidRequest: SimpleBidRequestT;
 }) {
   const locale = useLocale();
   const [showMessages, setShowMessages] = useState<boolean>(false);
-  const [rerender, setRerender] = useState(1); //TODO
+  const [curBidRequest, setCurBidRequest] = useState<SimpleBidRequestT>(bidRequest);
 
-  useEffect(() => {
-    console.log("rerender", rerender);
-    if (rerender > 1) {
-      setRerender(0);
-    } else if (rerender < 1) {
-      setRerender(1);
-    }
-  }, [rerender]);
-
-  const TbidRequestStatus = useTranslations("bidRequestStatus");
-  const { webtoon } = bidRequest;
+  const { webtoon } = curBidRequest;
   return (
     <>
       <div className="flex p-2 mt-4 text-white rounded-md bg-black-texts items-center">
@@ -48,22 +39,39 @@ export default function BidRequestListRow({ bidRequest }:{
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {bidRequest.createdAt.toLocaleString(locale)}
+          {curBidRequest.createdAt.toLocaleString(locale)}
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
           <span className="underline text-mint cursor-pointer"
-            onClick={(e) => setShowMessages(prev => !prev)}>협상 내역 보기</span>
+            onClick={() => setShowMessages(prev => !prev)}>협상 내역 보기</span>
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {/*{TbidRequestStatus(bidRequest.round?.status)}*/}
-          상태
+          <StatusBadge status={curBidRequest.status}/>
         </div>
       </div>
-      {showMessages && !!rerender
-        && <BidRequestMessageList bidRequest={bidRequest}
-          setRerender={setRerender}/>}
+      {showMessages
+        && <BidRequestMessageList
+          curBidRequest={curBidRequest}
+          setCurBidRequest={setCurBidRequest}/>}
     </>
   );
+}
+
+function StatusBadge({ status }:{
+  status: BidRequestStatus;
+}) {
+  const TbidRequestStatus = useTranslations("bidRequestStatus");
+  const content = TbidRequestStatus(status);
+  switch (status) {
+    case BidRequestStatus.Pending:
+      return <Badge className="w-[100px] h-[28px] justify-center font-bold text-sm" variant="yellow">{content}</Badge>;
+    case BidRequestStatus.Declined:
+      return <Badge className="w-[100px] h-[28px] justify-center font-bold text-sm" variant="destructive">{content}</Badge>;
+    case BidRequestStatus.Accepted:
+      return <Badge className="w-[100px] h-[28px] justify-center font-bold text-sm" variant="mint">{content}</Badge>;
+    default:
+      throw new Error(status);
+  }
 }
