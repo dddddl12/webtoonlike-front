@@ -27,8 +27,8 @@ export default function WebtoonDetails({ webtoon, openBidRequestForm, setOpenBid
         src={buildImgUrl(webtoon.thumbPath, { size: "md" })}
         alt={webtoon.thumbPath}
         width={300}
-        height={45}
-        style={{ objectFit: "cover" }}
+        height={450}
+        // style={{ objectFit: "cover" }}
         priority={true}
         className="rounded-sm"
       />

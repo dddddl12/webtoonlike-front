@@ -8,10 +8,12 @@ import { clsx } from "clsx";
 import OffersIcon from "./icons/offers.svg";
 import { BannerWebtoonItem } from "@/resources/home/home.types";
 import { displayName } from "@/utils/displayName";
+import { useRouter } from "@/i18n/routing";
 
 export default function BannerSection({ banners }: {
   banners: BannerWebtoonItem[];
 }) {
+  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const [firstVisibleIndex, setFirstVisibleIndex] = useState(0);
   const lastIndex = banners.length - 1;
@@ -32,7 +34,13 @@ export default function BannerSection({ banners }: {
             isVisible={firstVisibleIndex <= index && index < firstVisibleIndex + 3}
             isFirstVisible={firstVisibleIndex === index}
             isActive={activeIndex === index}
-            onClick={() => setActiveIndex(index)}
+            onClick={() => {
+              if (index === activeIndex) {
+                router.push(`/webtoons/${webtoon.id}`);
+              } else {
+                setActiveIndex(index);
+              }
+            }}
           />
         );
       })}
@@ -54,12 +62,13 @@ function Slide({
   const locale = useLocale();
   const ageRestrictionT = useTranslations("ageRestriction");
 
+  // TODO 0개일 때도 안전한지 확인
   return (
     <Col
       className={clsx(
-        "rounded-[8px] overflow-hidden h-full relative transition-all duration-150 ease-linear", {
+        "rounded-[8px] overflow-hidden h-full relative transition-all duration-150 ease-linear cursor-pointer", {
           "flex-1": isActive,
-          "w-[6.6%] cursor-pointer": !isActive && isVisible,
+          "w-[6.6%]": !isActive && isVisible,
           "ml-7": !isFirstVisible && isVisible,
         }
       )}
