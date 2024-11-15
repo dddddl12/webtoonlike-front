@@ -1,4 +1,4 @@
-import { BidRoundExtendedSchema, BidRoundSchema } from "@/resources/bidRounds/bidRound.types";
+import { BidRoundSchema } from "@/resources/bidRounds/bidRound.types";
 import { ResourceSchema } from "@/resources/globalTypes";
 import z from "zod";
 

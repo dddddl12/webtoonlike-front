@@ -64,7 +64,7 @@ function TableRow({ bidRound, onDetailClick }: {
         {bidRound.webtoon.title}
       </Link>
       <div className="w-[20%] p-2 flex justify-center">
-        {bidRound.webtoon.username}
+        {bidRound.creator.user.name}
       </div>
       <div className="w-[20%] p-2 flex justify-center">
         {bidRound.createdAt.toLocaleString("ko")}

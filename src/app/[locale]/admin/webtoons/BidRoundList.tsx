@@ -59,7 +59,7 @@ function TableRow({ bidRound }:{
           {bidRound.webtoon.title}
         </Link>
       </div>
-      <div className="w-[20%] p-2 flex justify-center">{bidRound.webtoon.username}</div>
+      <div className="w-[20%] p-2 flex justify-center">{bidRound.creator.user.name}</div>
       <div className="w-[20%] p-2 flex justify-center">
         {bidRound.createdAt.toLocaleString("ko")}
       </div>

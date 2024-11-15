@@ -21,7 +21,7 @@ export default function BidRoundDetail({
     onHandleDetailReset();
   }
 
-  const { webtoon } = bidRound;
+  const { webtoon, creator } = bidRound;
 
   return (
     <Col>
@@ -48,14 +48,14 @@ export default function BidRoundDetail({
             >
               제목: {webtoon.title}
             </Link>
-            <p className="text-[12pt]">작가: {webtoon.username}</p>
+            <p className="text-[12pt]">작가: {creator.user.name}</p>
             <p className="text-[12pt]">줄거리: {webtoon.description}</p>
           </Col>
         </Row>
       </Col>
       <Row className="gap-5 justify-center">
-        <Button className="bg-mint" onClick={handleApprove}>승인</Button>
-        <Button className="bg-red" onClick={handleDisapprove}>반려</Button>
+        <Button variant="mint" onClick={handleApprove}>승인</Button>
+        <Button variant="red" onClick={handleDisapprove}>반려</Button>
       </Row>
     </Col>
   );
