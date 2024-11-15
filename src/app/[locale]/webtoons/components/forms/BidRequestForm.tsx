@@ -44,7 +44,7 @@ export default function BidRequestForm({ bidRoundId }: {
 
 
   // 제출 이후 동작
-  const { formState: { isValid, isSubmitting } } = form;
+  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
   const router = useRouter();
   const onSubmit = async (values: BidRequestFormT) => {
     await createBidRequest(values);
@@ -52,7 +52,7 @@ export default function BidRequestForm({ bidRoundId }: {
   };
 
   // 스피너
-  if (isSubmitting) {
+  if (isSubmitting || isSubmitSuccessful) {
     return <Spinner/>;
   }
 

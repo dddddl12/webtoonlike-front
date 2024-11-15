@@ -3,7 +3,6 @@ import { Checkbox } from "@/shadcn/ui/checkbox";
 import { IconClose } from "@/components/svgs/IconClose";
 import { useTranslations } from "next-intl";
 import EpisodeImagePreview from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/EpisodeImagePreview";
-import { ImageObject } from "@/utils/media";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,7 +14,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/shadcn/ui/alert-dialog";
-import { useState } from "react";
 import { FormControl, FormItem, FormLabel } from "@/shadcn/ui/form";
 import { EpisodeImageSet } from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/types";
 
@@ -48,14 +46,13 @@ export default function EpisodeImageItem({
   );
 }
 
-export function RemoveButton({ removeHandler }: {
+function RemoveButton({ removeHandler }: {
   removeHandler: () => void;
 }) {
   const t = useTranslations("episodeForm");
   const tGeneral = useTranslations("general");
-  const [open, setOpen] = useState(false);
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <AlertDialog>
       <AlertDialogTrigger>
         <IconClose className="fill-gray-text"/>
       </AlertDialogTrigger>

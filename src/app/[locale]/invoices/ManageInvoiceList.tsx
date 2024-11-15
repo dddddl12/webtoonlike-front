@@ -10,13 +10,11 @@ import { InvoiceExtendedT } from "@/resources/invoices/invoice.types";
 import Paginator from "@/components/Paginator";
 import { useListData } from "@/hooks/listData";
 import { ListResponse } from "@/resources/globalTypes";
-import { downloadInvoiceContent, listInvoices } from "@/resources/invoices/invoice.service";
+import { listInvoices } from "@/resources/invoices/invoice.service";
 import { displayName } from "@/utils/displayName";
 import { useState } from "react";
 import BidRequestDetailsForInvoice from "@/app/[locale]/invoices/BidRequestDetailsForInvoice";
-import { Button } from "@/shadcn/ui/button";
-import { jsPDF } from "jspdf";
-import InvoiceDownload from "@/app/[locale]/invoices/InvoiceDownload";
+import InvoiceDownload from "@/components/Invoices/InvoiceDownload";
 
 type InvoiceListResponse = ListResponse<InvoiceExtendedT>;
 

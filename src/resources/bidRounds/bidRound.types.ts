@@ -40,16 +40,16 @@ export const BidRoundBaseSchema = z.object({
 export const BidRoundFormSchema = BidRoundBaseSchema;
 export type BidRoundFormT = z.infer<typeof BidRoundFormSchema>;
 
+export const BidRoundAdminSettingsSchema = z.object({
+  bidStartsAt: z.date().optional(),
+  negoStartsAt: z.date().optional(),
+  processEndsAt: z.date().optional(),
+  adminNote: z.string().optional(),
+});
+
 export const BidRoundSchema = ResourceSchema
   .merge(BidRoundBaseSchema)
   .extend({
     status: z.nativeEnum(BidRoundStatus),
-    // adminNote: z.string().optional(), TODO 어드민용 별도
   });
 export type BidRoundT = z.infer<typeof BidRoundSchema>;
-
-export const BidRoundExtendedSchema = BidRoundSchema
-  .extend({
-    bidRequestCount: z.number()
-  });
-export type BidRoundExtendedT = z.infer<typeof BidRoundExtendedSchema>;

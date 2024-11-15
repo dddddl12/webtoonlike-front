@@ -22,16 +22,16 @@ import { FieldSet, Form, FormControl, FormField, FormHeader, FormItem, FormLabel
 import { useForm, UseFormReturn } from "react-hook-form";
 import Image from "next/image";
 import Spinner from "@/components/Spinner";
-import { GenreT } from "@/resources/genres/genre.types";
 import { displayName } from "@/utils/displayName";
 import { createWebtoon, updateWebtoon } from "@/resources/webtoons/webtoon.service";
 import { useRouter } from "@/i18n/routing";
 import { ImageObject } from "@/utils/media";
 import { FileDirectoryT } from "@/resources/files/files.type";
 import { formResolver } from "@/utils/forms";
+import { BasicGenreT } from "@/resources/genres/genre.service";
 
 export function WebtoonForm({ selectableGenres, prev }: {
-  selectableGenres: GenreT[];
+  selectableGenres: BasicGenreT[];
   prev?: WebtoonExtendedT;
 }) {
   const t = useTranslations("addSeries");
@@ -59,7 +59,7 @@ export function WebtoonForm({ selectableGenres, prev }: {
   });
 
   // 제출 이후 동작
-  const { formState: { isValid, isSubmitting } } = form;
+  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
   const router = useRouter();
   const onSubmit = async (values: WebtoonFormT) => {
     const thumbPath = await thumbnail.uploadAndGetRemotePath(FileDirectoryT.WebtoonsThumbnails);
@@ -77,7 +77,7 @@ export function WebtoonForm({ selectableGenres, prev }: {
   };
 
   // 스피너
-  if (isSubmitting) {
+  if (isSubmitting || isSubmitSuccessful) {
     return <Spinner/>;
   }
 
@@ -328,7 +328,7 @@ function ExternalLinkFieldSet({ form }: {
 
 function GenresFieldSet({ form, selectableGenres }: {
   form: UseFormReturn<WebtoonFormT>;
-  selectableGenres: GenreT[];
+  selectableGenres: BasicGenreT[];
 }) {
   const locale = useLocale();
   const t = useTranslations("addSeries");

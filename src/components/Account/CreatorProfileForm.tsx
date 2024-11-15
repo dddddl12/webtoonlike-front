@@ -37,7 +37,7 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
   });
 
   // 제출 이후 동작
-  const { formState: { isValid, isSubmitting } } = form;
+  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
   const onSubmit = async (values: CreatorFormT) => {
     values.thumbPath = await thumbnail.uploadAndGetRemotePath(FileDirectoryT.CreatorsThumbnails);
     const validatedUserForm = UserExtendedFormSchema.parse({
@@ -49,7 +49,7 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
   };
 
   // 스피너
-  if (isSubmitting) {
+  if (isSubmitting || isSubmitSuccessful) {
     return <Spinner />;
   }
   return (

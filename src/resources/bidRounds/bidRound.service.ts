@@ -1,13 +1,17 @@
 "use server";
 
 import {
+  BidRoundAdminSettingsSchema,
   BidRoundApprovalStatus,
   BidRoundFormSchema,
-  BidRoundFormT, BidRoundStatus, BidRoundT, ContractRange,
+  BidRoundFormT, BidRoundSchema, BidRoundStatus, BidRoundT, ContractRange,
 } from "@/resources/bidRounds/bidRound.types";
 import prisma from "@/utils/prisma";
 import { $Enums, BidRound as BidRoundRecord, Prisma } from "@prisma/client";
 import { ListResponse } from "@/resources/globalTypes";
+import { WebtoonSchema } from "@/resources/webtoons/webtoon.types";
+import z from "zod";
+import { UserSchema } from "@/resources/users/user.types";
 
 const convertToRecordInput = (form: BidRoundFormT): Prisma.BidRoundUncheckedCreateInput => {
   form = BidRoundFormSchema.parse(form);
@@ -108,22 +112,25 @@ export async function getBidRoundByWebtoonId(webtoonId: number): Promise<BidRoun
 }
 
 // 관리자 기능
-export type AdminPageBidRoundT = {
-  id: number;
-  createdAt: Date;
-  bidStartsAt?: Date;
-  negoStartsAt?: Date;
-  processEndsAt?: Date;
-  adminNote?: string;
-  status: BidRoundStatus;
-  webtoon: {
-    id: number;
-    title: string;
-    description?: string;
-    thumbPath: string;
-    username: string;
-  };
-};
+const AdminPageBidRoundSchema = BidRoundSchema.pick({
+  id: true,
+  status: true,
+  createdAt: true,
+}).extend({
+  adminSettings: BidRoundAdminSettingsSchema,
+  webtoon: WebtoonSchema.pick({
+    id: true,
+    title: true,
+    description: true,
+    thumbPath: true,
+  }),
+  creator: z.object({
+    user: UserSchema.pick({
+      name: true
+    })
+  })
+});
+export type AdminPageBidRoundT = z.infer<typeof AdminPageBidRoundSchema>;
 export async function listBidRoundsWithWebtoon({ page, approvalStatus }: {
   page: number;
   approvalStatus: BidRoundApprovalStatus;
@@ -164,17 +171,23 @@ export async function listBidRoundsWithWebtoon({ page, approvalStatus }: {
     items.push({
       id: record.id,
       createdAt: record.createdAt,
-      bidStartsAt: record.bidStartsAt ?? undefined,
-      negoStartsAt: record.negoStartsAt ?? undefined,
-      processEndsAt: record.processEndsAt ?? undefined,
-      adminNote: record.adminNote ?? undefined,
       status,
+      adminSettings: {
+        bidStartsAt: record.bidStartsAt ?? undefined,
+        negoStartsAt: record.negoStartsAt ?? undefined,
+        processEndsAt: record.processEndsAt ?? undefined,
+        adminNote: record.adminNote ?? undefined,
+      },
       webtoon: {
         id: record.webtoon.id,
         title: record.webtoon.title,
         description: record.webtoon.description ?? undefined,
         thumbPath: record.webtoon.thumbPath,
-        username: record.webtoon.user.name,
+      },
+      creator: {
+        user: {
+          name: record.webtoon.user.name,
+        }
       }
     });
   }
@@ -292,17 +305,13 @@ export async function declineBidRound(bidRoundId: number) {
   });
 }
 
-export async function editBidRoundPlan(bidRoundId: number, plan: {
-  bidStartsAt: Date;
-  negoStartsAt: Date;
-  processEndsAt: Date;
-  adminNote: string;
-}) {
+export type BidRoundAdminSettingsT = z.infer<typeof BidRoundAdminSettingsSchema>;
+export async function editBidRoundAdminSettings(bidRoundId: number, settings: BidRoundAdminSettingsT) {
   await prisma.bidRound.update({
     where: {
       id: bidRoundId
     },
-    data: plan
+    data: settings
   });
 }
 

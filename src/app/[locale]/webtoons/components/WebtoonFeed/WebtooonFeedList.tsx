@@ -12,13 +12,13 @@ import {
 } from "@/shadcn/ui/select";
 import { useLocale, useTranslations } from "next-intl";
 import { AgeLimit, WebtoonPreviewT } from "@/resources/webtoons/webtoon.types";
-import { GenreT } from "@/resources/genres/genre.types";
 import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 import { listWebtoons } from "@/resources/webtoons/webtoon.service";
 import { ListResponse } from "@/resources/globalTypes";
 import { useListData } from "@/hooks/listData";
 import { displayName } from "@/utils/displayName";
 import WebtoonGridPaginated from "@/components/WebtoonGridPaginated";
+import { BasicGenreT } from "@/resources/genres/genre.service";
 
 type Filters = {
   statuses?: BidRoundStatus[];
@@ -32,7 +32,7 @@ type WebtoonListResponse = ListResponse<WebtoonPreviewT>;
 export default function WebtooonFeedList({
   genres, initialWebtoonListResponse,
 }: {
-  genres: GenreT[];
+  genres: BasicGenreT[];
   initialWebtoonListResponse: WebtoonListResponse;
 }) {
 
@@ -70,7 +70,7 @@ export default function WebtooonFeedList({
 function GenreSelector({
   genres, handleChange,
 }: {
-  genres: GenreT[];
+  genres: BasicGenreT[];
   handleChange: (newFilters: Filters) => void;
 }) {
   const locale = useLocale();

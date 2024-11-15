@@ -10,8 +10,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        red: "bg-red text-red-foreground hover:bg-red/70",
-        mint: "bg-mint text-mint-foreground hover:bg-mint/70",
+        red: "bg-red text-white hover:bg-red/70",
+        mint: "bg-mint text-white hover:bg-mint/70",
         gray: "bg-gray-shade text-gray-shade-foreground hover:bg-gray-shade/70",
         darkGray: "bg-gray text-primary-foreground hover:bg-gray/70",
         destructive:
@@ -28,6 +28,7 @@ const buttonVariants = cva(
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8 text-base",
         icon: "h-10 w-10",
+        smallIcon: "h-6 w-6 [&_svg]:fill-current",
       },
     },
     defaultVariants: {

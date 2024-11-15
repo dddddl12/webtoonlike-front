@@ -1,4 +1,4 @@
-import { BidRoundExtendedSchema } from "@/resources/bidRounds/bidRound.types";
+import { BidRoundExtendedSchema, BidRoundSchema } from "@/resources/bidRounds/bidRound.types";
 import { ResourceSchema } from "@/resources/globalTypes";
 import z from "zod";
 
@@ -60,7 +60,10 @@ export const WebtoonExtendedSchema = WebtoonSchema
       label: z.string(),
       label_en: z.string().optional(),
     })),
-    activeBidRound: BidRoundExtendedSchema.optional(),
+    activeBidRound: BidRoundSchema
+      .extend({
+        bidRequestCount: z.number()
+      }).optional(),
     firstEpisodeId: z.number().optional()
   });
 export type WebtoonExtendedT = z.infer<typeof WebtoonExtendedSchema>;

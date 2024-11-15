@@ -10,18 +10,3 @@ export default async function CreateWebtoonPage() {
     </PageLayout>
   );
 }
-
-// TODO
-// async function handleSubmit(form: WebtoonFormT, xData: {genres?: GenreT[]}) {
-//   try {
-//     const created = await WebtoonApi.create(form);
-//     await Promise.all(xData.genres?.map((genre) => XWebttonGenreApi.create({ webtoonId: created.id, genreId: genre.id })) ?? []);
-//     enqueueSnackbar("webtoon successfully created", { variant: "success" });
-//     router.replace(`/webtoons/${created.id}`);
-//     router.refresh();
-//   } catch (e) {
-//     enqueueSnackbar("webtoon create failed", { variant: "error" });
-//     console.warn(e);
-//   }
-// }
-//

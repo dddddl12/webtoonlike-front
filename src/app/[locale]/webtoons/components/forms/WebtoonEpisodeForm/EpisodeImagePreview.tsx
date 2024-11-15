@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/shadcn/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/shadcn/ui/dialog";
 import { ReactNode } from "react";
 import Image from "next/image";
 import { EpisodeImageSet } from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/types";
@@ -15,6 +15,7 @@ export default function EpisodeImagePreview({ imageSets, children }: {
     <DialogContent>
       <VisuallyHidden>
         <DialogTitle/>
+        <DialogDescription/>
       </VisuallyHidden>
       {imageSets.map(({ image }, i) => {
         if (!image.url) {

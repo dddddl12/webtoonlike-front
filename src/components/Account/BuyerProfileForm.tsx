@@ -56,7 +56,7 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
 
 
   // 제출 이후 동작
-  const { formState: { isValid, isSubmitting } } = form;
+  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
   const onSubmit = async (values: BuyerFormT) => {
     values.company.thumbPath = await thumbnail.uploadAndGetRemotePath(FileDirectoryT.BuyersThumbnails);
     values.company.businessCertPath = await businessCert.uploadAndGetRemotePath(FileDirectoryT.BuyersCerts);
@@ -71,7 +71,7 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
   };
 
   // 스피너
-  if (isSubmitting) {
+  if (isSubmitting || isSubmitSuccessful) {
     return <Spinner />;
   }
 

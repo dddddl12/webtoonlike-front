@@ -101,18 +101,19 @@ function TableRow({ bidRound }: {
         </Link>
       </Row>
       <div className="w-[15%] p-2 flex justify-center">
-        {bidRound.bidStartsAt?.toLocaleDateString("ko") ?? "-"}
+        {bidRound.adminSettings.bidStartsAt?.toLocaleDateString("ko") ?? "-"}
       </div>
       <div className="w-[15%] p-2 flex justify-center">
-        {bidRound.negoStartsAt?.toLocaleDateString("ko") ?? "-"}
+        {bidRound.adminSettings.negoStartsAt?.toLocaleDateString("ko") ?? "-"}
       </div>
       <div className="w-[15%] p-2 flex justify-center">
-        {bidRound.processEndsAt?.toLocaleDateString("ko") ?? "-"}
+        {bidRound.adminSettings.processEndsAt?.toLocaleDateString("ko") ?? "-"}
       </div>
       <div className="w-[15%] p-2 flex justify-center">
         {t(bidRound.status)}
       </div>
-      <SubmitEditWrapper bidRound={bidRound} />
+      <SubmitEditWrapper bidRoundId={bidRound.id}
+        adminSettings={bidRound.adminSettings} />
     </div>
   );
 }

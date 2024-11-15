@@ -1,4 +1,3 @@
-"use client";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import Spinner from "@/components/Spinner";
@@ -8,7 +7,7 @@ import { Link } from "@/i18n/routing";
 import { useListData } from "@/hooks/listData";
 import { Col, Gap, Row } from "@/shadcn/ui/layouts";
 import { InvoiceExtendedT } from "@/resources/invoices/invoice.types";
-import InvoiceDownload from "@/app/[locale]/invoices/InvoiceDownload";
+import InvoiceDownload from "@/components/Invoices/InvoiceDownload";
 
 export default function ManageInvoice() {
   const { listResponse, filters, setFilters } = useListData(
@@ -75,7 +74,6 @@ function TableRow({ invoice }: {
       </div>
       <div className="w-[20%] p-2 flex justify-center">{invoice.createdAt.toLocaleString("ko")}</div>
       <div className="w-[20%] p-2 flex justify-center">
-        {/*컴포넌트화*/}
         <InvoiceDownload invoice={invoice} />
       </div>
     </div>

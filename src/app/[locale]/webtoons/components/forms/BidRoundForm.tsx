@@ -70,7 +70,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
   });
 
   // 제출 이후 동작
-  const { formState: { isSubmitting, isValid } } = form;
+  const { formState: { isSubmitting, isSubmitSuccessful, isValid } } = form;
   const router = useRouter();
   async function onSubmit(values: BidRoundFormT) {
     // TODO
@@ -84,7 +84,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
   }
 
   // 스피너
-  if (isSubmitting) {
+  if (isSubmitting || isSubmitSuccessful) {
     return <Spinner/>;
   }
 

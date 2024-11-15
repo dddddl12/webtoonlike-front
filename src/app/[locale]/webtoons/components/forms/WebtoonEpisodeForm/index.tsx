@@ -60,7 +60,7 @@ export default function WebtoonEpisodeForm({
   });
 
   // 제출 이후 동작
-  const { formState: { isValid, isSubmitting } } = form;
+  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
   const router = useRouter();
   async function onSubmit(values: WebtoonEpisodeFormT) {
 
@@ -88,7 +88,7 @@ export default function WebtoonEpisodeForm({
   }
 
   // 스피너
-  if (isSubmitting) {
+  if (isSubmitting || isSubmitSuccessful) {
     return <Spinner/>;
   }
 

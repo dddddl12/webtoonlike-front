@@ -9,17 +9,19 @@ import { Link } from "@/i18n/routing";
 import { clsx } from "clsx";
 import { ReactNode } from "react";
 import LightThemeProvider from "@/providers/LightThemeProvider";
-import { getTranslations } from "next-intl/server";
+import { assertAdmin } from "@/resources/tokens/token.service";
 
 export default async function Admin({ children }: {
   children: ReactNode;
 }) {
-  // TODO 관리자 보호
+  await assertAdmin();
   return (
     <LightThemeProvider>
       <div className="flex w-full light bg-background text-primary">
         <div className="mx-auto max-w-[1200px] w-full flex">
-          <Sidebar/>
+          <Col className="w-[240px] border-r border-r-gray relative">
+            <Sidebar/>
+          </Col>
           <Col className="flex-1 bg-gray-light p-10">
             {children}
           </Col>
@@ -30,39 +32,55 @@ export default async function Admin({ children }: {
 }
 
 function Sidebar() {
-  return <Col className="w-[240px] border-r border-r-gray">
+  return <Col className="w-full h-fit sticky top-[160px]">
     <MenuItem pathname="/admin/dashboard">
-      <IconDashboard/>
+      <span className="w-7 flex justify-center items-center">
+        <IconDashboard/>
+      </span>
       <p>대시보드</p>
     </MenuItem>
     <MenuItem pathname="/admin/users">
-      <IconUser/>
+      <span className="w-7 flex justify-center items-center">
+        <IconUser/>
+      </span>
       <p>유저 관리</p>
     </MenuItem>
-    {/*<MenuItem pathname="/admin/admins">*/}
-    {/*  <IconAddUser/>*/}
-    {/*  <p>관리자 목록</p>*/}
-    {/*</MenuItem>*/}
+    <MenuItem pathname="/admin/admins">
+      <span className="w-7 flex justify-center items-center">
+        <IconAddUser/>
+      </span>
+      <p>관리자 목록</p>
+    </MenuItem>
     <MenuItem pathname="/admin/webtoons">
-      <IconAlbum/>
+      <span className="w-7 flex justify-center items-center">
+        <IconAlbum/>
+      </span>
       <p>작품 관리</p>
     </MenuItem>
     <MenuItem pathname="/admin/bid-rounds">
-      <IconDocs/>
+      <span className="w-7 flex justify-center items-center">
+        <IconDashboard/>
+      </span>
       <p>투고 관리</p>
     </MenuItem>
     <MenuItem pathname="/admin/offers">
-      <IconDocs/>
+      <span className="w-7 flex justify-center items-center">
+        <IconDocs/>
+      </span>
       <p>오퍼 관리</p>
     </MenuItem>
     <MenuItem pathname="/admin/invoices">
-      <IconLetter/>
+      <span className="w-7 flex justify-center items-center">
+        <IconLetter/>
+      </span>
       <p>인보이스 관리</p>
     </MenuItem>
-    {/*<MenuItem pathname="/admin/genres">*/}
-    {/*  <IconAlbum/>*/}
-    {/*  <p>장르 관리</p>*/}
-    {/*</MenuItem>*/}
+    <MenuItem pathname="/admin/genres">
+      <span className="w-7 flex justify-center items-center">
+        <IconAlbum/>
+      </span>
+      <p>장르 관리</p>
+    </MenuItem>
   </Col>;
 }
 

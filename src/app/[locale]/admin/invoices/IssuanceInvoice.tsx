@@ -1,5 +1,3 @@
-"use client";
-
 import Spinner from "@/components/Spinner";
 import { IssuanceInvoiceSubmit } from "./IssuanceInvoiceSubmit";
 import { useListData } from "@/hooks/listData";
@@ -10,7 +8,9 @@ import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 
-export default function IssuanceInvoice() {
+export default function IssuanceInvoice({ reloadPage }: {
+  reloadPage: () => void;
+}) {
   const { listResponse, filters, setFilters } = useListData(
     listBidRequests, {
       page: 1,
@@ -38,7 +38,7 @@ export default function IssuanceInvoice() {
           <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade">인보이스 발행</div>
         </div>
         {listResponse.items.map((bidRequest, i) => (
-          <TableRow key={i} bidRequest={bidRequest} />
+          <TableRow key={i} bidRequest={bidRequest} reloadPage={reloadPage} />
         ))}
       </div>
       <Paginator
@@ -51,8 +51,9 @@ export default function IssuanceInvoice() {
 }
 
 
-function TableRow({ bidRequest }: {
+function TableRow({ bidRequest,reloadPage }: {
   bidRequest: SimpleBidRequestT;
+  reloadPage: () => void;
 }) {
   return (
     <Row className="flex bg-white rounded-sm p-2 my-2">
@@ -83,7 +84,7 @@ function TableRow({ bidRequest }: {
         <p className=" cursor-pointer">{bidRequest.createdAt.toLocaleString("ko")}</p>
       </div>
       <div className="w-[15%] flex justify-center items-center">
-        <IssuanceInvoiceSubmit bidRequestId={bidRequest.id} />
+        <IssuanceInvoiceSubmit bidRequestId={bidRequest.id} reloadPage={reloadPage} />
       </div>
     </Row>
   );

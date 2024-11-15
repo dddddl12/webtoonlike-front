@@ -12,4 +12,3 @@ export type GenreFormT = z.infer<typeof GenreFormSchema>;
 
 export const GenreSchema = GenreBaseSchema
   .merge(ResourceSchema);
-export type GenreT = z.infer<typeof GenreSchema>;
