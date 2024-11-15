@@ -11,8 +11,6 @@ datasource db {
 // TODO Index 추가
 // TODO zero-length 차단
 
-// 배너 many to one?
-
 model Admin {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")

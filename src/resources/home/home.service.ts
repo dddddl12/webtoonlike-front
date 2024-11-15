@@ -1,6 +1,6 @@
 "use server";
 
-import { $Enums } from "@prisma/client";
+import { $Enums, Prisma } from "@prisma/client";
 import prisma from "@/utils/prisma";
 import { BannerWebtoonItem, HomeCreatorItem, HomeGenreItem, HomeWebtoonItem } from "@/resources/home/home.types";
 import { AgeLimit } from "@/resources/webtoons/webtoon.types";
@@ -188,49 +188,28 @@ const getGenreSets = async (tx: PrismaTransaction): Promise<{
   return { genres, firstGenreItems };
 };
 
-// 작가
+// 작가(Random selection 때문에 raw query 사용)
+// TODO creator ~ user join 보호 확인
 const getCreators = async (tx: PrismaTransaction): Promise<HomeCreatorItem[]> => {
-  const records = await tx.user.findMany({
-    where: {
-      userType: $Enums.UserType.CREATOR,
-      creator: {
-        isNot: null
-      },
-      webtoons: {
-        some: {}
-      }
-    },
-    select: {
-      id: true,
-      creator: {
-        select: {
-          id: true,
-          name: true,
-          name_en: true,
-          thumbPath: true
-        }
-      },
-      _count: {
-        select: {
-          webtoons: true
-        }
-      }
-    },
-    take: 5
-  });
-  return records
-    .map(record => {
-      if (!record.creator) {
-        throw new Error("Unknown situation");
-      }
-      return {
-        id: record.id,
-        name: record.creator.name,
-        name_en: record.creator.name_en ?? undefined,
-        numOfWebtoons: record._count.webtoons,
-        thumbPath: record.creator.thumbPath ?? undefined,
-      };
-    });
+  return tx.$queryRaw(
+    Prisma.sql`SELECT c.name,
+                      COALESCE(c.name_en, '') AS name_en,
+                      COALESCE(c.thumb_path, '') AS "thumbPath",
+                      u.id        AS id,
+                      CAST(COUNT(w.id) AS INTEGER) AS "numOfWebtoons"
+               FROM creators c
+                        JOIN
+                    users u ON u.id = c.user_id
+                        LEFT JOIN
+                    webtoons w ON w.user_id = u.id
+               WHERE c.is_exposed = TRUE
+               GROUP BY c.id,
+                        c.name,
+                        c.name_en,
+                        c.thumb_path,
+                        u.id
+               ORDER BY RANDOM()
+               LIMIT 5`);
 };
 
 const webtoonSelect = {
