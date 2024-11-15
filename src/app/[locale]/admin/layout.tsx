@@ -45,12 +45,12 @@ function Sidebar() {
       </span>
       <p>유저 관리</p>
     </MenuItem>
-    <MenuItem pathname="/admin/admins">
-      <span className="w-7 flex justify-center items-center">
-        <IconAddUser/>
-      </span>
-      <p>관리자 목록</p>
-    </MenuItem>
+    {/*<MenuItem pathname="/admin/admins">*/}
+    {/*  <span className="w-7 flex justify-center items-center">*/}
+    {/*    <IconAddUser/>*/}
+    {/*  </span>*/}
+    {/*  <p>관리자 목록</p>*/}
+    {/*</MenuItem>*/}
     <MenuItem pathname="/admin/webtoons">
       <span className="w-7 flex justify-center items-center">
         <IconAlbum/>
