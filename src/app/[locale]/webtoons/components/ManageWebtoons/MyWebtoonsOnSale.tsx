@@ -10,6 +10,8 @@ import { useListData } from "@/hooks/listData";
 import { listMyWebtoonsOnSale } from "@/resources/webtoons/webtoon.service";
 import { Link } from "@/i18n/routing";
 import { displayName } from "@/utils/displayName";
+import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
+import StatusBadge from "@/components/StatusBadge";
 
 type WebtoonListResponse = Awaited<ReturnType<typeof listMyWebtoonsOnSale>>;
 type Webtoon = WebtoonListResponse["items"][number];
@@ -63,7 +65,6 @@ function TableRow({ webtoon }: {
   webtoon: Webtoon;
 }) {
   const locale = useLocale();
-  const tBidRoundStatus = useTranslations("bidRoundStatus");
   return (
     <div className="flex p-2 mb-2 text-white rounded-md bg-gray-darker items-center">
       <div className="w-[40%] p-2 flex justify-start items-center">
@@ -93,7 +94,7 @@ function TableRow({ webtoon }: {
       </div>
 
       <div className="w-[20%] p-2 flex justify-center">
-        {tBidRoundStatus(webtoon.bidRoundStatus)}
+        <BidRoundStatusBadge status={webtoon.bidRoundStatus} />
       </div>
     </div>
   );
@@ -106,4 +107,27 @@ function NoItemsFound() {
       {t("noSeriesBeingSold")}
     </Text>
   </Row>;
+}
+
+function BidRoundStatusBadge({ status }:{
+  status: BidRoundStatus;
+}) {
+  const TbidRoundStatus = useTranslations("bidRoundStatus");
+  const content = TbidRoundStatus(status);
+  switch (status) {
+    case BidRoundStatus.PendingApproval:
+      return <StatusBadge variant="yellow" content={content} />;
+    case BidRoundStatus.Disapproved:
+      return <StatusBadge variant="red" content={content} />;
+    case BidRoundStatus.Waiting:
+      return <StatusBadge variant="grayDark" content={content} />;
+    case BidRoundStatus.Bidding:
+      return <StatusBadge variant="yellow" content={content} />;
+    case BidRoundStatus.Negotiating:
+      return <StatusBadge variant="mint" content={content} />;
+    case BidRoundStatus.Done:
+      return <StatusBadge variant="mint" content={content} />;
+    default:
+      return <StatusBadge content={content} />;
+  }
 }

@@ -8,7 +8,7 @@ import BidRequestMessageList from "@/app/[locale]/offers/BidRequestMessageList";
 import { displayName } from "@/utils/displayName";
 import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
 import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
-import { Badge } from "@/shadcn/ui/badge";
+import StatusBadge from "@/components/StatusBadge";
 
 export default function BidRequestListRow({ bidRequest }:{
   bidRequest: SimpleBidRequestT;
@@ -48,7 +48,7 @@ export default function BidRequestListRow({ bidRequest }:{
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          <StatusBadge status={curBidRequest.status}/>
+          <BidRequestStatusBadge status={curBidRequest.status}/>
         </div>
       </div>
       {showMessages
@@ -59,18 +59,18 @@ export default function BidRequestListRow({ bidRequest }:{
   );
 }
 
-function StatusBadge({ status }:{
+function BidRequestStatusBadge({ status }:{
   status: BidRequestStatus;
 }) {
   const TbidRequestStatus = useTranslations("bidRequestStatus");
   const content = TbidRequestStatus(status);
   switch (status) {
     case BidRequestStatus.Pending:
-      return <Badge className="w-[100px] h-[28px] justify-center font-bold text-sm" variant="yellow">{content}</Badge>;
+      return <StatusBadge variant="yellow" content={content} />;
     case BidRequestStatus.Declined:
-      return <Badge className="w-[100px] h-[28px] justify-center font-bold text-sm" variant="destructive">{content}</Badge>;
+      return <StatusBadge variant="red" content={content} />;
     case BidRequestStatus.Accepted:
-      return <Badge className="w-[100px] h-[28px] justify-center font-bold text-sm" variant="mint">{content}</Badge>;
+      return <StatusBadge variant="mint" content={content} />;
     default:
       throw new Error(status);
   }

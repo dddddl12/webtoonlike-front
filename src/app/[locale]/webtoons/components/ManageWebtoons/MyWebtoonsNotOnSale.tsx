@@ -11,6 +11,8 @@ import { listMyWebtoonsNotOnSale } from "@/resources/webtoons/webtoon.service";
 import { Link } from "@/i18n/routing";
 import { useListData } from "@/hooks/listData";
 import { displayName } from "@/utils/displayName";
+import { BidRoundApprovalStatus, BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
+import StatusBadge from "@/components/StatusBadge";
 
 type WebtoonListResponse = Awaited<ReturnType<typeof listMyWebtoonsNotOnSale>>;
 type Webtoon = WebtoonListResponse["items"][number];
@@ -103,15 +105,15 @@ function StatusIndicator({ webtoon }: {
   webtoon: Webtoon;
 }) {
   const t = useTranslations("manageContents");
-  const tBidRoundApprovalStatus = useTranslations("bidRoundApprovalStatus");
   const { bidRoundApprovalStatus } = webtoon;
 
   if (bidRoundApprovalStatus) {
-    return <>{tBidRoundApprovalStatus(bidRoundApprovalStatus)}</>;
+    return <BidRoundApprovalStatusBadge status={bidRoundApprovalStatus} />;
   } else if (webtoon.episodeCount < 3) {
-    return <>{t("episodes", {
+    const content = t("episodes", {
       count: webtoon.episodeCount
-    })}</>;
+    });
+    return <StatusBadge variant="grayDark" content={content}/>;
   } else {
     return <Link
       className="text-mint underline"
@@ -137,4 +139,19 @@ function NoItemsFound() {
       </Link>
     </Row>
   );
+}
+
+function BidRoundApprovalStatusBadge({ status }:{
+  status: BidRoundApprovalStatus;
+}) {
+  const tBidRoundApprovalStatus = useTranslations("bidRoundApprovalStatus");
+  const content = tBidRoundApprovalStatus(status);
+  switch (status) {
+    case BidRoundApprovalStatus.Pending:
+      return <StatusBadge variant="yellow" content={content} />;
+    case BidRoundApprovalStatus.Disapproved:
+      return <StatusBadge variant="red" content={content} />;
+    default:
+      return <StatusBadge content={content} />;
+  }
 }

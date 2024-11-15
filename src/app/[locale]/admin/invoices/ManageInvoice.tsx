@@ -7,7 +7,7 @@ import { Link } from "@/i18n/routing";
 import { useListData } from "@/hooks/listData";
 import { Col, Gap, Row } from "@/shadcn/ui/layouts";
 import { InvoiceExtendedT } from "@/resources/invoices/invoice.types";
-import InvoiceDownload from "@/components/Invoices/InvoiceDownload";
+import InvoiceDownload from "@/components/InvoiceDownload";
 
 export default function ManageInvoice() {
   const { listResponse, filters, setFilters } = useListData(

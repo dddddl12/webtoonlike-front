@@ -14,7 +14,7 @@ import { listInvoices } from "@/resources/invoices/invoice.service";
 import { displayName } from "@/utils/displayName";
 import { useState } from "react";
 import BidRequestDetailsForInvoice from "@/app/[locale]/invoices/BidRequestDetailsForInvoice";
-import InvoiceDownload from "@/components/Invoices/InvoiceDownload";
+import InvoiceDownload from "@/components/InvoiceDownload";
 
 type InvoiceListResponse = ListResponse<InvoiceExtendedT>;
 
