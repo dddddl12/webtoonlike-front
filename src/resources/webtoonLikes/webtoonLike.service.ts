@@ -1,12 +1,38 @@
 "use server";
 
 import prisma from "@/utils/prisma";
-import { WebtoonLikeT } from "@/resources/webtoonLikes/webtoonLike.types";
 import { getTokenInfo } from "@/resources/tokens/token.service";
+import { action } from "@/handlers/safeAction";
+import z from "zod";
+import { WebtoonLikeWithMine, WebtoonLikeWithMineT } from "@/resources/webtoonLikes/webtoonLike.types";
 
-export async function createLike(webtoonId: number): Promise<WebtoonLikeT> {
+export const toggleLike = action
+  .metadata({ actionName: "toggleLike" })
+  .schema(z.object({
+    action: z.enum(["like", "unlike"])
+  }))
+  .bindArgsSchemas([
+    z.number() // webtoonId
+  ])
+  .outputSchema(WebtoonLikeWithMine)
+  .action(async ({
+    bindArgsParsedInputs: [webtoonId],
+    parsedInput: { action }
+  }) => {
+    switch (action) {
+      case "like":
+        return createLike(webtoonId);
+      case "unlike":
+        return deleteLike(webtoonId);
+      default:
+        throw new Error("Invalid action");
+    }
+  });
+
+
+async function createLike(webtoonId: number): Promise<WebtoonLikeWithMineT> {
+  const { userId } = await getTokenInfo();
   const likeCount = await prisma.$transaction(async (tx) => {
-    const { userId } = await getTokenInfo();
     await tx.webtoonLike.upsert({
       where: {
         userId_webtoonId: { userId, webtoonId },
@@ -27,9 +53,9 @@ export async function createLike(webtoonId: number): Promise<WebtoonLikeT> {
   };
 }
 
-export async function deleteLike(webtoonId: number): Promise<WebtoonLikeT> {
+async function deleteLike(webtoonId: number): Promise<WebtoonLikeWithMineT> {
+  const { userId } = await getTokenInfo();
   const likeCount = await prisma.$transaction(async (tx) => {
-    const { userId } = await getTokenInfo();
     await tx.webtoonLike.deleteMany({
       where: { userId, webtoonId }
     });

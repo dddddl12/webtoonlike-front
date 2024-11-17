@@ -1,12 +1,14 @@
 import React from "react";
 import BidRequestList from "@/app/[locale]/offers/BidRequestList";
 import PageLayout from "@/components/PageLayout";
-import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
 import { getTranslations } from "next-intl/server";
 import { Heading } from "@/shadcn/ui/texts";
+import { listAllBidRequests } from "@/resources/bidRequests/bidRequest.service";
+import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function OffersPage() {
-  const initialBidRequestListResponse = await listBidRequests();
+  const initialBidRequestListResponse = await listAllBidRequests({})
+    .then(responseHandler);
   const t = await getTranslations("manageOffers");
   return (
     <PageLayout>

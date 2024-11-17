@@ -5,9 +5,11 @@ import { Col, Gap } from "@/shadcn/ui/layouts";
 import { Heading } from "@/shadcn/ui/texts";
 import LightThemeProvider from "@/providers/LightThemeProvider";
 import Logo from "@/components/Logo";
+import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function UpdateAccount () {
-  const user = await getUser();
+  const user = await getUser()
+    .then(responseHandler);
   return (
     <LightThemeProvider>
       <PageLayout lightTheme={true}>

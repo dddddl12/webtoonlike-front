@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   Dialog,
   DialogFooter,
@@ -12,45 +12,59 @@ import {
 import { Button } from "@/shadcn/ui/button";
 import { Input } from "@/shadcn/ui/input";
 import { useToast } from "@/shadcn/hooks/use-toast";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
-import { BasicGenreT, createGenre, updateGenre } from "@/resources/genres/genre.service";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
+import { BasicGenreT, createOrUpdateGenre } from "@/resources/genres/genre.service";
 import { GenreFormSchema, GenreFormT } from "@/resources/genres/genre.types";
-import { useForm, UseFormReturn } from "react-hook-form";
-import { formResolver } from "@/utils/forms";
+import { UseFormReturn } from "react-hook-form";
 import Spinner from "@/components/Spinner";
+import { useTranslations } from "next-intl";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { formResolver } from "@/utils/forms";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 
 export default function AddOrUpdateGenre({ onGenreAddSuccess, children, prev }: {
   onGenreAddSuccess: () => void;
   children: ReactNode;
   prev?: BasicGenreT;
 }) {
+  // TODO
+  const tError = useTranslations("errors");
   const [editorOpen, setEditorOpen] = useState<boolean>(false);
   const { toast } = useToast();
-  const onSubmit = async (values: GenreFormT) => {
-    if (prev) {
-      await updateGenre(prev.id, values);
-      toast({
-        description: "장르가 추가되었습니다."
+
+  const { form, handleSubmitWithAction }
+    = useHookFormAction(
+      createOrUpdateGenre.bind(null, prev?.id),
+      (values) => formResolver(GenreFormSchema, values),
+      {
+        actionProps: {
+          onSuccess: () => {
+            toast({
+              description: prev ? "장르가 수정되었습니다." : "장르가 추가되었습니다."
+            });
+            setEditorOpen(false);
+            onGenreAddSuccess();
+          },
+          onError: (args) => {
+            form.reset(args.input);
+            clientErrorHandler(args);
+          }
+        },
+        formProps: {
+          mode: "onChange"
+        },
+        errorMapProps: {}
       });
-    } else {
-      await createGenre(values);
-      toast({
-        description: "장르가 수정되었습니다."
+  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
+
+  useEffect(() => {
+    if (editorOpen) {
+      form.reset({
+        label: prev?.label ?? "" ,
+        label_en: prev?.label_en ?? ""
       });
     }
-    setEditorOpen(false);
-    onGenreAddSuccess();
-  };
-
-  const form = useForm<GenreFormT>({
-    defaultValues: {
-      label: prev?.label ?? "" ,
-      label_en: prev?.label_en ?? ""
-    },
-    mode: "onChange",
-    resolver: async (values) => formResolver(GenreFormSchema, values)
-  });
-  const { formState: { isValid } } = form;
+  }, [prev, editorOpen, form]);
 
   // TODO 순서(rank 사용)
 
@@ -79,8 +93,10 @@ export default function AddOrUpdateGenre({ onGenreAddSuccess, children, prev }: 
             </Button>
           </DialogClose>
           <Button
-            disabled={!isValid}
-            onClick={form.handleSubmit(onSubmit)}
+            disabled={!isValid || isSubmitting || isSubmitSuccessful}
+            onClick={async (e) => {
+              await handleSubmitWithAction(e);
+            }}
           >
             {prev ? "수정" : "추가"}
           </Button>
@@ -115,6 +131,7 @@ function GenreForm({
                 placeholder='ex) 로맨스, 액션, 스릴러 등...'
               />
             </FormControl>
+            <FormMessage/>
           </FormItem>
         )}
       />
@@ -131,6 +148,7 @@ function GenreForm({
                 placeholder='ex) romance, action, thriller ...'
               />
             </FormControl>
+            <FormMessage/>
           </FormItem>
         )}
       />

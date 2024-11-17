@@ -4,15 +4,16 @@ import PageLayout from "@/components/PageLayout";
 import { getTranslations } from "next-intl/server";
 import { Heading } from "@/shadcn/ui/texts";
 import { listInvoices } from "@/resources/invoices/invoice.service";
-import { listBidRequests } from "@/resources/bidRequests/bidRequest.service";
 import { Col } from "@/shadcn/ui/layouts";
 import { UninvoicedBidRequestList } from "@/app/[locale]/invoices/UninvoicedBidRequestList";
+import { listUninvoicedBidRequests } from "@/resources/bidRequests/bidRequest.service";
+import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function Invoice() {
   const t = await getTranslations("invoiceManagement");
   const [initialBidRequestListResponse, initialInvoiceListResponse] = await Promise.all([
-    listBidRequests({ uninvoicedOnly: true, limit: 5 }),
-    listInvoices()
+    listUninvoicedBidRequests({}).then(responseHandler),
+    listInvoices({}).then(responseHandler)
   ]);
   return (
     <PageLayout>

@@ -1,53 +1,59 @@
 "use server";
 
-import { Prisma, $Enums, Webtoon as WebtoonRecord } from "@prisma/client";
+import { Prisma, $Enums } from "@prisma/client";
 import {
   AgeLimit,
-  TargetAge, TargetGender, WebtoonExtendedT, WebtoonFormSchema, WebtoonFormT, WebtoonPreviewT, WebtoonT,
+  TargetAge, TargetGender, WebtoonFormSchema, WebtoonFormT, WebtoonSchema
 } from "@/resources/webtoons/webtoon.types";
-import { BidRoundApprovalStatus, BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
+import { BidRoundApprovalStatus, BidRoundSchema, BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 import { UserTypeT } from "@/resources/users/user.types";
-import { WrongUserTypeError } from "@/errors";
-import { ListResponse } from "@/resources/globalTypes";
+import { WrongUserTypeError } from "@/handlers/errors";
+import { ListResponseSchema } from "@/resources/globalTypes";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 import { AdminLevel } from "@/resources/tokens/token.types";
-import { getBidRoundStatus, mapToBidRoundDTO } from "@/resources/bidRounds/bidRound.service";
 import prisma from "@/utils/prisma";
-import { offerableBidRoundFilter } from "@/resources/bidRounds/bidRound.filters";
-
-const convertToRecordInput = async (form: WebtoonFormT): Promise<
-  Prisma.XOR<Prisma.WebtoonCreateInput, Prisma.WebtoonUncheckedCreateInput>
-> => {
-  const { userId } = await getTokenInfo();
-  form = WebtoonFormSchema.parse(form);
-  return {
-    title: form.title,
-    title_en: form.title_en,
-    authorName: form.authorName,
-    authorName_en: form.authorName_en,
-    description: form.description,
-    description_en: form.description_en,
-    externalUrl: form.externalUrl,
-    targetAges: form.targetAges,
-    ageLimit: form.ageLimit,
-    thumbPath: form.thumbPath,
-    targetGender: form.targetGender,
-    userId //TODO immutable
-  };
-};
+import { getBidRoundStatus, mapToBidRoundDTO, offerableBidRoundFilter } from "@/resources/bidRounds/bidRound.utils";
+import z from "zod";
+import { action } from "@/handlers/safeAction";
 
 // TODO 권한, 사용자 타입, 관리자 체크
-export async function createWebtoon(form: WebtoonFormT) {
+export const createOrUpdateWebtoon = action
+  .schema(WebtoonFormSchema)
+  .metadata({ actionName: "createOrUpdateWebtoon" })
+  .bindArgsSchemas([
+    z.number().optional() // webtoonId
+  ])
+  .action(async ({
+    parsedInput: formData,
+    bindArgsParsedInputs: [webtoonId]
+  }) => {
+    if (webtoonId){
+      await updateWebtoon(webtoonId, formData);
+    } else {
+      await createWebtoon(formData);
+    }
+  });
+
+async function createWebtoon(form: WebtoonFormT) {
+  const { genreIds, ...rest } = form;
+  const { userId } = await getTokenInfo();
+  const insertData: Prisma.WebtoonCreateInput = {
+    ...rest,
+    user: {
+      connect: {
+        id: userId
+      }
+    }
+  };
   await prisma.$transaction(async (tx) => {
-    const data = await convertToRecordInput(form);
     const result = await tx.webtoon.create({
-      data,
+      data: insertData,
       select: {
         id: true
       }
     });
     await tx.xWebtoonGenre.createMany({
-      data: form.genreIds.map(id => ({
+      data: genreIds.map(id => ({
         webtoonId: result.id,
         genreId: id
       }))
@@ -55,11 +61,13 @@ export async function createWebtoon(form: WebtoonFormT) {
   });
 }
 
-export async function updateWebtoon(webtoonId: number, form: WebtoonFormT) {
+async function updateWebtoon(webtoonId: number, form: WebtoonFormT) {
+  const { genreIds, ...rest } = form;
+  const insertData: Prisma.WebtoonUpdateInput = rest;
+
   await prisma.$transaction(async (tx) => {
-    const data = await convertToRecordInput(form);
     const { genreLinks } = await tx.webtoon.update({
-      data,
+      data: insertData,
       where: { id: webtoonId },
       select: {
         genreLinks: true
@@ -67,7 +75,7 @@ export async function updateWebtoon(webtoonId: number, form: WebtoonFormT) {
     });
 
     // 새로 선택된 장르 선택
-    const genreIdsToAdd = form.genreIds.filter(id => !genreLinks.some(l => l.genreId === id));
+    const genreIdsToAdd = genreIds.filter(id => !genreLinks.some(l => l.genreId === id));
     if (genreIdsToAdd.length > 0) {
       await tx.xWebtoonGenre.createMany({
         data: genreIdsToAdd.map(id => ({
@@ -89,6 +97,16 @@ export async function updateWebtoon(webtoonId: number, form: WebtoonFormT) {
   });
 }
 
+// 그리드에 표시하기 위한 기본폼
+const WebtoonPreviewSchema = WebtoonSchema.pick({
+  id: true,
+  title: true,
+  title_en: true,
+  description: true,
+  description_en: true,
+  thumbPath: true,
+});
+export type WebtoonPreviewT = z.infer<typeof WebtoonPreviewSchema>;
 const mapToWebtoonPreviewDTO = (record: {
   id: number;
   title: string;
@@ -105,326 +123,382 @@ const mapToWebtoonPreviewDTO = (record: {
   thumbPath: record.thumbPath,
 });
 
-const mapToWebtoonDTO = (record: WebtoonRecord): WebtoonT => ({
-  id: record.id,
-  createdAt: record.createdAt,
-  updatedAt: record.updatedAt,
-  title: record.title,
-  title_en: record.title_en,
-  description: record.description ?? undefined,
-  description_en: record.description_en ?? undefined,
-  externalUrl: record.externalUrl ?? undefined,
-  targetAges: record.targetAges
-    .map(a => a as TargetAge),
-  ageLimit: record.ageLimit as AgeLimit,
-  targetGender: record.ageLimit as TargetGender,
-  thumbPath: record.thumbPath,
-});
-
-export async function getWebtoon(id: number): Promise<WebtoonExtendedT> {
-  // TODO 에러 핸들링
-  const { userId, metadata } = await getTokenInfo();
-  const record = await prisma.webtoon.findUniqueOrThrow({
-    where: { id },
-    include: {
-      user: {
-        select: {
-          creator: {
-            select: {
-              id: true,
-              name: true,
-              name_en: true,
-            }
-          }
-        }
+// 바이어용
+// /webtoons
+// /creators/[userId]
+export const listWebtoons = action
+  .metadata({ actionName: "listWebtoons" })
+  .schema(z.object({
+    genreId: z.number().optional(),
+    ageLimit: z.nativeEnum(AgeLimit).optional(),
+    page: z.number().default(1),
+    userId: z.number().optional(),
+  }))
+  .outputSchema(ListResponseSchema(WebtoonPreviewSchema))
+  .action(async ({
+    parsedInput: { genreId, ageLimit, userId, page }
+  }) => {
+    const limit = 10;
+    const where: Prisma.WebtoonWhereInput = {
+      ageLimit: ageLimit,
+      bidRounds: {
+        some: offerableBidRoundFilter()
       },
-      episodes: {
+      genreLinks: genreId ? {
+        some: { genreId }
+      } : undefined,
+      userId
+    };
+
+    const [records, totalRecords] = await prisma.$transaction([
+      prisma.webtoon.findMany({
+        where,
+        take: limit,
+        skip: (page - 1) * limit,
         select: {
           id: true,
-        },
-        orderBy: {
-          episodeNo: "asc",
-        },
-        take: 1
-      },
-      bidRounds: {
-        where: {
-          isActive: true
-        },
-        include: {
-          _count: {
-            select: {
-              bidRequests: true
-            }
-          }
+          title: true,
+          title_en: true,
+          description: true,
+          description_en: true,
+          thumbPath: true,
         }
-      },
-      _count: {
+      }),
+      prisma.webtoon.count({ where })
+    ]);
+    return {
+      items: records.map(mapToWebtoonPreviewDTO),
+      totalPages: Math.ceil(totalRecords / limit),
+    };
+  });
+
+// 바이어용
+// /account
+export const listLikedWebtoons = action
+  .metadata({ actionName: "listLikedWebtoons" })
+  .schema(z.object({
+    page: z.number().default(1)
+  }))
+  .outputSchema(ListResponseSchema(WebtoonPreviewSchema))
+  .action(async ({ parsedInput: { page } }) => {
+    const limit = 10;
+    const { userId } = await getTokenInfo();
+    const where: Prisma.WebtoonLikeWhereInput = {
+      userId
+    };
+
+    // TODO 오퍼 가능 기간이 끝나면?
+
+    const [records, totalRecords] = await prisma.$transaction([
+      prisma.webtoonLike.findMany({
+        where,
+        take: limit,
+        skip: (page - 1) * limit,
         select: {
-          likes: true
-        }
-      },
-      likes: {
-        where: {
-          userId
-        },
-        take: 1
-      },
-      genreLinks: {
-        select: {
-          genre: {
+          webtoon: {
             select: {
               id: true,
-              label: true,
-              label_en: true
+              title: true,
+              title_en: true,
+              description: true,
+              description_en: true,
+              thumbPath: true,
+            }
+          }
+        }
+      }),
+      prisma.webtoonLike.count({ where })
+    ]);
+    return {
+      items: records.map(record => {
+        return mapToWebtoonPreviewDTO(record.webtoon);
+      }),
+      totalPages: Math.ceil(totalRecords / limit),
+    };
+  });
+
+// 저작권자용
+// /webtoons (미등록 작품)
+const MyWebtoonNotOnSaleSchema = WebtoonPreviewSchema.extend({
+  createdAt: z.date(),
+  bidRoundApprovalStatus: z.nativeEnum(BidRoundApprovalStatus).optional(),
+  episodeCount: z.number()
+});
+export type MyWebtoonNotOnSaleT = z.infer<typeof MyWebtoonNotOnSaleSchema>;
+export const listMyWebtoonsNotOnSale = action
+  .metadata({ actionName: "listMyWebtoonsNotOnSale" })
+  .schema(z.object({
+    page: z.number().default(1)
+  }))
+  .outputSchema(ListResponseSchema(MyWebtoonNotOnSaleSchema))
+  .action(async ({ parsedInput: { page } }) => {
+    const { metadata, userId } = await getTokenInfo();
+    if (metadata.type !== UserTypeT.Creator) {
+      throw new WrongUserTypeError();
+    }
+
+    const where: Prisma.WebtoonWhereInput = {
+      userId,
+      bidRounds: {
+        none: {
+          isActive: true,
+          approvalStatus: $Enums.BidRoundApprovalStatus.APPROVED
+        }
+      }
+    };
+    const limit = 5;
+
+    const [records, totalRecords] = await prisma.$transaction([
+      prisma.webtoon.findMany({
+        where,
+        include: {
+          bidRounds: {
+            select: {
+              approvalStatus: true
+            },
+            where: {
+              isActive: true,
+            }
+          },
+          _count: {
+            select: {
+              episodes: true
             }
           }
         },
-        orderBy: {
-          genre: {
-            rank: "asc"
-          }
+        take: limit,
+        skip: (page - 1) * limit,
+      }),
+      prisma.webtoon.count({ where })
+    ]);
+    return {
+      items: records.map(record => {
+        const activeBidRound = record.bidRounds?.[0];
+        const bidRoundApprovalStatus = activeBidRound
+          ? activeBidRound.approvalStatus as BidRoundApprovalStatus
+          : undefined;
+        return {
+          ...mapToWebtoonPreviewDTO(record),
+          createdAt: record.createdAt,
+          bidRoundApprovalStatus,
+          episodeCount: record._count.episodes ?? 0
+        };
+      }),
+      totalPages: Math.ceil(totalRecords / limit),
+    };
+  });
+
+// 저작권자용
+// /webtoons (판매 등록 작품)
+const MyWebtoonOnSaleSchema = WebtoonPreviewSchema.extend({
+  bidRoundApprovedAt: z.date(),
+  bidRoundStatus: z.nativeEnum(BidRoundStatus)
+});
+export type MyWebtoonOnSaleT = z.infer<typeof MyWebtoonOnSaleSchema>;
+export const listMyWebtoonsOnSale = action
+  .metadata({ actionName: "listMyWebtoonsOnSale" })
+  .schema(z.object({
+    page: z.number().default(1)
+  }))
+  .outputSchema(ListResponseSchema(MyWebtoonOnSaleSchema))
+  .action(async ({ parsedInput: { page } }) => {
+    const { metadata, userId } = await getTokenInfo();
+    if (metadata.type !== UserTypeT.Creator) {
+      throw new WrongUserTypeError();
+    }
+
+    const where: Prisma.WebtoonWhereInput = {
+      userId,
+      bidRounds: {
+        some: {
+          isActive: true,
+          approvalStatus: $Enums.BidRoundApprovalStatus.APPROVED
         }
       }
-    }
-  });
-  const { creator } = record.user;
-  if (!creator) {
-    // TODO http 에러로 대체
-    throw new Error("Creator should exist.");
-  }
-  const bidRoundRecord = record.bidRounds?.[0];
-  const bidRound = bidRoundRecord
-    ? await mapToBidRoundDTO(bidRoundRecord)
-      .then(r => ({
-        ...r,
-        bidRequestCount: bidRoundRecord._count.bidRequests ?? 0
-      }))
-    : undefined;
-  return {
-    ...mapToWebtoonDTO(record),
-    isEditable: metadata.type === UserTypeT.Creator
-      && (record.userId === userId || metadata.adminLevel >= AdminLevel.Admin),
-    authorOrCreatorName: record.authorName ?? creator.name,
-    authorOrCreatorName_en: record.authorName_en ?? creator.name_en ?? undefined,
-    likeCount: record._count.likes,
-    myLike: record.likes.length > 0,
-    genres: record.genreLinks
-      .map(l=> ({
-        id: l.genre.id,
-        label: l.genre.label,
-        label_en: l.genre.label_en ?? undefined,
-      })),
-    activeBidRound: bidRound,
-    firstEpisodeId: record.episodes?.[0]?.id,
-  };
-}
+    };
+    const limit = 5;
 
-export async function listWebtoons({
-  genreId, ageLimit, userId,
-  page = 1
-}: {
-  genreId?: number;
-  ageLimit?: AgeLimit;
-  page?: number;
-  userId?: number;
-} = {}): Promise<ListResponse<WebtoonPreviewT>> {
-  const limit = 10;
-  const where: Prisma.WebtoonWhereInput = {
-    ageLimit: ageLimit,
-    bidRounds: {
-      some: offerableBidRoundFilter()
-    },
-    genreLinks: genreId ? {
-      some: { genreId }
-    } : undefined,
-    userId
-  };
-
-  const [records, totalRecords] = await prisma.$transaction([
-    prisma.webtoon.findMany({
-      where,
-      take: limit,
-      skip: (page - 1) * limit,
-      select: {
-        id: true,
-        title: true,
-        title_en: true,
-        description: true,
-        description_en: true,
-        thumbPath: true,
+    const [records, totalRecords] = await prisma.$transaction([
+      prisma.webtoon.findMany({
+        where,
+        include: {
+          bidRounds: {
+            select: {
+              approvalDecidedAt: true,
+              bidStartsAt: true,
+              negoStartsAt: true,
+              processEndsAt: true,
+              approvalStatus: true,
+            },
+            where: {
+              isActive: true,
+            }
+          }
+        },
+        take: limit,
+        skip: (page - 1) * limit,
+      }),
+      prisma.webtoon.count({ where })
+    ]);
+    const items: MyWebtoonOnSaleT[] = [];
+    for (const record of records) {
+    // TODO 등록일은 승인일 기준?
+      const bidRoundRecord = record.bidRounds[0];
+      const bidRoundStatus = getBidRoundStatus(bidRoundRecord);
+      if (!bidRoundRecord.approvalDecidedAt) {
+        continue;
       }
-    }),
-    prisma.webtoon.count({ where })
-  ]);
-  return {
-    items: records.map(mapToWebtoonPreviewDTO),
-    totalPages: Math.ceil(totalRecords / limit),
-  };
-}
+      items.push({
+        ...mapToWebtoonPreviewDTO(record),
+        bidRoundApprovedAt: bidRoundRecord.approvalDecidedAt,
+        bidRoundStatus
+      });
+    }
+    return {
+      items,
+      totalPages: Math.ceil(totalRecords / limit),
+    };
+  });
 
-export async function listLikedWebtoons({
-  page = 1
-}: {
-  page?: number;
-} = {}): Promise<ListResponse<WebtoonPreviewT>> {
-  const limit = 10;
-  const { userId } = await getTokenInfo();
-  const where: Prisma.WebtoonLikeWhereInput = {
-    userId
-  };
-
-  // TODO 오퍼 가능 기간이 끝나면?
-
-  const [records, totalRecords] = await prisma.$transaction([
-    prisma.webtoonLike.findMany({
-      where,
-      take: limit,
-      skip: (page - 1) * limit,
-      select: {
-        webtoon: {
+// /webtoon/[webtoonId]
+// /webtoon/create
+// /webtoon/[webtoonId]/update
+const WebtoonDetailsSchema = WebtoonSchema
+  .extend({
+    // From joined tables
+    isEditable: z.boolean(),
+    authorOrCreatorName: z.string(),
+    authorOrCreatorName_en: z.string().optional(),
+    likeCount: z.number(),
+    myLike: z.boolean(),
+    genres: z.array(z.object({
+      id: z.number(),
+      label: z.string(),
+      label_en: z.string().optional(),
+    })),
+    activeBidRound: BidRoundSchema
+      .extend({
+        bidRequestCount: z.number()
+      }).optional(),
+    firstEpisodeId: z.number().optional()
+  });
+export type WebtoonDetailsT = z.infer<typeof WebtoonDetailsSchema>;
+export const getWebtoon = action
+  .metadata({ actionName: "getWebtoon" })
+  .bindArgsSchemas([
+    z.number() // webtoonId
+  ])
+  // TODO validation 실패 시 기록
+  .outputSchema(WebtoonDetailsSchema)
+  .action(async ({
+    bindArgsParsedInputs: [webtoonId]
+  }) => {
+    // TODO 에러 핸들링
+    const { userId, metadata } = await getTokenInfo();
+    const record = await prisma.webtoon.findUniqueOrThrow({
+      where: { id: webtoonId },
+      include: {
+        user: {
+          select: {
+            creator: {
+              select: {
+                id: true,
+                name: true,
+                name_en: true,
+              }
+            }
+          }
+        },
+        episodes: {
           select: {
             id: true,
-            title: true,
-            title_en: true,
-            description: true,
-            description_en: true,
-            thumbPath: true,
-          }
-        }
-      }
-    }),
-    prisma.webtoonLike.count({ where })
-  ]);
-  return {
-    items: records.map(record => {
-      return mapToWebtoonPreviewDTO(record.webtoon);
-    }),
-    totalPages: Math.ceil(totalRecords / limit),
-  };
-}
-
-export async function listMyWebtoonsNotOnSale({ page = 1 }: {
-  page?: number;
-} = {}): Promise<ListResponse<WebtoonPreviewT & {
-  createdAt: Date;
-  bidRoundApprovalStatus?: BidRoundApprovalStatus;
-  episodeCount: number;
-}>> {
-  const { metadata, userId } = await getTokenInfo();
-  if (metadata.type !== UserTypeT.Creator) {
-    throw new WrongUserTypeError();
-  }
-
-  const where: Prisma.WebtoonWhereInput = {
-    userId,
-    bidRounds: {
-      none: {
-        isActive: true,
-        approvalStatus: $Enums.BidRoundApprovalStatus.APPROVED
-      }
-    }
-  };
-  const limit = 5;
-
-  const [records, totalRecords] = await prisma.$transaction([
-    prisma.webtoon.findMany({
-      where,
-      include: {
-        bidRounds: {
-          select: {
-            approvalStatus: true
           },
+          orderBy: {
+            episodeNo: "asc",
+          },
+          take: 1
+        },
+        bidRounds: {
           where: {
-            isActive: true,
+            isActive: true
+          },
+          include: {
+            _count: {
+              select: {
+                bidRequests: true
+              }
+            }
           }
         },
         _count: {
           select: {
-            episodes: true
+            likes: true
           }
-        }
-      },
-      take: limit,
-      skip: (page - 1) * limit,
-    }),
-    prisma.webtoon.count({ where })
-  ]);
-  return {
-    items: records.map(record => {
-      const activeBidRound = record.bidRounds?.[0];
-      const bidRoundApprovalStatus = activeBidRound
-        ? activeBidRound.approvalStatus as BidRoundApprovalStatus
-        : undefined;
-      return {
-        ...mapToWebtoonPreviewDTO(record),
-        createdAt: record.createdAt,
-        bidRoundApprovalStatus,
-        episodeCount: record._count.episodes ?? 0
-      };
-    }),
-    totalPages: Math.ceil(totalRecords / limit),
-  };
-}
-
-type MyWebtoonsOnSale = WebtoonPreviewT & {
-  bidRoundApprovedAt?: Date;
-  bidRoundStatus: BidRoundStatus;
-};
-export async function listMyWebtoonsOnSale({ page = 1 }: {
-  page?: number;
-} = {}): Promise<ListResponse<MyWebtoonsOnSale>> {
-  const { metadata, userId } = await getTokenInfo();
-  if (metadata.type !== UserTypeT.Creator) {
-    throw new WrongUserTypeError();
-  }
-
-  const where: Prisma.WebtoonWhereInput = {
-    userId,
-    bidRounds: {
-      some: {
-        isActive: true,
-        approvalStatus: $Enums.BidRoundApprovalStatus.APPROVED
-      }
-    }
-  };
-  const limit = 5;
-
-  const [records, totalRecords] = await prisma.$transaction([
-    prisma.webtoon.findMany({
-      where,
-      include: {
-        bidRounds: {
-          select: {
-            approvalDecidedAt: true,
-            bidStartsAt: true,
-            negoStartsAt: true,
-            processEndsAt: true,
-            approvalStatus: true,
-          },
+        },
+        likes: {
           where: {
-            isActive: true,
+            userId
+          },
+          take: 1
+        },
+        genreLinks: {
+          select: {
+            genre: {
+              select: {
+                id: true,
+                label: true,
+                label_en: true
+              }
+            }
+          },
+          orderBy: {
+            genre: {
+              rank: "asc"
+            }
           }
         }
-      },
-      take: limit,
-      skip: (page - 1) * limit,
-    }),
-    prisma.webtoon.count({ where })
-  ]);
-  const items: MyWebtoonsOnSale[] = [];
-  for (const record of records) {
-    // TODO 등록일은 승인일 기준?
-    const bidRoundRecord = record.bidRounds[0];
-    const bidRoundStatus = await getBidRoundStatus(bidRoundRecord);
-    items.push({
-      ...mapToWebtoonPreviewDTO(record),
-      bidRoundApprovedAt: bidRoundRecord.approvalDecidedAt ?? undefined,
-      bidRoundStatus
+      }
     });
-  }
-  return {
-    items,
-    totalPages: Math.ceil(totalRecords / limit),
-  };
-}
+    const { creator } = record.user;
+    if (!creator) {
+    // TODO http 에러로 대체
+      throw new Error("Creator should exist.");
+    }
+    const bidRoundRecord = record.bidRounds?.[0];
+    const bidRound = bidRoundRecord
+      ? {
+        ...mapToBidRoundDTO(bidRoundRecord),
+        bidRequestCount: bidRoundRecord._count.bidRequests ?? 0
+      }
+      : undefined;
+    return {
+      id: record.id,
+      createdAt: record.createdAt,
+      updatedAt: record.updatedAt,
+      title: record.title,
+      title_en: record.title_en,
+      description: record.description ?? undefined,
+      description_en: record.description_en ?? undefined,
+      externalUrl: record.externalUrl ?? undefined,
+      targetAges: record.targetAges
+        .map(a => a as TargetAge),
+      ageLimit: record.ageLimit as AgeLimit,
+      // TODO 이것이 표시가 되던가?
+      targetGender: record.targetGender as TargetGender,
+      thumbPath: record.thumbPath,
+      isEditable: metadata.type === UserTypeT.Creator
+      && (record.userId === userId || metadata.adminLevel >= AdminLevel.Admin),
+      authorOrCreatorName: record.authorName ?? creator.name,
+      authorOrCreatorName_en: record.authorName_en ?? creator.name_en ?? undefined,
+      likeCount: record._count.likes,
+      myLike: record.likes.length > 0,
+      genres: record.genreLinks
+        .map(l=> ({
+          id: l.genre.id,
+          label: l.genre.label,
+          label_en: l.genre.label_en ?? undefined,
+        })),
+      activeBidRound: bidRound,
+      firstEpisodeId: record.episodes?.[0]?.id,
+    };
+  });

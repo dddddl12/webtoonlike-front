@@ -28,7 +28,8 @@
         "insertAddress2": "상세주소 입력",
         "termsAndConditions": "webtoonlike 이용약관",
         "required": "(필수)",
-        "doYouAgree": "이용약관에 동의하시겠습니까?"
+        "doYouAgree": "이용약관에 동의하시겠습니까?",
+        "completeToast": "회원 가입을 마쳤습니다."
     },
     "setupPageNextForCreators": {
         "profileDesc": "프로필 정보를 입력해 주세요.",
@@ -490,5 +491,10 @@
         "rejectedOffer": "거절 된 오퍼",
         "acceptedOffer": "수락 된 오퍼",
         "anErrorOccurredWhileSendingTheMessage": "메시지 전송 중 오류가 발생했습니다."
+    },
+    "errors": {
+        "invalidFields": {
+            "duplicateValue": "해당값이 이미 존재합니다."
+        }
     }
 }

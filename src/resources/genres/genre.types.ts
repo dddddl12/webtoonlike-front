@@ -2,7 +2,7 @@ import z from "zod";
 import { ResourceSchema } from "@/resources/globalTypes";
 
 const GenreBaseSchema = z.object({
-  label: z.string(),
+  label: z.string().min(1),
   label_en: z.string().optional(),
   rank: z.number().optional(),
 });

@@ -6,14 +6,15 @@ import { getTranslations } from "next-intl/server";
 import MyWebtoonsNotOnSale from "@/app/[locale]/webtoons/components/ManageWebtoons/MyWebtoonsNotOnSale";
 import MyWebtoonsOnSale from "@/app/[locale]/webtoons/components/ManageWebtoons/MyWebtoonsOnSale";
 import { Heading } from "@/shadcn/ui/texts";
+import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function ManageWebtoons() {
   const [
     initialWebtoonListNotOnSaleResponse,
     initialWebtoonListOnSaleResponse
   ] = await Promise.all([
-    listMyWebtoonsNotOnSale(),
-    listMyWebtoonsOnSale()
+    listMyWebtoonsNotOnSale({}).then(responseHandler),
+    listMyWebtoonsOnSale({}).then(responseHandler)
   ]);
 
   const t = await getTranslations("manageContents");

@@ -35,7 +35,8 @@ const WebtoonBaseSchema = z.object({
   targetAges: z.array(z.nativeEnum(TargetAge)),
   ageLimit: z.nativeEnum(AgeLimit),
   targetGender: z.nativeEnum(TargetGender),
-  thumbPath: z.string(),
+  thumbPath: z.string().min(1),
+//   todo min 필수 확인
 });
 
 export const WebtoonFormSchema = WebtoonBaseSchema.extend({
@@ -46,35 +47,3 @@ export type WebtoonFormT = z.infer<typeof WebtoonFormSchema>;
 export const WebtoonSchema = ResourceSchema
   .merge(WebtoonBaseSchema);
 export type WebtoonT = z.infer<typeof WebtoonSchema>;
-
-export const WebtoonExtendedSchema = WebtoonSchema
-  .extend({
-    // From joined tables
-    isEditable: z.boolean(),
-    authorOrCreatorName: z.string(),
-    authorOrCreatorName_en: z.string().optional(),
-    likeCount: z.number(),
-    myLike: z.boolean(),
-    genres: z.array(z.object({
-      id: z.number(),
-      label: z.string(),
-      label_en: z.string().optional(),
-    })),
-    activeBidRound: BidRoundSchema
-      .extend({
-        bidRequestCount: z.number()
-      }).optional(),
-    firstEpisodeId: z.number().optional()
-  });
-export type WebtoonExtendedT = z.infer<typeof WebtoonExtendedSchema>;
-
-// 그리드에 표시하기 위한 기본폼
-export const WebtoonPreviewSchema = z.object({
-  id: z.number(),
-  title: z.string(),
-  title_en: z.string(),
-  description: z.string().optional(),
-  description_en: z.string().optional(),
-  thumbPath: z.string()
-});
-export type WebtoonPreviewT = z.infer<typeof WebtoonPreviewSchema>;

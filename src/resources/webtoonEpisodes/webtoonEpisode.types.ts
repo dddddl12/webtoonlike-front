@@ -17,18 +17,3 @@ export const WebtoonEpisodeSchema = WebtoonEpisodeBaseSchema
     webtoonId: z.number(),
   });
 export type WebtoonEpisodeT = z.infer<typeof WebtoonEpisodeSchema>;
-
-export const WebtoonEpisodeExtendedSchema = WebtoonEpisodeSchema
-  .extend({
-    isEditable: z.boolean(),
-    webtoon: z.object({
-      id: z.number(),
-      title: z.string(),
-      title_en: z.string().optional(),
-    }),
-    navigation: z.object({
-      previousId: z.number().optional(),
-      nextId: z.number().optional(),
-    })
-  });
-export type WebtoonEpisodeExtendedT = z.infer<typeof WebtoonEpisodeExtendedSchema>;

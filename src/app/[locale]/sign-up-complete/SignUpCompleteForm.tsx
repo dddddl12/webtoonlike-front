@@ -4,10 +4,12 @@ import BuyerProfileForm from "@/components/Account/BuyerProfileForm";
 import { useRouter } from "@/i18n/routing";
 import { useSession } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
-import { NotSignedInError } from "@/errors";
+import { NotSignedInError } from "@/handlers/errors";
 import { SignUpStage, UserExtendedFormT, UserTypeT } from "@/resources/users/user.types";
 import UserTypeSelector from "@/components/Account/UserTypeSelector";
 import UserProfileForm from "@/components/Account/UserProfileForm";
+import { useToast } from "@/shadcn/hooks/use-toast";
+import { useTranslations } from "next-intl";
 
 export function SignUpCompleteForm ({ clerkUserFullName, signUpFinished }: {
   signUpFinished: boolean;
@@ -19,6 +21,8 @@ export function SignUpCompleteForm ({ clerkUserFullName, signUpFinished }: {
       ? SignUpStage.Finished
       : SignUpStage.Begin
   );
+  const { toast } = useToast();
+  const tSetupForm = useTranslations("setupForm");
 
   // 토큰 재검증
   const { isSignedIn, session } = useSession();
@@ -66,6 +70,9 @@ export function SignUpCompleteForm ({ clerkUserFullName, signUpFinished }: {
     }
   } else if (signUpStage === SignUpStage.Finished) {
     // 잠시 대기했다가 관련 동작 마친 후 리다이렉트
+    toast({
+      description: tSetupForm("completeToast")
+    });
     return null;
   }
 

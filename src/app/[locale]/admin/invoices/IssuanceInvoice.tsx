@@ -2,7 +2,7 @@ import Spinner from "@/components/Spinner";
 import { IssuanceInvoiceSubmit } from "./IssuanceInvoiceSubmit";
 import { useListData } from "@/hooks/listData";
 import { Gap, Row } from "@/shadcn/ui/layouts";
-import { listBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
+import { adminListUninvoicedBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
 import Paginator from "@/components/Paginator";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
@@ -12,10 +12,8 @@ export default function IssuanceInvoice({ reloadPage }: {
   reloadPage: () => void;
 }) {
   const { listResponse, filters, setFilters } = useListData(
-    listBidRequests, {
-      page: 1,
-      isAdmin: true,
-      uninvoicedOnly: true
+    adminListUninvoicedBidRequests, {
+      page: 1
     });
 
   if (!listResponse) {

@@ -1,19 +1,17 @@
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import Spinner from "@/components/Spinner";
-import { listInvoices } from "@/resources/invoices/invoice.service";
+import { adminListInvoices, InvoiceWithWebtoonT } from "@/resources/invoices/invoice.service";
 import Paginator from "@/components/Paginator";
 import { Link } from "@/i18n/routing";
 import { useListData } from "@/hooks/listData";
 import { Col, Gap, Row } from "@/shadcn/ui/layouts";
-import { InvoiceExtendedT } from "@/resources/invoices/invoice.types";
 import InvoiceDownload from "@/components/InvoiceDownload";
 
 export default function ManageInvoice() {
   const { listResponse, filters, setFilters } = useListData(
-    listInvoices, {
+    adminListInvoices, {
       page: 1,
-      isAdmin: true
     });
 
   if (!listResponse) {
@@ -33,7 +31,7 @@ export default function ManageInvoice() {
         <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">인보이스 발급일</div>
         <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">인보이스 확인</div>
       </div>
-      {listResponse.items.map((invoice: InvoiceExtendedT, i) => (
+      {listResponse.items.map((invoice: InvoiceWithWebtoonT, i) => (
         <TableRow key={i} invoice={invoice} />
       ))}
     </Col>
@@ -46,7 +44,7 @@ export default function ManageInvoice() {
 }
 
 function TableRow({ invoice }: {
-  invoice: InvoiceExtendedT;
+  invoice: InvoiceWithWebtoonT;
 }) {
   return (
     <div className="flex bg-white rounded-sm p-2 my-2">

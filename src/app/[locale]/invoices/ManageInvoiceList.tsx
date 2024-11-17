@@ -6,17 +6,16 @@ import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { InvoiceExtendedT } from "@/resources/invoices/invoice.types";
 import Paginator from "@/components/Paginator";
 import { useListData } from "@/hooks/listData";
 import { ListResponse } from "@/resources/globalTypes";
-import { listInvoices } from "@/resources/invoices/invoice.service";
+import { InvoiceWithWebtoonT, listInvoices } from "@/resources/invoices/invoice.service";
 import { displayName } from "@/utils/displayName";
 import { useState } from "react";
 import BidRequestDetailsForInvoice from "@/app/[locale]/invoices/BidRequestDetailsForInvoice";
 import InvoiceDownload from "@/components/InvoiceDownload";
 
-type InvoiceListResponse = ListResponse<InvoiceExtendedT>;
+type InvoiceListResponse = ListResponse<InvoiceWithWebtoonT>;
 
 export function ManageInvoiceList({ initialInvoiceListResponse }: {
   initialInvoiceListResponse: InvoiceListResponse;
@@ -64,7 +63,7 @@ function TableHeader() {
   );
 }
 
-function TableRow({ invoice }: { invoice: InvoiceExtendedT }) {
+function TableRow({ invoice }: { invoice: InvoiceWithWebtoonT }) {
   const locale = useLocale();
   const [showNegotiation, setShowNegotiation] = useState(false);
   const t = useTranslations("invoiceManagement");
@@ -112,8 +111,7 @@ function TableRow({ invoice }: { invoice: InvoiceExtendedT }) {
       </div>
       {showNegotiation
         && <BidRequestDetailsForInvoice
-          bidRequestId={invoice.bidRequestId}
-          isInvoice={true}/>}
+          bidRequestId={invoice.bidRequestId}/>}
     </>
   );
 }

@@ -1,5 +1,4 @@
 import { Col, Row } from "@/shadcn/ui/layouts";
-import { WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
 import { Link } from "@/i18n/routing";
 import ContractRangeBasic from "@/app/[locale]/webtoons/components/WebtoonPageContents/ContractRange/ContractRangeBasic";
 import React from "react";
@@ -8,9 +7,10 @@ import ContractRangeDerivative from "@/app/[locale]/webtoons/components/WebtoonP
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { Text } from "@/shadcn/ui/texts";
 import { useTranslations } from "next-intl";
+import { WebtoonDetailsT } from "@/resources/webtoons/webtoon.service";
 
 export default function ContractRange({ webtoon }: {
-  webtoon: WebtoonExtendedT;
+  webtoon: WebtoonDetailsT;
 }) {
 
   const t = useTranslations("contractRangeData");

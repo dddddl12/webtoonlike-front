@@ -6,15 +6,17 @@ import { useTranslations } from "next-intl";
 import ContractRangeForm from "@/app/[locale]/webtoons/components/forms/ContractRangeForm";
 import { Textarea } from "@/shadcn/ui/textarea";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
-import { useForm } from "react-hook-form";
 import { formResolver } from "@/utils/forms";
-import { BidRequestFormSchema, BidRequestFormT } from "@/resources/bidRequests/bidRequest.types";
+import { BidRequestFormSchema } from "@/resources/bidRequests/bidRequest.types";
 import { FieldSet, Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import { useEffect, useRef } from "react";
 import { useRouter } from "@/i18n/routing";
 import Spinner from "@/components/Spinner";
 import { createBidRequest } from "@/resources/bidRequests/bidRequest.service";
 import { Row } from "@/shadcn/ui/layouts";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import { useToast } from "@/shadcn/hooks/use-toast";
 
 
 export default function BidRequestForm({ bidRoundId }: {
@@ -23,16 +25,36 @@ export default function BidRequestForm({ bidRoundId }: {
 
   const tMakeAnOffer = useTranslations("makeAnOffer");
   const tGeneral = useTranslations("general");
+  const { toast } = useToast();
+  const router = useRouter();
 
-  const form = useForm<BidRequestFormT>({
-    defaultValues: {
-      bidRoundId,
-      contractRange: [],
-      message: "",
-    },
-    mode: "onChange",
-    resolver: (values) => formResolver(BidRequestFormSchema, values)
-  });
+
+  const { form, handleSubmitWithAction }
+    = useHookFormAction(
+      createBidRequest.bind(null, bidRoundId),
+      (values) => formResolver(BidRequestFormSchema, values),
+      {
+        actionProps: {
+          onSuccess: () => {
+            toast({
+              description: "오퍼를 보냈습니다."
+            });
+            router.replace("/offers");
+          },
+          onError: (args) => {
+            form.reset(args.input);
+            clientErrorHandler(args);
+          }
+        },
+        formProps: {
+          defaultValues: {
+            contractRange: [],
+            message: "",
+          },
+          mode: "onChange",
+        }
+      });
+
 
   // Create a ref for the Heading component
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -45,11 +67,6 @@ export default function BidRequestForm({ bidRoundId }: {
 
   // 제출 이후 동작
   const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
-  const router = useRouter();
-  const onSubmit = async (values: BidRequestFormT) => {
-    await createBidRequest(values);
-    router.replace("/offers");
-  };
 
   // 스피너
   if (isSubmitting || isSubmitSuccessful) {
@@ -58,7 +75,10 @@ export default function BidRequestForm({ bidRoundId }: {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={async (e) => {
+        e.preventDefault();
+        await handleSubmitWithAction(e);
+      }}>
         <Heading ref={headingRef}>
           {tMakeAnOffer("makeOffer")}
         </Heading>

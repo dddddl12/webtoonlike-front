@@ -60,7 +60,6 @@ export default function SubmitEditWrapper({
   }
 
   const form = useForm<BidRoundAdminSettingsT>({
-    defaultValues: adminSettings,
     mode: "onChange",
     resolver: (values) => formResolver(BidRoundAdminSettingsSchema, values)
   });

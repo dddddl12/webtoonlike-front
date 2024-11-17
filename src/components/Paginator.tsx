@@ -10,12 +10,12 @@ import {
 } from "@/shadcn/ui/pagination";
 
 export default function Paginator({
-  currentPage,
+  currentPage = 1,
   totalPages,
   pageWindowLen = 3,
   setFilters
 }: {
-  currentPage: number;
+  currentPage?: number;
   totalPages: number;
   pageWindowLen?: number;
   setFilters: Dispatch<SetStateAction<any>>;

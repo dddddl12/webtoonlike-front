@@ -6,10 +6,12 @@ import { Button } from "@/shadcn/ui/button";
 import { Link } from "@/i18n/routing";
 import AccountBasicInfoSectionDeleteButton from "@/app/[locale]/account/AccountBasicInfoSectionDeleteButton";
 import { getSimpleUserProfile } from "@/resources/users/user.service";
+import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function AccountBasicInfoSection() {
   const TeditProfile = await getTranslations("accountPage");
-  const user = await getSimpleUserProfile();
+  const user = await getSimpleUserProfile()
+    .then(responseHandler);
   return <Row className="gap-12">
     <Image
       src={user.thumbPath ?? "/img/mock_profile_image.png"}

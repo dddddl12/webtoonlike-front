@@ -5,7 +5,11 @@ import z from "zod";
 export type ListResponse<T> = {
   items: T[];
   totalPages: number;
-}
+};
+export const ListResponseSchema = (itemSchema: z.ZodTypeAny) => z.object({
+  items: z.array(itemSchema),
+  totalPages: z.number(),
+});
 
 export const ResourceSchema = z.object({
   id: z.number(),

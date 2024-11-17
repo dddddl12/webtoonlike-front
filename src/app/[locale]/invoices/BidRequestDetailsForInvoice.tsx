@@ -13,17 +13,21 @@ import { Text } from "@/shadcn/ui/texts";
 import { Link } from "@/i18n/routing";
 import { IconLink } from "@/components/svgs/IconLink";
 import { Badge } from "@/shadcn/ui/badge";
+import { useAction } from "next-safe-action/hooks";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 
-// isInvoice 서버 사이드에서 검증 필요
-export default function BidRequestDetailsForInvoice({ bidRequestId, isInvoice }: {
+export default function BidRequestDetailsForInvoice({ bidRequestId }: {
   bidRequestId: number;
-  isInvoice: boolean;
 }) {
   const [bidRequest, setBidRequest] = useState<BidRequestDetailsT>();
+  const boundGetBidRequest = getBidRequest.bind(null, bidRequestId);
+  const { execute } = useAction(boundGetBidRequest, {
+    onSuccess: ({ data }) => setBidRequest(data),
+    onError: clientErrorHandler
+  });
   useEffect(() => {
-    getBidRequest(bidRequestId, isInvoice)
-      .then(setBidRequest);
-  }, [bidRequestId, isInvoice]);
+    execute();
+  }, [execute]);
 
   if (!bidRequest) {
     return <Spinner/>;

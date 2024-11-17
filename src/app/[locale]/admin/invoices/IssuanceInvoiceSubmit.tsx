@@ -1,5 +1,5 @@
 import Spinner from "@/components/Spinner";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -12,8 +12,10 @@ import {
 import { Button } from "@/shadcn/ui/button";
 import { Row } from "@/shadcn/ui/layouts";
 import { useToast } from "@/shadcn/hooks/use-toast";
-import { previewOrCreateInvoice } from "@/resources/invoices/invoice.service";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { createInvoice, previewInvoice } from "@/resources/invoices/invoice.service";
+import { useAction } from "next-safe-action/hooks";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 
 export function IssuanceInvoiceSubmit({
   bidRequestId, reloadPage
@@ -23,15 +25,16 @@ export function IssuanceInvoiceSubmit({
 }) {
   const { toast } = useToast();
   const [checkInvoiceOpen, setCheckInvoiceOpen] = useState<boolean>(false);
-
-  async function handleSubmit(): Promise<void> {
-    await previewOrCreateInvoice(bidRequestId, true);
-    toast({
-      description: "인보이스가 발행되었습니다."
-    });
-    setCheckInvoiceOpen(false);
-    reloadPage();
-  }
+  const { execute } = useAction(createInvoice.bind(null, bidRequestId), {
+    onSuccess: () => {
+      toast({
+        description: "인보이스가 발행되었습니다."
+      });
+      setCheckInvoiceOpen(false);
+      reloadPage();
+    },
+    onError: clientErrorHandler
+  });
 
   return (
     <Dialog
@@ -59,7 +62,7 @@ export function IssuanceInvoiceSubmit({
           </DialogClose>
           <Button
             variant="mint"
-            onClick={handleSubmit}>
+            onClick={() => execute()}>
             인보이스 발행
           </Button>
         </DialogFooter>
@@ -72,11 +75,17 @@ function Previewer({ bidRequestId }: {
   bidRequestId: number;
 }) {
   const [previewContent, setPreviewContent] = useState<string>();
+  const boundPreviewInvoice = useMemo(() => previewInvoice.bind(null, bidRequestId), [bidRequestId]);
+  const { execute } = useAction(boundPreviewInvoice, {
+    onSuccess: ({ data }) => {
+      setPreviewContent(data);
+    },
+    onError: clientErrorHandler
+  });
 
   useEffect(() => {
-    previewOrCreateInvoice(bidRequestId, false)
-      .then(setPreviewContent);
-  }, [bidRequestId]);
+    execute();
+  }, [execute]);
 
   if (!previewContent) {
     return <Spinner/>;

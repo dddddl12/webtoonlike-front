@@ -1,10 +1,10 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Col, Row } from "@/shadcn/ui/layouts";
 import {
-  BidRequestMessagesResponse,
+  BidRequestMessagesResponseT,
   listBidRequestMessages
 } from "@/resources/bidRequestMessages/bidRequestMessage.service";
-import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
 import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
 import { UserTypeT } from "@/resources/users/user.types";
@@ -12,6 +12,8 @@ import { useTokenInfo } from "@/hooks/tokenInfo";
 import { Skeleton } from "@/shadcn/ui/skeleton";
 import ViewOfferSection from "@/app/[locale]/offers/components/OfferDetails";
 import Controls from "@/app/[locale]/offers/components/Controls";
+import { useAction } from "next-safe-action/hooks";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 
 // TODO 페이지네이션 없음
 export default function BidRequestMessageList({ curBidRequest, setCurBidRequest }: {
@@ -24,18 +26,19 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
   }, [headingRef]);
 
   const [reloadMessages, setReloadMessages] = useState(true);
-  const [messagesResponse, setMessagesResponse] = useState<BidRequestMessagesResponse>();
-  useEffect(() => {
-    if (!reloadMessages){
-      return;
-    }
-    listBidRequestMessages(curBidRequest.id)
-      .then(newMessages => {
-        setMessagesResponse(newMessages);
-        setReloadMessages(false);
-      });
+  const [messagesResponse, setMessagesResponse] = useState<BidRequestMessagesResponseT>();
 
-  }, [curBidRequest.id, reloadMessages]);
+  const boundListBidRequestMessages = useMemo(() => listBidRequestMessages.bind(null, curBidRequest.id), [curBidRequest.id]);
+  const { execute } = useAction(boundListBidRequestMessages, {
+    onSuccess: ({ data }) => setMessagesResponse(data),
+    onError: clientErrorHandler
+  });
+  useEffect(() => {
+    if (reloadMessages) {
+      setReloadMessages(false);
+      execute();
+    }
+  }, [execute, reloadMessages]);
 
   const tBidRequestStatus = useTranslations("bidRequestStatus");
   if (!messagesResponse) {

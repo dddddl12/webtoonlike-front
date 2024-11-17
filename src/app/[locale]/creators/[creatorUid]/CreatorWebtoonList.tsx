@@ -1,9 +1,8 @@
 "use client";
 
 import { ListResponse } from "@/resources/globalTypes";
-import { WebtoonPreviewT } from "@/resources/webtoons/webtoon.types";
 import { useListData } from "@/hooks/listData";
-import { listWebtoons } from "@/resources/webtoons/webtoon.service";
+import { listWebtoons, WebtoonPreviewT } from "@/resources/webtoons/webtoon.service";
 import WebtoonGridPaginated from "@/components/WebtoonGridPaginated";
 
 export default function CreatorWebtoonList({ initialWebtoonListResponse, creatorUid }: {
@@ -16,7 +15,7 @@ export default function CreatorWebtoonList({ initialWebtoonListResponse, creator
       userId: creatorUid,
     } as {
       page: number;
-      userId?: number
+      userId?: number;
     }, initialWebtoonListResponse);
 
   return <WebtoonGridPaginated

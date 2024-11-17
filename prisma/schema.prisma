@@ -190,10 +190,10 @@ model User {
   name         String
   phone        String
   userType     UserType @map("user_type")
-  country      String?
-  postcode     String?
-  addressLine1 String?  @map("address_line_1")
-  addressLine2 String?  @map("address_line_2")
+  country      String
+  postcode     String
+  addressLine1 String   @map("address_line_1")
+  addressLine2 String   @map("address_line_2")
 
   admin              Admin?
   // TODO id 대신 수발신 타입으로 구분

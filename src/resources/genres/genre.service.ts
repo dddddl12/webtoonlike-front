@@ -1,10 +1,13 @@
 "use server";
 
-import { GenreFormT, GenreSchema } from "@/resources/genres/genre.types";
+import { GenreFormSchema, GenreSchema } from "@/resources/genres/genre.types";
 import prisma from "@/utils/prisma";
 import { assertAdmin } from "@/resources/tokens/token.service";
 import z from "zod";
 import { Prisma } from "@prisma/client";
+import { action } from "@/handlers/safeAction";
+import { returnValidationErrors } from "next-safe-action";
+import { ForeignKeyError } from "@/handlers/errors";
 
 const BasicGenreSchema = GenreSchema.pick({
   id: true,
@@ -13,57 +16,86 @@ const BasicGenreSchema = GenreSchema.pick({
   rank: true
 });
 export type BasicGenreT = z.infer<typeof BasicGenreSchema>;
-export async function listGenres(): Promise<BasicGenreT[]> {
-  const records = await prisma.genre.findMany({
-    orderBy: {
-      rank: "asc",
-    },
+export const listGenres = action
+  .metadata({ actionName: "listGenres" })
+  .outputSchema(z.array(BasicGenreSchema))
+  .action(async () => {
+    const records = await prisma.genre.findMany({
+      orderBy: [
+        {
+          rank: "asc"
+        },
+        {
+          createdAt: "asc"
+        }
+      ],
+    });
+    return records.map(r=>({
+      id: r.id,
+      label: r.label,
+      label_en: r.label_en ?? undefined,
+      rank: r.rank ?? undefined
+    }));
   });
-  return records.map(r=>({
-    id: r.id,
-    label: r.label,
-    label_en: r.label_en ?? undefined,
-    rank: r.rank ?? undefined
-  }));
-}
 
-export async function createGenre(form: GenreFormT) {
-  await assertAdmin();
-  await prisma.genre.create({
-    data: form,
+export const createOrUpdateGenre = action
+  .metadata({ actionName: "createOrUpdateGenre" })
+  .schema(GenreFormSchema)
+  .bindArgsSchemas([
+    z.number().optional() // genreId
+  ])
+  .action(async ({
+    parsedInput: formData,
+    bindArgsParsedInputs: [genreId],
+  }) => {
+    await assertAdmin();
+    const dbAction = genreId
+      // genreId가 있으면 수정
+      ? prisma.genre.update({
+        data: formData,
+        where: {
+          id: genreId,
+        }
+      })
+      // genreId가 없으면 생성
+      : prisma.genre.create({
+        data: formData,
+      });
+    await dbAction.catch(e => {
+      // 중복 에러 처리
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+        returnValidationErrors(
+          GenreFormSchema,
+          Object.fromEntries(((e.meta?.target || []) as string[])
+            .map(name => [
+              name, {
+                _errors: ["duplicateValue"]
+              }
+            ])
+          )
+        );
+      }
+      throw e;
+    });
   });
-}
 
-export async function updateGenre(genreId: number, form: GenreFormT) {
-  await assertAdmin();
-  await prisma.genre.update({
-    data: form,
-    where: {
-      id: genreId,
-    }
-  });
-}
-
-export async function deleteGenre(genreId: number): Promise<{
-  isSuccess: boolean;
-}> {
-  await assertAdmin();
-  try {
+export const deleteGenre = action
+  .metadata({ actionName: "deleteGenre" })
+  .bindArgsSchemas([
+    z.number().optional() // genreId
+  ])
+  .action(async ({
+    bindArgsParsedInputs: [genreId],
+  }) => {
+    await assertAdmin();
     await prisma.genre.delete({
       where: {
         id: genreId,
       }
-    });
-    return {
-      isSuccess: true,
-    };
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2003") {
-      return {
-        isSuccess: false,
-      };
-    } else {
+    }).catch(e => {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2003") {
+        throw new ForeignKeyError();
+      }
       throw e;
-    }
-  }
-}
+    });
+  });

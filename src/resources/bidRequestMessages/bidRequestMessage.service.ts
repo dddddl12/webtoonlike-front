@@ -1,89 +1,119 @@
 "use server";
 
 import {
-  BidRequestMessageT
+  BidRequestMessageSchema,
 } from "@/resources/bidRequestMessages/bidRequestMessage.types";
 import prisma from "@/utils/prisma";
-import { UserTypeT } from "@/resources/users/user.types";
+import { UserSchema, UserTypeT } from "@/resources/users/user.types";
 import { getTokenInfo } from "@/resources/tokens/token.service";
+import { InvoiceSchema } from "@/resources/invoices/invoice.types";
+import z from "zod";
+import { action } from "@/handlers/safeAction";
 
-export type BidRequestMessagesResponse = {
-  messages: (BidRequestMessageT & {
-    user: {
-      id: number;
-      name: string;
-      userType: UserTypeT;
-    };
-  })[];
-  invoice?: {
-    id: number;
-    createdAt: Date;
-  };
-};
+const BidRequestMessagesResponseSchema = z.object({
+  messages: z.array(
+    BidRequestMessageSchema.extend({
+      user: UserSchema.pick({
+        id: true,
+        name: true,
+        userType: true
+      })
+    })
+  ),
+  invoice: InvoiceSchema.pick({
+    id: true,
+    createdAt: true,
+  }).optional()
+});
+export type BidRequestMessagesResponseT = z.infer<typeof BidRequestMessagesResponseSchema>;
 
-export async function listBidRequestMessages(bidRequestId: number): Promise<BidRequestMessagesResponse> {
-  const [records, invoiceRecord] = await prisma.$transaction([
-    prisma.bidRequestMessage.findMany({
-      where: {
-        bidRequestId
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            userType: true
-          }
-        },
-        bidRequest: {
-          select: {
-            invoice: {
+export const listBidRequestMessages = action
+  .metadata({ actionName: "listBidRequestMessages" })
+  .bindArgsSchemas([
+    z.number() // bidRequestId
+  ])
+  .outputSchema(
+    BidRequestMessagesResponseSchema
+  )
+  .action(
+    async ({
+      bindArgsParsedInputs: [bidRequestId],
+    }) => {
+      const [records, invoiceRecord] = await prisma.$transaction([
+        prisma.bidRequestMessage.findMany({
+          where: {
+            bidRequestId
+          },
+          include: {
+            user: {
               select: {
                 id: true,
-                createdAt: true
+                name: true,
+                userType: true
+              }
+            },
+            bidRequest: {
+              select: {
+                invoice: {
+                  select: {
+                    id: true,
+                    createdAt: true
+                  }
+                }
               }
             }
           }
-        }
-      }
-    }),
-    prisma.invoice.findUnique({
-      where: { bidRequestId }
-    })
-  ]);
-  const bidRequestMessagesResponse: BidRequestMessagesResponse = {
-    messages: records.map(record => {
-      const { user } = record;
-      return {
-        id: record.id,
-        createdAt: record.createdAt,
-        updatedAt: record.updatedAt,
-        bidRequestId: record.bidRequestId,
-        content: record.content,
-        user: {
-          id: user.id,
-          userType: user.userType as UserTypeT,
-          name: user.name
-        }
+        }),
+        prisma.invoice.findUnique({
+          where: { bidRequestId }
+        })
+      ]);
+      const bidRequestMessagesResponse: BidRequestMessagesResponseT = {
+        messages: records.map(record => {
+          const { user } = record;
+          return {
+            id: record.id,
+            createdAt: record.createdAt,
+            updatedAt: record.updatedAt,
+            bidRequestId: record.bidRequestId,
+            content: record.content,
+            user: {
+              id: user.id,
+              userType: user.userType as UserTypeT,
+              name: user.name
+            }
+          };
+        })
       };
-    })
-  };
-  if (invoiceRecord){
-    bidRequestMessagesResponse.invoice = {
-      id: invoiceRecord.id,
-      createdAt: invoiceRecord.createdAt,
-    };
-  }
-  return bidRequestMessagesResponse;
-}
-
-export async function createBidRequestMessage(bidRequestId: number, content: string) {
-  const { userId } = await getTokenInfo();
-  await prisma.bidRequestMessage.create({
-    data: {
-      bidRequestId,
-      content,
-      userId
+      if (invoiceRecord){
+        bidRequestMessagesResponse.invoice = {
+          id: invoiceRecord.id,
+          createdAt: invoiceRecord.createdAt,
+        };
+      }
+      return bidRequestMessagesResponse;
     }
-  });
-}
+  );
+
+export const createBidRequestMessage = action
+  .metadata({ actionName: "createBidRequestMessage" })
+  .bindArgsSchemas([
+    z.number() // bidRequestId
+  ])
+  .schema(z.object({
+    content: z.string()
+  }))
+  .action(
+    async ({
+      bindArgsParsedInputs: [bidRequestId],
+      parsedInput: { content }
+    }) => {
+      const { userId } = await getTokenInfo();
+      await prisma.bidRequestMessage.create({
+        data: {
+          bidRequestId,
+          content,
+          userId
+        }
+      });
+    });

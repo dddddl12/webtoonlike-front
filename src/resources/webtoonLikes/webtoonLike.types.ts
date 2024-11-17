@@ -1,8 +1,8 @@
 import z from "zod";
 
-export const WebtoonLikeSchema = z.object({
+export const WebtoonLikeWithMine = z.object({
   webtoonId: z.number(),
   likeCount: z.number(),
   myLike: z.boolean(),
 });
-export type WebtoonLikeT = z.infer<typeof WebtoonLikeSchema>
+export type WebtoonLikeWithMineT = z.infer<typeof WebtoonLikeWithMine>;

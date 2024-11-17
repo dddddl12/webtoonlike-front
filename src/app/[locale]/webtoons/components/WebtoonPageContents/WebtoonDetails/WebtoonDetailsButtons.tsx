@@ -1,13 +1,13 @@
-import { WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
 import { Row } from "@/shadcn/ui/layouts";
 import { Link } from "@/i18n/routing";
 import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 import { Button } from "@/shadcn/ui/button";
 import { Dispatch, SetStateAction } from "react";
 import { useTranslations } from "next-intl";
+import { WebtoonDetailsT } from "@/resources/webtoons/webtoon.service";
 
 export default function WebtoonDetailsButtons({ webtoon, setOpenBidRequestForm }: {
-  webtoon: WebtoonExtendedT;
+  webtoon: WebtoonDetailsT;
   setOpenBidRequestForm: Dispatch<SetStateAction<boolean>>;
 }) {
   return <Row className="gap-4 w-full">
@@ -19,7 +19,7 @@ export default function WebtoonDetailsButtons({ webtoon, setOpenBidRequestForm }
 }
 
 function ViewButton ({ webtoon }: {
-  webtoon: WebtoonExtendedT;
+  webtoon: WebtoonDetailsT;
 }) {
   const t = useTranslations("webtoonDetails");
   return <Button variant="darkGray" className="flex-1" size="lg"
@@ -31,7 +31,7 @@ function ViewButton ({ webtoon }: {
 }
 
 function BidRoundButton ({ webtoon }: {
-  webtoon: WebtoonExtendedT;
+  webtoon: WebtoonDetailsT;
 }) {
   const t = useTranslations("seriesManagement");
   if (webtoon.activeBidRound) {
@@ -50,7 +50,7 @@ function BidRoundButton ({ webtoon }: {
 }
 
 function OfferButton ({ webtoon, setOpenBidRequestForm }: {
-  webtoon: WebtoonExtendedT;
+  webtoon: WebtoonDetailsT;
   setOpenBidRequestForm: Dispatch<SetStateAction<boolean>>;
 }) {
   const { activeBidRound } = webtoon;

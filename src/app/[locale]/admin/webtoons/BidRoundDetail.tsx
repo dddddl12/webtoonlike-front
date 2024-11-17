@@ -1,9 +1,12 @@
 import { Col, Row } from "@/shadcn/ui/layouts";
 import { Button } from "@/shadcn/ui/button";
-import { AdminPageBidRoundT, approveBidRound, declineBidRound } from "@/resources/bidRounds/bidRound.service";
+import { AdminPageBidRoundT, approveOrDisapproveBidRound } from "@/resources/bidRounds/bidRound.service";
 import { buildImgUrl } from "@/utils/media";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
+import { useMemo } from "react";
+import { useAction } from "next-safe-action/hooks";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 
 export default function BidRoundDetail({
   bidRound, onHandleDetailReset
@@ -11,14 +14,18 @@ export default function BidRoundDetail({
   bidRound: AdminPageBidRoundT;
   onHandleDetailReset: () => void;
 }) {
-  async function handleApprove() {
-    await approveBidRound(bidRound.id);
-    onHandleDetailReset();
-  }
+  const boundApproveOrDisapproveBidRound = useMemo(() => approveOrDisapproveBidRound
+    .bind(null, bidRound.id), [bidRound.id]);
+  const { execute } = useAction(boundApproveOrDisapproveBidRound, {
+    onSuccess: () => onHandleDetailReset(),
+    onError: clientErrorHandler
+  });
 
-  async function handleDisapprove() {
-    await declineBidRound(bidRound.id);
-    onHandleDetailReset();
+  function handleApprove() {
+    execute({ action: "approve" });
+  }
+  function handleDisapprove() {
+    execute({ action: "disapprove" });
   }
 
   const { webtoon, creator } = bidRound;
@@ -54,8 +61,12 @@ export default function BidRoundDetail({
         </Row>
       </Col>
       <Row className="gap-5 justify-center">
-        <Button variant="mint" onClick={handleApprove}>승인</Button>
-        <Button variant="red" onClick={handleDisapprove}>반려</Button>
+        <Button variant="mint" onClick={handleApprove}>
+          승인
+        </Button>
+        <Button variant="red" onClick={handleDisapprove}>
+          반려
+        </Button>
       </Row>
     </Col>
   );

@@ -1,7 +1,6 @@
 import { Col, Row } from "@/shadcn/ui/layouts";
 import { IconDashboard } from "@/components/svgs/IconDashboard";
 import { IconUser } from "@/components/svgs/IconUser";
-import { IconAddUser } from "@/components/svgs/IconAddUser";
 import { IconAlbum } from "@/components/svgs/IconAlbum";
 import { IconDocs } from "@/components/svgs/IconDocs";
 import { IconLetter } from "@/components/svgs/IconLetter";

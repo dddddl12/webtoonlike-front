@@ -9,7 +9,7 @@ export const IconUpload = ({
     xmlns="http://www.w3.org/2000/svg"
     width={65}
     height={43}
-    fill="none"
+    fill="currentColor"
     className={className}
     {...props}
   >

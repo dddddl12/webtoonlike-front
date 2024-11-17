@@ -5,16 +5,17 @@ import { buildImgUrl } from "@/utils/media";
 import { Text } from "@/shadcn/ui/texts";
 import { Badge } from "@/shadcn/ui/badge";
 import { Link } from "@/i18n/routing";
-import { TargetAge, WebtoonExtendedT } from "@/resources/webtoons/webtoon.types";
+import { TargetAge } from "@/resources/webtoons/webtoon.types";
 import WebtoonDetailsButtons from "@/app/[locale]/webtoons/components/WebtoonPageContents/WebtoonDetails/WebtoonDetailsButtons";
 import WebtoonDetailsLikeButton from "@/app/[locale]/webtoons/components/WebtoonPageContents/WebtoonDetails/WebtoonDetailsLikeButton";
 import { IconLink } from "@/components/svgs/IconLink";
 import { displayName } from "@/utils/displayName";
 import { useLocale, useTranslations } from "next-intl";
 import { Dispatch, SetStateAction } from "react";
+import { WebtoonDetailsT } from "@/resources/webtoons/webtoon.service";
 
 export default function WebtoonDetails({ webtoon, openBidRequestForm, setOpenBidRequestForm }: {
-  webtoon: WebtoonExtendedT;
+  webtoon: WebtoonDetailsT;
   openBidRequestForm: boolean;
   setOpenBidRequestForm: Dispatch<SetStateAction<boolean>>;
 }) {
@@ -79,7 +80,7 @@ export default function WebtoonDetails({ webtoon, openBidRequestForm, setOpenBid
 }
 
 function ExternalLink({ webtoon }: {
-  webtoon: WebtoonExtendedT;
+  webtoon: WebtoonDetailsT;
 }) {
   const link = webtoon.externalUrl;
   if (!link) {
@@ -95,7 +96,7 @@ function ExternalLink({ webtoon }: {
 }
 
 function Genres({ webtoon }: {
-  webtoon: WebtoonExtendedT;
+  webtoon: WebtoonDetailsT;
 }) {
   const locale = useLocale();
   if (webtoon.genres.length === 0) {
@@ -114,7 +115,7 @@ function Genres({ webtoon }: {
 }
 
 function ExtraInfoRow({ webtoon }: {
-  webtoon: WebtoonExtendedT;
+  webtoon: WebtoonDetailsT;
 }) {
   const t = useTranslations("webtoonDetails");
   const tAgeRestriction = useTranslations("ageRestriction");

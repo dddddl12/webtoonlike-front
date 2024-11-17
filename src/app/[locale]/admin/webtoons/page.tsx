@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { AdminPageBidRoundT } from "@/resources/bidRounds/bidRound.service";
 import BidRoundDetail from "@/app/[locale]/admin/webtoons/BidRoundDetail";
 import BidRoundPendingList from "@/app/[locale]/admin/webtoons/BidRoundPendingList";
@@ -11,12 +11,12 @@ import { Col } from "@/shadcn/ui/layouts";
 export default function ManageBidRoundPage() {
   const [roundDetail, setRoundDetail] = useState<AdminPageBidRoundT>();
 
-  function handleDetailClick(bidRound: AdminPageBidRoundT): void {
+  const handleDetailClick = useCallback((bidRound: AdminPageBidRoundT) => {
     setRoundDetail(bidRound);
-  }
-  function handleDetailReset(): void {
+  },[]);
+  const handleDetailReset = useCallback(() => {
     setRoundDetail(undefined);
-  }
+  },[]);
 
   if (roundDetail) {
     return <BidRoundDetail bidRound={roundDetail} onHandleDetailReset={handleDetailReset} />;

@@ -9,7 +9,7 @@ import { IconExclamation } from "@/components/svgs/IconExclamation";
 import { Checkbox } from "@/shadcn/ui/checkbox";
 import { useTranslations } from "next-intl";
 import { BidRoundFormSchema, BidRoundFormT, BidRoundT } from "@/resources/bidRounds/bidRound.types";
-import { useForm, UseFormReturn, useWatch } from "react-hook-form";
+import { UseFormReturn, useWatch } from "react-hook-form";
 import { useRouter } from "@/i18n/routing";
 import {
   BooleanFormField,
@@ -20,10 +20,12 @@ import {
   FormLabel
 } from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
-import { createBidRound, updateBidRound } from "@/resources/bidRounds/bidRound.service";
 import { formResolver } from "@/utils/forms";
 import ContractRangeForm from "@/app/[locale]/webtoons/components/forms/ContractRangeForm";
 import { NumericInput } from "@/shadcn/ui/input";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import { createOrUpdateBidRound } from "@/resources/bidRounds/bidRound.service";
 
 export default function BidRoundForm({ webtoonId, prev }: {
   webtoonId: number;
@@ -31,37 +33,55 @@ export default function BidRoundForm({ webtoonId, prev }: {
 }) {
   const t = useTranslations("updateOrCreateBidRoundsPage");
   const [isAgreed, setIsAgreed] = useState(false);
-  const form = useForm<BidRoundFormT>({
-    defaultValues: {
-      webtoonId,
-      contractRange: prev?.contractRange,
-      isOriginal: prev?.isOriginal,
-      isNew: prev?.isNew,
-      totalEpisodeCount: prev?.totalEpisodeCount,
-      currentEpisodeNo: prev?.currentEpisodeNo,
-      monthlyEpisodeCount: prev?.monthlyEpisodeCount,
-    },
-    mode: "onChange",
-    resolver: (values) => {
-      const { isNew, currentEpisodeNo, totalEpisodeCount } = values;
-      if (isNew
+  const router = useRouter();
+  const { form, handleSubmitWithAction }
+    = useHookFormAction(
+      createOrUpdateBidRound.bind(null, webtoonId, prev?.id),
+      (values) => {
+        const { isNew, currentEpisodeNo, totalEpisodeCount } = values;
+        if (isNew
         && typeof currentEpisodeNo === "number"
         && typeof totalEpisodeCount === "number"
         && currentEpisodeNo > totalEpisodeCount
-      ) {
-        return {
-          values: {},
-          errors: {
-            currentEpisodeNo: {
-              type: "invalidNumber",
-              message: t("currentEpisodeNoMustBeLessThanTotal")
-            },
+        ) {
+          return {
+            values: {},
+            errors: {
+              currentEpisodeNo: {
+                type: "invalidNumber",
+                message: t("currentEpisodeNoMustBeLessThanTotal")
+              },
+            }
+          };
+        }
+        return formResolver(BidRoundFormSchema, values);
+      },
+      {
+        actionProps: {
+          onSuccess: () => {
+            if (prev) {
+              router.replace(`/webtoons/${webtoonId}`);
+            } else {
+              router.replace("/webtoons");
+            }
+          },
+          onError: (args) => {
+            form.reset(args.input);
+            clientErrorHandler(args);
           }
-        };
-      }
-      return formResolver(BidRoundFormSchema, values);
-    }
-  });
+        },
+        formProps: {
+          defaultValues: {
+            contractRange: prev?.contractRange,
+            isOriginal: prev?.isOriginal,
+            isNew: prev?.isNew,
+            totalEpisodeCount: prev?.totalEpisodeCount,
+            currentEpisodeNo: prev?.currentEpisodeNo,
+            monthlyEpisodeCount: prev?.monthlyEpisodeCount,
+          },
+          mode: "onChange"
+        }
+      });
 
   // 조건부 필드
   const isNew = useWatch({
@@ -71,17 +91,6 @@ export default function BidRoundForm({ webtoonId, prev }: {
 
   // 제출 이후 동작
   const { formState: { isSubmitting, isSubmitSuccessful, isValid } } = form;
-  const router = useRouter();
-  async function onSubmit(values: BidRoundFormT) {
-    // TODO
-    if (prev) {
-      await updateBidRound(prev.id, values);
-      router.replace(`/webtoons/${webtoonId}`);
-    } else {
-      await createBidRound(values);
-      router.replace("/webtoons");
-    }
-  }
 
   // 스피너
   if (isSubmitting || isSubmitSuccessful) {
@@ -90,7 +99,10 @@ export default function BidRoundForm({ webtoonId, prev }: {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={async (e) => {
+        e.preventDefault();
+        await handleSubmitWithAction(e);
+      }}>
         {/* 기본 정보 */}
         <Heading2>
           {t("generalInformation")}

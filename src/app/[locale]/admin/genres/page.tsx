@@ -4,11 +4,12 @@ import { IconDelete } from "@/components/svgs/IconDelete";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import Spinner from "@/components/Spinner";
 import { Col, Row } from "@/shadcn/ui/layouts";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BasicGenreT, listGenres } from "@/resources/genres/genre.service";
 import { Badge } from "@/shadcn/ui/badge";
 import { Button } from "@/shadcn/ui/button";
 import DeleteGenre from "@/app/[locale]/admin/genres/DeleteGenre";
+import { useAction } from "next-safe-action/hooks";
 
 
 export default function ManageGenresPage() {
@@ -22,12 +23,19 @@ export default function ManageGenresPage() {
 
 function ManageGenresContent() {
   const [loaded, setLoaded] = useState<boolean>(false);
+  const reloadOnUpdate = useCallback(() => setLoaded(false), []);
+  const [genres, setGenres] = useState<BasicGenreT[]>();
+  const { execute } = useAction(listGenres, {
+    onSuccess: ({ data }) => setGenres(data),
+  });
   useEffect(() => {
     if (!loaded) {
       setLoaded(true);
+      return;
     }
-  }, [loaded]);
-  const reloadOnUpdate = () => setLoaded(false);
+    execute();
+  }, [execute, loaded]);
+
   return <>
     <Row>
       <AddOrUpdateGenre onGenreAddSuccess={reloadOnUpdate}>
@@ -35,19 +43,15 @@ function ManageGenresContent() {
       </AddOrUpdateGenre>
     </Row>
     <Row className="flex-wrap gap-x-4 gap-y-3">
-      {loaded && <GenreContainer reloadOnUpdate={reloadOnUpdate}/>}
+      <GenreContainer genres={genres} reloadOnUpdate={reloadOnUpdate}/>
     </Row>
   </>;
 }
 
-function GenreContainer({ reloadOnUpdate }: {
+function GenreContainer({ reloadOnUpdate, genres }: {
   reloadOnUpdate: () => void;
+  genres?: BasicGenreT[];
 }) {
-  const [genres, setGenres] = useState<BasicGenreT[]>();
-  useEffect(() => {
-    listGenres()
-      .then(setGenres);
-  },[]);
 
   if (!genres) {
     return <Spinner/>;

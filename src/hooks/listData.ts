@@ -1,36 +1,74 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { ListResponse } from "@/resources/globalTypes";
+import { InferIn, Schema } from "next-safe-action/adapters/types";
+import { useAction, HookSafeActionFn } from "next-safe-action/hooks";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 
-export function useListData<Filters, ResourceType>(
-  listFetcherFunction: (filters: Filters) => Promise<ListResponse<ResourceType>>,
-  initialFilters: Filters,
+type Filters<
+  S extends Schema | undefined,
+> = S extends Schema ? InferIn<S> : void;
+
+export function useListData<
+  ServerError,
+  S extends Schema | undefined,
+  BAS extends readonly Schema[],
+  CVE,
+  CBAVE,
+  Data
+>(
+  listFetcherFunction: HookSafeActionFn<ServerError, S, BAS, CVE, CBAVE, Data>,
+  initialFilters: Filters<S>,
 ): {
-  listResponse: ListResponse<ResourceType> | undefined;
-  filters: Filters;
-  setFilters: Dispatch<SetStateAction<Filters>>;
+  listResponse?: Data;
+  filters: Filters<S>;
+  setFilters: Dispatch<SetStateAction<Filters<S>>>;
 };
 
-export function useListData<Filters, ResourceType>(
-  listFetcherFunction: (filters: Filters) => Promise<ListResponse<ResourceType>>,
-  initialFilters: Filters,
-  initialResponse: ListResponse<ResourceType>
+export function useListData<
+  ServerError,
+  S extends Schema | undefined,
+  BAS extends readonly Schema[],
+  CVE,
+  CBAVE,
+  Data
+>(
+  listFetcherFunction: HookSafeActionFn<ServerError, S, BAS, CVE, CBAVE, Data>,
+  initialFilters: Filters<S>,
+  initialResponse: Data
 ): {
-  listResponse: ListResponse<ResourceType>;
-  filters: Filters;
-  setFilters: Dispatch<SetStateAction<Filters>>;
+  listResponse: Data;
+  filters: Filters<S>;
+  setFilters: Dispatch<SetStateAction<Filters<S>>>;
 };
 
-export function useListData<Filters, ResourceType>(
-  listFetcherFunction: (filters: Filters) => Promise<ListResponse<ResourceType>>,
-  initialFilters: Filters,
-  initialResponse?: ListResponse<ResourceType>
+export function useListData<
+  ServerError,
+  S extends Schema | undefined,
+  BAS extends readonly Schema[],
+  CVE,
+  CBAVE,
+  Data
+>(
+  listFetcherFunction: HookSafeActionFn<ServerError, S, BAS, CVE, CBAVE, Data>,
+  initialFilters: Filters<S>,
+  initialResponse?: Data
 ): {
-    listResponse: ListResponse<ResourceType> | undefined;
-    filters: Filters;
-    setFilters: Dispatch<SetStateAction<Filters>>;
+    listResponse?: Data;
+    filters: Filters<S>;
+    setFilters: Dispatch<SetStateAction<Filters<S>>>;
   } {
-  const [filters, setFilters] = useState<Filters>(initialFilters);
-  const [listResponse, setListResponse] = useState<ListResponse<ResourceType>|undefined>(initialResponse);
+
+  const [filters, setFilters] = useState<Filters<S>>(initialFilters);
+  const [listResponse, setListResponse] = useState(initialResponse);
+
+  const { execute } = useAction(
+    listFetcherFunction,
+    {
+      onSuccess: ({ data }) => {
+        setListResponse(data);
+      },
+      onError: clientErrorHandler
+    }
+  );
 
   const isInitialRender = useRef(true);
   useEffect(() => {
@@ -39,7 +77,8 @@ export function useListData<Filters, ResourceType>(
       isInitialRender.current = false;
       return;
     }
-    listFetcherFunction(filters).then(setListResponse);
-  }, [filters, initialResponse, listFetcherFunction]);
+    execute(filters);
+  }, [execute, filters, initialResponse]);
+
   return { listResponse, filters, setFilters };
 }

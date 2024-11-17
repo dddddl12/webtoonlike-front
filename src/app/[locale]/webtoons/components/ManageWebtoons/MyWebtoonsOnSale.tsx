@@ -7,17 +7,15 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import Paginator from "@/components/Paginator";
 import { useListData } from "@/hooks/listData";
-import { listMyWebtoonsOnSale } from "@/resources/webtoons/webtoon.service";
+import { listMyWebtoonsOnSale, MyWebtoonOnSaleT } from "@/resources/webtoons/webtoon.service";
 import { Link } from "@/i18n/routing";
 import { displayName } from "@/utils/displayName";
 import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 import StatusBadge from "@/components/StatusBadge";
-
-type WebtoonListResponse = Awaited<ReturnType<typeof listMyWebtoonsOnSale>>;
-type Webtoon = WebtoonListResponse["items"][number];
+import { ListResponse } from "@/resources/globalTypes";
 
 export default function MyWebtoonsOnSale({ initialWebtoonListResponse }: {
-  initialWebtoonListResponse: WebtoonListResponse;
+  initialWebtoonListResponse: ListResponse<MyWebtoonOnSaleT>;
 }) {
   const { listResponse, filters, setFilters } = useListData(
     listMyWebtoonsOnSale, { page: 1 }, initialWebtoonListResponse);
@@ -62,7 +60,7 @@ function TableHeader() {
 }
 
 function TableRow({ webtoon }: {
-  webtoon: Webtoon;
+  webtoon: MyWebtoonOnSaleT;
 }) {
   const locale = useLocale();
   return (

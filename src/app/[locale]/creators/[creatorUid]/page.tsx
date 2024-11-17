@@ -9,6 +9,7 @@ import { IconHeartFill } from "@/components/svgs/IconHeartFill";
 import PageLayout from "@/components/PageLayout";
 import CreatorWebtoonList from "@/app/[locale]/creators/[creatorUid]/CreatorWebtoonList";
 import { buildImgUrl } from "@/utils/media";
+import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function CreatorPage({
   params,
@@ -17,8 +18,8 @@ export default async function CreatorPage({
 }) {
   const creatorUid = await params.then(p => Number(p.creatorUid));
   const [creator, initialWebtoonListResponse] = await Promise.all([
-    getCreator(creatorUid),
-    listWebtoons({ userId: creatorUid })
+    getCreator(creatorUid).then(responseHandler),
+    listWebtoons({ userId: creatorUid }).then(responseHandler)
   ]);
 
   const locale = await getLocale();

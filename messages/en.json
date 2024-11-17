@@ -28,7 +28,8 @@
         "insertAddress2": "Address 2",
         "termsAndConditions": "Webtoonlike Terms and Conditions",
         "required": "(required)",
-        "doYouAgree": "Do you agree with Webtoonlike Terms and Conditions?"
+        "doYouAgree": "Do you agree with Webtoonlike Terms and Conditions?",
+        "completeToast": "Successfully signed up."
     },
     "setupPageNextForCreators": {
         "profileDesc": "Enter profile information",
@@ -490,5 +491,10 @@
         "rejectedOffer": "Rejected Offer",
         "acceptedOffer": "Accepted Offer",
         "anErrorOccurredWhileSendingTheMessage": "An error occured while sending the message"
+    },
+    "errors": {
+        "invalidFields": {
+            "duplicateValue": "This value already exists."
+        }
     }
 }

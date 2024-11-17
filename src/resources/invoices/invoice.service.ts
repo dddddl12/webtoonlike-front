@@ -1,26 +1,44 @@
 "use server";
 
-import { Invoice as InvoiceRecord, Prisma } from "@prisma/client";
-import { InvoiceContent, InvoiceExtendedT, InvoiceT } from "@/resources/invoices/invoice.types";
-import { ListResponse } from "@/resources/globalTypes";
-import { getTokenInfo } from "@/resources/tokens/token.service";
+import { Prisma } from "@prisma/client";
+import { InvoiceContent, InvoiceSchema } from "@/resources/invoices/invoice.types";
+import { ListResponse, ListResponseSchema } from "@/resources/globalTypes";
+import { assertAdmin, getTokenInfo } from "@/resources/tokens/token.service";
 import prisma from "@/utils/prisma";
 import { UserTypeT } from "@/resources/users/user.types";
 import z from "zod";
 import { BuyerCompanySchema } from "@/resources/buyers/buyer.types";
 import { BidRequestContractRangeItemSchema } from "@/resources/bidRequests/bidRequest.types";
 import { convertInvoiceToHtml } from "@/resources/invoices/invoice.utils";
+import { action } from "@/handlers/safeAction";
 
-const mapToInvoiceDTO = (record: InvoiceRecord): InvoiceT => {
-  return {
-    id: record.id,
-    createdAt: record.createdAt,
-    updatedAt: record.updatedAt,
-    bidRequestId: record.bidRequestId,
-  };
-};
+export const previewInvoice = action
+  .metadata({ actionName: "previewInvoice" })
+  .bindArgsSchemas([
+    z.number() //bidRequestId
+  ])
+  .outputSchema(z.string())
+  .action(async ({ bindArgsParsedInputs: [bidRequestId] }) => {
+    return _previewOrCreateInvoice(
+      bidRequestId,
+      false
+    );
+  });
 
-export async function previewOrCreateInvoice(bidRequestId: number, storeToDb: boolean): Promise<string> {
+export const createInvoice = action
+  .metadata({ actionName: "createInvoice" })
+  .bindArgsSchemas([
+    z.number() //bidRequestId
+  ])
+  .outputSchema(z.string())
+  .action(async ({ bindArgsParsedInputs: [bidRequestId] }) => {
+    return _previewOrCreateInvoice(
+      bidRequestId,
+      true
+    );
+  });
+
+async function _previewOrCreateInvoice(bidRequestId: number, storeToDb: boolean): Promise<string> {
   return prisma.$transaction(async (tx) => {
     const record = await tx.bidRequest.findUniqueOrThrow({
       where: { id: bidRequestId },
@@ -132,17 +150,62 @@ export async function previewOrCreateInvoice(bidRequestId: number, storeToDb: bo
   });
 }
 
-export async function listInvoices({
+const InvoiceWithWebtoonSchema = InvoiceSchema
+  .extend({
+    webtoon: z.object({
+      id: z.number(),
+      title: z.string(),
+      title_en: z.string().optional(),
+      thumbPath: z.string()
+    }),
+    creatorUsername: z.string(),
+    buyerUsername: z.string()
+  });
+export type InvoiceWithWebtoonT = z.infer<typeof InvoiceWithWebtoonSchema>;
+
+export const adminListInvoices = action
+  .metadata({ actionName: "adminListInvoices" })
+  .schema(z.object({
+    page: z.number().default(1),
+  }))
+  .outputSchema(ListResponseSchema(InvoiceWithWebtoonSchema))
+  .action(async ({
+    parsedInput: filters
+  }) => {
+    return _listInvoices({
+      ...filters,
+      isAdmin: true
+    });
+  });
+
+export const listInvoices = action
+  .metadata({ actionName: "listInvoices" })
+  .schema(z.object({
+    page: z.number().default(1),
+  }))
+  .outputSchema(ListResponseSchema(InvoiceWithWebtoonSchema))
+  .action(async ({
+    parsedInput: filters
+  }) => {
+    return _listInvoices({
+      ...filters,
+      isAdmin: false
+    });
+  });
+
+async function _listInvoices({
   page = 1,
-  limit = 5,
   isAdmin = false,
 }: {
   page?: number;
-  limit?: number;
   isAdmin?: boolean;
-} = {}): Promise<ListResponse<InvoiceExtendedT>> {
+} = {}): Promise<ListResponse<InvoiceWithWebtoonT>> {
   // TODO join 최적화
   // https://www.prisma.io/blog/prisma-orm-now-lets-you-choose-the-best-join-strategy-preview
+  if (isAdmin) {
+    await assertAdmin();
+  }
+  const limit = 5;
   const { userId, metadata } = await getTokenInfo();
   const where: Prisma.InvoiceWhereInput = {
     bidRequest: {
@@ -198,7 +261,10 @@ export async function listInvoices({
       const { webtoon } = bidRequest.bidRound;
 
       return {
-        ...mapToInvoiceDTO(record),
+        id: record.id,
+        createdAt: record.createdAt,
+        updatedAt: record.updatedAt,
+        bidRequestId: record.bidRequestId,
         webtoon: {
           id: webtoon.id,
           title: webtoon.title,
@@ -213,14 +279,19 @@ export async function listInvoices({
   };
 }
 
-export async function downloadInvoiceContent(invoiceId: number) {
-  // TODO content, contentInHtml 장단점 문서화
-  const { contentInHtml } = await prisma.invoice.findUniqueOrThrow({
-    where: { id: invoiceId },
-    select: {
-      contentInHtml: true
-    }
+export const downloadInvoiceContent = action
+  .metadata({ actionName: "downloadInvoiceContent" })
+  .bindArgsSchemas([
+    z.number() // invoiceId
+  ])
+  .outputSchema(z.string())
+  .action(async ({ bindArgsParsedInputs: [invoiceId] }) => {
+    // TODO content, contentInHtml 장단점 문서화
+    const { contentInHtml } = await prisma.invoice.findUniqueOrThrow({
+      where: { id: invoiceId },
+      select: {
+        contentInHtml: true
+      }
+    });
+    return contentInHtml;
   });
-  return contentInHtml;
-  // return convertHtmlToPdfBuffer(contentInHtml);
-}

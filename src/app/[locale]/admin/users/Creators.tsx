@@ -7,6 +7,9 @@ import { useListData } from "@/hooks/listData";
 import Spinner from "@/components/Spinner";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { Switch } from "@/shadcn/ui/switch";
+import { useState } from "react";
+import { useAction } from "next-safe-action/hooks";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 
 
 export default function Creators() {
@@ -45,6 +48,27 @@ export default function Creators() {
 
 function TableRow({ creator }:{ creator: AdminPageCreatorT }) {
   const { toast } = useToast();
+  const [isExposed, setIsExposed] = useState(creator.isExposed);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { execute } = useAction(changeExposed.bind(null, creator.id), {
+    onSettled: () => setIsProcessing(false),
+    onSuccess: ({ data }) => {
+      if (!data) {
+        throw new Error("data is null");
+      }
+      setIsExposed(data.isExposed);
+      toast({
+        description: "저작권자 노출 여부가 변경되었습니다."
+      });
+    },
+    onError: (args) => {
+      clientErrorHandler(args);
+      toast({
+        description: "저작권자 노출 변경이 정상적으로 이루어지지 않았습니다."
+      });
+    }
+  });
+
   return (
     <div key={creator.id} className="flex bg-white rounded-sm p-2 my-2">
       <div className="w-[25%] p-2">{creator.user.name}</div>
@@ -53,11 +77,11 @@ function TableRow({ creator }:{ creator: AdminPageCreatorT }) {
       <div className="w-[25%] p-2 flex justify-center">
         <Switch
           defaultChecked={creator.isExposed}
-          onCheckedChange={async (isExposed) => {
-            await changeExposed(creator.id, isExposed);
-            toast({
-              description: "저작권자 노출 여부가 변경되었습니다."
-            });
+          checked={isExposed}
+          disabled={isProcessing}
+          onCheckedChange={(newIsExposed) => {
+            setIsProcessing(true);
+            execute({ isExposed: newIsExposed });
           }}
         />
       </div>

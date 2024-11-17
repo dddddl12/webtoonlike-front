@@ -3,12 +3,11 @@ import { Input } from "@/shadcn/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shadcn/ui/select";
 import MultipleSelector from "@/shadcn/ui/multi-select";
 import { useTranslations } from "next-intl";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import {
   BuyerCompanyFieldSchema,
   BuyerCompanyTypeSchema,
-  BuyerFormSchema,
-  BuyerFormT, BuyerPurposeSchema,
+  BuyerPurposeSchema,
 } from "@/resources/buyers/buyer.types";
 import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
@@ -18,6 +17,8 @@ import { SignUpStage, UserExtendedFormSchema, UserExtendedFormT } from "@/resour
 import { AccountFormFooter, AccountFormImageField } from "@/components/Account/common";
 import { formResolver } from "@/utils/forms";
 import { createUser } from "@/resources/users/user.service";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 
 
 export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : {
@@ -37,40 +38,45 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
   const [businessCard, setBusinessCard] = useState(
     new ImageObject(prevCompany?.businessCardPath));
 
-  const form = useForm<BuyerFormT>({
-    defaultValues: {
-      company: {
-        name: prevCompany?.name || "",
-        fieldType: prevCompany?.fieldType || [],
-        businessType: prevCompany?.businessType || [],
-        dept: prevCompany?.dept || "",
-        position: prevCompany?.position || "",
-        positionDetail: prevCompany?.positionDetail || "",
-        businessNumber: prevCompany?.businessNumber || "",
-      },
-      purpose: prev?.purpose,
-    },
-    mode: "onChange",
-    resolver: (values) => formResolver(BuyerFormSchema, values)
-  });
-
+  const { form, handleSubmitWithAction }
+    = useHookFormAction(
+      createUser,
+      (values) => formResolver(UserExtendedFormSchema, values),
+      {
+        actionProps: {
+          onSuccess: () => {
+            setSignUpStage(prevState => prevState + 1);
+          },
+          onError: (args) => {
+            form.reset(args.input);
+            clientErrorHandler(args);
+          }
+        },
+        formProps: {
+          defaultValues: {
+            ...userExtendedForm,
+            buyer: {
+              company: {
+                name: prevCompany?.name || "",
+                fieldType: prevCompany?.fieldType || [],
+                businessType: prevCompany?.businessType || [],
+                dept: prevCompany?.dept || "",
+                position: prevCompany?.position || "",
+                positionDetail: prevCompany?.positionDetail || "",
+                businessNumber: prevCompany?.businessNumber || "",
+              },
+              purpose: prev?.purpose,
+            }
+          },
+          mode: "onChange"
+        },
+        errorMapProps: {}
+      }
+    );
 
   // 제출 이후 동작
   const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
-  const onSubmit = async (values: BuyerFormT) => {
-    values.company.thumbPath = await thumbnail.uploadAndGetRemotePath(FileDirectoryT.BuyersThumbnails);
-    values.company.businessCertPath = await businessCert.uploadAndGetRemotePath(FileDirectoryT.BuyersCerts);
-    values.company.businessCardPath = await businessCard.uploadAndGetRemotePath(FileDirectoryT.BuyersCards);
 
-    const validatedUserForm = UserExtendedFormSchema.parse({
-      ...userExtendedForm,
-      buyer: values
-    });
-    await createUser(validatedUserForm);
-    setSignUpStage(prevState => prevState + 1);
-  };
-
-  // 스피너
   if (isSubmitting || isSubmitSuccessful) {
     return <Spinner />;
   }
@@ -78,7 +84,15 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={async (e) => {
+          await thumbnail.uploadAndGetRemotePath(FileDirectoryT.BuyersThumbnails)
+            .then(remotePath => form.setValue("buyer.company.thumbPath", remotePath));
+          await businessCert.uploadAndGetRemotePath(FileDirectoryT.BuyersCerts)
+            .then(remotePath => form.setValue("buyer.company.businessCertPath", remotePath));
+          await businessCard.uploadAndGetRemotePath(FileDirectoryT.BuyersCards)
+            .then(remotePath => form.setValue("buyer.company.businessCardPath", remotePath));
+          await handleSubmitWithAction(e);
+        }}
         className="flex flex-col gap-5"
       >
         <span className="mb-10">{t("headerDesc")}</span>
@@ -126,13 +140,13 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
 
 
 function BusinessNumberField({ form }: {
-  form: UseFormReturn<BuyerFormT>;
+  form: UseFormReturn<UserExtendedFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
 
   return <FormField
     control={form.control}
-    name="company.businessNumber"
+    name="buyer.company.businessNumber"
     render={({ field }) => (
       <FormItem>
         <FormControl>
@@ -150,12 +164,12 @@ function BusinessNumberField({ form }: {
 }
 
 function FieldTypeField({ form }: {
-  form: UseFormReturn<BuyerFormT>;
+  form: UseFormReturn<UserExtendedFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
   const tBusinessFields = useTranslations("businessFields");
 
-  const fieldName = "company.fieldType";
+  const fieldName = "buyer.company.fieldType";
   const options = BuyerCompanyFieldSchema.options
     .map(value => ({
       label: tBusinessFields(value, { plural: false }), value
@@ -174,7 +188,7 @@ function FieldTypeField({ form }: {
           );
         }}
         inputProps={{
-          name: "company.fieldType"
+          name: fieldName
         }}
         value={preSelectOptions}
         defaultOptions={options}
@@ -186,27 +200,33 @@ function FieldTypeField({ form }: {
 }
 
 function BusinessTypeField({ form }: {
-  form: UseFormReturn<BuyerFormT>;
+  form: UseFormReturn<UserExtendedFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
+
+  const fieldName = "buyer.company.businessType";
+  const options = BuyerCompanyTypeSchema.options
+    .map(value => ({
+      label: t(`businessTypeItems.${value}`), value
+    }));
+  const preSelectValue = form.getValues(fieldName);
+  const preSelectOptions = options.filter(option => preSelectValue.includes(option.value));
 
   return <FormItem>
     <FormControl>
       <MultipleSelector
         onChange={(options) => {
-          form.setValue("company.businessType",
+          form.setValue("buyer.company.businessType",
             options.map(o => BuyerCompanyTypeSchema.parse(o.value)), {
               shouldValidate: true
             }
           );
         }}
         inputProps={{
-          name: "company.businessType"
+          name: fieldName
         }}
-        defaultOptions={BuyerCompanyTypeSchema.options
-          .map(value => ({
-            label: t(`businessTypeItems.${value}`), value
-          }))}
+        value={preSelectOptions}
+        defaultOptions={options}
         placeholder={t("businessTypePlaceholder")}
         hidePlaceholderWhenSelected
       />
@@ -215,13 +235,13 @@ function BusinessTypeField({ form }: {
 }
 
 function BusinessNameField({ form }: {
-  form: UseFormReturn<BuyerFormT>;
+  form: UseFormReturn<UserExtendedFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
 
   return <FormField
     control={form.control}
-    name="company.name"
+    name="buyer.company.name"
     render={({ field }) => (
       <FormItem>
         <FormControl>
@@ -237,13 +257,13 @@ function BusinessNameField({ form }: {
 }
 
 function DepartmentField({ form }: {
-  form: UseFormReturn<BuyerFormT>;
+  form: UseFormReturn<UserExtendedFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
 
   return <FormField
     control={form.control}
-    name="company.dept"
+    name="buyer.company.dept"
     render={({ field }) => (
       <FormItem>
         <FormControl>
@@ -259,12 +279,12 @@ function DepartmentField({ form }: {
 }
 
 function PositionField({ form }: {
-  form: UseFormReturn<BuyerFormT>;
+  form: UseFormReturn<UserExtendedFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
   return <FormField
     control={form.control}
-    name="company.position"
+    name="buyer.company.position"
     render={({ field }) => (
       <FormItem>
         <FormControl>
@@ -280,13 +300,13 @@ function PositionField({ form }: {
 }
 
 function PositionDetailField({ form }: {
-  form: UseFormReturn<BuyerFormT>;
+  form: UseFormReturn<UserExtendedFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
 
   return <FormField
     control={form.control}
-    name="company.positionDetail"
+    name="buyer.company.positionDetail"
     render={({ field }) => (
       <FormItem>
         <FormControl>
@@ -302,13 +322,13 @@ function PositionDetailField({ form }: {
 }
 
 function PurposeField({ form }: {
-  form: UseFormReturn<BuyerFormT>;
+  form: UseFormReturn<UserExtendedFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
 
   return <FormField
     control={form.control}
-    name="purpose"
+    name="buyer.purpose"
     render={({ field }) => (
       <FormItem>
         <FormControl>

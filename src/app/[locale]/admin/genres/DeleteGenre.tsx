@@ -9,6 +9,8 @@ import {
 import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { Button } from "@/shadcn/ui/button";
+import { useAction } from "next-safe-action/hooks";
+import { ForeignKeyError } from "@/handlers/errors";
 
 type SubmissionState = "initial" | "loading" | "success" | "failure";
 export default function DeleteGenre({ reloadOnUpdate, genre, children }: {
@@ -50,18 +52,27 @@ function DeleteAlertDialogHeaderAndFooter({ genre, submissionState, setSubmissio
   setSubmissionState: Dispatch<SetStateAction<SubmissionState>>;
 }) {
   const { toast } = useToast();
-  const onSubmit = async () => {
-    setSubmissionState("loading");
-    const { isSuccess } = await deleteGenre(genre.id);
-    if (isSuccess) {
+
+  const { executeAsync } = useAction(deleteGenre.bind(null, genre.id), {
+    onSuccess: () => {
       toast({
         description: "장르가 삭제되었습니다."
       });
       setSubmissionState("success");
-    } else {
-      setSubmissionState("failure");
+    },
+    onError: ({ error }) => {
+      const { serverError } = error;
+      if (serverError?.name === ForeignKeyError.name) {
+        setSubmissionState("failure");
+      }
     }
+  });
+
+  const onSubmit = async () => {
+    setSubmissionState("loading");
+    await executeAsync();
   };
+
   if (submissionState === "failure") {
     return <FailureAlertDialogContent genre={genre}/>;
   }

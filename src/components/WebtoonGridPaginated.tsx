@@ -3,15 +3,15 @@ import { Gap, Grid, Row } from "@/shadcn/ui/layouts";
 import { buildImgUrl } from "@/utils/media";
 import { Text } from "@/shadcn/ui/texts";
 import { useLocale } from "next-intl";
-import { WebtoonPreviewT } from "@/resources/webtoons/webtoon.types";
 import { Link } from "@/i18n/routing";
 import { displayName } from "@/utils/displayName";
 import { ListResponse } from "@/resources/globalTypes";
 import { Dispatch, SetStateAction } from "react";
 import Paginator from "@/components/Paginator";
+import { WebtoonPreviewT } from "@/resources/webtoons/webtoon.service";
 
 type Filters = {
-  page: number;
+  page?: number;
   [extraKey: string]: any;
 };
 

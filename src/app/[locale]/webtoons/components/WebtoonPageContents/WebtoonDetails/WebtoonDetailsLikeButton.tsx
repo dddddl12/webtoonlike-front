@@ -2,30 +2,44 @@ import { IconHeart } from "@/components/svgs/IconHeart";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";
 import { Row } from "@/shadcn/ui/layouts";
 import { useState } from "react";
-import { createLike, deleteLike } from "@/resources/webtoonLikes/webtoonLike.service";
-import { WebtoonLikeT } from "@/resources/webtoonLikes/webtoonLike.types";
+import { toggleLike } from "@/resources/webtoonLikes/webtoonLike.service";
+import { useAction } from "next-safe-action/hooks";
+import { WebtoonLikeWithMineT } from "@/resources/webtoonLikes/webtoonLike.types";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import { Button } from "@/shadcn/ui/button";
 
 // TODO buyer만 가능한가?
 export default function WebtoonDetailsLikeButton({
   initWebtoonLike,
 }: {
-  initWebtoonLike: WebtoonLikeT;
+  initWebtoonLike: WebtoonLikeWithMineT;
 }) {
+  const [isProcessing, setIsProcessing] = useState(false);
   const [webtoonLike, setWebtoonLike] = useState(initWebtoonLike);
+  const { execute } = useAction(toggleLike.bind(null, webtoonLike.webtoonId), {
+    onSettled: () => setIsProcessing(false),
+    onSuccess: ({ data }) => {
+      if (!data) {
+        throw new Error("data is null");
+      }
+      setWebtoonLike(data);
+    },
+    onError: clientErrorHandler
+  });
 
-  async function handleClickLike(): Promise<void> {
-    const newWebtoonLike = await createLike(webtoonLike.webtoonId);
-    setWebtoonLike(newWebtoonLike);
-  }
-
-  async function handleClickUnlike(): Promise<void> {
-    const newWebtoonLike = await deleteLike(webtoonLike.webtoonId);
-    setWebtoonLike(newWebtoonLike);
-  }
   return <Row>
-    {webtoonLike.myLike
-      ? <IconHeartFill onClick={handleClickUnlike} className="fill-red cursor-pointer"/>
-      : <IconHeart onClick={handleClickLike} className="fill-white cursor-pointer" />}
+    <Button disabled={isProcessing} asChild size="smallIcon" className="bg-tranparent hover:bg-transparent">
+      {/*todo hover logic*/}
+      {webtoonLike.myLike
+        ? <IconHeartFill onClick={() => {
+          setIsProcessing(true);
+          execute({ action: "unlike" });
+        }} className="fill-red hover:fill-red/80"/>
+        : <IconHeart onClick={() => {
+          setIsProcessing(true);
+          execute({ action: "like" });
+        }} className="fill-white hover:fill-red" />}
+    </Button>
     <span className="ml-2.5">{webtoonLike.likeCount}</span>
   </Row>;
 }

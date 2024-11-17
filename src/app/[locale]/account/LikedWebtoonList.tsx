@@ -3,10 +3,12 @@ import { Heading2 } from "@/shadcn/ui/texts";
 import { getTranslations } from "next-intl/server";
 import LikedWebtoonListGrid from "@/app/[locale]/account/LikedWebtoonListGrid";
 import { listLikedWebtoons } from "@/resources/webtoons/webtoon.service";
+import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function LikedWebtoonList() {
   const t = await getTranslations("accountPage.myLikes");
-  const initialMyLikesListResponse = await listLikedWebtoons();
+  const initialMyLikesListResponse = await listLikedWebtoons({})
+    .then(responseHandler);
   return (
     <Col>
       <Heading2 className="text-white text-2xl font-bold">

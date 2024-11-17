@@ -4,14 +4,16 @@ import Image from "next/image";
 import Spinner from "@/components/Spinner";
 import { useListData } from "@/hooks/listData";
 import { Col, Row } from "@/shadcn/ui/layouts";
-import { AdminPageBidRoundWithOffersT, listBidRoundsWithOffers } from "@/resources/bidRounds/bidRound.service";
+import { adminListBidRoundsWithOffers, AdminPageBidRoundWithOffersT } from "@/resources/bidRounds/bidRound.service";
 import Paginator from "@/components/Paginator";
 import { buildImgUrl } from "@/utils/media";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/shadcn/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { AdminOffersBidRequestT, listAdminOffersBidRequests } from "@/resources/bidRequests/bidRequest.service";
+import { AdminOffersBidRequestT, adminListAdminOffersBidRequests } from "@/resources/bidRequests/bidRequest.service";
+import { useAction } from "next-safe-action/hooks";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 
 export default function AdminOffersPage() {
   return (
@@ -24,7 +26,7 @@ export default function AdminOffersPage() {
 
 function AdminOffers() {
   const { listResponse, filters, setFilters } = useListData(
-    listBidRoundsWithOffers, {
+    adminListBidRoundsWithOffers, {
       page: 1
     });
 
@@ -55,7 +57,6 @@ function AdminOffers() {
       setFilters={setFilters}
     />
   </>;
-
 }
 
 function TableRow({ bidRound }:{
@@ -80,7 +81,7 @@ function TableRow({ bidRound }:{
           </Link>
         </Row>
         <div className="w-[15%] p-2 flex justify-center">
-          {bidRound.creatorUser.username}
+          {bidRound.creator.user.name}
         </div>
         <div className="w-[20%] p-2 flex justify-center">
           {`${bidRound.offerCount}개`}
@@ -95,7 +96,7 @@ function TableRow({ bidRound }:{
           </Button>
         </div>
       </Row>
-      {isExpanded && <BidRequestList bidRoundId={bidRound.bidRoundId} />}
+      {isExpanded && <BidRequestList bidRoundId={bidRound.id} />}
     </>
   );
 }
@@ -104,11 +105,15 @@ function BidRequestList({ bidRoundId }: {
   bidRoundId: number;
 }) {
   const [items, setItems] = useState<AdminOffersBidRequestT[]>();
+  const boundAdminListAdminOffersBidRequests = useMemo(() => adminListAdminOffersBidRequests.bind(null, bidRoundId), [bidRoundId]);
+  const { execute } = useAction(boundAdminListAdminOffersBidRequests, {
+    onSuccess: ({ data }) => setItems(data),
+    onError: clientErrorHandler
+  });
 
   useEffect(() => {
-    listAdminOffersBidRequests(bidRoundId)
-      .then(setItems);
-  }, [bidRoundId]);
+    execute();
+  }, [execute]);
 
   if (!items) {
     return <Spinner />;

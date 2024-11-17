@@ -1,11 +1,22 @@
 import z from "zod";
-import { Resolver } from "react-hook-form";
+import { ResolverResult } from "react-hook-form";
 
-export function formResolver<T extends z.ZodRawShape>(
-  zodSchema: z.ZodObject<T>,
-  values: z.infer<z.ZodObject<T>>
-): ReturnType<Resolver<z.ZodObject<T>>> {
-  const { success, data } = zodSchema.safeParse(values);
+export function formResolver<T extends z.Schema<any, any>>(
+  zodSchema: T,
+  values: z.infer<T>
+): ResolverResult<z.infer<T>> {
+  const { success, data } = zodSchema
+    .transform((obj) => {
+      // 값이 없으면 DB에 null로 저장하여 헷갈리는 일 없도록 할 것
+      for (const [key, value] of Object.entries(obj)) {
+        if (value === "") {
+          delete obj[key];
+        }
+      }
+      return obj;
+    })
+    .safeParse(values);
+
   if (success) {
     return {
       values: data,

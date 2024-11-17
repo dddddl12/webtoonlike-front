@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { Input } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
 import { Textarea } from "@/shadcn/ui/textarea";
@@ -14,7 +14,7 @@ import { useLocale, useTranslations } from "next-intl";
 import {
   AgeLimit,
   TargetAge,
-  TargetGender, WebtoonExtendedT,
+  TargetGender,
   WebtoonFormSchema,
   WebtoonFormT
 } from "@/resources/webtoons/webtoon.types";
@@ -23,67 +23,86 @@ import { useForm, UseFormReturn } from "react-hook-form";
 import Image from "next/image";
 import Spinner from "@/components/Spinner";
 import { displayName } from "@/utils/displayName";
-import { createWebtoon, updateWebtoon } from "@/resources/webtoons/webtoon.service";
 import { useRouter } from "@/i18n/routing";
 import { ImageObject } from "@/utils/media";
 import { FileDirectoryT } from "@/resources/files/files.type";
 import { formResolver } from "@/utils/forms";
 import { BasicGenreT } from "@/resources/genres/genre.service";
+import { createOrUpdateWebtoon, WebtoonDetailsT } from "@/resources/webtoons/webtoon.service";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import { toast } from "@/shadcn/hooks/use-toast";
 
 export function WebtoonForm({ selectableGenres, prev }: {
   selectableGenres: BasicGenreT[];
-  prev?: WebtoonExtendedT;
+  prev?: WebtoonDetailsT;
 }) {
   const t = useTranslations("addSeries");
   const tGeneral = useTranslations("general");
+  const router = useRouter();
 
   const [thumbnail, setThumbnail] = useState(
     new ImageObject(prev?.thumbPath));
-  const form = useForm<WebtoonFormT>({
-    defaultValues: {
-      title: prev?.title || "",
-      title_en: prev?.title_en || "",
-      authorName: prev?.authorName || "",
-      authorName_en: prev?.authorName_en || "",
-      description: prev?.description || "",
-      description_en: prev?.description_en || "",
-      externalUrl: prev?.externalUrl || "",
-      targetAges: prev?.targetAges || [],
-      ageLimit: prev?.ageLimit,
-      targetGender: prev?.targetGender,
-      genreIds: prev?.genres.map(genre => genre.id) || [],
-      thumbPath: prev?.thumbPath || "",
-    },
-    mode: "onChange",
-    resolver: (values) => formResolver(WebtoonFormSchema, values)
-  });
+  const { form, handleSubmitWithAction }
+    = useHookFormAction(
+      createOrUpdateWebtoon.bind(null, prev?.id),
+      (values) => formResolver(WebtoonFormSchema, values),
+      {
+        actionProps: {
+          onSuccess: () => {
+            if (prev) {
+              router.replace(`/webtoons/${prev.id}`);
+            } else {
+              router.replace("/webtoons");
+            }
+          },
+          onError: (args) => {
+            form.reset(args.input);
+            clientErrorHandler(args);
+          }
+        },
+        formProps: {
+          defaultValues: {
+            title: prev?.title || "",
+            title_en: prev?.title_en || "",
+            authorName: prev?.authorName || "",
+            authorName_en: prev?.authorName_en || "",
+            description: prev?.description || "",
+            description_en: prev?.description_en || "",
+            externalUrl: prev?.externalUrl || "",
+            targetAges: prev?.targetAges || [],
+            ageLimit: prev?.ageLimit,
+            targetGender: prev?.targetGender,
+            genreIds: prev?.genres.map(genre => genre.id) || [],
+            thumbPath: prev?.thumbPath || "",
+          },
+          mode: "onChange"
+        }
+      });
 
   // 제출 이후 동작
-  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
-  const router = useRouter();
-  const onSubmit = async (values: WebtoonFormT) => {
-    const thumbPath = await thumbnail.uploadAndGetRemotePath(FileDirectoryT.WebtoonsThumbnails);
-    if (!thumbPath) {
-      return;
-    }
-    values.thumbPath = thumbPath;
-    if (prev) {
-      await updateWebtoon(prev.id, values);
-      router.replace(`/webtoons/${prev.id}`);
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const remotePath = await thumbnail.uploadAndGetRemotePath(FileDirectoryT.WebtoonsThumbnails);
+    if (remotePath) {
+      form.setValue("thumbPath", remotePath);
+      await handleSubmitWithAction(e);
     } else {
-      await createWebtoon(values);
-      router.replace("/webtoons");
+      toast({
+        description: "썸네일 이미지를 업로드하지 못했습니다.",
+      });
     }
   };
 
   // 스피너
+  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
   if (isSubmitting || isSubmitSuccessful) {
     return <Spinner/>;
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-[600px] mx-auto">
+      <form className="w-[600px] mx-auto" onSubmit={onSubmit}>
         <FormHeader
           title={prev ? t("editSeries") : t("addSeries")}
           goBackHref={prev ? `/webtoons/${prev.id}` : "/webtoons"}
@@ -308,6 +327,7 @@ function ExternalLinkFieldSet({ form }: {
 
   return <FieldSet>
     <legend>{t("seriesLink")}</legend>
+    {/*todo url 체커*/}
     <FormField
       control={form.control}
       name="externalUrl"

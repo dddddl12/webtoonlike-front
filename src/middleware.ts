@@ -6,8 +6,6 @@ import { NextResponse } from "next/server";
 
 const intlMiddleware = createMiddleware(routing);
 
-const isProtectedRoute = createRouteMatcher([
-  "(.*)/creator/(.*)", "(.*)/buyer/(.*)", "(.*)/admin/(.*)"]);
 // TODO 성분 검토 검토
 const isAuthRelatedRoute = createRouteMatcher([
   "(.*)/sign-in(.*)", "(.*)/sign-up(.*)", "(.*)/sign-up-complete"]);
@@ -16,10 +14,6 @@ export default clerkMiddleware(async (auth, req) => {
   if (req.nextUrl.protocol === "blob:") {
     return NextResponse.next();
   }
-  // if (isProtectedRoute(req)) {
-  //   req.nextUrl.pathname = "/sign-in";
-  //   return intlMiddleware(req);
-  // }
 
   const { sessionClaims } = await auth();
   if (sessionClaims) {

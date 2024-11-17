@@ -12,15 +12,15 @@ import { ListResponse } from "@/resources/globalTypes";
 import { displayName } from "@/utils/displayName";
 import { useState } from "react";
 import BidRequestDetailsForInvoice from "@/app/[locale]/invoices/BidRequestDetailsForInvoice";
-import { listBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
+import { listUninvoicedBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
 
 export function UninvoicedBidRequestList({ initialBidRequestListResponse }: {
   initialBidRequestListResponse: ListResponse<SimpleBidRequestT>;
 }) {
   const t = useTranslations("invoiceManagement");
   const { listResponse, filters, setFilters } = useListData(
-    listBidRequests,
-    { page: 1, excludeInvoiced: true, limit: 5 },
+    listUninvoicedBidRequests,
+    { page: 1 },
     initialBidRequestListResponse
   );
 
@@ -107,8 +107,7 @@ function TableRow({ bidRequest }: { bidRequest: SimpleBidRequestT }) {
       </div>
       {showNegotiation
         && <BidRequestDetailsForInvoice
-          bidRequestId={bidRequest.id}
-          isInvoice={false}/>}
+          bidRequestId={bidRequest.id} />}
     </>
   );
 }

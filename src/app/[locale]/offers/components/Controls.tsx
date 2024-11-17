@@ -3,10 +3,12 @@ import { Button } from "@/shadcn/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/shadcn/ui/dialog";
 import { Textarea } from "@/shadcn/ui/textarea";
 import { createBidRequestMessage } from "@/resources/bidRequestMessages/bidRequestMessage.service";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { changeBidRequestStatus, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
 import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
 import { useToast } from "@/shadcn/hooks/use-toast";
+import { useAction } from "next-safe-action/hooks";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 
 export default function Controls({ bidRequestId, setReloadMessages, setCurBidRequest }: {
   bidRequestId: number;
@@ -14,33 +16,38 @@ export default function Controls({ bidRequestId, setReloadMessages, setCurBidReq
   setCurBidRequest: Dispatch<SetStateAction<SimpleBidRequestT>>;
 }) {
   const { toast } = useToast();
-  return <Row className="gap-20 mx-auto mb-10" >
-    <Button variant="red" onClick={async () => {
-      const updatedRequest = await changeBidRequestStatus(bidRequestId, BidRequestStatus.Declined);
+  const boundChangeBidRequestStatus = useMemo(() => changeBidRequestStatus
+    .bind(null, bidRequestId), [bidRequestId]);
+  const { execute } = useAction(boundChangeBidRequestStatus, {
+    onSuccess: ({ data }) => {
+      if (!data) {
+        throw new Error("data is null");
+      }
       setCurBidRequest(prev => ({
         ...prev,
-        status: updatedRequest.status,
-        decidedAt: updatedRequest.decidedAt,
+        status: data.status,
+        decidedAt: data.decidedAt,
       }));
       toast({
-        description: "오퍼를 거절했습니다."
+        description: data.status === BidRequestStatus.Accepted
+          ? "오퍼를 수락했습니다."
+          : "오퍼를 거절했습니다."
       });
-    }}>
+    },
+    onError: clientErrorHandler,
+  });
+
+  return <Row className="gap-20 mx-auto mb-10" >
+    <Button variant="red" onClick={() => execute({
+      changeTo: BidRequestStatus.Accepted
+    })}>
       거절하기
     </Button>
     <SendMessage bidRequestId={bidRequestId}
       setReloadMessages={setReloadMessages} />
-    <Button variant="mint" onClick={async () => {
-      const updatedRequest = await changeBidRequestStatus(bidRequestId, BidRequestStatus.Accepted);
-      setCurBidRequest(prev => ({
-        ...prev,
-        status: updatedRequest.status,
-        decidedAt: updatedRequest.decidedAt,
-      }));
-      toast({
-        description: "오퍼를 수락했습니다."
-      });
-    }}>
+    <Button variant="mint" onClick={() => execute({
+      changeTo: BidRequestStatus.Declined
+    })}>
       수락하기
     </Button>
   </Row>;
@@ -53,6 +60,18 @@ function SendMessage({ bidRequestId, setReloadMessages }: {
   const { toast } = useToast();
   const [editorOpen, setEditorOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const boundCreateBidRequestMessage = useMemo(() => createBidRequestMessage
+    .bind(null, bidRequestId), [bidRequestId]);
+  const { execute } = useAction(boundCreateBidRequestMessage, {
+    onSuccess: () => {
+      toast({
+        description: "메시지를 전송했습니다."
+      });
+      setReloadMessages(true);
+      setEditorOpen(false);
+    },
+    onError: clientErrorHandler,
+  });
 
   useEffect(() => {
     if (!editorOpen) {
@@ -64,12 +83,7 @@ function SendMessage({ bidRequestId, setReloadMessages }: {
     if (!message) {
       return;
     }
-    await createBidRequestMessage(bidRequestId, message);
-    toast({
-      description: "메시지를 전송했습니다."
-    });
-    setReloadMessages(true);
-    setEditorOpen(false);
+    execute({ content: message });
   };
 
   return <Dialog

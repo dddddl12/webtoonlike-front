@@ -5,7 +5,7 @@ import { AdminLevel, TokenInfo, TokenInfoSchema } from "@/resources/tokens/token
 import prisma from "@/utils/prisma";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { UserTypeT } from "@/resources/users/user.types";
-import { InsufficientPermissions, NotSignedInError } from "@/errors";
+import { InsufficientPermissions, NotSignedInError } from "@/handlers/errors";
 import { User } from "@clerk/backend";
 
 export const getClerkUser = async () => {

@@ -28,7 +28,6 @@ export type ContractRangeItemT = z.infer<typeof ContractRangeItemSchema>;
 export const ContractRange = z.array(ContractRangeItemSchema);
 
 export const BidRoundBaseSchema = z.object({
-  webtoonId: z.number(),
   contractRange: ContractRange,
   isOriginal: z.boolean(),
   isNew: z.boolean(),
@@ -50,6 +49,7 @@ export const BidRoundAdminSettingsSchema = z.object({
 export const BidRoundSchema = ResourceSchema
   .merge(BidRoundBaseSchema)
   .extend({
+    webtoonId: z.number(),
     status: z.nativeEnum(BidRoundStatus),
   });
 export type BidRoundT = z.infer<typeof BidRoundSchema>;

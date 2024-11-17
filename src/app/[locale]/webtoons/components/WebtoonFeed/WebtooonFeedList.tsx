@@ -11,9 +11,9 @@ import {
   SelectValue
 } from "@/shadcn/ui/select";
 import { useLocale, useTranslations } from "next-intl";
-import { AgeLimit, WebtoonPreviewT } from "@/resources/webtoons/webtoon.types";
+import { AgeLimit } from "@/resources/webtoons/webtoon.types";
 import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
-import { listWebtoons } from "@/resources/webtoons/webtoon.service";
+import { listWebtoons, WebtoonPreviewT } from "@/resources/webtoons/webtoon.service";
 import { ListResponse } from "@/resources/globalTypes";
 import { useListData } from "@/hooks/listData";
 import { displayName } from "@/utils/displayName";
@@ -27,13 +27,11 @@ type Filters = {
   page: number;
 };
 
-type WebtoonListResponse = ListResponse<WebtoonPreviewT>;
-
 export default function WebtooonFeedList({
   genres, initialWebtoonListResponse,
 }: {
   genres: BasicGenreT[];
-  initialWebtoonListResponse: WebtoonListResponse;
+  initialWebtoonListResponse: ListResponse<WebtoonPreviewT>;
 }) {
 
   const initialFilters: Filters = {

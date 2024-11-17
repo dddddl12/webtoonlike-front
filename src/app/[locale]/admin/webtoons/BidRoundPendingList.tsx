@@ -1,5 +1,5 @@
 import { useListData } from "@/hooks/listData";
-import { AdminPageBidRoundT, listBidRoundsWithWebtoon } from "@/resources/bidRounds/bidRound.service";
+import { adminListBidRoundsWithWebtoon, AdminPageBidRoundT } from "@/resources/bidRounds/bidRound.service";
 import { BidRoundApprovalStatus } from "@/resources/bidRounds/bidRound.types";
 import Spinner from "@/components/Spinner";
 import { Col, Row } from "@/shadcn/ui/layouts";
@@ -17,7 +17,7 @@ export default function BidRoundPendingList({
 }) {
 
   const { listResponse, filters, setFilters } = useListData(
-    listBidRoundsWithWebtoon, {
+    adminListBidRoundsWithWebtoon, {
       page: 1,
       approvalStatus: BidRoundApprovalStatus.Pending
     });

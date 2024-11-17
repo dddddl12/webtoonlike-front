@@ -1,6 +1,6 @@
 import { useSession } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
-import { NotSignedInError } from "@/errors";
+import { NotSignedInError } from "@/handlers/errors";
 
 export const useTokenRefresh = () => {
   const { isSignedIn, session } = useSession();

@@ -3,8 +3,6 @@ import { Input } from "@/shadcn/ui/input";
 import { ImageObject } from "@/utils/media";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/shadcn/ui/select";
 import { useTranslations } from "next-intl";
-import { CreatorFormSchema, CreatorFormT } from "@/resources/creators/creator.types";
-import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
 import { FileDirectoryT } from "@/resources/files/files.type";
@@ -12,6 +10,8 @@ import { SignUpStage, UserExtendedFormSchema, UserExtendedFormT } from "@/resour
 import { formResolver } from "@/utils/forms";
 import { createUser } from "@/resources/users/user.service";
 import { AccountFormFooter, AccountFormImageField } from "@/components/Account/common";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 
 export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }: {
   userExtendedForm: Partial<UserExtendedFormT>;
@@ -24,47 +24,61 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
   const prev = (userExtendedForm as any)?.creator;
   const [thumbnail, setThumbnail] = useState(
     new ImageObject(prev?.thumbPath));
-  const form = useForm<CreatorFormT>({
-    defaultValues: {
-      name: prev?.name ?? "",
-      name_en: prev?.name_en ?? "",
-      isAgencyAffiliated: prev?.isAgencyAffiliated,
-      isExperienced: prev?.isExperienced,
-      isExposed: prev?.isExposed ?? false,
-    },
-    mode: "onChange",
-    resolver: (values) => formResolver(CreatorFormSchema, values)
-  });
+
+  const { form, handleSubmitWithAction }
+    = useHookFormAction(
+      createUser,
+      (values) => formResolver(UserExtendedFormSchema, values),
+      {
+        actionProps: {
+          onSuccess: () => {
+            setSignUpStage(prevState => prevState + 1);
+          },
+          onError: (args) => {
+            form.reset(args.input);
+            clientErrorHandler(args);
+          }
+        },
+        formProps: {
+          defaultValues: {
+            ...userExtendedForm,
+            creator: {
+              name: prev?.name ?? "",
+              name_en: prev?.name_en ?? "",
+              isAgencyAffiliated: prev?.isAgencyAffiliated,
+              isExperienced: prev?.isExperienced,
+              isExposed: prev?.isExposed ?? false,
+            }
+          },
+          mode: "onChange"
+        },
+        errorMapProps: {}
+      }
+    );
 
   // 제출 이후 동작
   const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
-  const onSubmit = async (values: CreatorFormT) => {
-    values.thumbPath = await thumbnail.uploadAndGetRemotePath(FileDirectoryT.CreatorsThumbnails);
-    const validatedUserForm = UserExtendedFormSchema.parse({
-      ...userExtendedForm,
-      creator: values
-    });
-    await createUser(validatedUserForm);
-    setSignUpStage(prevState => prevState + 1);
-  };
 
-  // 스피너
   if (isSubmitting || isSubmitSuccessful) {
     return <Spinner />;
   }
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={async (e) => {
+          await thumbnail.uploadAndGetRemotePath(FileDirectoryT.CreatorsThumbnails)
+            .then(remotePath => form.setValue("creator.thumbPath", remotePath));
+          await handleSubmitWithAction(e);
+        }}
         className="flex flex-col gap-5"
       >
-
         <span className="mb-10">{t("profileDesc")}</span>
         <AccountFormImageField image={thumbnail} setImage={setThumbnail} placeholder={t("uploadProfilePic")}/>
 
         <FormField
           control={form.control}
-          name="isAgencyAffiliated"
+          name="creator.isAgencyAffiliated"
           render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -89,7 +103,7 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
 
         <FormField
           control={form.control}
-          name="isExperienced"
+          name="creator.isExperienced"
           render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -114,7 +128,7 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
 
         <FormField
           control={form.control}
-          name="name"
+          name="creator.name"
           render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -130,7 +144,7 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
 
         <FormField
           control={form.control}
-          name="name_en"
+          name="creator.name_en"
           render={({ field }) => (
             <FormItem>
               <FormControl>

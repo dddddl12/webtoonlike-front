@@ -12,6 +12,7 @@ import { displayName } from "@/utils/displayName";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import NavButton from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/EpisodeNavButton";
+import { responseHandler } from "@/handlers/responseHandler";
 
 // TODO 에피소드 추가는 어디서?
 
@@ -19,8 +20,10 @@ export default async function WebtoonEpisodeDetail(
   { params }:
   {params: Promise<{webtoonId: string; episodeId: string}>},
 ) {
-  const { episodeId } = await params;
-  const episode = await getEpisode(Number(episodeId));
+  const episodeId = await params
+    .then(({ episodeId }) => Number(episodeId));
+  const episode = await getEpisode(episodeId)
+    .then(responseHandler);
   const { webtoon } = episode;
 
   const locale = await getLocale();

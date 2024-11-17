@@ -7,18 +7,16 @@ import Image from "next/image";
 import { IconCross } from "@/components/svgs/IconCross";
 import { useLocale, useTranslations } from "next-intl";
 import Paginator from "@/components/Paginator";
-import { listMyWebtoonsNotOnSale } from "@/resources/webtoons/webtoon.service";
+import { listMyWebtoonsNotOnSale, MyWebtoonNotOnSaleT } from "@/resources/webtoons/webtoon.service";
 import { Link } from "@/i18n/routing";
 import { useListData } from "@/hooks/listData";
 import { displayName } from "@/utils/displayName";
-import { BidRoundApprovalStatus, BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
+import { BidRoundApprovalStatus } from "@/resources/bidRounds/bidRound.types";
 import StatusBadge from "@/components/StatusBadge";
-
-type WebtoonListResponse = Awaited<ReturnType<typeof listMyWebtoonsNotOnSale>>;
-type Webtoon = WebtoonListResponse["items"][number];
+import { ListResponse } from "@/resources/globalTypes";
 
 export default function MyWebtoonsNotOnSale({ initialWebtoonListResponse }: {
-  initialWebtoonListResponse: WebtoonListResponse;
+  initialWebtoonListResponse: ListResponse<MyWebtoonNotOnSaleT>;
 }) {
   const t = useTranslations("manageContents");
   const { listResponse, filters, setFilters } = useListData(
@@ -66,7 +64,7 @@ export default function MyWebtoonsNotOnSale({ initialWebtoonListResponse }: {
 }
 
 function TableRow({ webtoon }: {
-  webtoon: Webtoon;
+  webtoon: MyWebtoonNotOnSaleT;
 }) {
   const locale = useLocale();
 
@@ -102,7 +100,7 @@ function TableRow({ webtoon }: {
 }
 
 function StatusIndicator({ webtoon }: {
-  webtoon: Webtoon;
+  webtoon: MyWebtoonNotOnSaleT;
 }) {
   const t = useTranslations("manageContents");
   const { bidRoundApprovalStatus } = webtoon;

@@ -3,7 +3,7 @@ import { Text } from "@/shadcn/ui/texts";
 import { useListData } from "@/hooks/listData";
 import Spinner from "@/components/Spinner";
 import Paginator from "@/components/Paginator";
-import { AdminPageBidRoundT, listBidRoundsWithWebtoon } from "@/resources/bidRounds/bidRound.service";
+import { adminListBidRoundsWithWebtoon, AdminPageBidRoundT } from "@/resources/bidRounds/bidRound.service";
 import { BidRoundApprovalStatus } from "@/resources/bidRounds/bidRound.types";
 import { Link } from "@/i18n/routing";
 
@@ -11,7 +11,7 @@ import { Link } from "@/i18n/routing";
 export default function BidRoundList() {
 
   const { listResponse, filters, setFilters } = useListData(
-    listBidRoundsWithWebtoon, {
+    adminListBidRoundsWithWebtoon, {
       page: 1,
       approvalStatus: BidRoundApprovalStatus.Approved
     });
