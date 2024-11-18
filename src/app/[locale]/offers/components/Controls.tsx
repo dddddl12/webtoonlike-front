@@ -9,6 +9,8 @@ import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { useAction } from "next-safe-action/hooks";
 import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import { useTokenInfo } from "@/hooks/tokenInfo";
+import { UserTypeT } from "@/resources/users/user.types";
 
 export default function Controls({ bidRequestId, setReloadMessages, setCurBidRequest }: {
   bidRequestId: number;
@@ -16,6 +18,8 @@ export default function Controls({ bidRequestId, setReloadMessages, setCurBidReq
   setCurBidRequest: Dispatch<SetStateAction<SimpleBidRequestT>>;
 }) {
   const { toast } = useToast();
+  const { tokenInfo } = useTokenInfo();
+  const userType = tokenInfo?.metadata.type;
   const boundChangeBidRequestStatus = useMemo(() => changeBidRequestStatus
     .bind(null, bidRequestId), [bidRequestId]);
   const { execute } = useAction(boundChangeBidRequestStatus, {
@@ -38,18 +42,20 @@ export default function Controls({ bidRequestId, setReloadMessages, setCurBidReq
   });
 
   return <Row className="gap-20 mx-auto mb-10" >
-    <Button variant="red" onClick={() => execute({
-      changeTo: BidRequestStatus.Declined
-    })}>
-      거절하기
-    </Button>
+    {userType === UserTypeT.Creator
+      && <Button variant="red" onClick={() => execute({
+        changeTo: BidRequestStatus.Declined
+      })}>
+        거절하기
+      </Button>}
     <SendMessage bidRequestId={bidRequestId}
       setReloadMessages={setReloadMessages} />
-    <Button variant="mint" onClick={() => execute({
-      changeTo: BidRequestStatus.Accepted
-    })}>
-      수락하기
-    </Button>
+    {userType === UserTypeT.Creator
+      && <Button variant="mint" onClick={() => execute({
+        changeTo: BidRequestStatus.Accepted
+      })}>
+        수락하기
+      </Button>}
   </Row>;
 }
 
