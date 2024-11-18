@@ -39,14 +39,14 @@ export default function Controls({ bidRequestId, setReloadMessages, setCurBidReq
 
   return <Row className="gap-20 mx-auto mb-10" >
     <Button variant="red" onClick={() => execute({
-      changeTo: BidRequestStatus.Accepted
+      changeTo: BidRequestStatus.Declined
     })}>
       거절하기
     </Button>
     <SendMessage bidRequestId={bidRequestId}
       setReloadMessages={setReloadMessages} />
     <Button variant="mint" onClick={() => execute({
-      changeTo: BidRequestStatus.Declined
+      changeTo: BidRequestStatus.Accepted
     })}>
       수락하기
     </Button>

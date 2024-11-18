@@ -78,7 +78,7 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
     {messages.map((message, index) => (
       <MessageRow
         key={index}
-        seq={index}
+        seq={index + 1}
         user={message.user}
         createdAt={message.createdAt}
         statusLabel={message.user.userType === UserTypeT.Creator

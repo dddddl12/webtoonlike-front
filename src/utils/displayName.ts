@@ -1,5 +1,17 @@
-export const displayName = (
+export function displayName(
+  locale: string,
+  koreanName: string,
+  englishName?: string,
+): string;
+export function displayName(
   locale: string,
   koreanName?: string,
   englishName?: string,
-) => locale === "ko" ? koreanName : englishName ?? koreanName;
+): string | undefined;
+export function displayName(
+  locale: string,
+  koreanName?: string,
+  englishName?: string,
+) {
+  return locale === "ko" ? koreanName : englishName ?? koreanName;
+}

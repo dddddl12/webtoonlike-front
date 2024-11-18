@@ -19,7 +19,7 @@ import {
   WebtoonFormT
 } from "@/resources/webtoons/webtoon.types";
 import { FieldSet, Form, FormControl, FormField, FormHeader, FormItem, FormLabel } from "@/shadcn/ui/form";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import Image from "next/image";
 import Spinner from "@/components/Spinner";
 import { displayName } from "@/utils/displayName";

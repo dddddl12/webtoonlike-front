@@ -126,29 +126,45 @@ const mapToWebtoonPreviewDTO = (record: {
 // 바이어용
 // /webtoons
 // /creators/[userId]
+const WebtoonFilterSchema = z.object({
+  genreIds: z.array(z.number()).optional(),
+  ageLimits: z.array(z.nativeEnum(AgeLimit)).optional(),
+  page: z.number().default(1),
+  userId: z.number().optional(),
+});
+export type WebtoonFilterT = z.infer<typeof WebtoonFilterSchema>;
 export const listWebtoons = action
   .metadata({ actionName: "listWebtoons" })
-  .schema(z.object({
-    genreId: z.number().optional(),
-    ageLimit: z.nativeEnum(AgeLimit).optional(),
-    page: z.number().default(1),
-    userId: z.number().optional(),
-  }))
+  .schema(WebtoonFilterSchema)
   .outputSchema(ListResponseSchema(WebtoonPreviewSchema))
   .action(async ({
-    parsedInput: { genreId, ageLimit, userId, page }
+    parsedInput: { genreIds, ageLimits, userId, page }
   }) => {
     const limit = 10;
     const where: Prisma.WebtoonWhereInput = {
-      ageLimit: ageLimit,
       bidRounds: {
         some: offerableBidRoundFilter()
       },
-      genreLinks: genreId ? {
-        some: { genreId }
-      } : undefined,
       userId
     };
+
+    // Age limit 필터
+    if (ageLimits && ageLimits.length > 0) {
+      where.ageLimit = {
+        in: ageLimits
+      };
+    }
+
+    // Genre 필터
+    if (genreIds && genreIds.length > 0) {
+      where.genreLinks = {
+        some: {
+          genreId: {
+            in: genreIds
+          }
+        }
+      };
+    }
 
     const [records, totalRecords] = await prisma.$transaction([
       prisma.webtoon.findMany({
