@@ -1,7 +1,7 @@
 import { BidRequestDetailsT, getBidRequest } from "@/resources/bidRequests/bidRequest.service";
 import { Col, Gap, Row } from "@/shadcn/ui/layouts";
 import OfferDetails from "@/components/Details/OfferDetails";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Spinner from "@/components/Spinner";
 import Profile from "@/components/Details/Profile";
 import { displayName } from "@/utils/displayName";
@@ -20,7 +20,7 @@ export default function BidRequestDetailsForInvoice({ bidRequestId }: {
   bidRequestId: number;
 }) {
   const [bidRequest, setBidRequest] = useState<BidRequestDetailsT>();
-  const boundGetBidRequest = getBidRequest.bind(null, bidRequestId);
+  const boundGetBidRequest = useMemo(() => getBidRequest.bind(null, bidRequestId), [bidRequestId]);
   const { execute } = useAction(boundGetBidRequest, {
     onSuccess: ({ data }) => setBidRequest(data),
     onError: clientErrorHandler
