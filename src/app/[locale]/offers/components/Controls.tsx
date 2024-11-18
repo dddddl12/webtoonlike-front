@@ -66,6 +66,7 @@ function SendMessage({ bidRequestId, setReloadMessages }: {
   const { toast } = useToast();
   const [editorOpen, setEditorOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+
   const boundCreateBidRequestMessage = useMemo(() => createBidRequestMessage
     .bind(null, bidRequestId), [bidRequestId]);
   const { execute } = useAction(boundCreateBidRequestMessage, {

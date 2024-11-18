@@ -4,7 +4,7 @@ import { IconDelete } from "@/components/svgs/IconDelete";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import Spinner from "@/components/Spinner";
 import { Col, Row } from "@/shadcn/ui/layouts";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BasicGenreT, listGenres } from "@/resources/genres/genre.service";
 import { Badge } from "@/shadcn/ui/badge";
 import { Button } from "@/shadcn/ui/button";
@@ -25,7 +25,9 @@ function ManageGenresContent() {
   const [loaded, setLoaded] = useState<boolean>(false);
   const reloadOnUpdate = useCallback(() => setLoaded(false), []);
   const [genres, setGenres] = useState<BasicGenreT[]>();
-  const { execute } = useAction(listGenres, {
+
+  const boundListGenres = useMemo(() => listGenres, []);
+  const { execute } = useAction(boundListGenres, {
     onSuccess: ({ data }) => setGenres(data),
   });
   useEffect(() => {

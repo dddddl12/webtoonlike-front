@@ -42,7 +42,7 @@ export const action = createSafeActionClient({
   logObject.metadata = metadata;
   logObject.result = result;
 
-  console.log("LOGGING FROM MIDDLEWARE:");
+  console.log("LOGGING FROM MIDDLEWARE: " + logObject.metadata.actionName);
   console.dir(logObject, { depth: null });
 
   // And then return the result of the awaited next middleware.
