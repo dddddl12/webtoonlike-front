@@ -10,10 +10,11 @@ import { Dispatch, SetStateAction } from "react";
 import Paginator from "@/components/Paginator";
 import { WebtoonPreviewT } from "@/resources/webtoons/webtoon.service";
 
-type Filters = {
-  page?: number;
-  [extraKey: string]: any;
-};
+// type Filters = {
+//   page?: number;
+//   [extraKey: string]: any;
+// };
+type Filters = any;
 
 export default function WebtoonGridPaginated({ listResponse, filters, setFilters, noItemsMessage }: {
   listResponse: ListResponse<WebtoonPreviewT>;

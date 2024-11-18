@@ -2,7 +2,7 @@
 
 import { ListResponse } from "@/resources/globalTypes";
 import { useListData } from "@/hooks/listData";
-import { listWebtoons, WebtoonPreviewT } from "@/resources/webtoons/webtoon.service";
+import { listWebtoonsByUserId, WebtoonPreviewT } from "@/resources/webtoons/webtoon.service";
 import WebtoonGridPaginated from "@/components/WebtoonGridPaginated";
 
 export default function CreatorWebtoonList({ initialWebtoonListResponse, creatorUid }: {
@@ -10,12 +10,9 @@ export default function CreatorWebtoonList({ initialWebtoonListResponse, creator
   creatorUid: number;
 }) {
   const { listResponse, filters, setFilters } = useListData(
-    listWebtoons, {
+    listWebtoonsByUserId, {
       page: 1,
       userId: creatorUid,
-    } as {
-      page: number;
-      userId?: number;
     }, initialWebtoonListResponse);
 
   return <WebtoonGridPaginated

@@ -127,66 +127,83 @@ const mapToWebtoonPreviewDTO = (record: {
 // /webtoons
 // /creators/[userId]
 const WebtoonFilterSchema = z.object({
-  genreIds: z.array(z.number()).optional(),
-  ageLimits: z.array(z.nativeEnum(AgeLimit)).optional(),
-  page: z.number().default(1),
-  userId: z.number().optional(),
+  genreIds: z.array(z.number()).default([]),
+  ageLimits: z.array(z.nativeEnum(AgeLimit)).default([]),
+  page: z.number().default(1)
 });
 export type WebtoonFilterT = z.infer<typeof WebtoonFilterSchema>;
 export const listWebtoons = action
   .metadata({ actionName: "listWebtoons" })
   .schema(WebtoonFilterSchema)
   .outputSchema(ListResponseSchema(WebtoonPreviewSchema))
-  .action(async ({
-    parsedInput: { genreIds, ageLimits, userId, page }
-  }) => {
-    const limit = 10;
-    const where: Prisma.WebtoonWhereInput = {
-      bidRounds: {
-        some: offerableBidRoundFilter()
-      },
-      userId
-    };
-
-    // Age limit 필터
-    if (ageLimits && ageLimits.length > 0) {
-      where.ageLimit = {
-        in: ageLimits
-      };
-    }
-
-    // Genre 필터
-    if (genreIds && genreIds.length > 0) {
-      where.genreLinks = {
-        some: {
-          genreId: {
-            in: genreIds
-          }
-        }
-      };
-    }
-
-    const [records, totalRecords] = await prisma.$transaction([
-      prisma.webtoon.findMany({
-        where,
-        take: limit,
-        skip: (page - 1) * limit,
-        select: {
-          id: true,
-          title: true,
-          title_en: true,
-          description: true,
-          description_en: true,
-          thumbPath: true,
-        }
-      }),
-      prisma.webtoon.count({ where })
-    ]);
-    return {
-      items: records.map(mapToWebtoonPreviewDTO),
-      totalPages: Math.ceil(totalRecords / limit),
-    };
+  .action(async ({ parsedInput: formData }) => {
+    return _listWebtoons(formData);
   });
+
+export const listWebtoonsByUserId = action
+  .metadata({ actionName: "listWebtoonsByUserId" })
+  .schema(z.object({
+    userId: z.number(),
+    page: z.number().default(1)
+  }))
+  .outputSchema(ListResponseSchema(WebtoonPreviewSchema))
+  .action(async ({ parsedInput: formData }) => {
+    return _listWebtoons(formData);
+  });
+
+export const _listWebtoons = async ({ genreIds, userId, ageLimits, page }: {
+  genreIds?: number[];
+  userId?: number;
+  ageLimits?: AgeLimit[];
+  page: number;
+}) => {
+  const limit = 10;
+  const where: Prisma.WebtoonWhereInput = {
+    bidRounds: {
+      some: offerableBidRoundFilter()
+    },
+    userId
+  };
+
+  // Age limit 필터
+  if (ageLimits && ageLimits.length > 0) {
+    where.ageLimit = {
+      in: ageLimits
+    };
+  }
+
+  // Genre 필터
+  if (genreIds && genreIds.length > 0) {
+    where.genreLinks = {
+      some: {
+        genreId: {
+          in: genreIds
+        }
+      }
+    };
+  }
+
+  const [records, totalRecords] = await prisma.$transaction([
+    prisma.webtoon.findMany({
+      where,
+      take: limit,
+      skip: (page - 1) * limit,
+      select: {
+        id: true,
+        title: true,
+        title_en: true,
+        description: true,
+        description_en: true,
+        thumbPath: true,
+      }
+    }),
+    prisma.webtoon.count({ where })
+  ]);
+  return {
+    items: records.map(mapToWebtoonPreviewDTO),
+    totalPages: Math.ceil(totalRecords / limit),
+  };
+};
 
 // 바이어용
 // /account
