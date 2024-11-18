@@ -38,8 +38,10 @@ export default function InvoiceDownload({
   });
 
   useEffect(() => {
-    execute();
-  }, [execute]);
+    if (invoiceDownloadOpen) {
+      execute();
+    }
+  }, [execute, invoiceDownloadOpen]);
 
   return (
     <Dialog
@@ -94,19 +96,25 @@ function DownloadButton({ previewContent, invoice }: {
       }
       const a = document.createElement("div");
       a.innerHTML = previewContent;
-      a.style.color = "black";
-      const doc = new jsPDF();
+      a.style.fontFamily = "NanumGothic";
+      const doc = new jsPDF({
+        orientation: "p",
+        unit: "mm",
+        format: "a4",
+      });
+      doc.addFont("/fonts/NanumGothic.ttf", "NanumGothic", "normal");
+      doc.addFont("/fonts/NanumGothicBold.ttf", "NanumGothic", "bold");
+      doc.setFont("NanumGothic");
       doc.html(a, {
         callback: function(doc) {
           // Save the PDF
           doc.save(`${displayName(locale, invoice.webtoon.title, invoice.webtoon.title_en)}_${invoice.creatorUsername}_${invoice.buyerUsername}_invoice.pdf`);
         },
-        x: 15,
-        y: 15,
-        width: 170, //target width in the PDF document
-        windowWidth: 650 //window width in CSS pixels
+        width: 180,
+        windowWidth: 700,
+        margin: [20, 15],
       });
     }}>
-    {t("downloadInvoice")} (한글 인코딩 이슈 해결 중...)
+    {t("downloadInvoice")}
   </Button>;
 }

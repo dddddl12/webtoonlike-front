@@ -154,12 +154,11 @@ model Genre {
 }
 
 model Invoice {
-  id            Int      @id @default(autoincrement())
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
-  bidRequestId  Int      @unique @map("request_id")
-  content       Json
-  contentInHtml String
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  bidRequestId Int      @unique @map("request_id")
+  content      Json
 
   bidRequest BidRequest @relation(fields: [bidRequestId], references: [id], onDelete: Restrict)
 

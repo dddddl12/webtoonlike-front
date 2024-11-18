@@ -35,7 +35,7 @@ export const InvoiceContent = z.object({
     contractRange: z.array(BidRequestContractRangeItemSchema)
     //   TODO parsing 조건은 모두 이것으로 대체
   }),
-  issuedAt: z.date(),
+  issuedAt: z.string().or( z.date() ).transform( arg => new Date( arg ) )
 });
 export type InvoiceContentT = z.infer<typeof InvoiceContent>;
 

@@ -1,25 +1,6 @@
 import { InvoiceContentT } from "@/resources/invoices/invoice.types";
 import { getTranslations } from "next-intl/server";
 
-// export async function convertHtmlToPdfBuffer(html: string) {
-//   const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
-//
-//   const page = await browser.newPage();
-//
-//   await page.setContent(html);
-//
-//   const result = await page.pdf({
-//     format: "A4",
-//     width: "2480px",
-//     height: "3508px",
-//     printBackground: true
-//   });
-//
-//   await browser.close();
-//
-//   return result;
-// }
-
 export async function convertInvoiceToHtml(content: InvoiceContentT) {
   const locale = "ko";
   const [tCountries, tBusinessFields, tContractType] = await Promise.all([
@@ -34,32 +15,67 @@ export async function convertInvoiceToHtml(content: InvoiceContentT) {
   validUntil.setFullYear(issuedAt.getFullYear() + 1);
 
   const html = `<html lang=${locale}>
-    <style>
-      body {
-        padding: 16px;
-        font-size: 14px;
-      }
-      h1 {
-        font-size: 26px;
-      }
-      table { width: 100%; border-collapse: collapse; font-size: 14px;}
-      th, td { border: 2px solid black; padding: 16px; text-align: center; }
-
-      .subtitle {
-        font-size: 22px;
-        font-weight: bold;
-      }
-      .box {
-        border: 2px solid black;
-        padding: 20px;
-      }
-      .bold {
-        font-weight: bold;
-      }
-      .text-center {
-        text-align: center;
-      }
-    </style>
+    <head>
+      <title>인보이스</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+      <style>
+        body {
+          padding: 16px;
+          font-size: 14px;
+          color: black;
+          font-family: "Nanum Gothic", sans-serif;
+          font-weight: 400;
+          font-style: normal;
+        }
+        h1 {
+          font-size: 26px;
+          font-weight: bold;
+        }
+        .table {
+          font-size: 14px;
+          display: grid;
+          border: 1px solid black;
+          grid-template-columns: 1fr 1fr 1fr 2fr;
+          padding: 0;
+        }
+        .header {
+          font-weight: bold;
+        }
+        .row {
+          padding: 0;
+          display: contents; /* Treat each row as a part of the grid */
+        }
+        .cell {
+          border: 1px solid black;
+          padding: 0 8px;
+          display: flex;
+          align-items: center;
+        }
+        .cell p {
+          text-align: center;
+        }
+        .cell.left-align p {
+          text-align: left;
+        }
+  
+        .subtitle {
+          font-size: 22px;
+          font-weight: bold;
+        }
+        .box {
+          border: 2px solid black;
+          padding: 20px;
+        }
+        .bold {
+          font-weight: bold;
+        }
+        .text-center {
+          text-align: center;
+        }
+      </style>
+    </head>
     <body>
       <h1 class="text-center">협의 내역서</h1>
       <p class="subtitle">구매자</p>
@@ -85,30 +101,42 @@ export async function convertInvoiceToHtml(content: InvoiceContentT) {
 
       <p class="subtitle">조건</p>
 
-      <table>
-        <thead class="bold">
-          <tr>
-            <th>서비스 권역</th>
-            <th>사업권</th>
-            <th>독점 권리</th>
-            <th>합의 조건</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="table">
+        <div class="row header">
+          <div class="cell">
+            <p>서비스 권역</p>
+          </div>
+          <div class="cell">
+            <p>사업권</p>
+          </div>
+          <div class="cell">
+            <p>독점 권리</p>
+          </div>
+          <div class="cell">
+            <p>합의 조건</p>
+          </div>
+        </div>
           ${contractRange.map((item) => {
             return (
               `
-      <tr>
-        <td>${tCountries(item.country)}</td>
-        <td>${tBusinessFields(item.businessField)}</td>
-        <td>${tContractType(item.contract)}</td>
-        <td>${item.message}</td>
-      </tr>
+      <div class="row">
+        <div class="cell">
+          <p>${tCountries(item.country)}</p>
+        </div>
+        <div class="cell">
+          <p>${tBusinessFields(item.businessField)}</p>
+        </div>
+        <div class="cell">
+          <p>${tContractType(item.contract)}</p>
+        </div>
+        <div class="cell left-align">
+          <p>${item.message}</p>
+        </div>
+      </div>
       `
             );
-          })}
-      </tbody>
-      </table>
+          }).join("")}
+      </div>
 
       <p class="text-center">협의 내역서 만료 기간: ${validUntil.toLocaleString(locale, {
         timeZone: "Asia/Seoul",

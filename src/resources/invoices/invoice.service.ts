@@ -1,7 +1,7 @@
 "use server";
 
 import { Prisma } from "@prisma/client";
-import { InvoiceContent, InvoiceSchema } from "@/resources/invoices/invoice.types";
+import { InvoiceContent, InvoiceContentT, InvoiceSchema } from "@/resources/invoices/invoice.types";
 import { ListResponse, ListResponseSchema } from "@/resources/globalTypes";
 import { assertAdmin, getTokenInfo } from "@/resources/tokens/token.service";
 import prisma from "@/utils/prisma";
@@ -135,18 +135,15 @@ async function _previewOrCreateInvoice(bidRequestId: number, storeToDb: boolean)
     };
 
     const invoiceContentValidated = InvoiceContent.parse(invoiceContent);
-    const contentInHtml = await convertInvoiceToHtml(invoiceContentValidated);
-
     if (storeToDb) {
       await tx.invoice.create({
         data: {
           bidRequestId,
-          content: invoiceContentValidated,
-          contentInHtml
+          content: invoiceContentValidated
         }
       });
     }
-    return contentInHtml;
+    return convertInvoiceToHtml(invoiceContentValidated);
   });
 }
 
@@ -286,12 +283,11 @@ export const downloadInvoiceContent = action
   ])
   .outputSchema(z.string())
   .action(async ({ bindArgsParsedInputs: [invoiceId] }) => {
-    // TODO content, contentInHtml 장단점 문서화
-    const { contentInHtml } = await prisma.invoice.findUniqueOrThrow({
+    const { content } = await prisma.invoice.findUniqueOrThrow({
       where: { id: invoiceId },
       select: {
-        contentInHtml: true
+        content: true
       }
     });
-    return contentInHtml;
+    return convertInvoiceToHtml(InvoiceContent.parse(content));
   });
