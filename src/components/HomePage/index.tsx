@@ -6,11 +6,12 @@ import BannerSection from "@/components/HomePage/BannerSection";
 import PageLayout from "@/components/PageLayout";
 import { homeItems } from "@/resources/home/home.service";
 import GenreWrapper from "@/components/HomePage/GenreWrapper";
+import { responseHandler } from "@/handlers/responseHandler";
 
 export async function HomePage() {
   const t = await getTranslations("homeMain");
 
-  const { banners, popular, brandNew, genreSets, creators } = await homeItems();
+  const { banners, popular, brandNew, genreSets, creators } = await homeItems().then(responseHandler);
   const locale = await getLocale();
 
   return (

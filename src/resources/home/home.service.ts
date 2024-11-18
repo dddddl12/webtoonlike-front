@@ -1,31 +1,35 @@
 "use server";
 
-import { $Enums, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import prisma from "@/utils/prisma";
 import { BannerWebtoonItem, HomeCreatorItem, HomeGenreItem, HomeWebtoonItem } from "@/resources/home/home.types";
 import { AgeLimit } from "@/resources/webtoons/webtoon.types";
 import { PrismaTransaction } from "@/resources/globalTypes";
 import { offerableBidRoundFilter } from "@/resources/bidRounds/bidRound.utils";
+import { action } from "@/handlers/safeAction";
 
-export async function homeItems() {
-  const [banners, popular, brandNew, genreSets, creators] = await prisma.$transaction(async (tx) => {
-    return Promise.all([
-      getBanners(tx),
-      getPopular(tx),
-      getBrandNew(tx),
-      getGenreSets(tx),
-      getCreators(tx)
-    ]);
-  });
+export const homeItems = action
+  .metadata({ actionName: "homeItems" })
+  .action(
+    async () => {
+      const [banners, popular, brandNew, genreSets, creators] = await prisma.$transaction(async (tx) => {
+        return Promise.all([
+          getBanners(tx),
+          getPopular(tx),
+          getBrandNew(tx),
+          getGenreSets(tx),
+          getCreators(tx)
+        ]);
+      });
 
-  return {
-    banners,
-    popular,
-    brandNew,
-    genreSets,
-    creators
-  };
-}
+      return {
+        banners,
+        popular,
+        brandNew,
+        genreSets,
+        creators
+      };
+    });
 
 // 배너 작품
 const getBanners = async (tx: PrismaTransaction): Promise<BannerWebtoonItem[]> => {
@@ -196,12 +200,14 @@ const getCreators = async (tx: PrismaTransaction): Promise<HomeCreatorItem[]> =>
                       COALESCE(c.name_en, '') AS name_en,
                       COALESCE(c.thumb_path, '') AS "thumbPath",
                       u.id        AS id,
-                      CAST(COUNT(w.id) AS INTEGER) AS "numOfWebtoons"
+                      CAST(COUNT(DISTINCT w.id) AS INTEGER) AS "numOfWebtoons"
                FROM creators c
-                        JOIN
-                    users u ON u.id = c.user_id
-                        LEFT JOIN
-                    webtoons w ON w.user_id = u.id
+                        JOIN users u ON u.id = c.user_id
+                        LEFT JOIN webtoons w ON w.user_id = u.id
+                        LEFT JOIN bid_rounds br ON br.webtoon_id = w.id
+                           AND br.is_active = TRUE
+                           AND br.approval_status = 'approved'
+                           AND br.bid_starts_at < NOW()
                WHERE c.is_exposed = TRUE
                GROUP BY c.id,
                         c.name,
