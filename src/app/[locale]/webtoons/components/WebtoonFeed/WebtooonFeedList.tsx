@@ -102,13 +102,14 @@ function FilterSelector({
   return <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
     <DropdownMenuTrigger asChild>
       <Button variant="outline" className="w-56">
-        <div className="flex-1">{displayFilter(filterTitle,
-          ...currentFilter.map(value => {
-            const item = items
-              .find(i => i.value === value)!;
-            return item.label;
-          })
-        )}</div>
+        <div className="flex-1 text-left">
+          {displayFilter(filterTitle,
+            ...currentFilter.map(value => {
+              const item = items
+                .find(i => i.value === value)!;
+              return item.label;
+            })
+          )}</div>
         <div>
           <ChevronDown className="h-4 w-4 opacity-50"/>
         </div>

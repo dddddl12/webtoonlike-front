@@ -34,7 +34,7 @@ export default function ContractRangeForm({ form, formType }: {
   return (
     <div>
       <Row className="justify-end">
-        <Button className="bg-mint w-[120px]" onClick={(e) => {
+        <Button className="bg-mint" onClick={(e) => {
           e.preventDefault();
           const newContractRange = form.getValues("contractRange") || [];
           newContractRange.push({} as any);
