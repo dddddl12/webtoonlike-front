@@ -2,14 +2,12 @@
 
 import Spinner from "@/components/Spinner";
 import { Col, Row } from "@/shadcn/ui/layouts";
-import { Button } from "@/shadcn/ui/button";
 import { useListData } from "@/hooks/listData";
 import { AdminEntryT, listAdmins } from "@/resources/admins/admin.service";
 import { useTranslations } from "next-intl";
 import Paginator from "@/components/Paginator";
 import DeleteAdmin from "@/app/[locale]/admin/admins/DeleteAdmin";
 import AddAdmin from "@/app/[locale]/admin/admins/AddAdmin";
-import { IconDelete } from "@/components/svgs/IconDelete";
 import { useCallback, useEffect, useState } from "react";
 
 export default function ManageAdminsPage() {

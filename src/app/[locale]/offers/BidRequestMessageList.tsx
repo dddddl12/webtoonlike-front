@@ -40,6 +40,8 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
     }
   }, [execute, reloadMessages]);
 
+  const { tokenInfo } = useTokenInfo();
+  const userId = tokenInfo?.userId;
   const tBidRequestStatus = useTranslations("bidRequestStatus");
   if (!messagesResponse) {
     return <div>
@@ -72,6 +74,7 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
         && <Controls bidRequestId={curBidRequest.id}
           setReloadMessages={setReloadMessages}
           setCurBidRequest={setCurBidRequest}
+          whoCanDecideAtThisTurn={UserTypeT.Creator}
         />}
     </MessageRow>
 
@@ -89,7 +92,11 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
           && <Controls bidRequestId={curBidRequest.id}
             setReloadMessages={setReloadMessages}
             setCurBidRequest={setCurBidRequest}
+            whoCanDecideAtThisTurn={message.user.userType === UserTypeT.Creator
+              ? UserTypeT.Buyer : UserTypeT.Creator}
+            refMessageId={messages[messages.length - 1].id}
           />}
+        {/*  바이어에게 받으면 저작권자, 혹은 그의 반대로 수락/거절 가능 */}
       </MessageRow>
     ))}
     {isDone

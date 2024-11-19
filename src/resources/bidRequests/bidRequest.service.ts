@@ -512,15 +512,16 @@ export const createBidRequest = action
 export const changeBidRequestStatus = action
   .metadata({ actionName: "changeBidRequestStatus" })
   .bindArgsSchemas([
-    z.number() //bidRequestId
+    z.number(), //bidRequestId
   ])
   .schema(z.object({
-    changeTo: z.enum([BidRequestStatus.Accepted, BidRequestStatus.Declined])
+    changeTo: z.enum([BidRequestStatus.Accepted, BidRequestStatus.Declined]),
+    refMessageId: z.number().optional()
   }))
   .outputSchema(BidRequestSchema)
   .action(async ({
     bindArgsParsedInputs: [bidRequestId],
-    parsedInput: { changeTo }
+    parsedInput: { changeTo, refMessageId }
   }) => {
     return prisma.$transaction(async (tx) => {
       const { status, ...record } = await tx.bidRequest.findUniqueOrThrow({
@@ -529,29 +530,55 @@ export const changeBidRequestStatus = action
         },
         select: {
           status: true,
+          userId: true,
           bidRound: {
             select: {
               webtoon: {
                 select: {
-                  user: {
-                    select: {
-                      id: true
-                    }
-                  }
+                  userId: true
                 }
               }
             }
-          }
+          },
+          messages: {
+            select: {
+              id: true,
+              user: {
+                select: {
+                  userType: true
+                }
+              }
+            },
+            take: 1,
+            orderBy: {
+              createdAt: "desc"
+            }
+          },
         }
       });
-      const { userId } = await getTokenInfo();
-      if (record.bidRound.webtoon.user.id !== userId) {
-        throw new Error("Only the creator of the webtoon can perform this action.");
-      }
+      const { userId, metadata } = await getTokenInfo();
       if (status === BidRequestStatus.Declined
       || status === BidRequestStatus.Accepted) {
         throw new Error("Already approved or rejected.");
       }
+      const latestMessageId = record.messages?.[0]?.id;
+      if (latestMessageId !== refMessageId) {
+        // 둘 다 undefined인 경우에도 허용되는데, 이는 최초 bid request를 보고 바로 결정하는 경우
+        throw new Error("Invalid refMessageId");
+      }
+      if ((!record.messages && metadata.type !== UserTypeT.Creator)
+        || record.bidRound.webtoon.userId !== userId
+      ){
+        // 주고받은 메시지가 없으면 최초에는 저작권자가 수락/거절 가능
+        throw new Error("Wrong user type");
+      }
+      if (record.messages?.[0]?.user.userType === metadata.type
+        || ![record.userId, record.bidRound.webtoon.userId].includes(userId)
+      ) {
+        // 메시지를 주고받는 경우에는 마지막 메시지를 수신한 측에서만 수락/거절 가능
+        throw new Error("Wrong user type");
+      }
+
       const r = await tx.bidRequest.update({
         data: {
           status: changeTo === BidRequestStatus.Accepted

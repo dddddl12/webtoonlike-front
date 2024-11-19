@@ -9,17 +9,18 @@ import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { useAction } from "next-safe-action/hooks";
 import { clientErrorHandler } from "@/handlers/clientErrorHandler";
-import { useTokenInfo } from "@/hooks/tokenInfo";
 import { UserTypeT } from "@/resources/users/user.types";
+import { useTokenInfo } from "@/hooks/tokenInfo";
 
-export default function Controls({ bidRequestId, setReloadMessages, setCurBidRequest }: {
+export default function Controls({ bidRequestId, setReloadMessages, setCurBidRequest, whoCanDecideAtThisTurn, refMessageId }: {
   bidRequestId: number;
   setReloadMessages: Dispatch<SetStateAction<boolean>>;
   setCurBidRequest: Dispatch<SetStateAction<SimpleBidRequestT>>;
+  whoCanDecideAtThisTurn: UserTypeT;
+  refMessageId?: number;
 }) {
   const { toast } = useToast();
   const { tokenInfo } = useTokenInfo();
-  const userType = tokenInfo?.metadata.type;
   const boundChangeBidRequestStatus = useMemo(() => changeBidRequestStatus
     .bind(null, bidRequestId), [bidRequestId]);
   const { execute } = useAction(boundChangeBidRequestStatus, {
@@ -42,17 +43,19 @@ export default function Controls({ bidRequestId, setReloadMessages, setCurBidReq
   });
 
   return <Row className="gap-20 mx-auto mb-10" >
-    {userType === UserTypeT.Creator
+    {tokenInfo?.metadata.type === whoCanDecideAtThisTurn
       && <Button variant="red" onClick={() => execute({
-        changeTo: BidRequestStatus.Declined
+        changeTo: BidRequestStatus.Declined,
+        refMessageId
       })}>
         거절하기
       </Button>}
     <SendMessage bidRequestId={bidRequestId}
       setReloadMessages={setReloadMessages} />
-    {userType === UserTypeT.Creator
+    {tokenInfo?.metadata.type === whoCanDecideAtThisTurn
       && <Button variant="mint" onClick={() => execute({
-        changeTo: BidRequestStatus.Accepted
+        changeTo: BidRequestStatus.Accepted,
+        refMessageId
       })}>
         수락하기
       </Button>}
