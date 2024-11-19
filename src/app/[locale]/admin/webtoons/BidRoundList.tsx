@@ -1,6 +1,6 @@
 import { Col, Row } from "@/shadcn/ui/layouts";
 import { Text } from "@/shadcn/ui/texts";
-import { useListData } from "@/hooks/listData";
+import useListData from "@/hooks/listData";
 import Spinner from "@/components/Spinner";
 import Paginator from "@/components/Paginator";
 import { adminListBidRoundsWithWebtoon, AdminPageBidRoundT } from "@/resources/bidRounds/bidRound.service";

@@ -9,7 +9,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Paginator from "@/components/Paginator";
 import { listMyWebtoonsNotOnSale, MyWebtoonNotOnSaleT } from "@/resources/webtoons/webtoon.service";
 import { Link } from "@/i18n/routing";
-import { useListData } from "@/hooks/listData";
+import useListData from "@/hooks/listData";
 import { displayName } from "@/utils/displayName";
 import { BidRoundApprovalStatus } from "@/resources/bidRounds/bidRound.types";
 import StatusBadge from "@/components/StatusBadge";

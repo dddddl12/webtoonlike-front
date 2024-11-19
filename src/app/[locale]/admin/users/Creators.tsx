@@ -3,7 +3,7 @@
 import { AdminPageCreatorT, changeExposed, listCreators } from "@/resources/creators/creator.service";
 import { Col, Row } from "@/shadcn/ui/layouts";
 import Paginator from "@/components/Paginator";
-import { useListData } from "@/hooks/listData";
+import useListData from "@/hooks/listData";
 import Spinner from "@/components/Spinner";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { Switch } from "@/shadcn/ui/switch";

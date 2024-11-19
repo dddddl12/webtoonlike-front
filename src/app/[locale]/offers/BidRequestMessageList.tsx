@@ -8,7 +8,7 @@ import { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useRef, useSta
 import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
 import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
 import { UserTypeT } from "@/resources/users/user.types";
-import { useTokenInfo } from "@/hooks/tokenInfo";
+import useTokenInfo from "@/hooks/tokenInfo";
 import { Skeleton } from "@/shadcn/ui/skeleton";
 import ViewOfferSection from "@/app/[locale]/offers/components/OfferDetails";
 import Controls from "@/app/[locale]/offers/components/Controls";

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Spinner from "@/components/Spinner";
-import { useListData } from "@/hooks/listData";
+import useListData from "@/hooks/listData";
 import { Col, Row } from "@/shadcn/ui/layouts";
 import { adminListBidRoundsWithOffers, AdminPageBidRoundWithOffersT } from "@/resources/bidRounds/bidRound.service";
 import Paginator from "@/components/Paginator";

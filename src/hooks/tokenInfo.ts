@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/nextjs";
 import { TokenInfo, TokenInfoSchema } from "@/resources/tokens/token.types";
 
-export function useTokenInfo(): {
+export default function useTokenInfo(): {
   tokenInfo?: TokenInfo;
   isLoaded: boolean;
 } {

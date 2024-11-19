@@ -1,4 +1,4 @@
-import { useListData } from "@/hooks/listData";
+import useListData from "@/hooks/listData";
 import { adminListBidRoundsWithWebtoon, AdminPageBidRoundT } from "@/resources/bidRounds/bidRound.service";
 import { BidRoundApprovalStatus } from "@/resources/bidRounds/bidRound.types";
 import Spinner from "@/components/Spinner";

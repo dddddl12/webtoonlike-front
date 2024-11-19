@@ -6,7 +6,7 @@ import { NonAdminUserSearchT, searchNonAdminUsers } from "@/resources/users/user
 import { useAction } from "next-safe-action/hooks";
 import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 import { useTranslations } from "next-intl";
-import { useDebounce } from "@/hooks/debounce";
+import useDebounce from "@/hooks/debounce";
 import { Badge } from "@/shadcn/ui/badge";
 import { UserTypeT } from "@/resources/users/user.types";
 import { useToast } from "@/shadcn/hooks/use-toast";

@@ -1,6 +1,6 @@
 import Spinner from "@/components/Spinner";
 import { IssuanceInvoiceSubmit } from "./IssuanceInvoiceSubmit";
-import { useListData } from "@/hooks/listData";
+import useListData from "@/hooks/listData";
 import { Gap, Row } from "@/shadcn/ui/layouts";
 import { adminListUninvoicedBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
 import Paginator from "@/components/Paginator";

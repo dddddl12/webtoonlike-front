@@ -7,7 +7,7 @@ type Filters<
   S extends Schema | undefined,
 > = S extends Schema ? InferIn<S> : void;
 
-export function useListData<
+export default function useListData<
   ServerError,
   S extends Schema | undefined,
   BAS extends readonly Schema[],
@@ -23,7 +23,7 @@ export function useListData<
   setFilters: Dispatch<SetStateAction<Filters<S>>>;
 };
 
-export function useListData<
+export default function useListData<
   ServerError,
   S extends Schema | undefined,
   BAS extends readonly Schema[],
@@ -40,7 +40,7 @@ export function useListData<
   setFilters: Dispatch<SetStateAction<Filters<S>>>;
 };
 
-export function useListData<
+export default function useListData<
   ServerError,
   S extends Schema | undefined,
   BAS extends readonly Schema[],

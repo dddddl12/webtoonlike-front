@@ -4,7 +4,7 @@ import Spinner from "@/components/Spinner";
 import { adminListInvoices, InvoiceWithWebtoonT } from "@/resources/invoices/invoice.service";
 import Paginator from "@/components/Paginator";
 import { Link } from "@/i18n/routing";
-import { useListData } from "@/hooks/listData";
+import useListData from "@/hooks/listData";
 import { Col, Gap, Row } from "@/shadcn/ui/layouts";
 import InvoiceDownload from "@/components/InvoiceDownload";
 

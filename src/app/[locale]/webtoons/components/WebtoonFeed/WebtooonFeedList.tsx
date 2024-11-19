@@ -4,7 +4,7 @@ import { Col, Row } from "@/shadcn/ui/layouts";
 import { useLocale, useTranslations } from "next-intl";
 import { listWebtoons, WebtoonFilterT, WebtoonPreviewT } from "@/resources/webtoons/webtoon.service";
 import { ListResponse } from "@/resources/globalTypes";
-import { useListData } from "@/hooks/listData";
+import useListData from "@/hooks/listData";
 import { displayName } from "@/utils/displayName";
 import WebtoonGridPaginated from "@/components/WebtoonGridPaginated";
 import { BasicGenreT } from "@/resources/genres/genre.service";

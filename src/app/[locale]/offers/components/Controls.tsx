@@ -10,7 +10,7 @@ import { useToast } from "@/shadcn/hooks/use-toast";
 import { useAction } from "next-safe-action/hooks";
 import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 import { UserTypeT } from "@/resources/users/user.types";
-import { useTokenInfo } from "@/hooks/tokenInfo";
+import useTokenInfo from "@/hooks/tokenInfo";
 
 export default function Controls({ bidRequestId, setReloadMessages, setCurBidRequest, whoCanDecideAtThisTurn, refMessageId }: {
   bidRequestId: number;

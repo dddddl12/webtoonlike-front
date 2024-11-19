@@ -5,7 +5,7 @@ import { AdminPageAccountT, listUsers } from "@/resources/users/user.service";
 import Paginator from "@/components/Paginator";
 import { Col } from "@/shadcn/ui/layouts";
 import { useTranslations } from "next-intl";
-import { useListData } from "@/hooks/listData";
+import useListData from "@/hooks/listData";
 
 
 export default function Accounts() {

@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { listAllBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
 import Paginator from "@/components/Paginator";
 import { ListResponse } from "@/resources/globalTypes";
-import { useListData } from "@/hooks/listData";
+import useListData from "@/hooks/listData";
 import BidRequestListRow from "@/app/[locale]/offers/BidRequestListRow";
 
 type BidRequestListResponse = ListResponse<SimpleBidRequestT>;

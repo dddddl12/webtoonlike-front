@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Paginator from "@/components/Paginator";
-import { useListData } from "@/hooks/listData";
+import useListData from "@/hooks/listData";
 import { ListResponse } from "@/resources/globalTypes";
 import { InvoiceWithWebtoonT, listInvoices } from "@/resources/invoices/invoice.service";
 import { displayName } from "@/utils/displayName";

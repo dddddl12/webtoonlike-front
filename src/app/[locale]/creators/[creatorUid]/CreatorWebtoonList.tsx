@@ -1,7 +1,7 @@
 "use client";
 
 import { ListResponse } from "@/resources/globalTypes";
-import { useListData } from "@/hooks/listData";
+import useListData from "@/hooks/listData";
 import { listWebtoonsByUserId, WebtoonPreviewT } from "@/resources/webtoons/webtoon.service";
 import WebtoonGridPaginated from "@/components/WebtoonGridPaginated";
 
