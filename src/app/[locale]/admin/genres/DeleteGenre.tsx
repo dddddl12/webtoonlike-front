@@ -11,6 +11,7 @@ import { useToast } from "@/shadcn/hooks/use-toast";
 import { Button } from "@/shadcn/ui/button";
 import { useAction } from "next-safe-action/hooks";
 import { ForeignKeyError } from "@/handlers/errors";
+import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 
 type SubmissionState = "initial" | "loading" | "success" | "failure";
 export default function DeleteGenre({ reloadOnUpdate, genre, children }: {
@@ -60,11 +61,12 @@ function DeleteAlertDialogHeaderAndFooter({ genre, submissionState, setSubmissio
       });
       setSubmissionState("success");
     },
-    onError: ({ error }) => {
-      const { serverError } = error;
+    onError: (args) => {
+      const { serverError } = args.error;
       if (serverError?.name === ForeignKeyError.name) {
         setSubmissionState("failure");
       }
+      clientErrorHandler(args);
     }
   });
 

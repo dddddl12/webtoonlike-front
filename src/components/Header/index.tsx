@@ -8,7 +8,6 @@ import { NavBar } from "@/components/Header/NavBar";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Account } from "@/components/Header/Account";
 import { SelectItem } from "@/shadcn/ui/select";
-import Image from "next/image";
 import Logo from "@/components/Logo";
 
 export async function Header() {
@@ -17,7 +16,7 @@ export async function Header() {
 
   return (
     <header
-      className='sticky top-0 w-full flex flex-col bg-black z-50 border-b border-gray-darker items-center px-10'>
+      className='sticky top-0 w-full flex flex-col bg-black z-[150] border-b border-gray-darker items-center px-10'>
       <Row className="w-full h-[60px] justify-between">
         <Row>
           <Link href="/">

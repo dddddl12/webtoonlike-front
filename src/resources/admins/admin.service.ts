@@ -1,78 +1,119 @@
 "use server";
 
-// import { Injectable } from "@nestjs/common";
-// import * as err from "@/errors";
-// import { userM } from "@/models/users";
-// import { adminM } from "@/models/admins";
-// import { lookupBuilder } from "./fncs/lookup_builder";
-// import { getObject } from "@/utils/s3";
-// import type { AdminT, AdminFormT, ListAdminOptionT } from "@/types";
-//
-// @Injectable()
-// export class AdminService {
-//   constructor() {}
-//
-//
-//   async get(id: idT): Promise<AdminT> {
-//     const fetched = await adminM.findOne({ id });
-//     if (!fetched) {
-//       throw new err.NotExistE(`admin with id ${id} not found`);
-//     }
-//     return fetched;
-//   }
-//
-//   async create(form: AdminFormT): Promise<AdminT> {
-//     const created = await adminM.create(form);
-//     if (!created) {
-//       throw new err.NotAppliedE();
-//     }
-//     return created;
-//   }
-//
-//   async createByEmail(email: string): Promise<AdminT> {
-//     const user = await userM.findOne({ email });
-//     if (!user) {
-//       throw new err.NotExistE(`user with email ${email} not found`);
-//     }
-//     const created = await adminM.create({
-//       userId: user.id,
-//       isSuper: false,
-//     });
-//     if (!created) {
-//       throw new err.NotAppliedE();
-//     }
-//     return created;
-//   }
-//
-//   async list(listOpt: ListAdminOptionT): Promise<ListData<AdminT>> {
-//     const fetched = await adminM.find({
-//       builder: (qb, select) => {
-//         lookupBuilder(select, listOpt);
-//       }
-//     });
-//     return { data: fetched, nextCursor: null };
-//   }
-//
-//
-//   async getMe(userId: idT): Promise<AdminT|null> {
-//     const fetched = await adminM.findOne({ userId });
-//     return fetched;
-//   }
-//
-//   async remove(id: idT): Promise<AdminT> {
-//     const removed = await adminM.deleteOne({ id });
-//     if (!removed) {
-//       throw new err.NotAppliedE();
-//     }
-//     return removed;
-//   }
-//
-//   async loadMedia(key: string): Promise<string|undefined> {
-//     try {
-//       const media = await getObject(key);
-//       return media;
-//     } catch (e) {
-//       throw new err.NotExistE(`media with key ${key} not found`);
-//     }
-//   }
-// }
+import { action } from "@/handlers/safeAction";
+import z from "zod";
+import { ListResponse, ListResponseSchema } from "@/resources/globalTypes";
+import { AdminSchema } from "@/resources/admins/admin.types";
+import prisma from "@/utils/prisma";
+import { UserSchema, UserTypeT } from "@/resources/users/user.types";
+import { assertAdmin, getTokenInfo } from "@/resources/tokens/token.service";
+import { AdminLevel } from "@/resources/tokens/token.types";
+
+const AdminEntrySchema = AdminSchema.pick({
+  id: true,
+  isSuper: true,
+  createdAt: true,
+}).extend({
+  user: UserSchema.pick({
+    name: true,
+    email: true,
+    userType: true
+  }),
+  isDeletable: z.boolean()
+});
+export type AdminEntryT = z.infer<typeof AdminEntrySchema>;
+export const listAdmins = action
+  .metadata({ actionName: "listAdmins" })
+  .schema(z.object({
+    page: z.number().default(1),
+  }))
+  // todo 정적 분석을 하지 않음
+  .outputSchema(
+    ListResponseSchema(AdminEntrySchema)
+  )
+  .action(
+    async ({
+      parsedInput: { page },
+    }): Promise<ListResponse<AdminEntryT>> => {
+      await assertAdmin();
+      const { userId, metadata } = await getTokenInfo();
+      const limit = 10;
+      const [records, totalRecords] = await prisma.$transaction([
+        prisma.admin.findMany({
+          take: limit,
+          skip: (page - 1) * limit,
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                userType: true
+              }
+            }
+          }
+        }),
+        prisma.admin.count()
+      ]);
+      return {
+        items: records.map(record => ({
+          id: record.id,
+          isSuper: record.isSuper,
+          createdAt: record.createdAt,
+          user: {
+            name: record.user.name,
+            email: record.user.email,
+            userType: record.user.userType as UserTypeT
+          },
+          isDeletable: (metadata.adminLevel >= AdminLevel.SuperAdmin
+            && record.user.id !== userId)
+        })),
+        totalPages: Math.ceil(totalRecords / limit),
+      };
+    });
+
+export const createAdmin = action
+  .metadata({ actionName: "deleteAdmin" })
+  .schema(z.object({
+    targetUserId: z.number()
+  }))
+  .action(async ({
+    parsedInput: { targetUserId },
+  }) => {
+    await assertAdmin({ needsSuperPermission: true });
+    await prisma.admin.create({
+      data: {
+        user: {
+          connect: {
+            id: targetUserId
+          }
+        }
+      }
+    });
+  });
+
+
+export const deleteAdmin = action
+  .metadata({ actionName: "deleteAdmin" })
+  .bindArgsSchemas([
+    z.number() // adminId
+  ])
+  .action(async ({
+    bindArgsParsedInputs: [adminId],
+  }) => {
+    await assertAdmin({ needsSuperPermission: true });
+    const { userId } = await getTokenInfo();
+    await prisma.$transaction(async (tx) => {
+      const { userId: targetUserId } = await tx.admin.delete({
+        where: {
+          id: adminId
+        },
+        select: {
+          userId: true
+        }
+      });
+      if (userId === targetUserId){
+        throw new Error("Can't delete yourself");
+      }
+    });
+  });

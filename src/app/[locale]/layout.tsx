@@ -9,6 +9,8 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { getLocale, getMessages } from "next-intl/server";
 import { Toaster } from "@/shadcn/ui/toaster";
+import AlertProvider from "@/components/Alert";
+import Alert from "@/components/Alert";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,7 +39,8 @@ export default async function RootLayout({
               {children}
             </main>
             <Footer/>
-            <Toaster />
+            <Toaster/>
+            <Alert/>
           </body>
         </NextIntlClientProvider>
       </ClerkProvider>

@@ -215,3 +215,66 @@ export const listUsers = action
       totalPages: Math.ceil(totalRecords / limit),
     };
   });
+
+// /admin/admins
+const NonAdminUserSearchSchema = UserSchema.pick({
+  id: true,
+  name: true,
+  email: true,
+  userType: true
+});
+export type NonAdminUserSearchT = z.infer<typeof NonAdminUserSearchSchema>;
+export const searchNonAdminUsers = action
+  .metadata({ actionName: "SearchNonAdminUsers" })
+  .schema(z.object({
+    q: z.string()
+  }))
+  .outputSchema(z.array(NonAdminUserSearchSchema))
+  .action(async ({
+    parsedInput: { q },
+  }): Promise<NonAdminUserSearchT[]> => {
+    await assertAdmin();
+    const records = await prisma.user.findMany({
+      take: 10,
+      where: {
+        AND: [
+          {
+            admin: {
+              is: null
+            }
+          },
+          {
+            OR: [
+              {
+                name: {
+                  contains: q,
+                  mode: "insensitive"
+                }
+              },
+              {
+                email: {
+                  contains: q,
+                  mode: "insensitive"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      orderBy: {
+        name: "asc"
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        userType: true
+      }
+    });
+    return records.map(r => ({
+      id: r.id,
+      name: r.name,
+      email: r.email,
+      userType: r.userType as UserTypeT
+    }));
+  });
