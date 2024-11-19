@@ -1,43 +1,57 @@
-import { useCallback } from "react";
-
 import { EventEmitter } from "events";
 
-type AlertData = {
+export type AlertProps = {
   title: string;
   message: string;
-  confirmText: string;
-  onConfirm: () => void;
-  onCancel: () => void;
+};
+
+export type ConfirmProps = {
+  title: string;
+  message: string;
+  confirmText?: string;
+  onConfirm?: () => void;
+};
+
+export type AlertOrConfirmWrapper = {
+  type: "alert";
+  props: AlertProps;
+} | {
+  type: "confirm";
+  props: ConfirmProps;
 };
 
 // Create an instance of EventEmitter
 const alertEmitter = new EventEmitter();
 
-export const onAlert = (callback: (alertData: AlertData) => void) => {
+export const onAlert = (callback: (wrapper: AlertOrConfirmWrapper) => void) => {
   alertEmitter.on("show", callback);
 };
 
-export const offAlert = (callback: (alertData: AlertData) => void) => {
+export const offAlert = (callback: (wrapper: AlertOrConfirmWrapper) => void) => {
   alertEmitter.off("show", callback);
 };
 
 // Export utility functions to interact with the emitter
-const showAlert = (alertData: AlertData) => {
-  alertEmitter.emit("show", alertData);
+const showAlert = (wrapper: AlertOrConfirmWrapper) => {
+  alertEmitter.emit("show", wrapper);
 };
 
-export function useAlert(alertData: {
-  title: string;
-  message: string;
-  confirmText: string;
-}): () => Promise<boolean> {
-  return useCallback(() => {
-    return new Promise<boolean>((resolve) => {
-      showAlert({
-        ...alertData,
-        onConfirm: () => resolve(true),
-        onCancel: () => resolve(false),
-      });
+export function useConfirm(confirmProps: ConfirmProps) {
+  const open = () => {
+    showAlert({
+      type: "confirm",
+      props: confirmProps,
     });
-  }, [alertData]);
+  };
+  return { open };
+}
+
+export function useAlert(alertProps: AlertProps) {
+  const open = () => {
+    showAlert({
+      type: "alert",
+      props: alertProps
+    });
+  };
+  return { open };
 }

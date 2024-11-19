@@ -1,6 +1,5 @@
 "use client";
 import AddOrUpdateGenre from "./AddOrUpdateGenre";
-import { IconDelete } from "@/components/svgs/IconDelete";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import Spinner from "@/components/Spinner";
 import { Col, Row } from "@/shadcn/ui/layouts";
@@ -72,13 +71,7 @@ function GenreContainer({ reloadOnUpdate, genres }: {
               <Pencil1Icon className="w-5 h-5" />
             </Button>
           </AddOrUpdateGenre>
-          <DeleteGenre genre={genre} reloadOnUpdate={reloadOnUpdate}>
-            <Button
-              variant="red"
-              size="smallIcon">
-              <IconDelete/>
-            </Button>
-          </DeleteGenre>
+          <DeleteGenre genre={genre} reloadOnUpdate={reloadOnUpdate} />
         </Row>
       </Row>
     ))}

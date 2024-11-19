@@ -11,7 +11,7 @@ import { Badge } from "@/shadcn/ui/badge";
 import { UserTypeT } from "@/resources/users/user.types";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { createAdmin } from "@/resources/admins/admin.service";
-import { useAlert } from "@/hooks/alert";
+import { useConfirm } from "@/hooks/alert";
 
 export default function AddAdmin({ reloadOnUpdate }: {
   reloadOnUpdate: () => void;
@@ -109,22 +109,18 @@ export default function AddAdmin({ reloadOnUpdate }: {
 function UserItem({ user, onAddAdmin }: { user: NonAdminUserSearchT; onAddAdmin: (user: NonAdminUserSearchT) => void }) {
   const tUserType = useTranslations("userType");
 
-  const alert = useAlert({
+  const confirm = useConfirm({
     title: "관리자 추가",
     message: `${user.name} 님을 관리자로 추가하시겠습니까?`,
     confirmText: "추가",
+    onConfirm: () => onAddAdmin(user),
   });
 
   return (
     <CommandItem
       key={user.id}
       value={user.id.toString()}
-      onSelect={async () => {
-        const isOk = await alert();
-        if (isOk) {
-          onAddAdmin(user);
-        }
-      }}
+      onSelect={confirm.open}
     >
       <div className="w-full overflow-ellipsis">
         <div className="whitespace-pre flex">

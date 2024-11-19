@@ -12,22 +12,15 @@ import {
 } from "@/shadcn/ui/alert-dialog";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { offAlert, onAlert } from "@/hooks/alert";
+import { AlertOrConfirmWrapper, AlertProps, ConfirmProps, offAlert, onAlert } from "@/hooks/alert";
 
 export default function Alert() {
-  const tGeneral = useTranslations("general");
-  const [alert, setAlert] = useState<null | {
-    title: string;
-    message: string;
-    confirmText: string;
-    onConfirm: () => void;
-    onCancel: () => void;
-  }>(null);
+  const [wrapper, setWrapper] = useState<AlertOrConfirmWrapper | undefined>(undefined);
 
   // Listen for alert events
   useEffect(() => {
-    const handleAlert = (alertData: typeof alert) => {
-      setAlert(alertData);
+    const handleAlert = (wrapper: AlertOrConfirmWrapper) => {
+      setWrapper(wrapper);
     };
 
     onAlert(handleAlert);
@@ -39,26 +32,52 @@ export default function Alert() {
   }, []);
 
   // Close the alert dialog
-  const closeAlert = () => setAlert(null);
+  const closeAlert = () => setWrapper(undefined);
 
-  if (!alert) return null; // Render nothing if no alert is active
+  if (!wrapper) return null; // Render nothing if no alert is active
 
   return (
-    <AlertDialog open={!!alert} onOpenChange={closeAlert}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{alert.title}</AlertDialogTitle>
-          <AlertDialogDescription>{alert.message}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => { alert.onCancel(); closeAlert(); }}>
-            {tGeneral("cancel")}
-          </AlertDialogCancel>
-          <AlertDialogAction onClick={() => { alert.onConfirm(); closeAlert(); }}>
-            {alert.confirmText}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
+    <AlertDialog open={!!wrapper} onOpenChange={closeAlert}>
+      {wrapper.type === "alert"
+        ? <AlertDialogContentWrapper alert={wrapper.props} />
+        : <ConfirmDialogContentWrapper confirm={wrapper.props}/>}
     </AlertDialog>
   );
+}
+
+function AlertDialogContentWrapper({ alert }:{
+  alert: AlertProps;
+}) {
+  const tGeneral = useTranslations("general");
+  return <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>{alert.title}</AlertDialogTitle>
+      <AlertDialogDescription>{alert.message}</AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogAction>
+        {tGeneral("dismiss")}
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>;
+}
+
+function ConfirmDialogContentWrapper({ confirm }:{
+  confirm: ConfirmProps;
+}) {
+  const tGeneral = useTranslations("general");
+  return <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>{confirm.title}</AlertDialogTitle>
+      <AlertDialogDescription>{confirm.message}</AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>
+        {tGeneral("cancel")}
+      </AlertDialogCancel>
+      <AlertDialogAction onClick={confirm.onConfirm}>
+        {confirm.confirmText}
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>;
 }
