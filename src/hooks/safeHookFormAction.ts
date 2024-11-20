@@ -25,15 +25,38 @@ export default function useSafeHookFormAction<
   props?: HookProps<ServerError, S, BAS, CVE, CBAVE, Data, FormContext>
 ): UseHookFormActionHookReturn<ServerError, S, BAS, CVE, CBAVE, Data, FormContext>{
   const actionProps = useClientActionHandler(props?.actionProps);
-  const { form, ...rest } = useHookFormAction(safeAction, hookFormResolver, {
-    ...props,
-    actionProps: {
-      ...actionProps,
-      onError: (args) => {
-        form.reset(args.input);
-        actionProps.onError(args);
+  const { form, ...rest } = useHookFormAction(
+    safeAction,
+    (values, ...rest) => {
+      // 값이 없으면 DB에 null로 저장하여 헷갈리는 일 없도록 할 것
+      values = removeBlankStrings(values);
+      return hookFormResolver(values, ...rest);
+    },
+    {
+      ...props,
+      actionProps: {
+        ...actionProps,
+        onError: (args) => {
+          form.reset(args.input);
+          actionProps.onError(args);
+        }
       }
-    }
-  });
+    });
   return { form, ...rest };
+}
+
+function removeBlankStrings(obj: any): any {
+  if (Array.isArray(obj)) {
+    // 배열인 경우
+    return obj.map(removeBlankStrings)
+      .filter((value) => value !== "");
+  }
+  if (typeof obj === "object" && obj !== null) {
+    return Object.fromEntries(
+      Object.entries(obj)
+        .filter((entry) => entry[1] !== "") // blank 제거
+        .map(([key, value]) => [key, removeBlankStrings(value)]) // nested
+    );
+  }
+  return obj;
 }

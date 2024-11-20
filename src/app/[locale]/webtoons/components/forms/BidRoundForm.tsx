@@ -25,6 +25,7 @@ import ContractRangeForm from "@/app/[locale]/webtoons/components/forms/Contract
 import { NumericInput } from "@/shadcn/ui/input";
 import { createOrUpdateBidRound } from "@/resources/bidRounds/bidRound.service";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function BidRoundForm({ webtoonId, prev }: {
   webtoonId: number;
@@ -36,7 +37,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createOrUpdateBidRound.bind(null, webtoonId, prev?.id),
-      (values) => {
+      (values, ...rest) => {
         const { isNew, currentEpisodeNo, totalEpisodeCount } = values;
         if (isNew
         && typeof currentEpisodeNo === "number"
@@ -53,7 +54,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
             }
           };
         }
-        return formResolver(BidRoundFormSchema, values);
+        return zodResolver(BidRoundFormSchema)(values, ...rest);
       },
       {
         actionProps: {
@@ -66,14 +67,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
           }
         },
         formProps: {
-          defaultValues: {
-            contractRange: prev?.contractRange,
-            isOriginal: prev?.isOriginal,
-            isNew: prev?.isNew,
-            totalEpisodeCount: prev?.totalEpisodeCount,
-            currentEpisodeNo: prev?.currentEpisodeNo,
-            monthlyEpisodeCount: prev?.monthlyEpisodeCount,
-          },
+          defaultValues: prev,
           mode: "onChange"
         }
       });

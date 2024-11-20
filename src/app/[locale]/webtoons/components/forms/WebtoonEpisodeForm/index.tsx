@@ -30,6 +30,7 @@ import { EpisodeImageSet } from "@/app/[locale]/webtoons/components/forms/Webtoo
 import { DropzoneRootProps, useDropzone } from "react-dropzone";
 import { createOrUpdateEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const MAX_THUMBNAIL_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -51,7 +52,7 @@ export default function WebtoonEpisodeForm({
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createOrUpdateEpisode.bind(null, webtoonId, prev?.id),
-      (values) => formResolver(WebtoonEpisodeFormSchema, values),
+      zodResolver(WebtoonEpisodeFormSchema),
       {
         actionProps: {
           onSuccess: () => {
@@ -69,10 +70,7 @@ export default function WebtoonEpisodeForm({
           }
         },
         formProps: {
-          defaultValues: {
-            episodeNo: prev?.episodeNo,
-            imagePaths: prev?.imagePaths || [],
-          },
+          defaultValues: prev,
           mode: "onChange",
         }
       });

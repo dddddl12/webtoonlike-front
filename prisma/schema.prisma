@@ -133,7 +133,7 @@ model Creator {
   thumbPath          String?  @map("thumb_path")
   isAgencyAffiliated Boolean  @map("is_agency_affiliated")
   isExperienced      Boolean  @map("is_experienced")
-  isExposed          Boolean  @map("is_exposed")
+  isExposed          Boolean  @default(false) @map("is_exposed")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

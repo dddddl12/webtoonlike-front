@@ -10,6 +10,7 @@ import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
 import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
 import StatusBadge from "@/components/StatusBadge";
 
+// TODO 아코디언 적용
 export default function BidRequestListRow({ bidRequest }:{
   bidRequest: SimpleBidRequestT;
 }) {

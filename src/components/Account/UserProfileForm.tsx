@@ -11,6 +11,7 @@ import TermsOfUse from "@/components/Account/TermsOfUse";
 import { formResolver } from "@/utils/forms";
 import { clsx } from "clsx";
 import { AccountFormFooter } from "@/components/Account/common";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function UserProfileForm({ userExtendedForm, setUserExtendedForm, setSignUpStage }: {
   userExtendedForm: Partial<UserExtendedFormT>;
@@ -22,18 +23,9 @@ export default function UserProfileForm({ userExtendedForm, setUserExtendedForm,
   const tCountries = useTranslations("countries");
   // todo
   const form = useForm<UserFormT>({
-    defaultValues: {
-      name: userExtendedForm.name,
-      phone: userExtendedForm.phone || "",
-      userType: userExtendedForm.userType,
-      country: userExtendedForm.country,
-      postcode: userExtendedForm.postcode || "",
-      addressLine1: userExtendedForm.addressLine1 || "",
-      addressLine2: userExtendedForm.addressLine2 || "",
-      agreed: userExtendedForm.agreed || false,
-    },
+    defaultValues: userExtendedForm,
     mode: "onChange",
-    resolver: (values) => formResolver(UserFormSchema, values)
+    resolver: zodResolver(UserFormSchema)
   });
 
   // 필수 필드 체크
@@ -185,7 +177,7 @@ export default function UserProfileForm({ userExtendedForm, setUserExtendedForm,
             <FormItem className="flex items-center p-3 border-b">
               <FormControl>
                 <Checkbox
-                  checked={field.value}
+                  checked={field.value || false}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>

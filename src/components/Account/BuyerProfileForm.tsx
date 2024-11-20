@@ -15,9 +15,9 @@ import { ImageObject } from "@/utils/media";
 import { FileDirectoryT } from "@/resources/files/files.type";
 import { SignUpStage, UserExtendedFormSchema, UserExtendedFormT } from "@/resources/users/user.types";
 import { AccountFormFooter, AccountFormImageField } from "@/components/Account/common";
-import { formResolver } from "@/utils/forms";
 import { createUser } from "@/resources/users/user.service";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 
 export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : {
@@ -40,7 +40,7 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createUser,
-      (values) => formResolver(UserExtendedFormSchema, values),
+      zodResolver(UserExtendedFormSchema),
       {
         actionProps: {
           onSuccess: () => {
@@ -48,24 +48,9 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
           }
         },
         formProps: {
-          defaultValues: {
-            ...userExtendedForm,
-            buyer: {
-              company: {
-                name: prevCompany?.name || "",
-                fieldType: prevCompany?.fieldType || [],
-                businessType: prevCompany?.businessType || [],
-                dept: prevCompany?.dept || "",
-                position: prevCompany?.position || "",
-                positionDetail: prevCompany?.positionDetail || "",
-                businessNumber: prevCompany?.businessNumber || "",
-              },
-              purpose: prev?.purpose,
-            }
-          },
+          defaultValues: userExtendedForm,
           mode: "onChange"
-        },
-        errorMapProps: {}
+        }
       }
     );
 

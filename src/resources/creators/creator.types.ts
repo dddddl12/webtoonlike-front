@@ -7,10 +7,12 @@ const CreatorBaseSchema = z.object({
   thumbPath: z.string().optional(),
   isAgencyAffiliated: z.boolean(),
   isExperienced: z.boolean(),
-  isExposed: z.boolean().default(false),
 });
 
 export const CreatorFormSchema = CreatorBaseSchema;
 
 export const CreatorSchema = CreatorBaseSchema
-  .merge(ResourceSchema);
+  .merge(ResourceSchema)
+  .extend({
+    isExposed: z.boolean(),
+  });

@@ -11,6 +11,7 @@ import { formResolver } from "@/utils/forms";
 import { createUser } from "@/resources/users/user.service";
 import { AccountFormFooter, AccountFormImageField } from "@/components/Account/common";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }: {
   userExtendedForm: Partial<UserExtendedFormT>;
@@ -27,7 +28,7 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createUser,
-      (values) => formResolver(UserExtendedFormSchema, values),
+      zodResolver(UserExtendedFormSchema),
       {
         actionProps: {
           onSuccess: () => {
@@ -35,19 +36,9 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
           }
         },
         formProps: {
-          defaultValues: {
-            ...userExtendedForm,
-            creator: {
-              name: prev?.name ?? "",
-              name_en: prev?.name_en ?? "",
-              isAgencyAffiliated: prev?.isAgencyAffiliated,
-              isExperienced: prev?.isExperienced,
-              isExposed: prev?.isExposed ?? false,
-            }
-          },
+          defaultValues: userExtendedForm,
           mode: "onChange"
-        },
-        errorMapProps: {}
+        }
       }
     );
 

@@ -16,6 +16,7 @@ import { createBidRequest } from "@/resources/bidRequests/bidRequest.service";
 import { Row } from "@/shadcn/ui/layouts";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 
 export default function BidRequestForm({ bidRoundId }: {
@@ -31,7 +32,7 @@ export default function BidRequestForm({ bidRoundId }: {
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createBidRequest.bind(null, bidRoundId),
-      (values) => formResolver(BidRequestFormSchema, values),
+      zodResolver(BidRequestFormSchema),
       {
         actionProps: {
           onSuccess: () => {
@@ -42,10 +43,6 @@ export default function BidRequestForm({ bidRoundId }: {
           }
         },
         formProps: {
-          defaultValues: {
-            contractRange: [],
-            message: "",
-          },
           mode: "onChange",
         }
       });

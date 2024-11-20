@@ -31,6 +31,7 @@ import { BasicGenreT } from "@/resources/genres/genre.service";
 import { createOrUpdateWebtoon, WebtoonDetailsT } from "@/resources/webtoons/webtoon.service";
 import { toast } from "@/shadcn/hooks/use-toast";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export function WebtoonForm({ selectableGenres, prev }: {
   selectableGenres: BasicGenreT[];
@@ -45,7 +46,7 @@ export function WebtoonForm({ selectableGenres, prev }: {
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createOrUpdateWebtoon.bind(null, prev?.id),
-      (values) => formResolver(WebtoonFormSchema, values),
+      zodResolver(WebtoonFormSchema),
       {
         actionProps: {
           onSuccess: () => {
@@ -57,20 +58,9 @@ export function WebtoonForm({ selectableGenres, prev }: {
           }
         },
         formProps: {
-          // TODO 이렇게 할 필요 없음
           defaultValues: {
-            title: prev?.title || "",
-            title_en: prev?.title_en || "",
-            authorName: prev?.authorName || "",
-            authorName_en: prev?.authorName_en || "",
-            description: prev?.description || "",
-            description_en: prev?.description_en || "",
-            externalUrl: prev?.externalUrl || "",
-            targetAges: prev?.targetAges || [],
-            ageLimit: prev?.ageLimit,
-            targetGender: prev?.targetGender,
+            ...prev,
             genreIds: prev?.genres.map(genre => genre.id) || [],
-            thumbPath: prev?.thumbPath || "",
           },
           mode: "onChange"
         }

@@ -25,7 +25,7 @@ export const getCreator = action
     const record = await prisma.creator.findUniqueOrThrow({
       where: {
         userId: creatorUid,
-      // isExposed: true, //TODO
+        isExposed: true,
       },
       select: {
         name: true,

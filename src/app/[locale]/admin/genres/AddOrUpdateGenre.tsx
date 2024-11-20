@@ -19,6 +19,7 @@ import { UseFormReturn } from "react-hook-form";
 import Spinner from "@/components/Spinner";
 import { formResolver } from "@/utils/forms";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function AddOrUpdateGenre({ onGenreAddSuccess, children, prev }: {
   onGenreAddSuccess: () => void;
@@ -31,7 +32,7 @@ export default function AddOrUpdateGenre({ onGenreAddSuccess, children, prev }: 
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createOrUpdateGenre.bind(null, prev?.id),
-      (values) => formResolver(GenreFormSchema, values),
+      zodResolver(GenreFormSchema),
       {
         actionProps: {
           onSuccess: () => {
