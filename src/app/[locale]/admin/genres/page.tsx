@@ -1,14 +1,15 @@
 "use client";
-import AddOrUpdateGenre from "./AddOrUpdateGenre";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import Spinner from "@/components/Spinner";
 import { Col, Row } from "@/shadcn/ui/layouts";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BasicGenreT, listGenres } from "@/resources/genres/genre.service";
 import { Badge } from "@/shadcn/ui/badge";
 import { Button } from "@/shadcn/ui/button";
 import DeleteGenre from "@/app/[locale]/admin/genres/DeleteGenre";
 import useSafeAction from "@/hooks/safeAction";
+import useReload from "@/hooks/reload";
+import GenreForm from "@/components/forms/admin/GenreForm";
 
 // BadRequestError
 export default function ManageGenresPage() {
@@ -21,8 +22,7 @@ export default function ManageGenresPage() {
 }
 
 function ManageGenresContent() {
-  const [loaded, setLoaded] = useState<boolean>(false);
-  const reloadOnUpdate = useCallback(() => setLoaded(false), []);
+  const { reload, reloadKey } = useReload();
   const [genres, setGenres] = useState<BasicGenreT[]>();
 
   const boundListGenres = useMemo(() => listGenres, []);
@@ -30,27 +30,23 @@ function ManageGenresContent() {
     onSuccess: ({ data }) => setGenres(data),
   });
   useEffect(() => {
-    if (!loaded) {
-      setLoaded(true);
-      return;
-    }
     execute();
-  }, [execute, loaded]);
+  }, [execute, reloadKey]);
 
-  return <>
+  return <div>
     <Row>
-      <AddOrUpdateGenre onGenreAddSuccess={reloadOnUpdate}>
+      <GenreForm reload={reload}>
         <Button>장르 추가</Button>
-      </AddOrUpdateGenre>
+      </GenreForm>
     </Row>
     <Row className="flex-wrap gap-x-4 gap-y-3">
-      <GenreContainer genres={genres} reloadOnUpdate={reloadOnUpdate}/>
+      <GenreContainer genres={genres} reload={reload}/>
     </Row>
-  </>;
+  </div>;
 }
 
-function GenreContainer({ reloadOnUpdate, genres }: {
-  reloadOnUpdate: () => void;
+function GenreContainer({ reload, genres }: {
+  reload: () => void;
   genres?: BasicGenreT[];
 }) {
 
@@ -64,14 +60,14 @@ function GenreContainer({ reloadOnUpdate, genres }: {
           <Badge>
             {genre.label}
           </Badge>
-          <AddOrUpdateGenre prev={genre} onGenreAddSuccess={reloadOnUpdate}>
+          <GenreForm prev={genre} reload={reload}>
             <Button
               variant="mint"
               size="smallIcon">
               <Pencil1Icon className="w-5 h-5" />
             </Button>
-          </AddOrUpdateGenre>
-          <DeleteGenre genre={genre} reloadOnUpdate={reloadOnUpdate} />
+          </GenreForm>
+          <DeleteGenre genre={genre} reload={reload} />
         </Row>
       </Row>
     ))}

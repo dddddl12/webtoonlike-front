@@ -11,37 +11,45 @@ import { Text } from "@/shadcn/ui/texts";
 import Paginator from "@/components/Paginator";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import SubmitEditWrapper from "@/app/[locale]/admin/bid-rounds/SubmitEditWrapper";
+import BidRoundAdminSettingsForm from "@/components/forms/admin/BidRoundAdminSettingsForm";
+import { Button } from "@/shadcn/ui/button";
+import useReload from "@/hooks/reload";
 
 export default function BidRoundPage() {
-  return <Col className="gap-20">
+  const { reload, reloadKey } = useReload();
+  return <Col className="gap-20" key={reloadKey}>
     <ListSection
       title="대기 작품 관리"
       noItemsMessage="현재 대기 중 작품이 없습니다"
       approvalStatus={BidRoundApprovalStatus.Pending}
+      reload={reload}
     />
     <ListSection
       title="투고 작품 관리"
       noItemsMessage="현재 오퍼 중 작품이 없습니다"
       approvalStatus={BidRoundApprovalStatus.Approved}
+      reload={reload}
     />
   </Col>;
 }
 
-function ListSection({ title, noItemsMessage, approvalStatus }: {
+function ListSection({ title, noItemsMessage, approvalStatus, reload }: {
   title: string;
   noItemsMessage: string;
   approvalStatus: BidRoundApprovalStatus;
+  reload: () => void;
 }) {
   return <Col>
     <Text className="font-bold text-[18pt]">{title}</Text>
-    <ListSectionContent noItemsMessage={noItemsMessage} approvalStatus={approvalStatus} />
+    <ListSectionContent noItemsMessage={noItemsMessage} approvalStatus={approvalStatus}
+      reload={reload}/>
   </Col>;
 }
 
-function ListSectionContent({ noItemsMessage, approvalStatus }: {
+function ListSectionContent({ noItemsMessage, approvalStatus, reload }: {
   approvalStatus: BidRoundApprovalStatus;
   noItemsMessage: string;
+  reload: () => void;
 }) {
   const { listResponse, filters, setFilters } = useListData(
     adminListBidRoundsWithWebtoon, {
@@ -69,7 +77,7 @@ function ListSectionContent({ noItemsMessage, approvalStatus }: {
         <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade">상태</div>
         <div></div>
       </div>
-      {listResponse.items.map((item) => <TableRow key={item.id} bidRound={item} />)}
+      {listResponse.items.map((item) => <TableRow key={item.id} bidRound={item} reload={reload} />)}
     </div>
     <Paginator
       currentPage={filters.page}
@@ -79,8 +87,9 @@ function ListSectionContent({ noItemsMessage, approvalStatus }: {
   </>;
 }
 
-function TableRow({ bidRound }: {
+function TableRow({ bidRound, reload }: {
   bidRound: AdminPageBidRoundT;
+  reload: () => void;
 }) {
   const t = useTranslations("bidRoundStatus");
   return (
@@ -112,8 +121,11 @@ function TableRow({ bidRound }: {
       <div className="w-[15%] p-2 flex justify-center">
         {t(bidRound.status)}
       </div>
-      <SubmitEditWrapper bidRoundId={bidRound.id}
-        adminSettings={bidRound.adminSettings} />
+      <BidRoundAdminSettingsForm bidRoundId={bidRound.id}
+        adminSettings={bidRound.adminSettings}
+        reload={reload}>
+        <Button>수정</Button>
+      </BidRoundAdminSettingsForm>
     </div>
   );
 }

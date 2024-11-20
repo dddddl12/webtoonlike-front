@@ -26,7 +26,6 @@ import { displayName } from "@/utils/displayName";
 import { useRouter } from "@/i18n/routing";
 import { ImageObject } from "@/utils/media";
 import { FileDirectoryT } from "@/resources/files/files.type";
-import { formResolver } from "@/utils/forms";
 import { BasicGenreT } from "@/resources/genres/genre.service";
 import { createOrUpdateWebtoon, WebtoonDetailsT } from "@/resources/webtoons/webtoon.service";
 import { toast } from "@/shadcn/hooks/use-toast";

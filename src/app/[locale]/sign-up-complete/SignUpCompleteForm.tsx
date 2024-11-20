@@ -1,12 +1,12 @@
 "use client";
-import CreatorProfileForm from "@/components/Account/CreatorProfileForm";
-import BuyerProfileForm from "@/components/Account/BuyerProfileForm";
+import CreatorProfileForm from "@/components/forms/account/CreatorProfileForm";
+import BuyerProfileForm from "@/components/forms/account/BuyerProfileForm";
 import { redirect, useRouter } from "@/i18n/routing";
 import { useSession } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { SignUpStage, UserExtendedFormT, UserTypeT } from "@/resources/users/user.types";
-import UserTypeSelector from "@/components/Account/UserTypeSelector";
-import UserProfileForm from "@/components/Account/UserProfileForm";
+import UserTypeSelectorForm from "@/components/forms/account/UserTypeSelectorForm";
+import UserProfileForm from "@/components/forms/account/UserProfileForm";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -50,7 +50,7 @@ export function SignUpCompleteForm ({ clerkUserFullName, signUpFinished }: {
 
 
   if (signUpStage === SignUpStage.Begin) {
-    return <UserTypeSelector
+    return <UserTypeSelectorForm
       setUserExtendedForm={setUserExtendedForm}
       setSignUpStage={setSignUpStage}
     />;

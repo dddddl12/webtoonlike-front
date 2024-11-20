@@ -1,14 +1,12 @@
 import Image from "next/image";
-import { Gap, Row } from "@/shadcn/ui/layouts";
+import { Gap } from "@/shadcn/ui/layouts";
 import { FormControl, FormItem, FormLabel } from "@/shadcn/ui/form";
 import { Input } from "@/shadcn/ui/input";
 import { ImageObject } from "@/utils/media";
 import { Dispatch, SetStateAction } from "react";
 import { useTranslations } from "next-intl";
-import { Button } from "@/shadcn/ui/button";
-import { SignUpStage } from "@/resources/users/user.types";
 
-export function AccountFormImageField({ image, setImage, placeholder }: {
+export default function AccountFormImageField({ image, setImage, placeholder }: {
   image: ImageObject;
   setImage: Dispatch<SetStateAction<ImageObject>>;
   placeholder: string;
@@ -51,29 +49,4 @@ export function AccountFormImageField({ image, setImage, placeholder }: {
       </FormLabel>
     </FormItem>
   </>;
-}
-
-export function AccountFormFooter({ isValid, setSignUpStage, goNextLabel }: {
-  isValid: boolean;
-  setSignUpStage: Dispatch<SetStateAction<SignUpStage>>;
-  goNextLabel?: string;
-}){
-  const tGeneral = useTranslations("general");
-  return <Row className="w-full justify-between">
-    <Button
-      className="w-[49%] bg-black-texts text-white hover:text-black"
-      onClick={(e) => {
-        e.preventDefault();
-        setSignUpStage(prev => prev - 1);
-      }}
-    >
-      {tGeneral("goBack")}
-    </Button>
-    <Button
-      className="w-[49%] bg-black-texts text-white hover:text-black"
-      disabled={!isValid}
-    >
-      {goNextLabel ?? tGeneral("goNext")}
-    </Button>
-  </Row>;
 }

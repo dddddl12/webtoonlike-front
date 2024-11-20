@@ -1,5 +1,5 @@
 import PageLayout from "@/components/PageLayout";
-import { WebtoonForm } from "@/app/[locale]/webtoons/components/forms/WebtoonForm";
+import { WebtoonForm } from "@/components/forms/WebtoonForm";
 import { listGenres } from "@/resources/genres/genre.service";
 import { responseHandler } from "@/handlers/responseHandler";
 

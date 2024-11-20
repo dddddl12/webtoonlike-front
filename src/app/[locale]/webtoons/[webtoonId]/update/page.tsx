@@ -1,7 +1,7 @@
 import React from "react";
 import PageLayout from "@/components/PageLayout";
 import { getWebtoon } from "@/resources/webtoons/webtoon.service";
-import { WebtoonForm } from "@/app/[locale]/webtoons/components/forms/WebtoonForm";
+import { WebtoonForm } from "@/components/forms/WebtoonForm";
 import { listGenres } from "@/resources/genres/genre.service";
 import { responseHandler } from "@/handlers/responseHandler";
 

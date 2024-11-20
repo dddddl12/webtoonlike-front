@@ -1,8 +1,8 @@
 "use client";
 import { SignUpStage, UserExtendedFormT, UserTypeT } from "@/resources/users/user.types";
 import { useRouter } from "@/i18n/routing";
-import CreatorProfileForm from "@/components/Account/CreatorProfileForm";
-import BuyerProfileForm from "@/components/Account/BuyerProfileForm";
+import CreatorProfileForm from "@/components/forms/account/CreatorProfileForm";
+import BuyerProfileForm from "@/components/forms/account/BuyerProfileForm";
 import { useEffect, useState } from "react";
 import { useToast } from "@/shadcn/hooks/use-toast";
 

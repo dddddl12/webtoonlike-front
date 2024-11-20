@@ -6,7 +6,7 @@ import { IconSignupCreator } from "@/components/svgs/IconSignupCreatori";
 import { Button } from "@/shadcn/ui/button";
 import { IconSignupBuyer } from "@/components/svgs/IconSignupBuyer";
 
-export default function UserTypeSelector({ setUserExtendedForm, setSignUpStage }: {
+export default function UserTypeSelectorForm({ setUserExtendedForm, setSignUpStage }: {
   setUserExtendedForm: Dispatch<SetStateAction<Partial<UserExtendedFormT>>>;
   setSignUpStage: Dispatch<SetStateAction<SignUpStage>>;
 }) {

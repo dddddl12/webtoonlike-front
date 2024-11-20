@@ -5,8 +5,8 @@ import { useConfirm } from "@/hooks/alert";
 import { IconDelete } from "@/components/svgs/IconDelete";
 import useSafeAction from "@/hooks/safeAction";
 
-export default function useDeleteGenre({ reloadOnUpdate, genre }: {
-  reloadOnUpdate: () => void;
+export default function useDeleteGenre({ reload, genre }: {
+  reload: () => void;
   genre: BasicGenreT;
 }) {
   const { toast } = useToast();
@@ -15,7 +15,7 @@ export default function useDeleteGenre({ reloadOnUpdate, genre }: {
       toast({
         description: "장르가 삭제되었습니다."
       });
-      reloadOnUpdate();
+      reload();
     }
   });
   const confirm = useConfirm({

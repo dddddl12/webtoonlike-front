@@ -1,5 +1,5 @@
 import PageLayout from "@/components/PageLayout";
-import WebtoonEpisodeForm from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm";
+import WebtoonEpisodeForm from "@/components/forms/WebtoonEpisodeForm";
 
 export default async function CreateWebtoonPost({ params } : {
   params: Promise<{webtoonId: string}>;

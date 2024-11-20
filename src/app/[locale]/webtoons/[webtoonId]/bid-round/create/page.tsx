@@ -1,5 +1,5 @@
 import { Heading } from "@/shadcn/ui/texts";
-import BidRoundForm from "@/app/[locale]/webtoons/components/forms/BidRoundForm";
+import BidRoundForm from "@/components/forms/BidRoundForm";
 import PageLayout from "@/components/PageLayout";
 import { getTranslations } from "next-intl/server";
 

@@ -14,10 +14,11 @@ import Spinner from "@/components/Spinner";
 import { ImageObject } from "@/utils/media";
 import { FileDirectoryT } from "@/resources/files/files.type";
 import { SignUpStage, UserExtendedFormSchema, UserExtendedFormT } from "@/resources/users/user.types";
-import { AccountFormFooter, AccountFormImageField } from "@/components/Account/common";
 import { createUser } from "@/resources/users/user.service";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
+import AccountFormImageField from "@/components/forms/account/components/AccountFormImageField";
+import AccountFormFooter from "@/components/forms/account/components/AccountFormFooter";
 
 
 export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : {

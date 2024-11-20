@@ -12,21 +12,20 @@ import {
 } from "@/resources/webtoonEpisodes/webtoonEpisode.types";
 import { toast, useToast } from "@/shadcn/hooks/use-toast";
 import { FileDirectoryT } from "@/resources/files/files.type";
-import EpisodeImageItem from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/EpisodeImageItem";
+import EpisodeImageItem from "@/components/forms/WebtoonEpisodeForm/EpisodeImageItem";
 import { IconUpArrow } from "@/components/svgs/IconUpArrow";
 import { IconDownArrow } from "@/components/svgs/IconDownArrow";
 import { IconUpload } from "@/components/svgs/IconUpload";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { useRouter } from "@/i18n/routing";
-import { formResolver } from "@/utils/forms";
 import Spinner from "@/components/Spinner";
 import { Form, FormControl, FormHeader, FormItem, FormLabel } from "@/shadcn/ui/form";
-import EpisodeImagePreview from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/EpisodeImagePreview";
+import EpisodeImagePreview from "@/components/forms/WebtoonEpisodeForm/EpisodeImagePreview";
 import {
   reorderImages,
   ReorderImagesError
-} from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/reorderImages";
-import { EpisodeImageSet } from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/types";
+} from "@/components/forms/WebtoonEpisodeForm/reorderImages";
+import { EpisodeImageSet } from "@/components/forms/WebtoonEpisodeForm/types";
 import { DropzoneRootProps, useDropzone } from "react-dropzone";
 import { createOrUpdateEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";

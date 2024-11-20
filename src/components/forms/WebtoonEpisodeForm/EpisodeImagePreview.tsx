@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/shadcn/ui/dialog";
 import { ReactNode } from "react";
 import Image from "next/image";
-import { EpisodeImageSet } from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/types";
+import { EpisodeImageSet } from "@/components/forms/WebtoonEpisodeForm/types";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 export default function EpisodeImagePreview({ imageSets, children }: {

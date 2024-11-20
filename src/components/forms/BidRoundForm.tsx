@@ -20,8 +20,7 @@ import {
   FormLabel
 } from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
-import { formResolver } from "@/utils/forms";
-import ContractRangeForm from "@/app/[locale]/webtoons/components/forms/ContractRangeForm";
+import ContractRangeForm from "@/components/forms/ContractRangeForm";
 import { NumericInput } from "@/shadcn/ui/input";
 import { createOrUpdateBidRound } from "@/resources/bidRounds/bidRound.service";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";

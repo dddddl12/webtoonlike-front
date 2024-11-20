@@ -2,9 +2,9 @@ import { Row } from "@/shadcn/ui/layouts";
 import { Checkbox } from "@/shadcn/ui/checkbox";
 import { IconClose } from "@/components/svgs/IconClose";
 import { useTranslations } from "next-intl";
-import EpisodeImagePreview from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/EpisodeImagePreview";
+import EpisodeImagePreview from "@/components/forms/WebtoonEpisodeForm/EpisodeImagePreview";
 import { FormControl, FormItem, FormLabel } from "@/shadcn/ui/form";
-import { EpisodeImageSet } from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/types";
+import { EpisodeImageSet } from "@/components/forms/WebtoonEpisodeForm/types";
 import { useConfirm } from "@/hooks/alert";
 import { Button } from "@/shadcn/ui/button";
 

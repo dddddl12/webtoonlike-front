@@ -12,8 +12,8 @@ import { createAdmin } from "@/resources/admins/admin.service";
 import { useConfirm } from "@/hooks/alert";
 import useSafeAction from "@/hooks/safeAction";
 
-export default function AddAdmin({ reloadOnUpdate }: {
-  reloadOnUpdate: () => void;
+export default function AddAdmin({ reload }: {
+  reload: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const [users, setUsers] = useState<NonAdminUserSearchT[]>();
@@ -52,7 +52,7 @@ export default function AddAdmin({ reloadOnUpdate }: {
       toast({
         description: "관리자를 추가했습니다."
       });
-      reloadOnUpdate();
+      reload();
     }
   });
 

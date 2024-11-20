@@ -51,7 +51,7 @@ function removeBlankStrings(obj: any): any {
     return obj.map(removeBlankStrings)
       .filter((value) => value !== "");
   }
-  if (typeof obj === "object" && obj !== null) {
+  if (obj?.constructor === Object) {
     return Object.fromEntries(
       Object.entries(obj)
         .filter((entry) => entry[1] !== "") // blank 제거

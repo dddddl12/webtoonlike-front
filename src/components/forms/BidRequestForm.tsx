@@ -3,10 +3,9 @@
 import { Heading } from "@/shadcn/ui/texts";
 import { Button } from "@/shadcn/ui/button";
 import { useTranslations } from "next-intl";
-import ContractRangeForm from "@/app/[locale]/webtoons/components/forms/ContractRangeForm";
+import ContractRangeForm from "@/components/forms/ContractRangeForm";
 import { Textarea } from "@/shadcn/ui/textarea";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
-import { formResolver } from "@/utils/forms";
 import { BidRequestFormSchema } from "@/resources/bidRequests/bidRequest.types";
 import { FieldSet, Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import { useEffect, useRef } from "react";

@@ -13,6 +13,7 @@ import { Skeleton } from "@/shadcn/ui/skeleton";
 import ViewOfferSection from "@/app/[locale]/offers/components/OfferDetails";
 import Controls from "@/app/[locale]/offers/components/Controls";
 import useSafeAction from "@/hooks/safeAction";
+import useReload from "@/hooks/reload";
 
 // TODO 페이지네이션 없음
 export default function BidRequestMessageList({ curBidRequest, setCurBidRequest }: {
@@ -24,7 +25,7 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
     headingRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [headingRef]);
 
-  const [reloadMessages, setReloadMessages] = useState(true);
+  const { reload, reloadKey } = useReload();
   const [messagesResponse, setMessagesResponse] = useState<BidRequestMessagesResponseT>();
 
   const boundListBidRequestMessages = useMemo(() => listBidRequestMessages.bind(null, curBidRequest.id), [curBidRequest.id]);
@@ -32,11 +33,8 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
     onSuccess: ({ data }) => setMessagesResponse(data)
   });
   useEffect(() => {
-    if (reloadMessages) {
-      setReloadMessages(false);
-      execute();
-    }
-  }, [execute, reloadMessages]);
+    execute();
+  }, [execute, reloadKey]);
 
   const tBidRequestStatus = useTranslations("bidRequestStatus");
   if (!messagesResponse) {
@@ -67,7 +65,7 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
       <ViewOfferSection bidRequest={curBidRequest} />
       {(messages.length === 0 && !done.isDone)
         && <Controls bidRequestId={curBidRequest.id}
-          setReloadMessages={setReloadMessages}
+          reload={reload}
           setCurBidRequest={setCurBidRequest}
           whoCanDecideAtThisTurn={UserTypeT.Creator}
         />}
@@ -85,7 +83,7 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
         <MessageContentBox content={message.content} />
         {(messages.length - 1 === index && !done.isDone)
           && <Controls bidRequestId={curBidRequest.id}
-            setReloadMessages={setReloadMessages}
+            reload={reload}
             setCurBidRequest={setCurBidRequest}
             whoCanDecideAtThisTurn={message.user.userType === UserTypeT.Creator
               ? UserTypeT.Buyer : UserTypeT.Creator}

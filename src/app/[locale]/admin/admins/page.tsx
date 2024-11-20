@@ -8,34 +8,26 @@ import { useTranslations } from "next-intl";
 import Paginator from "@/components/Paginator";
 import DeleteAdmin from "@/app/[locale]/admin/admins/DeleteAdmin";
 import AddAdmin from "@/app/[locale]/admin/admins/AddAdmin";
-import { useCallback, useEffect, useState } from "react";
+import useReload from "@/hooks/reload";
 
 export default function ManageAdminsPage() {
-  const [loaded, setLoaded] = useState<boolean>(false);
-  const reloadOnUpdate = useCallback(() => setLoaded(false), []);
-
-  useEffect(() => {
-    if (!loaded) {
-      setLoaded(true);
-    }
-  }, [loaded]);
+  const { reload, reloadKey } = useReload();
 
   return (
     <Col className="gap-10">
       <Row className="justify-between">
         <p className="font-bold text-[18pt]">관리자 목록</p>
-        <AddAdmin reloadOnUpdate={reloadOnUpdate}/>
+        <AddAdmin reload={reload}/>
       </Row>
       <div className="flex flex-col">
-        {loaded
-          && <ManageAdminsContent reloadOnUpdate={reloadOnUpdate}/>}
+        <ManageAdminsContent key={reloadKey} reload={reload}/>
       </div>
     </Col>
   );
 }
 
-function ManageAdminsContent({ reloadOnUpdate }: {
-  reloadOnUpdate: () => void;
+function ManageAdminsContent({ reload }: {
+  reload: () => void;
 }) {
   const { listResponse, filters, setFilters } = useListData(
     listAdmins, {
@@ -60,7 +52,7 @@ function ManageAdminsContent({ reloadOnUpdate }: {
       .map((admin) => <TableRow
         key={admin.id}
         admin={admin}
-        reloadOnUpdate={reloadOnUpdate}
+        reload={reload}
       />)}
     <Paginator
       currentPage={filters.page}
@@ -70,9 +62,9 @@ function ManageAdminsContent({ reloadOnUpdate }: {
   </div>;
 }
 
-function TableRow({ admin, reloadOnUpdate }:{
+function TableRow({ admin, reload }:{
   admin: AdminEntryT;
-  reloadOnUpdate: () => void;
+  reload: () => void;
 }) {
   const tUserType = useTranslations("userType");
   return (
@@ -93,7 +85,7 @@ function TableRow({ admin, reloadOnUpdate }:{
         {admin.createdAt.toLocaleString("ko") ?? "-"}
       </div>
       <div className="w-1/12 p-2 flex justify-center">
-        {admin.isDeletable && <DeleteAdmin adminId={admin.id} reloadOnUpdate={reloadOnUpdate} />}
+        {admin.isDeletable && <DeleteAdmin adminId={admin.id} reload={reload} />}
       </div>
     </div>
   );

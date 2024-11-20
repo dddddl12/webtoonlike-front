@@ -1,8 +1,6 @@
-"use client";
-import { useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { ko, enUS } from "date-fns/locale";
-
 import {
   Dialog,
   DialogTrigger,
@@ -33,15 +31,39 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Col } from "@/shadcn/ui/layouts";
 import { getBidRoundStatus } from "@/resources/bidRounds/bidRoundStatus";
 
-export default function SubmitEditWrapper({
-  bidRoundId, adminSettings,
+export default function BidRoundAdminSettingsForm({
+  bidRoundId, adminSettings, children, reload
 }: {
   bidRoundId: number;
   adminSettings: BidRoundAdminSettingsT;
+  children: ReactNode;
+  reload: () => void;
 }) {
-  const { toast } = useToast();
   const [editorOpen, setEditorOpen] = useState<boolean>(false);
 
+  return (
+    <Dialog
+      open={editorOpen}
+      onOpenChange={setEditorOpen}
+    >
+      <DialogTrigger asChild>
+        {children}
+      </DialogTrigger>
+      {editorOpen
+        && <DialogContentWrapper bidRoundId={bidRoundId} adminSettings={adminSettings}
+          reload={reload}/>}
+    </Dialog>
+  );
+}
+
+function DialogContentWrapper({
+  bidRoundId, adminSettings, reload
+}: {
+  bidRoundId: number;
+  adminSettings: BidRoundAdminSettingsT;
+  reload: () => void;
+}) {
+  const { toast } = useToast();
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       editBidRoundAdminSettings.bind(null, bidRoundId),
@@ -53,7 +75,7 @@ export default function SubmitEditWrapper({
               description: "투고 수정에 성공했습니다.",
               // variant: "success" TODO
             });
-            window.location.reload();
+            reload();
           }
         },
         formProps: {
@@ -62,59 +84,43 @@ export default function SubmitEditWrapper({
         }
       }
     );
-
   const { formState: { isValid } } = form;
-  useEffect(() => {
-    if (editorOpen) {
-      form.reset(adminSettings);
-    }
-  }, [adminSettings, editorOpen, form]);
 
-  return (
-    <Dialog
-      open={editorOpen}
-      onOpenChange={setEditorOpen}
-    >
-      <DialogTrigger asChild>
-        <Button>
-          수정
+  return <DialogContent>
+    <VisuallyHidden>
+      <DialogTitle/>
+      <DialogDescription/>
+    </VisuallyHidden>
+    <FormWrapper form={form}/>
+    <DialogFooter className="justify-end gap-2">
+      <DialogClose asChild>
+        <Button variant="red">
+          취소
         </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <VisuallyHidden>
-          <DialogTitle/>
-          <DialogDescription/>
-        </VisuallyHidden>
-        <AdminSettingsForm form={form} />
-        <DialogFooter className="justify-end gap-2">
-          <DialogClose asChild>
-            <Button variant="red">
-              취소
-            </Button>
-          </DialogClose>
-          <Button
-            variant="mint"
-            onClick={handleSubmitWithAction}
-            disabled={!isValid}
-          >
-            적용
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
+      </DialogClose>
+      <Button
+        variant="mint"
+        onClick={handleSubmitWithAction}
+        disabled={!isValid}
+      >
+        적용
+      </Button>
+    </DialogFooter>
+  </DialogContent>;
 }
 
-function AdminSettingsForm({ form }: {
+function FormWrapper({ form }: {
   form: UseFormReturn<StrictBidRoundAdminSettingsT>;
 }) {
-  const t = useTranslations("bidRoundStatus");
   const { formState: { isSubmitting, isSubmitSuccessful, isValid }, watch } = form;
+
+  const t = useTranslations("bidRoundStatus");
   const { bidStartsAt, negoStartsAt, processEndsAt } = watch();
   const statusLabel = isValid ? t(getBidRoundStatus({
     bidStartsAt, negoStartsAt, processEndsAt,
     approvalStatus: BidRoundApprovalStatus.Approved
   })) : "-";
+
   if (isSubmitting || isSubmitSuccessful) {
     return <Spinner />;
   }
@@ -163,12 +169,11 @@ function AdminSettingsForm({ form }: {
           </FormItem>
         )}
       />
-
     </form>
   </Form>;
 }
 
-export function CalendarFormField<TFieldValues extends FieldValues>({ control, name, label }: {
+function CalendarFormField<TFieldValues extends FieldValues>({ control, name, label }: {
   control: Control<TFieldValues>;
   name: FieldName<TFieldValues, Date>;
   label: string;

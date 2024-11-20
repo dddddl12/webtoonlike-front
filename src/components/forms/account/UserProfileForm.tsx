@@ -7,11 +7,10 @@ import { Col, Row } from "@/shadcn/ui/layouts";
 import { Input } from "@/shadcn/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shadcn/ui/select";
 import { Checkbox } from "@/shadcn/ui/checkbox";
-import TermsOfUse from "@/components/Account/TermsOfUse";
-import { formResolver } from "@/utils/forms";
 import { clsx } from "clsx";
-import { AccountFormFooter } from "@/components/Account/common";
 import { zodResolver } from "@hookform/resolvers/zod";
+import AccountFormFooter from "@/components/forms/account/components/AccountFormFooter";
+import TermsOfUse from "@/components/forms/account/components/TermsOfUse";
 
 export default function UserProfileForm({ userExtendedForm, setUserExtendedForm, setSignUpStage }: {
   userExtendedForm: Partial<UserExtendedFormT>;

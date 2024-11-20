@@ -17,10 +17,10 @@ import { createInvoice, previewInvoice } from "@/resources/invoices/invoice.serv
 import useSafeAction from "@/hooks/safeAction";
 
 export function IssuanceInvoiceSubmit({
-  bidRequestId, reloadPage
+  bidRequestId, reload
 }: {
   bidRequestId: number;
-  reloadPage: () => void;
+  reload: () => void;
 }) {
   const { toast } = useToast();
   const [checkInvoiceOpen, setCheckInvoiceOpen] = useState<boolean>(false);
@@ -30,7 +30,7 @@ export function IssuanceInvoiceSubmit({
         description: "인보이스가 발행되었습니다."
       });
       setCheckInvoiceOpen(false);
-      reloadPage();
+      reload();
     }
   });
 

@@ -1,4 +1,4 @@
-import { EpisodeImageSet } from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/types";
+import { EpisodeImageSet } from "@/components/forms/WebtoonEpisodeForm/types";
 
 export class ReorderImagesError extends Error {}
 

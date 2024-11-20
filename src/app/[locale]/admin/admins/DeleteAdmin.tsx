@@ -5,8 +5,8 @@ import { useConfirm } from "@/hooks/alert";
 import { IconDelete } from "@/components/svgs/IconDelete";
 import useSafeAction from "@/hooks/safeAction";
 
-export default function DeleteAdmin({ reloadOnUpdate, adminId }: {
-  reloadOnUpdate: () => void;
+export default function DeleteAdmin({ reload, adminId }: {
+  reload: () => void;
   adminId: number;
 }) {
   const { toast } = useToast();
@@ -15,7 +15,7 @@ export default function DeleteAdmin({ reloadOnUpdate, adminId }: {
       toast({
         description: "관리자 권한이 삭제되었습니다."
       });
-      reloadOnUpdate();
+      reload();
     }
   });
   const confirm = useConfirm({

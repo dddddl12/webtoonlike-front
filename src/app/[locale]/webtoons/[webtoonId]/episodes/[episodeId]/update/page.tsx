@@ -1,5 +1,5 @@
 import { getEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
-import WebtoonEpisodeForm from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm";
+import WebtoonEpisodeForm from "@/components/forms/WebtoonEpisodeForm";
 import PageLayout from "@/components/PageLayout";
 import { responseHandler } from "@/handlers/responseHandler";
 

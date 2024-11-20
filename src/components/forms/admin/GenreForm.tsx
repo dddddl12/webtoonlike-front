@@ -17,12 +17,11 @@ import { BasicGenreT, createOrUpdateGenre } from "@/resources/genres/genre.servi
 import { GenreFormSchema, GenreFormT } from "@/resources/genres/genre.types";
 import { UseFormReturn } from "react-hook-form";
 import Spinner from "@/components/Spinner";
-import { formResolver } from "@/utils/forms";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function AddOrUpdateGenre({ onGenreAddSuccess, children, prev }: {
-  onGenreAddSuccess: () => void;
+export default function GenreForm({ reload, children, prev }: {
+  reload: () => void;
   children: ReactNode;
   prev?: BasicGenreT;
 }) {
@@ -40,7 +39,7 @@ export default function AddOrUpdateGenre({ onGenreAddSuccess, children, prev }: 
               description: prev ? "장르가 수정되었습니다." : "장르가 추가되었습니다."
             });
             setEditorOpen(false);
-            onGenreAddSuccess();
+            reload();
           }
         },
         formProps: {
@@ -78,7 +77,7 @@ export default function AddOrUpdateGenre({ onGenreAddSuccess, children, prev }: 
             장르 정보를 입력해주세요.
           </DialogDescription>
         </DialogHeader>
-        <GenreForm form={form} />
+        <GenreFormContent form={form} />
         <DialogFooter className='justify-end'>
           <DialogClose asChild>
             <Button variant='ghost'>
@@ -100,7 +99,7 @@ export default function AddOrUpdateGenre({ onGenreAddSuccess, children, prev }: 
   );
 }
 
-function GenreForm({
+function GenreFormContent({
   form,
 }: {
   form: UseFormReturn<GenreFormT>;

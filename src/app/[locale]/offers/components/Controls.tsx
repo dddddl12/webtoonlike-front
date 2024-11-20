@@ -17,9 +17,9 @@ import useSafeAction from "@/hooks/safeAction";
 import { useTranslations } from "next-intl";
 import { useConfirm } from "@/hooks/alert";
 
-export default function Controls({ bidRequestId, setReloadMessages, setCurBidRequest, whoCanDecideAtThisTurn, refMessageId }: {
+export default function Controls({ bidRequestId, reload, setCurBidRequest, whoCanDecideAtThisTurn, refMessageId }: {
   bidRequestId: number;
-  setReloadMessages: Dispatch<SetStateAction<boolean>>;
+  reload: () => void;
   setCurBidRequest: Dispatch<SetStateAction<SimpleBidRequestT>>;
   whoCanDecideAtThisTurn: UserTypeT;
   refMessageId?: number;
@@ -84,7 +84,7 @@ export default function Controls({ bidRequestId, setReloadMessages, setCurBidReq
         {t("decline.actionButton")}
       </Button>}
     <SendMessage bidRequestId={bidRequestId}
-      setReloadMessages={setReloadMessages} />
+      reload={reload} />
     {tokenInfo?.metadata.type === whoCanDecideAtThisTurn
       && <Button variant="mint" onClick={acceptConfirm.open}>
         {t("accept.actionButton")}
@@ -92,9 +92,9 @@ export default function Controls({ bidRequestId, setReloadMessages, setCurBidReq
   </Row>;
 }
 
-function SendMessage({ bidRequestId, setReloadMessages }: {
+function SendMessage({ bidRequestId, reload }: {
   bidRequestId: number;
-  setReloadMessages: Dispatch<SetStateAction<boolean>>;
+  reload: () => void;
 }) {
   const { toast } = useToast();
   const [editorOpen, setEditorOpen] = useState<boolean>(false);
@@ -109,7 +109,7 @@ function SendMessage({ bidRequestId, setReloadMessages }: {
       toast({
         description: t("message.toast")
       });
-      setReloadMessages(true);
+      reload();
       setEditorOpen(false);
     }
   });

@@ -8,8 +8,8 @@ import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 
-export default function IssuanceInvoice({ reloadPage }: {
-  reloadPage: () => void;
+export default function IssuanceInvoice({ reload }: {
+  reload: () => void;
 }) {
   const { listResponse, filters, setFilters } = useListData(
     adminListUninvoicedBidRequests, {
@@ -36,7 +36,7 @@ export default function IssuanceInvoice({ reloadPage }: {
           <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade">인보이스 발행</div>
         </div>
         {listResponse.items.map((bidRequest, i) => (
-          <TableRow key={i} bidRequest={bidRequest} reloadPage={reloadPage} />
+          <TableRow key={i} bidRequest={bidRequest} reload={reload} />
         ))}
       </div>
       <Paginator
@@ -49,9 +49,9 @@ export default function IssuanceInvoice({ reloadPage }: {
 }
 
 
-function TableRow({ bidRequest,reloadPage }: {
+function TableRow({ bidRequest,reload }: {
   bidRequest: SimpleBidRequestT;
-  reloadPage: () => void;
+  reload: () => void;
 }) {
   return (
     <Row className="flex bg-white rounded-sm p-2 my-2">
@@ -82,7 +82,7 @@ function TableRow({ bidRequest,reloadPage }: {
         <p className=" cursor-pointer">{bidRequest.createdAt.toLocaleString("ko")}</p>
       </div>
       <div className="w-[15%] flex justify-center items-center">
-        <IssuanceInvoiceSubmit bidRequestId={bidRequest.id} reloadPage={reloadPage} />
+        <IssuanceInvoiceSubmit bidRequestId={bidRequest.id} reload={reload} />
       </div>
     </Row>
   );
