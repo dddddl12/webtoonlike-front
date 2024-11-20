@@ -2,14 +2,14 @@ import { InferIn, Schema } from "next-safe-action/adapters/types";
 import { SafeActionResult } from "next-safe-action";
 import { showAlert } from "@/hooks/alert";
 import { HookBaseUtils, HookCallbacks } from "next-safe-action/hooks";
-import { ActionError } from "@/handlers/safeAction";
+import { ActionErrorT } from "@/handlers/errors";
 
 type Prettify<T> = {
   [K in keyof T]: T[K];
 } & {};
 
 export default function useClientActionHandler<
-  ServerError extends ActionError,
+  ServerError extends ActionErrorT,
   S extends Schema | undefined,
   BAS extends readonly Schema[],
   CVE,
@@ -40,8 +40,6 @@ export default function useClientActionHandler<
           }
         });
       }
-      // TODO 없애기
-      console.log(args);
     }
   };
 }

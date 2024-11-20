@@ -2,14 +2,14 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { InferIn, Schema } from "next-safe-action/adapters/types";
 import { HookSafeActionFn } from "next-safe-action/hooks";
 import useSafeAction from "@/hooks/safeAction";
-import { ActionError } from "@/handlers/safeAction";
+import { ActionErrorT } from "@/handlers/errors";
 
 type Filters<
   S extends Schema | undefined,
 > = S extends Schema ? InferIn<S> : void;
 
 export default function useListData<
-  ServerError extends ActionError,
+  ServerError extends ActionErrorT,
   S extends Schema | undefined,
   BAS extends readonly Schema[],
   CVE,
@@ -25,7 +25,7 @@ export default function useListData<
 };
 
 export default function useListData<
-  ServerError extends ActionError,
+  ServerError extends ActionErrorT,
   S extends Schema | undefined,
   BAS extends readonly Schema[],
   CVE,
@@ -42,7 +42,7 @@ export default function useListData<
 };
 
 export default function useListData<
-  ServerError extends ActionError,
+  ServerError extends ActionErrorT,
   S extends Schema | undefined,
   BAS extends readonly Schema[],
   CVE,

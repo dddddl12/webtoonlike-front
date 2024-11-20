@@ -1,15 +1,9 @@
 import { createSafeActionClient, ServerErrorFunctionUtils } from "next-safe-action";
 import { zodAdapter } from "next-safe-action/adapters/zod";
 import { z } from "zod";
-import { ExpectedError, NotFoundError, UnexpectedError } from "@/handlers/errors";
+import { ActionErrorT, ExpectedServerError, NotFoundError, UnexpectedServerError } from "@/handlers/errors";
 import { getTranslations } from "next-intl/server";
 import { Prisma } from "@prisma/client";
-
-export type ActionError = {
-  name: string;
-  title: string;
-  message: string;
-};
 
 const MetadataSchema = z.object({
   actionName: z.string(),
@@ -18,12 +12,13 @@ const MetadataSchema = z.object({
 export const action = createSafeActionClient({
   validationAdapter: zodAdapter(),
   defineMetadataSchema: () => MetadataSchema,
-  handleServerError: async (e, serverErrorFunctionUtils): Promise<ActionError> => {
-    if (e instanceof ExpectedError) {
+  handleServerError: async (e, serverErrorFunctionUtils): Promise<ActionErrorT> => {
+    if (e instanceof ExpectedServerError) {
       if (e.logError) {
         logError(e, serverErrorFunctionUtils);
       }
       return {
+        httpCode: e.httpCode,
         name: e.name,
         title: e.title,
         message: e.message,
@@ -36,6 +31,7 @@ export const action = createSafeActionClient({
       switch (e.code) {
         case "P2025":
           return {
+            httpCode: 404,
             name: NotFoundError.name,
             title: t("NotFoundError.title"),
             message: t("NotFoundError.message"),
@@ -46,7 +42,8 @@ export const action = createSafeActionClient({
     // 예상 에러로 걸러내지 못한 경우
     logError(e, serverErrorFunctionUtils);
     return {
-      name: UnexpectedError.name,
+      httpCode: 500,
+      name: UnexpectedServerError.name,
       title: t("UnexpectedError.title"),
       message: t("UnexpectedError.message"),
     };

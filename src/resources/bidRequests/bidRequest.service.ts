@@ -15,7 +15,7 @@ import { BuyerCompanySchema } from "@/resources/buyers/buyer.types";
 import z from "zod";
 import { action } from "@/handlers/safeAction";
 import { CreatorSchema } from "@/resources/creators/creator.types";
-import { BadRequestError, ForbiddenError, UnexpectedError } from "@/handlers/errors";
+import { BadRequestError, ForbiddenError, UnexpectedServerError } from "@/handlers/errors";
 import { getTranslations } from "next-intl/server";
 import {
   getBidRequestWhereUniqueInputWithPermissionCheck, listBidRequests, mapToBidRequestDTO, mapToSimpleBidRequestDTO,
@@ -300,7 +300,7 @@ export const getBidRequest = action
 
     // 저작권자 정보 기입
     if (!creatorUser.creator) {
-      throw new UnexpectedError("creatorUser.creator is undefined");
+      throw new UnexpectedServerError("creatorUser.creator is undefined");
     }
     const creatorClerkUser = clerkUserMap.get(creatorUser.sub);
     const creatorDto: BidRequestDetailsT["creator"] = {

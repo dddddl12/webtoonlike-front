@@ -9,7 +9,6 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { getLocale, getMessages } from "next-intl/server";
 import { Toaster } from "@/shadcn/ui/toaster";
-import AlertProvider from "@/components/Alert";
 import Alert from "@/components/Alert";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -30,12 +29,12 @@ export default async function RootLayout({
   const messages = await getMessages();
   const locale = await getLocale();
   return (
-    <html lang={locale} className="h-[100%]">
+    <html lang={locale}>
       <ClerkProvider localization={locale === "en" ? enUS : koKR}>
         <NextIntlClientProvider messages={messages}>
-          <body className={`h-[100%] ${inter.className} bg-background text-primary`}>
+          <body className={`${inter.className} bg-background text-primary min-h-screen flex flex-col`}>
             <Header/>
-            <main className="h-auto min-h-[100%] flex justify-center">
+            <main className="flex-grow flex">
               {children}
             </main>
             <Footer/>

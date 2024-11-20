@@ -423,6 +423,7 @@
         "countryOfDistribution": "유통 국가"
     },
     "errors": {
+        "backToHome": "홈으로 돌아가기",
         "invalidFields": {
             "duplicateValue": "해당값이 이미 존재합니다."
         },

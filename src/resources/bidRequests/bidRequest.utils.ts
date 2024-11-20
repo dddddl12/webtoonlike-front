@@ -2,7 +2,7 @@ import "server-only";
 import { $Enums, BidRequest as BidRequestRecord, Prisma } from "@prisma/client";
 import { AdminLevel } from "@/resources/tokens/token.types";
 import { UserTypeT } from "@/resources/users/user.types";
-import { UnexpectedError } from "@/handlers/errors";
+import { UnexpectedServerError } from "@/handlers/errors";
 import { assertAdmin, getTokenInfo } from "@/resources/tokens/token.service";
 import { ListResponse } from "@/resources/globalTypes";
 import prisma from "@/utils/prisma";
@@ -38,7 +38,7 @@ export const getBidRequestWhereUniqueInputWithPermissionCheck = async (bidReques
     } else if (metadata.type === UserTypeT.Buyer) {
       where.userId = userId;
     } else {
-      throw new UnexpectedError();
+      throw new UnexpectedServerError();
     }
   }
   return where;

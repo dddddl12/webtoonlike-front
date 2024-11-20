@@ -423,6 +423,7 @@
         "contractConditionDesc": "Please enter MG, duration, RS, manuscript fee, etc."
     },
     "errors": {
+        "backToHome": "Back to Home",
         "invalidFields": {
             "duplicateValue": "This value already exists."
         },

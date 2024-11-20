@@ -14,7 +14,7 @@ import prisma from "@/utils/prisma";
 import { getBidRoundStatusFromRecord, mapToBidRoundDTO, offerableBidRoundFilter } from "@/resources/bidRounds/bidRound.utils";
 import z from "zod";
 import { action } from "@/handlers/safeAction";
-import { UnexpectedError } from "@/handlers/errors";
+import { UnexpectedServerError } from "@/handlers/errors";
 
 // TODO 권한, 사용자 타입, 관리자 체크
 export const createOrUpdateWebtoon = action
@@ -498,7 +498,7 @@ export const getWebtoon = action
     const { creator } = record.user;
     if (!creator) {
     // TODO http 에러로 대체
-      throw new UnexpectedError("Creator should exist.");
+      throw new UnexpectedServerError("Creator should exist.");
     }
     const bidRoundRecord = record.bidRounds?.[0];
     const bidRound = bidRoundRecord

@@ -7,12 +7,12 @@ import {
   UseHookFormActionHookReturn
 } from "@next-safe-action/adapter-react-hook-form/hooks";
 import useClientActionHandler from "@/handlers/clientErrorHandler";
-import { ActionError } from "@/handlers/safeAction";
+import { ActionErrorT } from "@/handlers/errors";
 
 // 기존 유저 액션에 커스텀 에러 핸들링 추가
 // 절대로 useHookFormAction를 다이렉트로 사용하지 말 것
 export default function useSafeHookFormAction<
-  ServerError extends ActionError,
+  ServerError extends ActionErrorT,
   S extends Schema | undefined,
   BAS extends readonly Schema[],
   CVE,
