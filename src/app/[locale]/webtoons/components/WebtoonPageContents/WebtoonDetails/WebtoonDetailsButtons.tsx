@@ -13,8 +13,9 @@ export default function WebtoonDetailsButtons({ webtoon, setOpenBidRequestForm }
   return <Row className="gap-4 w-full">
     <ViewButton webtoon={webtoon} />
     {webtoon.isEditable
-      ? <BidRoundButton webtoon={webtoon}/>
-      : <OfferButton webtoon={webtoon} setOpenBidRequestForm={setOpenBidRequestForm}/>}
+      && <AddEpisodeButton webtoon={webtoon}/>}
+    {webtoon.hasRightToOffer
+    && <OfferButton webtoon={webtoon} setOpenBidRequestForm={setOpenBidRequestForm}/>}
   </Row>;
 }
 
@@ -30,23 +31,14 @@ function ViewButton ({ webtoon }: {
   </Button>;
 }
 
-function BidRoundButton ({ webtoon }: {
+function AddEpisodeButton ({ webtoon }: {
   webtoon: WebtoonDetailsT;
 }) {
-  const t = useTranslations("seriesManagement");
-  if (webtoon.activeBidRound) {
-    return <Button variant="mint" className="flex-1" size="lg" asChild>
-      <Link href={`/webtoons/${webtoon.id}/bid-round/update`}>
-        {t("reregisterOfContentTransactions")}
-      </Link>
-    </Button>;
-  } else {
-    return <Button variant="mint" className="flex-1" size="lg" asChild>
-      <Link href={`/webtoons/${webtoon.id}/bid-round/create`}>
-        {t("registerOfContentTransactions")}
-      </Link>
-    </Button>;
-  }
+  return <Button variant="mint" className="flex-1" size="lg" asChild>
+    <Link href={`/webtoons/${webtoon.id}/episodes/create`}>
+      에피소드 추가
+    </Link>
+  </Button>;
 }
 
 function OfferButton ({ webtoon, setOpenBidRequestForm }: {
@@ -59,7 +51,6 @@ function OfferButton ({ webtoon, setOpenBidRequestForm }: {
   const isPossibleToOffer = activeBidRound
     && [BidRoundStatus.Bidding, BidRoundStatus.Negotiating]
       .includes(activeBidRound.status);
-  // TODO 시간으로 변경
   return <Button
     variant="mint"
     className="flex-1"

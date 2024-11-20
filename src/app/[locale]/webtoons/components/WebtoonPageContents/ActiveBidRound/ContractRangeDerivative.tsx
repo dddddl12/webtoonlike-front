@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 export default function ContractRangeDerivative({ bidRound }: {
   bidRound: BidRoundT;
 }) {
-  const t = useTranslations("contractRangeData");
+  const t = useTranslations("bidRoundDetails");
   const tCountries = useTranslations("countries");
   const tBusinessFields = useTranslations("businessFields");
 

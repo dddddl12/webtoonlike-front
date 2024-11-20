@@ -13,7 +13,7 @@ export default function OfferDetails({ contractRange, message }: {
   const t = useTranslations("contractRangeDataForm");
   const tCountries = useTranslations("countries");
   const tContractType = useTranslations("contractType");
-  const tMakeAnOffer = useTranslations("makeAnOffer");
+  const tMakeAnOffer = useTranslations("offerDetails");
   const tBusinessFields = useTranslations("businessFields");
 
   const { webtoonRights, derivativeRights } = mapContractRange(contractRange);
@@ -108,7 +108,7 @@ export default function OfferDetails({ contractRange, message }: {
       <div>
         <Heading2>{tMakeAnOffer("toCreator")}</Heading2>
         <div className="min-h-[100px] rounded-sm bg-gray-darker p-2">
-          {message || "추가 메시지가 없습니다."}
+          {message || tMakeAnOffer("thereIsNoMessageWrittenByTheBuyer")}
         </div>
         <p className="text-[10pt] text-gray-shade mt-3">
           {tMakeAnOffer("note")}

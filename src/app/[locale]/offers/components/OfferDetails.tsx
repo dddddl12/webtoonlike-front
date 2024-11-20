@@ -36,7 +36,7 @@ export default function ViewOfferSection({ bidRequest }: {
 function Offerer({ buyer }: {
   buyer: PublicBuyerInfoT;
 }) {
-  const tMakeAnOffer = useTranslations("makeAnOffer");
+  const tMakeAnOffer = useTranslations("offerDetails");
 
   return <Col>
     <Heading>{tMakeAnOffer("offerer")}</Heading>

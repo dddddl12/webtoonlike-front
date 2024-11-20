@@ -391,12 +391,14 @@ export const listMyWebtoonsOnSale = action
 
 // /webtoon/[webtoonId]
 // /webtoon/create
-// /webtoon/[webtoonId]/update
+// /webtoon/[webtoonId]/update // todo 기본 정보용 엔드포인트 따로 생성
 const WebtoonDetailsSchema = WebtoonSchema
   .extend({
     // From joined tables
     isEditable: z.boolean(),
+    hasRightToOffer: z.boolean(),
     authorOrCreatorName: z.string(),
+    // todo 서버에서 언어 판단 미리 할 것
     authorOrCreatorName_en: z.string().optional(),
     likeCount: z.number(),
     myLike: z.boolean(),
@@ -405,10 +407,7 @@ const WebtoonDetailsSchema = WebtoonSchema
       label: z.string(),
       label_en: z.string().optional(),
     })),
-    activeBidRound: BidRoundSchema
-      .extend({
-        bidRequestCount: z.number()
-      }).optional(),
+    activeBidRound: BidRoundSchema.optional(),
     firstEpisodeId: z.number().optional()
   });
 export type WebtoonDetailsT = z.infer<typeof WebtoonDetailsSchema>;
@@ -465,13 +464,6 @@ export const getWebtoon = action
         bidRounds: {
           where: {
             isActive: true
-          },
-          include: {
-            _count: {
-              select: {
-                bidRequests: true
-              }
-            }
           }
         },
         _count: {
@@ -510,10 +502,7 @@ export const getWebtoon = action
     }
     const bidRoundRecord = record.bidRounds?.[0];
     const bidRound = bidRoundRecord
-      ? {
-        ...mapToBidRoundDTO(bidRoundRecord),
-        bidRequestCount: bidRoundRecord._count.bidRequests ?? 0
-      }
+      ? mapToBidRoundDTO(bidRoundRecord)
       : undefined;
     return {
       id: record.id,
@@ -532,6 +521,7 @@ export const getWebtoon = action
       thumbPath: record.thumbPath,
       isEditable: metadata.type === UserTypeT.Creator
       && (record.userId === userId || metadata.adminLevel >= AdminLevel.Admin),
+      hasRightToOffer: metadata.type === UserTypeT.Buyer,
       authorOrCreatorName: record.authorName ?? creator?.name,
       authorOrCreatorName_en: record.authorName_en ?? creator?.name_en ?? undefined,
       likeCount: record._count.likes,

@@ -14,6 +14,8 @@ import { useToast } from "@/shadcn/hooks/use-toast";
 import { UserTypeT } from "@/resources/users/user.types";
 import useTokenInfo from "@/hooks/tokenInfo";
 import useSafeAction from "@/hooks/safeAction";
+import { useTranslations } from "next-intl";
+import { useConfirm } from "@/hooks/alert";
 
 export default function Controls({ bidRequestId, setReloadMessages, setCurBidRequest, whoCanDecideAtThisTurn, refMessageId }: {
   bidRequestId: number;
@@ -24,6 +26,7 @@ export default function Controls({ bidRequestId, setReloadMessages, setCurBidReq
 }) {
   const { toast } = useToast();
   const { tokenInfo } = useTokenInfo();
+  const t = useTranslations("offerControls");
   const boundChangeBidRequestStatus = useMemo(() => changeBidRequestStatus
     .bind(null, bidRequestId), [bidRequestId]);
   const { execute } = useSafeAction(boundChangeBidRequestStatus, {
@@ -34,13 +37,33 @@ export default function Controls({ bidRequestId, setReloadMessages, setCurBidReq
       setCurBidRequest(data);
       toast({
         description: data.status === BidRequestStatus.Accepted
-          ? "오퍼를 수락했습니다."
-          : "오퍼를 거절했습니다."
+          ? t("accept.toast")
+          : t("decline.toast")
       });
     },
     onError: () => {
       executeOnFailure();
     }
+  });
+
+  const declineConfirm = useConfirm({
+    title: t("decline.alertTitle"),
+    message: t("decline.alertMessage"),
+    confirmText: t("decline.confirm"),
+    onConfirm: () => execute({
+      changeTo: BidRequestStatus.Declined,
+      refMessageId
+    })
+  });
+
+  const acceptConfirm = useConfirm({
+    title: t("accept.alertTitle"),
+    message: t("accept.alertMessage"),
+    confirmText: t("accept.confirm"),
+    onConfirm: () => execute({
+      changeTo: BidRequestStatus.Accepted,
+      refMessageId
+    })
   });
 
   // 오퍼 실패 시 업데이트
@@ -57,20 +80,14 @@ export default function Controls({ bidRequestId, setReloadMessages, setCurBidReq
 
   return <Row className="gap-20 mx-auto mb-10" >
     {tokenInfo?.metadata.type === whoCanDecideAtThisTurn
-      && <Button variant="red" onClick={() => execute({
-        changeTo: BidRequestStatus.Declined,
-        refMessageId
-      })}>
-        거절하기
+      && <Button variant="red" onClick={declineConfirm.open}>
+        {t("decline.actionButton")}
       </Button>}
     <SendMessage bidRequestId={bidRequestId}
       setReloadMessages={setReloadMessages} />
     {tokenInfo?.metadata.type === whoCanDecideAtThisTurn
-      && <Button variant="mint" onClick={() => execute({
-        changeTo: BidRequestStatus.Accepted,
-        refMessageId
-      })}>
-        수락하기
+      && <Button variant="mint" onClick={acceptConfirm.open}>
+        {t("accept.actionButton")}
       </Button>}
   </Row>;
 }
@@ -82,13 +99,15 @@ function SendMessage({ bidRequestId, setReloadMessages }: {
   const { toast } = useToast();
   const [editorOpen, setEditorOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const t = useTranslations("offerControls");
+  const tGeneral = useTranslations("general");
 
   const boundCreateBidRequestMessage = useMemo(() => createBidRequestMessage
     .bind(null, bidRequestId), [bidRequestId]);
   const { execute } = useSafeAction(boundCreateBidRequestMessage, {
     onSuccess: () => {
       toast({
-        description: "메시지를 전송했습니다."
+        description: t("message.toast")
       });
       setReloadMessages(true);
       setEditorOpen(false);
@@ -114,12 +133,12 @@ function SendMessage({ bidRequestId, setReloadMessages }: {
   >
     <DialogTrigger asChild>
       <Button variant="gray">
-        협의 요청
+        {t("message.actionButton")}
       </Button>
     </DialogTrigger>
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>메시지 보내기</DialogTitle>
+        <DialogTitle>{t("message.dialogTitle")}</DialogTitle>
       </DialogHeader>
       <Col>
 
@@ -127,7 +146,7 @@ function SendMessage({ bidRequestId, setReloadMessages }: {
           <Textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="메시지를 작성하세요."
+            placeholder={t("message.placeholder")}
           />
         </Row>
 
@@ -138,7 +157,7 @@ function SendMessage({ bidRequestId, setReloadMessages }: {
             className="bg-red"
             onClick={() => setEditorOpen(false)}
           >
-            취소
+            {tGeneral("cancel")}
           </Button>
           <Gap x={2} />
           <Button
@@ -146,7 +165,7 @@ function SendMessage({ bidRequestId, setReloadMessages }: {
             onClick={handleSubmit}
             disabled={!message}
           >
-            전송
+            {t("message.confirm")}
           </Button>
         </Row>
       </Col>

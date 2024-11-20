@@ -30,7 +30,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
   webtoonId: number;
   prev?: BidRoundT;
 }) {
-  const t = useTranslations("updateOrCreateBidRoundsPage");
+  const t = useTranslations("bidRoundDetails");
   const [isAgreed, setIsAgreed] = useState(false);
   const router = useRouter();
   const { form, handleSubmitWithAction }
@@ -48,7 +48,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
             errors: {
               currentEpisodeNo: {
                 type: "invalidNumber",
-                message: t("currentEpisodeNoMustBeLessThanTotal")
+                message: t("form.currentEpisodeNoMustBeLessThanTotal")
               },
             }
           };
@@ -118,7 +118,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
 
         {/* 계약 상세 */}
         <Heading2 className="mt-16">
-          {t("currentStatusOfCopyrightAgreement")}
+          {t("form.currentStatusOfCopyrightAgreement")}
           <IconExclamation className="fill-white ml-1"/>
         </Heading2>
 
@@ -128,7 +128,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
         {/* 동의 박스 */}
         <FormItem className="flex justify-center gap-2 items-center mt-16">
           <FormLabel>
-            {t("agreement")}
+            {t("form.agreement")}
           </FormLabel>
           <FormControl>
             <Checkbox
@@ -149,7 +149,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
             className="rounded-full"
             variant="mint"
           >
-            {t("register")}
+            {t("form.register")}
             <IconRightBrackets />
           </Button>
         </Row>
@@ -163,7 +163,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
 function IsNewFieldSet({ form }: {
   form: UseFormReturn<BidRoundFormT>;
 }) {
-  const t = useTranslations("updateOrCreateBidRoundsPage");
+  const t = useTranslations("bidRoundDetails");
   const items = [
     {
       value: true,
@@ -176,7 +176,7 @@ function IsNewFieldSet({ form }: {
   ];
   return (
     <FieldSet>
-      <legend>{t("productType")}</legend>
+      <legend>{t("seriesType")}</legend>
       <BooleanFormField
         control={form.control}
         name="isNew"
@@ -191,12 +191,12 @@ function IsNewFieldSet({ form }: {
 function EpisodeCountFieldSet({ form }: {
   form: UseFormReturn<BidRoundFormT>;
 }) {
-  const t = useTranslations("updateOrCreateBidRoundsPage");
+  const t = useTranslations("bidRoundDetails");
   const { errors } = form.formState;
 
   return (
     <FieldSet>
-      <legend>{t("serialInformation")}</legend>
+      <legend>{t("serviceEpisodeInformation")}</legend>
       <Row className="gap-4">
 
         <FormItem className="flex items-center mt-3">
@@ -243,7 +243,7 @@ function EpisodeCountFieldSet({ form }: {
 function MonthlyCountFieldSet({ form }: {
   form: UseFormReturn<BidRoundFormT>;
 }) {
-  const t = useTranslations("updateOrCreateBidRoundsPage");
+  const t = useTranslations("bidRoundDetails");
   return (
     <FieldSet>
       <legend>{t("monthlyProductionAvailableRounds")}</legend>
@@ -273,10 +273,10 @@ function MonthlyCountFieldSet({ form }: {
 function FinishedFieldSet({ form }: {
   form: UseFormReturn<BidRoundFormT>;
 }) {
-  const t = useTranslations("updateOrCreateBidRoundsPage");
+  const t = useTranslations("bidRoundDetails");
   return (
     <FieldSet>
-      <legend>{t("serialInformation")}</legend>
+      <legend>{t("serviceEpisodeInformation")}</legend>
       <Row>
 
         <FormItem className="flex items-center mt-3">
@@ -291,7 +291,7 @@ function FinishedFieldSet({ form }: {
             />
           </FormControl>
           <FormLabel className="ml-2">
-            {t("finishedEpisode")}
+            {t("episodesCompleted")}
           </FormLabel>
         </FormItem>
 
@@ -303,7 +303,7 @@ function FinishedFieldSet({ form }: {
 function OriginalityFieldSet({ form }: {
   form: UseFormReturn<BidRoundFormT>;
 }) {
-  const t = useTranslations("updateOrCreateBidRoundsPage");
+  const t = useTranslations("bidRoundDetails");
   const items = [
     {
       value: true,
@@ -316,7 +316,7 @@ function OriginalityFieldSet({ form }: {
   ];
   return (
     <FieldSet>
-      <legend>{t("SerializationOfOtherPlatforms")}</legend>
+      <legend>{t("serviceOnOtherPlatforms")}</legend>
       <BooleanFormField
         control={form.control}
         name="isOriginal"

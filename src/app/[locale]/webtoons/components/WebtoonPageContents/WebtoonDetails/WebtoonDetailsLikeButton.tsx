@@ -9,9 +9,10 @@ import useSafeAction from "@/hooks/safeAction";
 
 // TODO buyer만 가능한가?
 export default function WebtoonDetailsLikeButton({
-  initWebtoonLike,
+  initWebtoonLike, hasRightToOffer,
 }: {
   initWebtoonLike: WebtoonLikeWithMineT;
+  hasRightToOffer: boolean;
 }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [webtoonLike, setWebtoonLike] = useState(initWebtoonLike);
@@ -26,7 +27,7 @@ export default function WebtoonDetailsLikeButton({
   });
 
   return <Row>
-    <Button disabled={isProcessing} asChild size="smallIcon" className="bg-tranparent hover:bg-transparent">
+    <Button disabled={isProcessing || !hasRightToOffer} asChild size="smallIcon" className="bg-tranparent hover:bg-transparent">
       {/*todo hover logic*/}
       {webtoonLike.myLike
         ? <IconHeartFill onClick={() => {

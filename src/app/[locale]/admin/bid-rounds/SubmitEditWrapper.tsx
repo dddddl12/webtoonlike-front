@@ -119,7 +119,7 @@ function AdminSettingsForm({ form }: {
     return <Spinner />;
   }
   return <Form {...form}>
-    <form className="space-y-4">
+    <form className="space-y-4 mt-4">
       <CalendarFormField
         control={form.control}
         name="bidStartsAt"

@@ -22,7 +22,7 @@ export default function BidRequestForm({ bidRoundId }: {
   bidRoundId: number;
 }) {
 
-  const tMakeAnOffer = useTranslations("makeAnOffer");
+  const tMakeAnOffer = useTranslations("offerDetails");
   const tGeneral = useTranslations("general");
   const { toast } = useToast();
   const router = useRouter();

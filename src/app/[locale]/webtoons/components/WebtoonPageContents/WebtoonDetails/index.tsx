@@ -35,11 +35,13 @@ export default function WebtoonDetails({ webtoon, openBidRequestForm, setOpenBid
       />
 
       <Col className="flex-1 my-auto">
-        <WebtoonDetailsLikeButton initWebtoonLike={{
-          webtoonId: webtoon.id,
-          likeCount: webtoon.likeCount,
-          myLike: webtoon.myLike
-        }} />
+        <WebtoonDetailsLikeButton
+          hasRightToOffer={webtoon.hasRightToOffer}
+          initWebtoonLike={{
+            webtoonId: webtoon.id,
+            likeCount: webtoon.likeCount,
+            myLike: webtoon.myLike
+          }} />
         <Gap y={7.5} />
         <Col>
           <Row className="justify-between">
@@ -106,7 +108,7 @@ function Genres({ webtoon }: {
     <Gap y={13} />
     <Row className="flex-wrap gap-2 content-stretch">
       {(webtoon.genres).map((item) => (
-        <Badge key={item.id} className="bg-gray-dark">
+        <Badge key={item.id} variant="grayDark">
           {displayName(locale, item.label, item.label_en)}
         </Badge>
       ))}
@@ -121,33 +123,53 @@ function ExtraInfoRow({ webtoon }: {
   const tAgeRestriction = useTranslations("ageRestriction");
   const locale = useLocale();
 
-  const numericAges = formatTargetAge(webtoon.targetAges);
-  let targetAge = "";
-  if (numericAges?.length === 1) {
-    targetAge = t("targetAge", {
-      age: numericAges[0]
-    });
-  } else if (numericAges) {
-    targetAge = t("targetAgeRanged", {
-      lowerLimit: numericAges[0],
-      upperLimit: numericAges[numericAges.length - 1],
-    });
-  }
+  const getTargetAge = () => {
+    const numericAges = formatTargetAge(webtoon.targetAges);
+    if (numericAges?.length === 1) {
+      return t("targetAge", {
+        age: numericAges[0]
+      });
+    } else if (numericAges) {
+      return t("targetAgeRanged", {
+        lowerLimit: numericAges[0],
+        upperLimit: numericAges[numericAges.length - 1],
+      });
+    }
+  };
+
+  const getWebtoonCount = () => {
+    if (!webtoon.activeBidRound) {
+      return;
+    }
+    if (webtoon.activeBidRound.isNew) {
+      const { currentEpisodeNo } = webtoon.activeBidRound;
+      if (currentEpisodeNo) {
+        return t("currentEpisodeCount", {
+          count: currentEpisodeNo
+        });
+      }
+    } else {
+      const { totalEpisodeCount } = webtoon.activeBidRound;
+      if (totalEpisodeCount) {
+        return t("episodeCount", {
+          count: totalEpisodeCount
+        });
+      }
+    }
+  };
 
   const infoArray = [
     // 작가
     displayName(locale, webtoon.authorOrCreatorName, webtoon.authorOrCreatorName_en),
 
     // 총 에피소드 TODO 연재중인 경우라면?
-    webtoon.activeBidRound?.totalEpisodeCount !== undefined ? t("episodeCount", {
-      count: webtoon.activeBidRound.totalEpisodeCount
-    }) : undefined,
+    getWebtoonCount(),
 
     // 연령 제한
     tAgeRestriction(webtoon.ageLimit),
 
     // 타겟 연령
-    targetAge
+    getTargetAge()
   ];
 
   return <>

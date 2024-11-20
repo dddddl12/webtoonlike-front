@@ -1,13 +1,11 @@
 "use client";
 
-import ContractRange from "@/app/[locale]/webtoons/components/WebtoonPageContents/ContractRange";
 import PageLayout from "@/components/PageLayout";
 import BidRequestForm from "@/app/[locale]/webtoons/components/forms/BidRequestForm";
 import { useState } from "react";
-import { Link } from "@/i18n/routing";
-import { Button } from "@/shadcn/ui/button";
 import WebtoonDetails from "@/app/[locale]/webtoons/components/WebtoonPageContents/WebtoonDetails";
 import { WebtoonDetailsT } from "@/resources/webtoons/webtoon.service";
+import ActiveBidRound from "@/app/[locale]/webtoons/components/WebtoonPageContents/ActiveBidRound";
 
 export default function WebtoonPageContents({ webtoon }: {
   webtoon: WebtoonDetailsT;
@@ -23,12 +21,7 @@ export default function WebtoonPageContents({ webtoon }: {
 
       <hr className="border-gray-shade my-10"/>
 
-      <ContractRange webtoon={webtoon}/>
-      {webtoon.isEditable && <Button asChild>
-        <Link href={`/webtoons/${webtoon.id}/episodes/create`}>
-          에피소드 추가
-        </Link>
-      </Button>}
+      <ActiveBidRound webtoon={webtoon}/>
 
       {openBidRequestForm
         && <>

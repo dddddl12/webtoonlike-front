@@ -11,7 +11,7 @@ export default function ContractRangeCountries({ bidRound }: {
   bidRound: BidRoundT;
 }) {
 
-  const t = useTranslations("contractRangeData");
+  const t = useTranslations("bidRoundDetails");
   const tCountries = useTranslations("countries");
   const tContractType = useTranslations("contractType");
 

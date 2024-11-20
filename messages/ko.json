@@ -91,24 +91,37 @@
         "situation": "상태",
         "ifNoOfferDesc": "홈에서 웹툰을 선택하여 오퍼를 넣어보세요"
     },
-    "personalInformation": {
-        "personalInfo": "기본 정보",
-        "typeOfContent": "작품 유형",
-        "serviceOnOtherPlatforms": "타 플랫폼 연재 여부",
-        "serviceEpisodeInformation": "연재 회차 정보",
-        "completedEpisodes": "화 (예정)",
-        "latestContent": "신작",
-        "earliestContent": "구작",
-        "yes": "예",
-        "no": "아니요"
-    },
-    "makeAnOffer": {
-        "makeOffer": "오퍼 하기",
+    "offerDetails": {
+        "makeOffer": "오퍼하기",
         "toCreator": "저작권자에게",
         "inputAdditionalRequirements": "추가 요구사항을 입력해 주세요",
         "note": "*전화번호, SNS계정 등 별도 연락수단을 기재할 경우 웹툰라이크 이용이 제한될 수 있습니다.",
         "offerDetails": "오퍼 상세",
-        "offerer": "보낸 사람"
+        "offerer": "보낸 사람",
+        "thereIsNoMessageWrittenByTheBuyer": "바이어가 작성한 메시지가 없습니다."
+    },
+    "offerControls": {
+        "decline": {
+            "actionButton": "거절하기",
+            "alertTitle": "제안 거절",
+            "alertMessage": "제안을 거절하시겠습니까?",
+            "confirm": "거절",
+            "toast": "협상이 중단되었습니다."
+        },
+        "accept": {
+            "actionButton": "수락하기",
+            "alertTitle": "제안 수락",
+            "alertMessage": "제안을 수락하시겠습니까?",
+            "confirm": "수락",
+            "toast": "계약이 성사되었습니다."
+        },
+        "message": {
+            "actionButton": "협의 요청",
+            "dialogTitle": "메시지 보내기",
+            "placeholder": "메시지를 작성하세요.",
+            "confirm": "전송",
+            "toast": "메시지를 전송했습니다."
+        }
     },
     "typeBusinessRight": {
         "webtoonRights": "웹툰 연재권",
@@ -241,7 +254,7 @@
         "BIDDING": "노출 중",
         "NEGOTIATING": "협상 중",
         "DECLINED": "협상 중단",
-        "ACCEPTED": "절차 완료"
+        "ACCEPTED": "계약 성사"
     },
     "bidRoundApprovalStatus": {
         "PENDING": "승인 대기",
@@ -322,6 +335,7 @@
         "targetAge": "{age}대 타켓",
         "targetAgeRanged": "{lowerLimit}~{upperLimit}대 타켓",
         "episodeCount": "{count}화 완결",
+        "currentEpisodeCount": "{count}화 연재 중",
         "viewEpisodes": "원고 보기",
         "unableToView": "등록된 원고가 없습니다",
         "makeOffer": "오퍼하기",
@@ -365,18 +379,19 @@
         "EXCLUSIVE": "독점",
         "NON_EXCLUSIVE": "비독점"
     },
-    "contractRangeData": {
+    "bidRoundDetails": {
         "detailedInformation": "작품 상세정보",
-        "seriesInformation": "작품 정보",
+        "generalInformation": "기본정보",
         "seriesType": "작품 유형",
-        "latestContent": "신작",
-        "earliestContent": "구작",
+        "newWork": "신작",
+        "oldWork": "구작",
         "serviceOnOtherPlatforms": "타 플랫폼 연재 여부",
         "yes": "예",
         "no": "아니요",
         "serviceEpisodeInformation": "연재 회차 정보",
-        "completedEpisodes": "화 (예정)",
         "episodesCompleted": "회 완결",
+        "currentEpisode": "회 (현재)",
+        "expectingOrFinishedEpisode": "회 완결 (예상)",
         "monthlyProductionAvailableRounds": "월별 제작 가능 회차",
         "episodesPossible": "회 제작 가능",
         "secondaryCopyrightSalesStatus": "2차 저작권 판매 현황",
@@ -384,7 +399,13 @@
         "serviceCountry": "서비스 국가",
         "exclusiveOrNon": "독점 여부",
         "all": "전체",
-        "webtoonServiceRegion": "웹툰 서비스 국가"
+        "webtoonServiceRegion": "웹툰 서비스 국가",
+        "form": {
+            "agreement": "등록 콘텐츠의 저작권 소유에 대한 내용과 이에 문제가 있을 시, 모든 책임은 신청자에게 있습니다.",
+            "register": "등록하기",
+            "currentEpisodeNoMustBeLessThanTotal": "현재 회차는 완결 회차보다 높을 수 없습니다.",
+            "currentStatusOfCopyrightAgreement": "판권 계약 현황"
+        }
     },
     "contractRangeDataForm": {
         "typeOfBusinessRight": "사업권 종류",
@@ -400,97 +421,6 @@
         "contractCondition": "제안 조건",
         "contractConditionDesc": "MG, 기간, RS, 원고료 등을 작성해 주세요.",
         "countryOfDistribution": "유통 국가"
-    },
-    "updateOrCreateBidRoundsPage": {
-        "generalInformation": "기본정보",
-        "productType": "작품 유형",
-        "newWork": "신작",
-        "oldWork": "구작",
-        "SerializationOfOtherPlatforms": "타 플랫폼 연재 여부",
-        "yes": "예",
-        "no": "아니요",
-        "currentStatusOfCopyrightAgreement": "판권 계약 현황",
-        "agreement": "등록 콘텐츠의 저작권 소유에 대한 내용과 이에 문제가 있을 시, 모든 책임은 신청자에게 있습니다.",
-        "register": "등록하기",
-        "serialInformation": "연재 회차 정보",
-        "currentEpisode": "회 (현재)",
-        "expectingOrFinishedEpisode": "회 (완결, 예상)",
-        "currentEpisodeNoMustBeLessThanTotal": "현재 회차는 완결 회차보다 높을 수 없습니다.",
-        "monthlyProductionAvailableRounds": "월별 제작 가능 회차",
-        "episodesPossible": "회 제작 가능",
-        "finishedEpisode": "회 (완결)"
-    },
-    "creatorBidRequestConditionPage": {
-        "buyerInformation": "바이어 정보",
-        "reject": "거절하기",
-        "rejectOffer": "오퍼 거절",
-        "wouldYouLikeToRejectTheOffer": "오퍼를 거절하시겠습니까?",
-        "accept": "수락하기",
-        "acceptOffer": "오퍼 수락",
-        "wouldYouLikeToAcceptTheOffer": "오퍼를 수락하시겠습니까?",
-        "rejectComplete": "거절 완료",
-        "acceptComplete": "수락 완료",
-        "cancelledOffer": "취소 된 오퍼",
-        "detailsOfConsultation": "협의 내용",
-        "consultationDoesNotExist": "협의 내용이 존재하지 않습니다.",
-        "send": "전송",
-        "offerContent": "오퍼 내용",
-        "webtoonSerialRights": "웹툰 연재권",
-        "serviceRegion": "서비스 권역",
-        "exclusiveRights": "독점 권리",
-        "proposalTermsAndConditions": "제안 조건",
-        "secondBusinessRight": "2차 사업권",
-        "businessRightClassification": "사업권 구분",
-        "countryOfDistribution": "유통 국가",
-        "toTheCopyrightHolder": "저작권자에게",
-        "thereIsNoMessageWrittenByTheBuyer": "바이어가 작성한 메시지가 없습니다.",
-        "thisIsNotAnOfferDecisionPeriod": "오퍼 결정 기간이 아닙니다.",
-        "theOfferHasAlreadyBeenCanceled": "이미 취소된 오퍼입니다.",
-        "exclusive": "독점",
-        "nonExclusive": "비독점",
-        "anErrorOccurredWhileSendingTheMessage": "메시지 전송 중 오류가 발생했습니다."
-    },
-    "buyerNegotiationDetailPage": {
-        "generalInformation": "기본정보",
-        "productType": "작품 유형",
-        "newWork": "신작",
-        "oldWork": "구작",
-        "SerializationOfOtherPlatforms": "타 플랫폼 연재 여부",
-        "yes": "예",
-        "no": "아니요",
-        "currentStatusOfCopyrightAgreement": "판권 계약 현황",
-        "typeOfBusinessRight": "사업권 종류",
-        "businessRightClassification": "사업권 구분",
-        "exclusiveRights": "독점 권리",
-        "serviceRegion": "서비스 권역",
-        "delete": "삭제",
-        "addItem": "항목 추가",
-        "agreement": "등록 콘텐츠의 저작권 소유에 대한 내용과 이에 문제가 있을 시, 모든 책임은 신청자에게 있습니다.",
-        "register": "등록하기",
-        "serialInformation": "연재 회차 정보",
-        "currentEpisode": "회 (현재)",
-        "expectingOrFinishedEpisode": "회 (완결, 예상)",
-        "monthlyProductionAvailableRounds": "월별 제작 가능 회차",
-        "episodesPossible": "회 제작 가능",
-        "finishedEpisode": "회 (완결)",
-        "selectTypeOfBusinessRight": "사업권 종류 선택",
-        "webtoonSerialRights": "웹툰 연재권",
-        "secondBusinessRight": "2차 사업권",
-        "selectBusinessRightClassifications": "사업권 구분 선택",
-        "exclusive": "독점",
-        "nonExclusive": "비독점",
-        "detailsOfConsultation": "협의 내용",
-        "send": "전송",
-        "consultationDoesNotExist": "협의 내용이 존재하지 않습니다.",
-        "offerPreview": "오퍼 미리보기",
-        "proposalTermsAndConditions": "제안 조건",
-        "countryOfDistribution": "유통 국가",
-        "toTheCopyrightHolder": "저작권자에게",
-        "cancelOffer": "오퍼취소",
-        "offerCanceled": "취소 완료",
-        "rejectedOffer": "거절 된 오퍼",
-        "acceptedOffer": "수락 된 오퍼",
-        "anErrorOccurredWhileSendingTheMessage": "메시지 전송 중 오류가 발생했습니다."
     },
     "errors": {
         "invalidFields": {
