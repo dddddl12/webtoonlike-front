@@ -1,7 +1,7 @@
 export default function TermsOfUseKo() {
   return (
     <div>
-      <h1>Webtoonlike 이용약관</h1>
+      <h1>KIPstock 이용약관</h1>
       <br/>
       <p>제1조(목적)</p>
       <p>이 약관은 주식회사 웹툰라이크(이하 “회사”)가 제공하는 콘텐츠 유통 플랫폼 및 제반 서비스(이하 “플랫폼”)를 이용하는 자(이하 “회원”)와 회사의 권리․의무 및 책임 등을 규정함을 목적으로

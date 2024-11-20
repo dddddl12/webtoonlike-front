@@ -1,9 +1,9 @@
-import PrivacyPolicyEn from "@/app/[locale]/privacy_policy/PrivacyPolicyEn";
-import PrivacyPolicyKo from "@/app/[locale]/privacy_policy/PrivacyPolicyKo";
+import PrivacyPolicyEn from "@/components/policies/privacy/PrivacyPolicyEn";
+import PrivacyPolicyKo from "@/components/policies/privacy/PrivacyPolicyKo";
 import { getLocale } from "next-intl/server";
 import PageLayout from "@/components/PageLayout";
 
-export default async function PrivacyPolicy() {
+export default async function PrivacyPolicyPage() {
   const locale = await getLocale();
   return (
     <PageLayout>
