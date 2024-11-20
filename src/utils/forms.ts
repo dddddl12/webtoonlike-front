@@ -1,6 +1,7 @@
 import z from "zod";
 import { ResolverResult } from "react-hook-form";
 
+// todo zodResolver로 대체
 export function formResolver<T extends z.Schema<any, any>>(
   zodSchema: T,
   values: z.infer<T>

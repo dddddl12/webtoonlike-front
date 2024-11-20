@@ -1,6 +1,7 @@
 import "server-only";
 import { $Enums, BidRound as BidRoundRecord, Prisma } from "@prisma/client";
 import { BidRoundApprovalStatus, BidRoundStatus, BidRoundT, ContractRange } from "@/resources/bidRounds/bidRound.types";
+import { getBidRoundStatus } from "@/resources/bidRounds/bidRoundStatus";
 
 export const offerableBidRoundFilter = (): Prisma.BidRoundWhereInput => {
   const now = new Date();
@@ -13,32 +14,23 @@ export const offerableBidRoundFilter = (): Prisma.BidRoundWhereInput => {
   };
 };
 
-export const getBidRoundStatus = (record: {
+export const getBidRoundStatusFromRecord = (record: {
   bidStartsAt: Date | null;
   negoStartsAt: Date | null;
   processEndsAt: Date | null;
   approvalStatus: $Enums.BidRoundApprovalStatus;
 }): BidRoundStatus => {
-  const now = new Date();
-  const { bidStartsAt, negoStartsAt, processEndsAt } = record;
-  const approvalStatus = record.approvalStatus as BidRoundApprovalStatus;
-  if (approvalStatus === BidRoundApprovalStatus.Pending) {
-    return BidRoundStatus.PendingApproval;
-  } else if (approvalStatus === BidRoundApprovalStatus.Disapproved) {
-    return BidRoundStatus.Disapproved;
-  } else if (!bidStartsAt || bidStartsAt > now) {
-    return BidRoundStatus.Waiting;
-  } else if (!negoStartsAt || negoStartsAt > now) {
-    return BidRoundStatus.Bidding;
-  } else if (!processEndsAt || processEndsAt > now) {
-    return BidRoundStatus.Negotiating;
-  } else {
-    return BidRoundStatus.Done;
-  }
+  const { bidStartsAt, negoStartsAt, processEndsAt, approvalStatus } = record;
+  return getBidRoundStatus({
+    bidStartsAt: bidStartsAt ?? undefined,
+    negoStartsAt: negoStartsAt ?? undefined,
+    processEndsAt: processEndsAt ?? undefined,
+    approvalStatus: approvalStatus as BidRoundApprovalStatus
+  });
 };
 
 export const mapToBidRoundDTO = (record: BidRoundRecord): BidRoundT => {
-  const status = getBidRoundStatus(record);
+  const status = getBidRoundStatusFromRecord(record);
   return {
     id: record.id,
     createdAt: record.createdAt,

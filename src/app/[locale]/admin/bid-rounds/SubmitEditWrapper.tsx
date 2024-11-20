@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ko, enUS } from "date-fns/locale";
 
 import {
@@ -15,19 +15,23 @@ import { Input } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
 import { Calendar } from "@/shadcn/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
-import {
-  BidRoundAdminSettingsT,
-  editBidRoundAdminSettings
-} from "@/resources/bidRounds/bidRound.service";
+import { editBidRoundAdminSettings } from "@/resources/bidRounds/bidRound.service";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { Control, FieldValues, useForm, UseFormReturn } from "react-hook-form";
-import { formResolver } from "@/utils/forms";
-import { BidRoundAdminSettingsSchema } from "@/resources/bidRounds/bidRound.types";
+import { Control, FieldValues, UseFormReturn } from "react-hook-form";
+import {
+  BidRoundAdminSettingsT,
+  BidRoundApprovalStatus,
+  StrictBidRoundAdminSettingsSchem, StrictBidRoundAdminSettingsT
+} from "@/resources/bidRounds/bidRound.types";
 import Spinner from "@/components/Spinner";
-import { FieldName, Form, FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
+import { FieldName, Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
 import { clsx } from "clsx";
 import { CalendarIcon } from "lucide-react";
+import useSafeHookFormAction from "@/hooks/safeHookFormAction";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Col } from "@/shadcn/ui/layouts";
+import { getBidRoundStatus } from "@/resources/bidRounds/bidRoundStatus";
 
 export default function SubmitEditWrapper({
   bidRoundId, adminSettings,
@@ -38,32 +42,28 @@ export default function SubmitEditWrapper({
   const { toast } = useToast();
   const [editorOpen, setEditorOpen] = useState<boolean>(false);
 
-  async function handleSubmit(values: BidRoundAdminSettingsT): Promise<void> {
-    try {
-      checkBidRoundValidity(values);
-      await editBidRoundAdminSettings(bidRoundId, values);
-      toast({
-        description: "투고 수정에 성공했습니다.",
-        // variant: "success" TODO
-      });
-      window.location.reload();
-    } catch (e) {
-      if (e instanceof AdminSettingsError) {
-        toast({
-          description: e.message,
-        });
-        form.setError("root.custom",{
-          type: "custom",
-          message: e.message });
+  const { form, handleSubmitWithAction }
+    = useSafeHookFormAction(
+      editBidRoundAdminSettings.bind(null, bidRoundId),
+      zodResolver(StrictBidRoundAdminSettingsSchem),
+      {
+        actionProps: {
+          onSuccess: () => {
+            toast({
+              description: "투고 수정에 성공했습니다.",
+              // variant: "success" TODO
+            });
+            window.location.reload();
+          }
+        },
+        formProps: {
+          defaultValues: adminSettings,
+          mode: "onChange",
+        }
       }
-    }
-  }
+    );
 
-  const form = useForm<BidRoundAdminSettingsT>({
-    mode: "onChange",
-    resolver: (values) => formResolver(BidRoundAdminSettingsSchema, values)
-  });
-
+  const { formState: { isValid } } = form;
   useEffect(() => {
     if (editorOpen) {
       form.reset(adminSettings);
@@ -92,7 +92,11 @@ export default function SubmitEditWrapper({
               취소
             </Button>
           </DialogClose>
-          <Button variant="mint" onClick={form.handleSubmit(handleSubmit)}>
+          <Button
+            variant="mint"
+            onClick={handleSubmitWithAction}
+            disabled={!isValid}
+          >
             적용
           </Button>
         </DialogFooter>
@@ -102,9 +106,15 @@ export default function SubmitEditWrapper({
 }
 
 function AdminSettingsForm({ form }: {
-  form: UseFormReturn<BidRoundAdminSettingsT>;
+  form: UseFormReturn<StrictBidRoundAdminSettingsT>;
 }) {
-  const { formState: { isSubmitting, isSubmitSuccessful } } = form;
+  const t = useTranslations("bidRoundStatus");
+  const { formState: { isSubmitting, isSubmitSuccessful, isValid }, watch } = form;
+  const { bidStartsAt, negoStartsAt, processEndsAt } = watch();
+  const statusLabel = isValid ? t(getBidRoundStatus({
+    bidStartsAt, negoStartsAt, processEndsAt,
+    approvalStatus: BidRoundApprovalStatus.Approved
+  })) : "-";
   if (isSubmitting || isSubmitSuccessful) {
     return <Spinner />;
   }
@@ -122,20 +132,34 @@ function AdminSettingsForm({ form }: {
         control={form.control}
         name="processEndsAt"
         label="게시 종료일"/>
+      <FormItem className="flex gap-4 items-center">
+        <FormLabel className="w-[120px]">투고 상태(자동 설정)</FormLabel>
+        <Col className="flex-1 gap-1">
+          <Input
+            className="flex-1"
+            type='text'
+            disabled={true}
+            value={statusLabel}
+          />
+        </Col>
+      </FormItem>
       <FormField
         control={form.control}
         name="adminNote"
         render={({ field }) => (
           <FormItem className="flex gap-4 items-center">
             <FormLabel className="w-[120px]">관리자 메모</FormLabel>
-            <FormControl>
-              <Input
-                {...field}
-                className="flex-1"
-                type='text'
-                placeholder="관리자 메모"
-              />
-            </FormControl>
+            <Col className="flex-1 gap-1">
+              <FormControl>
+                <Input
+                  {...field}
+                  className="flex-1"
+                  type='text'
+                  placeholder="관리자 메모"
+                />
+              </FormControl>
+              <FormMessage/>
+            </Col>
           </FormItem>
         )}
       />
@@ -156,49 +180,36 @@ export function CalendarFormField<TFieldValues extends FieldValues>({ control, n
     render={({ field }) => (
       <FormItem className="flex gap-4 items-center">
         <FormLabel className="w-[120px]">{label}</FormLabel>
-        <Popover>
-          <PopoverTrigger asChild>
-            <FormControl>
+        <FormControl>
+          <Input {...field} type="hidden" />
+        </FormControl>
+        <Col className="flex-1 gap-1">
+          <Popover>
+            <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
                 className={clsx(
                   "flex-1",
                   !field.value && "text-muted-foreground"
-                )}
-              >
+                )}>
                 <span>
                   {field.value?.toLocaleDateString(nowLocale) || "날짜를 선택해주세요."}
                 </span>
                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
               </Button>
-            </FormControl>
-          </PopoverTrigger>
-          <PopoverContent>
-            <Calendar
-              mode="single"
-              selected={field.value}
-              onSelect={field.onChange}
-              locale={nowLocale === "ko" ? ko : enUS}
-            />
-          </PopoverContent>
-        </Popover>
+            </PopoverTrigger>
+            <PopoverContent>
+              <Calendar
+                mode="single"
+                selected={field.value}
+                onSelect={field.onChange}
+                locale={nowLocale === "ko" ? ko : enUS}
+              />
+            </PopoverContent>
+          </Popover>
+          <FormMessage/>
+        </Col>
       </FormItem>
     )}
   />;
-}
-
-// TODO zod validator에 추가
-class AdminSettingsError extends Error {}
-function checkBidRoundValidity(adminSettings: BidRoundAdminSettingsT) {
-
-  const { bidStartsAt, negoStartsAt, processEndsAt } = adminSettings;
-  if (!bidStartsAt || !negoStartsAt || !processEndsAt) {
-    throw new AdminSettingsError("누락된 날짜가 있습니다.");
-  }
-  if (bidStartsAt > negoStartsAt) {
-    throw new AdminSettingsError("게시 시작일은 선공개 종료일보다 이전이어야 합니다.");
-  }
-  if (negoStartsAt > processEndsAt) {
-    throw new AdminSettingsError("선공개 종료일은 게시 종료일보다 이전이어야 합니다.");
-  }
 }

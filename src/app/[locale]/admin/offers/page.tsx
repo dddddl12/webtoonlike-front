@@ -14,6 +14,7 @@ import { useTranslations } from "next-intl";
 import { AdminOffersBidRequestT, adminListAdminOffersBidRequests } from "@/resources/bidRequests/bidRequest.service";
 import useSafeAction from "@/hooks/safeAction";
 
+// todo 디테일 누락
 export default function AdminOffersPage() {
   return (
     <Col>

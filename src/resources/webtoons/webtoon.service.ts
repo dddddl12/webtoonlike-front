@@ -11,7 +11,7 @@ import { ListResponseSchema } from "@/resources/globalTypes";
 import { assertCreator, getTokenInfo } from "@/resources/tokens/token.service";
 import { AdminLevel } from "@/resources/tokens/token.types";
 import prisma from "@/utils/prisma";
-import { getBidRoundStatus, mapToBidRoundDTO, offerableBidRoundFilter } from "@/resources/bidRounds/bidRound.utils";
+import { getBidRoundStatusFromRecord, mapToBidRoundDTO, offerableBidRoundFilter } from "@/resources/bidRounds/bidRound.utils";
 import z from "zod";
 import { action } from "@/handlers/safeAction";
 import { UnexpectedError } from "@/handlers/errors";
@@ -373,7 +373,7 @@ export const listMyWebtoonsOnSale = action
     for (const record of records) {
     // TODO 등록일은 승인일 기준?
       const bidRoundRecord = record.bidRounds[0];
-      const bidRoundStatus = getBidRoundStatus(bidRoundRecord);
+      const bidRoundStatus = getBidRoundStatusFromRecord(bidRoundRecord);
       if (!bidRoundRecord.approvalDecidedAt) {
         continue;
       }

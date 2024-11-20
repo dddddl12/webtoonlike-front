@@ -4,7 +4,7 @@ import {
   BidRoundAdminSettingsSchema,
   BidRoundApprovalStatus,
   BidRoundFormSchema,
-  BidRoundFormT, BidRoundSchema
+  BidRoundFormT, BidRoundSchema, StrictBidRoundAdminSettingsSchem
 } from "@/resources/bidRounds/bidRound.types";
 import prisma from "@/utils/prisma";
 import { $Enums, Prisma } from "@prisma/client";
@@ -13,7 +13,7 @@ import { WebtoonSchema } from "@/resources/webtoons/webtoon.types";
 import z from "zod";
 import { UserSchema } from "@/resources/users/user.types";
 import { action } from "@/handlers/safeAction";
-import { getBidRoundStatus, mapToBidRoundDTO } from "@/resources/bidRounds/bidRound.utils";
+import { getBidRoundStatusFromRecord, mapToBidRoundDTO } from "@/resources/bidRounds/bidRound.utils";
 import { assertAdmin } from "@/resources/tokens/token.service";
 
 export const createOrUpdateBidRound = action
@@ -146,7 +146,7 @@ export const adminListBidRoundsWithWebtoon = action
     // getBidRoundStatus
     const items: AdminPageBidRoundT[] = [];
     for (const record of records) {
-      const status = getBidRoundStatus(record);
+      const status = getBidRoundStatusFromRecord(record);
       items.push({
         id: record.id,
         createdAt: record.createdAt,
@@ -319,13 +319,12 @@ async function _disapproveBidRound(bidRoundId: number) {
   });
 }
 
-export type BidRoundAdminSettingsT = z.infer<typeof BidRoundAdminSettingsSchema>;
 export const editBidRoundAdminSettings = action
   .metadata({ actionName: "editBidRoundAdminSettings" })
   .bindArgsSchemas([
     z.number() // bidRoundId
   ])
-  .schema(BidRoundAdminSettingsSchema)
+  .schema(StrictBidRoundAdminSettingsSchem)
   .action(async ({ bindArgsParsedInputs: [bidRoundId], parsedInput: settings }) => {
     await prisma.bidRound.update({
       where: {

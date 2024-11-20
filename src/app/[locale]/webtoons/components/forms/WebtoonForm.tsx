@@ -57,6 +57,7 @@ export function WebtoonForm({ selectableGenres, prev }: {
           }
         },
         formProps: {
+          // TODO 이렇게 할 필요 없음
           defaultValues: {
             title: prev?.title || "",
             title_en: prev?.title_en || "",

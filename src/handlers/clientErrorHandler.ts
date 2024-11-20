@@ -41,7 +41,7 @@ export default function useClientActionHandler<
         });
       }
       // TODO 없애기
-      console.log(args.error);
+      console.log(args);
     }
   };
 }
