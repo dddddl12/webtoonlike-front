@@ -17,23 +17,19 @@ import { BasicGenreT, createOrUpdateGenre } from "@/resources/genres/genre.servi
 import { GenreFormSchema, GenreFormT } from "@/resources/genres/genre.types";
 import { UseFormReturn } from "react-hook-form";
 import Spinner from "@/components/Spinner";
-import { useTranslations } from "next-intl";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { formResolver } from "@/utils/forms";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 
 export default function AddOrUpdateGenre({ onGenreAddSuccess, children, prev }: {
   onGenreAddSuccess: () => void;
   children: ReactNode;
   prev?: BasicGenreT;
 }) {
-  // TODO
-  const tError = useTranslations("errors");
   const [editorOpen, setEditorOpen] = useState<boolean>(false);
   const { toast } = useToast();
 
   const { form, handleSubmitWithAction }
-    = useHookFormAction(
+    = useSafeHookFormAction(
       createOrUpdateGenre.bind(null, prev?.id),
       (values) => formResolver(GenreFormSchema, values),
       {
@@ -44,10 +40,6 @@ export default function AddOrUpdateGenre({ onGenreAddSuccess, children, prev }: 
             });
             setEditorOpen(false);
             onGenreAddSuccess();
-          },
-          onError: (args) => {
-            form.reset(args.input);
-            clientErrorHandler(args);
           }
         },
         formProps: {

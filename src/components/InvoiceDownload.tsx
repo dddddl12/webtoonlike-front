@@ -16,8 +16,7 @@ import { displayName } from "@/utils/displayName";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { jsPDF } from "jspdf";
 import { Row } from "@/shadcn/ui/layouts";
-import { useAction } from "next-safe-action/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import useSafeAction from "@/hooks/safeAction";
 
 export default function InvoiceDownload({
   invoice
@@ -30,11 +29,10 @@ export default function InvoiceDownload({
   const [previewContent, setPreviewContent] = useState<string>();
 
   const boundDownloadInvoiceContent = useMemo(() => downloadInvoiceContent.bind(null, invoice.id), [invoice.id]);
-  const { execute } = useAction(boundDownloadInvoiceContent, {
+  const { execute } = useSafeAction(boundDownloadInvoiceContent, {
     onSuccess: ({ data }) => {
       setPreviewContent(data);
-    },
-    onError: clientErrorHandler
+    }
   });
 
   useEffect(() => {

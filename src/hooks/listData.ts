@@ -1,14 +1,15 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { InferIn, Schema } from "next-safe-action/adapters/types";
-import { useAction, HookSafeActionFn } from "next-safe-action/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import { HookSafeActionFn } from "next-safe-action/hooks";
+import useSafeAction from "@/hooks/safeAction";
+import { ActionError } from "@/handlers/safeAction";
 
 type Filters<
   S extends Schema | undefined,
 > = S extends Schema ? InferIn<S> : void;
 
 export default function useListData<
-  ServerError,
+  ServerError extends ActionError,
   S extends Schema | undefined,
   BAS extends readonly Schema[],
   CVE,
@@ -24,7 +25,7 @@ export default function useListData<
 };
 
 export default function useListData<
-  ServerError,
+  ServerError extends ActionError,
   S extends Schema | undefined,
   BAS extends readonly Schema[],
   CVE,
@@ -41,7 +42,7 @@ export default function useListData<
 };
 
 export default function useListData<
-  ServerError,
+  ServerError extends ActionError,
   S extends Schema | undefined,
   BAS extends readonly Schema[],
   CVE,
@@ -60,13 +61,12 @@ export default function useListData<
   const [filters, setFilters] = useState<Filters<S>>(initialFilters);
   const [listResponse, setListResponse] = useState(initialResponse);
 
-  const { execute } = useAction(
+  const { execute } = useSafeAction(
     listFetcherFunction,
     {
       onSuccess: ({ data }) => {
         setListResponse(data);
-      },
-      onError: clientErrorHandler
+      }
     }
   );
 

@@ -7,9 +7,13 @@ import {
   UserTypeT
 } from "@/resources/users/user.types";
 import prisma from "@/utils/prisma";
-import { assertAdmin, getTokenInfo, updateTokenInfo } from "@/resources/tokens/token.service";
-import { currentUser } from "@clerk/nextjs/server";
-import { NotSignedInError } from "@/handlers/errors";
+import {
+  assertAdmin,
+  getClerkUser,
+  getTokenInfo,
+  notAuthorizedErrorWithMessage,
+  updateTokenInfo
+} from "@/resources/tokens/token.service";
 import { BuyerCompanySchema, BuyerFormT } from "@/resources/buyers/buyer.types";
 import { ListResponseSchema } from "@/resources/globalTypes";
 import z from "zod";
@@ -23,15 +27,11 @@ export const createUser = action
   // TODO 400 에러 처리
   // 저작권자/바이어까지 등록 후 생성으로 구조 변경
     await prisma.$transaction(async (tx) => {
-      const clerkUser = await currentUser();
-      const userEmail = clerkUser?.primaryEmailAddress?.emailAddress;
-      if (!clerkUser || !userEmail) {
-        throw new NotSignedInError();
-      }
+      const clerkUser = await getClerkUser();
       // 기본 유저 생성
       const insert = {
         sub: clerkUser.id,
-        email: userEmail,
+        email: clerkUser.primaryEmail,
         name: formData.name,
         phone: formData.phone,
         userType: formData.userType,
@@ -96,10 +96,7 @@ export const getSimpleUserProfile = action
   .metadata({ actionName: "getSimpleUserProfile" })
   .outputSchema(SimpleUserProfileSchema)
   .action(async () => {
-    const clerkUser = await currentUser();
-    if (!clerkUser || !clerkUser.externalId) {
-      throw new NotSignedInError();
-    }
+    const clerkUser = await getClerkUser();
     const { name } = await prisma.user.findUniqueOrThrow({
       where: {
         id: parseInt(clerkUser.externalId)
@@ -164,7 +161,8 @@ export const getUser = action
         }
       };
     }
-    throw new Error("User not found");
+    // 비정상적으로 creator 또는 buyer 레코드가 없을 경우
+    throw await notAuthorizedErrorWithMessage();
   });
 
 // /admin/users

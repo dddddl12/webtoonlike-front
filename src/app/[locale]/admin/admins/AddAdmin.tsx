@@ -3,8 +3,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
 import { Button } from "@/shadcn/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shadcn/ui/command";
 import { NonAdminUserSearchT, searchNonAdminUsers } from "@/resources/users/user.service";
-import { useAction } from "next-safe-action/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 import { useTranslations } from "next-intl";
 import useDebounce from "@/hooks/debounce";
 import { Badge } from "@/shadcn/ui/badge";
@@ -12,6 +10,7 @@ import { UserTypeT } from "@/resources/users/user.types";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { createAdmin } from "@/resources/admins/admin.service";
 import { useConfirm } from "@/hooks/alert";
+import useSafeAction from "@/hooks/safeAction";
 
 export default function AddAdmin({ reloadOnUpdate }: {
   reloadOnUpdate: () => void;
@@ -27,12 +26,11 @@ export default function AddAdmin({ reloadOnUpdate }: {
   }, [open]);
 
   const boundSearchNonAdminUsers = useMemo(() => searchNonAdminUsers, []);
-  const { execute } = useAction(boundSearchNonAdminUsers, {
+  const { execute } = useSafeAction(boundSearchNonAdminUsers, {
     onSuccess: ({ data }) => {
       setUsers(data || []);
       setInputStatus("complete");
-    },
-    onError: clientErrorHandler
+    }
   });
 
   // 검색어
@@ -49,14 +47,13 @@ export default function AddAdmin({ reloadOnUpdate }: {
 
   // 어드민 추가 시 이벤트
   const { toast } = useToast();
-  const { execute: executeAddAdmin } = useAction(createAdmin, {
+  const { execute: executeAddAdmin } = useSafeAction(createAdmin, {
     onSuccess: () => {
       toast({
         description: "관리자를 추가했습니다."
       });
       reloadOnUpdate();
-    },
-    onError: clientErrorHandler
+    }
   });
 
   const handleAddAdmin = (user: NonAdminUserSearchT) => {

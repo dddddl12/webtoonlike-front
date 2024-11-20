@@ -8,6 +8,7 @@ import prisma from "@/utils/prisma";
 import { UserSchema, UserTypeT } from "@/resources/users/user.types";
 import { assertAdmin, getTokenInfo } from "@/resources/tokens/token.service";
 import { AdminLevel } from "@/resources/tokens/token.types";
+import { BadRequestError } from "@/handlers/errors";
 
 const AdminEntrySchema = AdminSchema.pick({
   id: true,
@@ -113,7 +114,11 @@ export const deleteAdmin = action
         }
       });
       if (userId === targetUserId){
-        throw new Error("Can't delete yourself");
+        throw new BadRequestError({
+          title: "관리자 권한 삭제 불가",
+          message: "자신의 권한은 삭제할 수 없습니다.",
+          logError: true,
+        });
       }
     });
   });

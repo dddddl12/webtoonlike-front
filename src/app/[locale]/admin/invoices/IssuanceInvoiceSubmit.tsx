@@ -14,8 +14,7 @@ import { Row } from "@/shadcn/ui/layouts";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { createInvoice, previewInvoice } from "@/resources/invoices/invoice.service";
-import { useAction } from "next-safe-action/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import useSafeAction from "@/hooks/safeAction";
 
 export function IssuanceInvoiceSubmit({
   bidRequestId, reloadPage
@@ -25,15 +24,14 @@ export function IssuanceInvoiceSubmit({
 }) {
   const { toast } = useToast();
   const [checkInvoiceOpen, setCheckInvoiceOpen] = useState<boolean>(false);
-  const { execute } = useAction(createInvoice.bind(null, bidRequestId), {
+  const { execute } = useSafeAction(createInvoice.bind(null, bidRequestId), {
     onSuccess: () => {
       toast({
         description: "인보이스가 발행되었습니다."
       });
       setCheckInvoiceOpen(false);
       reloadPage();
-    },
-    onError: clientErrorHandler
+    }
   });
 
   return (
@@ -76,11 +74,10 @@ function Previewer({ bidRequestId }: {
 }) {
   const [previewContent, setPreviewContent] = useState<string>();
   const boundPreviewInvoice = useMemo(() => previewInvoice.bind(null, bidRequestId), [bidRequestId]);
-  const { execute } = useAction(boundPreviewInvoice, {
+  const { execute } = useSafeAction(boundPreviewInvoice, {
     onSuccess: ({ data }) => {
       setPreviewContent(data);
-    },
-    onError: clientErrorHandler
+    }
   });
 
   useEffect(() => {

@@ -12,8 +12,7 @@ import useTokenInfo from "@/hooks/tokenInfo";
 import { Skeleton } from "@/shadcn/ui/skeleton";
 import ViewOfferSection from "@/app/[locale]/offers/components/OfferDetails";
 import Controls from "@/app/[locale]/offers/components/Controls";
-import { useAction } from "next-safe-action/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import useSafeAction from "@/hooks/safeAction";
 
 // TODO 페이지네이션 없음
 export default function BidRequestMessageList({ curBidRequest, setCurBidRequest }: {
@@ -29,9 +28,8 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
   const [messagesResponse, setMessagesResponse] = useState<BidRequestMessagesResponseT>();
 
   const boundListBidRequestMessages = useMemo(() => listBidRequestMessages.bind(null, curBidRequest.id), [curBidRequest.id]);
-  const { execute } = useAction(boundListBidRequestMessages, {
-    onSuccess: ({ data }) => setMessagesResponse(data),
-    onError: clientErrorHandler
+  const { execute } = useSafeAction(boundListBidRequestMessages, {
+    onSuccess: ({ data }) => setMessagesResponse(data)
   });
   useEffect(() => {
     if (reloadMessages) {
@@ -40,8 +38,6 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
     }
   }, [execute, reloadMessages]);
 
-  const { tokenInfo } = useTokenInfo();
-  const userId = tokenInfo?.userId;
   const tBidRequestStatus = useTranslations("bidRequestStatus");
   if (!messagesResponse) {
     return <div>
@@ -51,8 +47,7 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
   }
 
   const { messages, invoice } = messagesResponse;
-  const isDone = curBidRequest.status === BidRequestStatus.Accepted
-    || curBidRequest.status === BidRequestStatus.Declined;
+  const done = determineIfDone(curBidRequest, messages);
 
   return <Col className="rounded-md p-4 bg-gray-darker" ref={headingRef}>
     <Row className="border-b border-gray-text text-gray-text">
@@ -70,7 +65,7 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
       statusLabel={"제안"}
     >
       <ViewOfferSection bidRequest={curBidRequest} />
-      {(messages.length === 0 && !isDone)
+      {(messages.length === 0 && !done.isDone)
         && <Controls bidRequestId={curBidRequest.id}
           setReloadMessages={setReloadMessages}
           setCurBidRequest={setCurBidRequest}
@@ -88,7 +83,7 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
           ? "수정 요청" : "제안"}
       >
         <MessageContentBox content={message.content} />
-        {(messages.length - 1 === index && !isDone)
+        {(messages.length - 1 === index && !done.isDone)
           && <Controls bidRequestId={curBidRequest.id}
             setReloadMessages={setReloadMessages}
             setCurBidRequest={setCurBidRequest}
@@ -99,10 +94,10 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
         {/*  바이어에게 받으면 저작권자, 혹은 그의 반대로 수락/거절 가능 */}
       </MessageRow>
     ))}
-    {isDone
+    {done.isDone
       && <MessageRow
         seq={messages.length + 1}
-        user={curBidRequest.creator.user}
+        user={done.doneBy}
         createdAt={curBidRequest.createdAt}
         statusLabel={tBidRequestStatus(curBidRequest.status)}>
         <MessageContentBox content={tBidRequestStatus(curBidRequest.status)} />
@@ -159,3 +154,22 @@ function MessageContentBox({ content }: {content: string}) {
     {content}
   </div>;
 }
+
+const determineIfDone = (
+  curBidRequest: SimpleBidRequestT,
+  messages: BidRequestMessagesResponseT["messages"],
+) => {
+  const isDone = curBidRequest.status === BidRequestStatus.Accepted
+    || curBidRequest.status === BidRequestStatus.Declined;
+  if (!isDone) {
+    return { isDone };
+  }
+  const lastMessage = messages[messages.length - 1];
+  return {
+    isDone,
+    // 마지막 메시지의 수령자가 마지막 결정 가능
+    doneBy: lastMessage.user.userType === UserTypeT.Creator
+      ? curBidRequest.buyer.user
+      : curBidRequest.creator.user
+  };
+};

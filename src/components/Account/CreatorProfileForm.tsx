@@ -10,8 +10,7 @@ import { SignUpStage, UserExtendedFormSchema, UserExtendedFormT } from "@/resour
 import { formResolver } from "@/utils/forms";
 import { createUser } from "@/resources/users/user.service";
 import { AccountFormFooter, AccountFormImageField } from "@/components/Account/common";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 
 export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }: {
   userExtendedForm: Partial<UserExtendedFormT>;
@@ -26,17 +25,13 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
     new ImageObject(prev?.thumbPath));
 
   const { form, handleSubmitWithAction }
-    = useHookFormAction(
+    = useSafeHookFormAction(
       createUser,
       (values) => formResolver(UserExtendedFormSchema, values),
       {
         actionProps: {
           onSuccess: () => {
             setSignUpStage(prevState => prevState + 1);
-          },
-          onError: (args) => {
-            form.reset(args.input);
-            clientErrorHandler(args);
           }
         },
         formProps: {

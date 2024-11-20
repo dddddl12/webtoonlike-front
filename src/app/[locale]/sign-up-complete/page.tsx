@@ -1,30 +1,16 @@
 import { Col, Gap } from "@/shadcn/ui/layouts";
 import { Heading } from "@/shadcn/ui/texts";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import PageLayout from "@/components/PageLayout";
-import { updateTokenInfo } from "@/resources/tokens/token.service";
+import { getClerkUser, updateTokenInfo } from "@/resources/tokens/token.service";
 import { SignUpCompleteForm } from "@/app/[locale]/sign-up-complete/SignUpCompleteForm";
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "@/i18n/routing";
 import LightThemeProvider from "@/providers/LightThemeProvider";
 import Logo from "@/components/Logo";
 
 export default async function SignUpComplete() {
-  const user = await currentUser();
-  if (!user) {
-    // 아직 clerk에 로그인하지 않은 경우 홈으로 리다이렉트
-    const locale = await getLocale();
-    redirect({
-      href: "/", locale: locale
-    });
-    return <></>;
-  }
-
   const t = await getTranslations("setupPage");
   const { signUpFinished } = await updateTokenInfo();
-  const clerkUserFullName = [user.firstName, user.lastName]
-    .filter((name) => name)
-    .join(" ");
+  const clerkUser = await getClerkUser();
 
   return <LightThemeProvider>
     <PageLayout lightTheme={true}>
@@ -36,7 +22,7 @@ export default async function SignUpComplete() {
         </Heading>
         <SignUpCompleteForm
           signUpFinished={signUpFinished}
-          clerkUserFullName={clerkUserFullName}
+          clerkUserFullName={clerkUser.fullName}
         />
       </Col>
     </PageLayout>

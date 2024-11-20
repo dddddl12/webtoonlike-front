@@ -13,17 +13,15 @@ import { Text } from "@/shadcn/ui/texts";
 import { Link } from "@/i18n/routing";
 import { IconLink } from "@/components/svgs/IconLink";
 import { Badge } from "@/shadcn/ui/badge";
-import { useAction } from "next-safe-action/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import useSafeAction from "@/hooks/safeAction";
 
 export default function BidRequestDetailsForInvoice({ bidRequestId }: {
   bidRequestId: number;
 }) {
   const [bidRequest, setBidRequest] = useState<BidRequestDetailsT>();
   const boundGetBidRequest = useMemo(() => getBidRequest.bind(null, bidRequestId), [bidRequestId]);
-  const { execute } = useAction(boundGetBidRequest, {
-    onSuccess: ({ data }) => setBidRequest(data),
-    onError: clientErrorHandler
+  const { execute } = useSafeAction(boundGetBidRequest, {
+    onSuccess: ({ data }) => setBidRequest(data)
   });
   useEffect(() => {
     execute();

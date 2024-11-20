@@ -12,8 +12,7 @@ import { Button } from "@/shadcn/ui/button";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { AdminOffersBidRequestT, adminListAdminOffersBidRequests } from "@/resources/bidRequests/bidRequest.service";
-import { useAction } from "next-safe-action/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import useSafeAction from "@/hooks/safeAction";
 
 export default function AdminOffersPage() {
   return (
@@ -106,9 +105,10 @@ function BidRequestList({ bidRoundId }: {
 }) {
   const [items, setItems] = useState<AdminOffersBidRequestT[]>();
   const boundAdminListAdminOffersBidRequests = useMemo(() => adminListAdminOffersBidRequests.bind(null, bidRoundId), [bidRoundId]);
-  const { execute } = useAction(boundAdminListAdminOffersBidRequests, {
-    onSuccess: ({ data }) => setItems(data),
-    onError: clientErrorHandler
+  const { execute } = useSafeAction(boundAdminListAdminOffersBidRequests, {
+    onSuccess: ({ data }) => {
+      setItems(data);
+    }
   });
 
   useEffect(() => {

@@ -1,23 +1,51 @@
 import "server-only";
 // 클라이언트에서 접근을 절대 불허할 것
 import { PrismaTransaction } from "@/resources/globalTypes";
-import { AdminLevel, TokenInfo, TokenInfoSchema } from "@/resources/tokens/token.types";
+import { AdminLevel, ClerkUser, TokenInfo, TokenInfoSchema } from "@/resources/tokens/token.types";
 import prisma from "@/utils/prisma";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 import { UserTypeT } from "@/resources/users/user.types";
-import { InsufficientPermissions, NotSignedInError } from "@/handlers/errors";
+import { ForbiddenError, NotAuthorizedError } from "@/handlers/errors";
 import { User } from "@clerk/backend";
+import { getTranslations } from "next-intl/server";
 
-export const getClerkUser = async () => {
+// TODO 강제 로그인 또는 토큰 갱신 검토
+export const notAuthorizedErrorWithMessage = async (): Promise<NotAuthorizedError> => {
+  const t = await getTranslations("errors.NotAuthorizedError");
+  return new NotAuthorizedError({
+    title: t("title"),
+    message: t("message")
+  });
+};
+
+export const getClerkUser = async (): Promise<ClerkUser> => {
+  const clerkUser = await currentUser();
+  if (!clerkUser) {
+    throw await notAuthorizedErrorWithMessage();
+  }
+  const { id, primaryEmailAddress, firstName, lastName, externalId, imageUrl } = clerkUser;
+  if (!primaryEmailAddress || !externalId) {
+    throw await notAuthorizedErrorWithMessage();
+  }
+  return {
+    id,
+    externalId,
+    primaryEmail: primaryEmailAddress.emailAddress,
+    fullName: [firstName, lastName].filter(Boolean).join(" "),
+    imageUrl
+  };
+};
+
+const getClerkAuth = async () => {
   const clerkUser = await auth();
   if (!clerkUser.userId) {
-    throw new NotSignedInError();
+    throw await notAuthorizedErrorWithMessage();
   }
   return clerkUser;
 };
 
 export const getTokenInfo = async (): Promise<TokenInfo> => {
-  const clerkUser = await getClerkUser();
+  const clerkUser = await getClerkAuth();
   return TokenInfoSchema.parse(clerkUser.sessionClaims.serviceInfo);
 };
 
@@ -25,7 +53,7 @@ export async function updateTokenInfo(tx?: PrismaTransaction): Promise<{
   signUpFinished: boolean;
 }> {
   const prismaClient = tx || prisma;
-  const { userId: clerkUserId } = await getClerkUser();
+  const { userId: clerkUserId } = await getClerkAuth();
   const user = await prismaClient.user.findUnique({
     where: {
       sub: clerkUserId
@@ -93,9 +121,43 @@ export const assertAdmin = async (params?: {
   const needsSuperPermission = params?.needsSuperPermission || false;
   const { metadata } = await getTokenInfo();
   if (needsSuperPermission && metadata.adminLevel < AdminLevel.SuperAdmin) {
-    throw new InsufficientPermissions("Super admin permission required.");
+    const t = await getTranslations("errors.ForbiddenError.adminLevel");
+    throw new ForbiddenError({
+      title: t("title"),
+      message: t("superAdminMessage"),
+      logError: true,
+    });
   } else if (metadata.adminLevel < AdminLevel.Admin) {
-    throw new InsufficientPermissions("Admin permission required.");
+    const t = await getTranslations("errors.ForbiddenError.adminLevel");
+    throw new ForbiddenError({
+      title: t("title"),
+      message: t("message"),
+      logError: true,
+    });
+  }
+};
+
+export const assertBuyer = async () => {
+  const { metadata } = await getTokenInfo();
+  if (metadata.type !== UserTypeT.Buyer) {
+    const t = await getTranslations("errors.ForbiddenError.buyersOnly");
+    throw new NotAuthorizedError({
+      title: t("title"),
+      message: t("message"),
+      logError: true,
+    });
+  }
+};
+
+export const assertCreator = async () => {
+  const { metadata } = await getTokenInfo();
+  if (metadata.type !== UserTypeT.Creator) {
+    const t = await getTranslations("errors.ForbiddenError.creatorsOnly");
+    throw new NotAuthorizedError({
+      title: t("title"),
+      message: t("message"),
+      logError: true,
+    });
   }
 };
 

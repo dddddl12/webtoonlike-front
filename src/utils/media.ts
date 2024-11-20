@@ -27,26 +27,26 @@ export function buildImgUrl(
     return url;
   }
   switch (option?.fallback) {
-  case "user":
-    return "/img/mock_profile_image.png";
+    case "user":
+      return "/img/mock_profile_image.png";
   }
   throw new Error("Invalid option");
 }
 
 function getResizeW(size: ImageSizeT): number{
   switch (size) {
-  case "xxs":
-    return 90;
-  case "xs":
-    return 180;
-  case "sm":
-    return 360;
-  case "md":
-    return 720;
-  case "lg":
-    return 1440;
-  default:
-    return 720;
+    case "xxs":
+      return 90;
+    case "xs":
+      return 180;
+    case "sm":
+      return 360;
+    case "md":
+      return 720;
+    case "lg":
+      return 1440;
+    default:
+      return 720;
   }
 }
 

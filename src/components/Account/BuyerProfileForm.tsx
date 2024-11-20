@@ -17,8 +17,7 @@ import { SignUpStage, UserExtendedFormSchema, UserExtendedFormT } from "@/resour
 import { AccountFormFooter, AccountFormImageField } from "@/components/Account/common";
 import { formResolver } from "@/utils/forms";
 import { createUser } from "@/resources/users/user.service";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 
 
 export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : {
@@ -39,17 +38,13 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
     new ImageObject(prevCompany?.businessCardPath));
 
   const { form, handleSubmitWithAction }
-    = useHookFormAction(
+    = useSafeHookFormAction(
       createUser,
       (values) => formResolver(UserExtendedFormSchema, values),
       {
         actionProps: {
           onSuccess: () => {
             setSignUpStage(prevState => prevState + 1);
-          },
-          onError: (args) => {
-            form.reset(args.input);
-            clientErrorHandler(args);
           }
         },
         formProps: {

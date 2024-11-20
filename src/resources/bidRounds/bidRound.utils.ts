@@ -1,3 +1,4 @@
+import "server-only";
 import { $Enums, BidRound as BidRoundRecord, Prisma } from "@prisma/client";
 import { BidRoundApprovalStatus, BidRoundStatus, BidRoundT, ContractRange } from "@/resources/bidRounds/bidRound.types";
 

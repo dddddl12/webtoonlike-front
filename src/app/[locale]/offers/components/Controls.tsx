@@ -4,13 +4,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from "@/shadcn/ui/textarea";
 import { createBidRequestMessage } from "@/resources/bidRequestMessages/bidRequestMessage.service";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { changeBidRequestStatus, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
+import {
+  changeBidRequestStatus,
+  getSimpleBidRequest,
+  SimpleBidRequestT
+} from "@/resources/bidRequests/bidRequest.service";
 import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
 import { useToast } from "@/shadcn/hooks/use-toast";
-import { useAction } from "next-safe-action/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 import { UserTypeT } from "@/resources/users/user.types";
 import useTokenInfo from "@/hooks/tokenInfo";
+import useSafeAction from "@/hooks/safeAction";
 
 export default function Controls({ bidRequestId, setReloadMessages, setCurBidRequest, whoCanDecideAtThisTurn, refMessageId }: {
   bidRequestId: number;
@@ -23,23 +26,33 @@ export default function Controls({ bidRequestId, setReloadMessages, setCurBidReq
   const { tokenInfo } = useTokenInfo();
   const boundChangeBidRequestStatus = useMemo(() => changeBidRequestStatus
     .bind(null, bidRequestId), [bidRequestId]);
-  const { execute } = useAction(boundChangeBidRequestStatus, {
+  const { execute } = useSafeAction(boundChangeBidRequestStatus, {
     onSuccess: ({ data }) => {
       if (!data) {
         throw new Error("data is null");
       }
-      setCurBidRequest(prev => ({
-        ...prev,
-        status: data.status,
-        decidedAt: data.decidedAt,
-      }));
+      setCurBidRequest(data);
       toast({
         description: data.status === BidRequestStatus.Accepted
           ? "오퍼를 수락했습니다."
           : "오퍼를 거절했습니다."
       });
     },
-    onError: clientErrorHandler,
+    onError: () => {
+      executeOnFailure();
+    }
+  });
+
+  // 오퍼 실패 시 업데이트
+  const boundGetSimpleBidRequest = useMemo(() => getSimpleBidRequest
+    .bind(null, bidRequestId), [bidRequestId]);
+  const { execute: executeOnFailure } = useSafeAction(boundGetSimpleBidRequest, {
+    onSuccess: ({ data }) => {
+      if (!data) {
+        throw new Error("data is null");
+      }
+      setCurBidRequest(data);
+    }
   });
 
   return <Row className="gap-20 mx-auto mb-10" >
@@ -72,15 +85,14 @@ function SendMessage({ bidRequestId, setReloadMessages }: {
 
   const boundCreateBidRequestMessage = useMemo(() => createBidRequestMessage
     .bind(null, bidRequestId), [bidRequestId]);
-  const { execute } = useAction(boundCreateBidRequestMessage, {
+  const { execute } = useSafeAction(boundCreateBidRequestMessage, {
     onSuccess: () => {
       toast({
         description: "메시지를 전송했습니다."
       });
       setReloadMessages(true);
       setEditorOpen(false);
-    },
-    onError: clientErrorHandler,
+    }
   });
 
   useEffect(() => {

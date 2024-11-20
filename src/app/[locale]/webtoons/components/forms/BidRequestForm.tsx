@@ -14,9 +14,8 @@ import { useRouter } from "@/i18n/routing";
 import Spinner from "@/components/Spinner";
 import { createBidRequest } from "@/resources/bidRequests/bidRequest.service";
 import { Row } from "@/shadcn/ui/layouts";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 import { useToast } from "@/shadcn/hooks/use-toast";
+import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 
 
 export default function BidRequestForm({ bidRoundId }: {
@@ -30,7 +29,7 @@ export default function BidRequestForm({ bidRoundId }: {
 
 
   const { form, handleSubmitWithAction }
-    = useHookFormAction(
+    = useSafeHookFormAction(
       createBidRequest.bind(null, bidRoundId),
       (values) => formResolver(BidRequestFormSchema, values),
       {
@@ -40,10 +39,6 @@ export default function BidRequestForm({ bidRoundId }: {
               description: "오퍼를 보냈습니다."
             });
             router.replace("/offers");
-          },
-          onError: (args) => {
-            form.reset(args.input);
-            clientErrorHandler(args);
           }
         },
         formProps: {

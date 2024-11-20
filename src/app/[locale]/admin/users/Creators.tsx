@@ -8,8 +8,7 @@ import Spinner from "@/components/Spinner";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { Switch } from "@/shadcn/ui/switch";
 import { useState } from "react";
-import { useAction } from "next-safe-action/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import useSafeAction from "@/hooks/safeAction";
 
 
 export default function Creators() {
@@ -50,7 +49,7 @@ function TableRow({ creator }:{ creator: AdminPageCreatorT }) {
   const { toast } = useToast();
   const [isExposed, setIsExposed] = useState(creator.isExposed);
   const [isProcessing, setIsProcessing] = useState(false);
-  const { execute } = useAction(changeExposed.bind(null, creator.id), {
+  const { execute } = useSafeAction(changeExposed.bind(null, creator.id), {
     onSettled: () => setIsProcessing(false),
     onSuccess: ({ data }) => {
       if (!data) {
@@ -59,12 +58,6 @@ function TableRow({ creator }:{ creator: AdminPageCreatorT }) {
       setIsExposed(data.isExposed);
       toast({
         description: "저작권자 노출 여부가 변경되었습니다."
-      });
-    },
-    onError: (args) => {
-      clientErrorHandler(args);
-      toast({
-        description: "저작권자 노출 변경이 정상적으로 이루어지지 않았습니다."
       });
     }
   });

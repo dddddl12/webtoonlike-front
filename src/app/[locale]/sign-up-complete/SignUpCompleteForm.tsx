@@ -1,15 +1,14 @@
 "use client";
 import CreatorProfileForm from "@/components/Account/CreatorProfileForm";
 import BuyerProfileForm from "@/components/Account/BuyerProfileForm";
-import { useRouter } from "@/i18n/routing";
+import { redirect, useRouter } from "@/i18n/routing";
 import { useSession } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
-import { NotSignedInError } from "@/handlers/errors";
 import { SignUpStage, UserExtendedFormT, UserTypeT } from "@/resources/users/user.types";
 import UserTypeSelector from "@/components/Account/UserTypeSelector";
 import UserProfileForm from "@/components/Account/UserProfileForm";
 import { useToast } from "@/shadcn/hooks/use-toast";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export function SignUpCompleteForm ({ clerkUserFullName, signUpFinished }: {
   signUpFinished: boolean;
@@ -22,6 +21,7 @@ export function SignUpCompleteForm ({ clerkUserFullName, signUpFinished }: {
       : SignUpStage.Begin
   );
   const { toast } = useToast();
+  const locale = useLocale();
   const tSetupForm = useTranslations("setupForm");
 
   // 토큰 재검증
@@ -30,14 +30,18 @@ export function SignUpCompleteForm ({ clerkUserFullName, signUpFinished }: {
     // 이미 회원가입을 마친 경우 홈으로 리다이렉트하기 위한 훅
     if (isSignedIn === false) {
       // 로그인하지 않았다면 이 화면으로 넘어올 수 없음
-      throw new NotSignedInError();
+      redirect({
+        href: "/",
+        locale
+      });
+      return;
     }
     if (signUpStage !== SignUpStage.Finished || !session){
       // 회원가입을 마치지 않았거나 세션 로딩을 기다리는 중
       return;
     }
     session.touch().then(() => router.replace("/"));
-  }, [isSignedIn, router, session, signUpStage]);
+  }, [isSignedIn, locale, router, session, signUpStage]);
 
   // User form과 관련한 회원가입 status 조절
   const [userExtendedForm, setUserExtendedForm] = useState<Partial<UserExtendedFormT>>({

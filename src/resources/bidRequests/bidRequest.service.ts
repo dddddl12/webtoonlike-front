@@ -1,43 +1,28 @@
 "use server";
 
-import { $Enums, Prisma, BidRequest as BidRequestRecord } from "@prisma/client";
+import { $Enums, Prisma } from "@prisma/client";
 import {
   BidRequestFormSchema,
   BidRequestSchema,
-  BidRequestStatus, BidRequestT
+  BidRequestStatus
 } from "@/resources/bidRequests/bidRequest.types";
 import prisma from "@/utils/prisma";
-import { ListResponse, ListResponseSchema } from "@/resources/globalTypes";
-import { assertAdmin, getClerkUserMap, getTokenInfo } from "@/resources/tokens/token.service";
+import { ListResponseSchema } from "@/resources/globalTypes";
+import { getClerkUserMap, getTokenInfo } from "@/resources/tokens/token.service";
 import { UserSchema, UserTypeT } from "@/resources/users/user.types";
 import { AgeLimit, TargetAge, TargetGender, WebtoonSchema } from "@/resources/webtoons/webtoon.types";
 import { BuyerCompanySchema } from "@/resources/buyers/buyer.types";
 import z from "zod";
 import { action } from "@/handlers/safeAction";
 import { CreatorSchema } from "@/resources/creators/creator.types";
+import { BadRequestError, ForbiddenError, UnexpectedError } from "@/handlers/errors";
+import { getTranslations } from "next-intl/server";
+import {
+  getBidRequestWhereUniqueInputWithPermissionCheck, listBidRequests, mapToBidRequestDTO, mapToSimpleBidRequestDTO,
+  simpleBidRequestIncludeForQuery
+} from "@/resources/bidRequests/bidRequest.utils";
 
-const mapToBidRequestDTO = (record: BidRequestRecord): BidRequestT => {
-  return {
-    id: record.id,
-    createdAt: record.createdAt,
-    updatedAt: record.updatedAt,
-    bidRoundId: record.bidRoundId,
-    message: record.message ?? undefined,
-    contractRange: BidRequestSchema.shape.contractRange
-      .safeParse(record.contractRange).data ?? [],
-    userId: record.userId ?? undefined,
-    status: record.status as BidRequestStatus
-  };
-};
-
-const SimpleBidRequestSchema = BidRequestSchema.pick({
-  id: true,
-  createdAt: true,
-  status: true,
-  decidedAt: true,
-  contractRange: true,
-  message: true
-}).extend({
+const SimpleBidRequestSchema = BidRequestSchema.extend({
   webtoon: WebtoonSchema.pick({
     id: true,
     title: true,
@@ -58,6 +43,7 @@ const SimpleBidRequestSchema = BidRequestSchema.pick({
   })
 });
 export type SimpleBidRequestT = z.infer<typeof SimpleBidRequestSchema>;
+
 export const adminListUninvoicedBidRequests = action
   .metadata({ actionName: "adminListUninvoicedBidRequests" })
   .schema(z.object({
@@ -67,29 +53,11 @@ export const adminListUninvoicedBidRequests = action
   .action(async ({
     parsedInput: { page }
   }) => {
-    return _listBidRequests({
+    return listBidRequests({
       page,
       limit: 5,
       isAdmin: true,
       uninvoicedOnly: true
-    });
-  });
-
-// TODO unused?
-export const adminListAllBidRequests = action
-  .metadata({ actionName: "adminListAllBidRequests" })
-  .schema(z.object({
-    page: z.number().default(1),
-  }))
-  .outputSchema(ListResponseSchema(SimpleBidRequestSchema))
-  .action(async ({
-    parsedInput: { page }
-  }) => {
-    return _listBidRequests({
-      page,
-      limit: 10,
-      isAdmin: true,
-      uninvoicedOnly: false
     });
   });
 
@@ -102,7 +70,7 @@ export const listUninvoicedBidRequests = action
   .action(async ({
     parsedInput: { page }
   }) => {
-    return _listBidRequests({
+    return listBidRequests({
       page,
       limit: 5,
       isAdmin: false,
@@ -119,7 +87,7 @@ export const listAllBidRequests = action
   .action(async ({
     parsedInput: { page }
   }) => {
-    return _listBidRequests({
+    return listBidRequests({
       page,
       limit: 10,
       isAdmin: false,
@@ -127,116 +95,22 @@ export const listAllBidRequests = action
     });
   });
 
-async function _listBidRequests(
-  {
-    page,
-    limit,
-    isAdmin,
-    uninvoicedOnly,
-  }: {
-    page: number;
-    limit: number;
-    isAdmin: boolean;
-    uninvoicedOnly: boolean;
-  }
-): Promise<ListResponse<SimpleBidRequestT>> {
-  const { userId, metadata } = await getTokenInfo();
-  const { type } = metadata;
-
-  const where: Prisma.BidRequestWhereInput = {};
-
-  if (uninvoicedOnly) {
-    where.status = $Enums.BidRequestStatus.ACCEPTED;
-    where.invoice = {
-      is: null
-    };
-  }
-
-  if (isAdmin) {
-    await assertAdmin();
-  } else if (type === UserTypeT.Buyer) {
-    where.userId = userId;
-  } else if (type === UserTypeT.Creator) {
-    where.bidRound = {
-      webtoon: {
-        userId
-      }
-    };
-  }
-
-  const [records, totalRecords] = await prisma.$transaction([
-    prisma.bidRequest.findMany({
+export const getSimpleBidRequest = action
+  .metadata({ actionName: "getSimpleBidRequest" })
+  .bindArgsSchemas([
+    z.number() // bidRequestId
+  ])
+  .outputSchema(SimpleBidRequestSchema)
+  .action(async ({
+    bindArgsParsedInputs: [bidRequestId]
+  }) => {
+    const where = await getBidRequestWhereUniqueInputWithPermissionCheck(bidRequestId);
+    const r = await prisma.bidRequest.findUniqueOrThrow({
       where,
-      include: {
-        bidRound: {
-          select: {
-            webtoon: {
-              select: {
-                id: true,
-                title: true,
-                title_en: true,
-                thumbPath: true,
-                user: {
-                  select: {
-                    id: true,
-                    name: true,
-                  }
-                }
-              }
-            }
-          }
-        },
-        user: {
-          select: {
-            id: true,
-            name: true,
-          }
-        }
-      },
-      orderBy: {
-        createdAt: "desc"
-      },
-      take: limit > 0 ? limit : undefined,
-      skip: (page - 1) * limit,
-    }),
-    prisma.bidRequest.count({ where })
-  ]);
-  return {
-    items: records.map(r => {
-      const { webtoon } = r.bidRound;
-      const creatingUser = webtoon.user;
-      const buyingUser = r.user;
-      return {
-        id: r.id,
-        createdAt: r.createdAt,
-        status: r.status as BidRequestStatus,
-        decidedAt: r.decidedAt ?? undefined,
-        contractRange: BidRequestSchema.shape.contractRange
-          .safeParse(r.contractRange).data ?? [],
-        message: r.message ?? undefined,
-        webtoon: {
-          id: webtoon.id,
-          title: webtoon.title,
-          title_en: webtoon.title_en ?? undefined,
-          thumbPath: webtoon.thumbPath,
-        },
-        creator: {
-          user: {
-            id: creatingUser.id,
-            name: creatingUser.name
-          }
-        },
-        buyer: {
-          user: {
-            id: buyingUser.id,
-            name: buyingUser.name
-          }
-        }
-      };
-    }),
-    totalPages: Math.ceil(totalRecords / limit),
-  };
-}
+      include: simpleBidRequestIncludeForQuery
+    });
+    return mapToSimpleBidRequestDTO(r);
+  });
 
 const AdminOffersBidRequestSchema = BidRequestSchema.pick({
   id: true,
@@ -343,10 +217,9 @@ export const getBidRequest = action
   .action(async ({
     bindArgsParsedInputs: [bidRequestId]
   }) => {
+    const where = await getBidRequestWhereUniqueInputWithPermissionCheck(bidRequestId);
     const r = await prisma.bidRequest.findUniqueOrThrow({
-      where: {
-        id: bidRequestId,
-      },
+      where: where,
       include: {
         // 인보이스
         invoice: {
@@ -427,7 +300,7 @@ export const getBidRequest = action
 
     // 저작권자 정보 기입
     if (!creatorUser.creator) {
-      throw new Error("creatorUser.creator is undefined");
+      throw new UnexpectedError("creatorUser.creator is undefined");
     }
     const creatorClerkUser = clerkUserMap.get(creatorUser.sub);
     const creatorDto: BidRequestDetailsT["creator"] = {
@@ -509,6 +382,7 @@ export const createBidRequest = action
     });
   });
 
+// /offers 오퍼 승인 또는 취소
 export const changeBidRequestStatus = action
   .metadata({ actionName: "changeBidRequestStatus" })
   .bindArgsSchemas([
@@ -518,11 +392,12 @@ export const changeBidRequestStatus = action
     changeTo: z.enum([BidRequestStatus.Accepted, BidRequestStatus.Declined]),
     refMessageId: z.number().optional()
   }))
-  .outputSchema(BidRequestSchema)
+  .outputSchema(SimpleBidRequestSchema)
   .action(async ({
     bindArgsParsedInputs: [bidRequestId],
     parsedInput: { changeTo, refMessageId }
   }) => {
+    const t = await getTranslations("errors.serverActions.changeBidRequestStatus");
     return prisma.$transaction(async (tx) => {
       const { status, ...record } = await tx.bidRequest.findUniqueOrThrow({
         where: {
@@ -557,26 +432,46 @@ export const changeBidRequestStatus = action
         }
       });
       const { userId, metadata } = await getTokenInfo();
-      if (status === BidRequestStatus.Declined
-      || status === BidRequestStatus.Accepted) {
-        throw new Error("Already approved or rejected.");
+      if (status === BidRequestStatus.Accepted) {
+        throw new BadRequestError({
+          title: t("title"),
+          message: t("alreadyAccepted")
+        });
+      }
+      if (status === BidRequestStatus.Declined) {
+        throw new BadRequestError({
+          title: t("title"),
+          message: t("alreadyRejected")
+        });
       }
       const latestMessageId = record.messages?.[0]?.id;
       if (latestMessageId !== refMessageId) {
         // 둘 다 undefined인 경우에도 허용되는데, 이는 최초 bid request를 보고 바로 결정하는 경우
-        throw new Error("Invalid refMessageId");
+        throw new BadRequestError({
+          title: t("title"),
+          message: t("outdated")
+        });
       }
-      if ((!record.messages && metadata.type !== UserTypeT.Creator)
-        || record.bidRound.webtoon.userId !== userId
+      if (!record.messages
+        && (metadata.type !== UserTypeT.Creator
+        || record.bidRound.webtoon.userId !== userId)
       ){
         // 주고받은 메시지가 없으면 최초에는 저작권자가 수락/거절 가능
-        throw new Error("Wrong user type");
+        throw new ForbiddenError({
+          title: t("title"),
+          message: t("abnormalAccess"),
+          logError: true
+        });
       }
       if (record.messages?.[0]?.user.userType === metadata.type
         || ![record.userId, record.bidRound.webtoon.userId].includes(userId)
       ) {
         // 메시지를 주고받는 경우에는 마지막 메시지를 수신한 측에서만 수락/거절 가능
-        throw new Error("Wrong user type");
+        throw new ForbiddenError({
+          title: t("title"),
+          message: t("abnormalAccess"),
+          logError: true
+        });
       }
 
       const r = await tx.bidRequest.update({
@@ -587,8 +482,9 @@ export const changeBidRequestStatus = action
         },
         where: {
           id: bidRequestId,
-        }
+        },
+        include: simpleBidRequestIncludeForQuery
       });
-      return mapToBidRequestDTO(r);
+      return mapToSimpleBidRequestDTO(r);
     });
   });

@@ -32,7 +32,7 @@ export const offAlert = (callback: (wrapper: AlertOrConfirmWrapper) => void) => 
 };
 
 // Export utility functions to interact with the emitter
-const showAlert = (wrapper: AlertOrConfirmWrapper) => {
+export const showAlert = (wrapper: AlertOrConfirmWrapper) => {
   alertEmitter.emit("show", wrapper);
 };
 

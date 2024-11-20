@@ -495,6 +495,42 @@
     "errors": {
         "invalidFields": {
             "duplicateValue": "This value already exists."
+        },
+        "UnexpectedError": {
+            "title": "Error occurred",
+            "message": "Unknown error occurred. If this issue persists, please contact us."
+        },
+        "NotAuthorizedError": {
+            "title": "You're not signed in",
+            "message": "Please sign in before proceeding"
+        },
+        "ForbiddenError": {
+            "adminLevel": {
+                "title": "Insufficient permissions",
+                "message": "Admin permission required.",
+                "superAdminMessage": "Super admin permission required."
+            },
+            "buyersOnly": {
+                "title": "You're not signed in to a buyer account.",
+                "message": "This feature is accessible to buyers only."
+            },
+            "creatorsOnly": {
+                "title": "You're not signed in to a creator account.",
+                "message": "This feature is accessible to creators only."
+            }
+        },
+        "NotFoundError": {
+            "title": "Page not found",
+            "message": "This page is not found or not accessible to your account."
+        },
+        "serverActions": {
+            "changeBidRequestStatus": {
+                "title": "Error occurred.",
+                "alreadyAccepted": "This offer has already been concluded.",
+                "alreadyRejected": "This offer has already been aborted.",
+                "outdated": "This is not the latest message. Please review the subsequent messages.",
+                "abnormalAccess": "This action is not allowed."
+            }
         }
     }
 }

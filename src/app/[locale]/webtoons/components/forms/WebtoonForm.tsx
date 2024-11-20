@@ -29,9 +29,8 @@ import { FileDirectoryT } from "@/resources/files/files.type";
 import { formResolver } from "@/utils/forms";
 import { BasicGenreT } from "@/resources/genres/genre.service";
 import { createOrUpdateWebtoon, WebtoonDetailsT } from "@/resources/webtoons/webtoon.service";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 import { toast } from "@/shadcn/hooks/use-toast";
+import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 
 export function WebtoonForm({ selectableGenres, prev }: {
   selectableGenres: BasicGenreT[];
@@ -44,7 +43,7 @@ export function WebtoonForm({ selectableGenres, prev }: {
   const [thumbnail, setThumbnail] = useState(
     new ImageObject(prev?.thumbPath));
   const { form, handleSubmitWithAction }
-    = useHookFormAction(
+    = useSafeHookFormAction(
       createOrUpdateWebtoon.bind(null, prev?.id),
       (values) => formResolver(WebtoonFormSchema, values),
       {
@@ -55,10 +54,6 @@ export function WebtoonForm({ selectableGenres, prev }: {
             } else {
               router.replace("/webtoons");
             }
-          },
-          onError: (args) => {
-            form.reset(args.input);
-            clientErrorHandler(args);
           }
         },
         formProps: {

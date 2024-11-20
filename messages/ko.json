@@ -495,6 +495,42 @@
     "errors": {
         "invalidFields": {
             "duplicateValue": "해당값이 이미 존재합니다."
+        },
+        "UnexpectedError": {
+            "title": "오류 발생",
+            "message": "알 수 없는 오류가 발생했습니다. 문제가 지속되면 운영자에게 연락주세요."
+        },
+        "NotAuthorizedError": {
+            "title": "로그인 필요",
+            "message": "로그인 이후 이용하실 수 있습니다."
+        },
+        "ForbiddenError": {
+            "adminLevel": {
+                "title": "권한 부족",
+                "message": "관리자 권한이 필요합니다.",
+                "superAdminMessage": "수퍼관리자 권한이 필요합니다."
+            },
+            "buyersOnly": {
+                "title": "계정 타입 오류",
+                "message": "바이어 계정만 접근 가능한 기능입니다."
+            },
+            "creatorsOnly": {
+                "title": "계정 타입 오류",
+                "message": "저작권자 계정만 접근 가능한 기능입니다."
+            }
+        },
+        "NotFoundError": {
+            "title": "접근 불가",
+            "message": "존재하지 않거나 접근할 수 없는 페이지입니다."
+        },
+        "serverActions": {
+            "changeBidRequestStatus": {
+                "title": "오류 발생",
+                "alreadyAccepted": "이미 완료된 오퍼입니다.",
+                "alreadyRejected": "이미 걸렬된 오퍼입니다.",
+                "outdated": "최신 협상 내용이 아닙니다. 이후 메시지를 참고해주세요.",
+                "abnormalAccess": "정상적인 접근이 아닙니다."
+            }
         }
     }
 }

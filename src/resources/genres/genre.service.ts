@@ -7,7 +7,8 @@ import z from "zod";
 import { Prisma } from "@prisma/client";
 import { action } from "@/handlers/safeAction";
 import { returnValidationErrors } from "next-safe-action";
-import { ForeignKeyError } from "@/handlers/errors";
+import { BadRequestError } from "@/handlers/errors";
+import { getTranslations } from "next-intl/server";
 
 const BasicGenreSchema = GenreSchema.pick({
   id: true,
@@ -61,15 +62,16 @@ export const createOrUpdateGenre = action
       : prisma.genre.create({
         data: formData,
       });
-    await dbAction.catch(e => {
+    await dbAction.catch(async (e) => {
       // 중복 에러 처리
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+        const t = await getTranslations("errors.invalidFields");
         returnValidationErrors(
           GenreFormSchema,
           Object.fromEntries(((e.meta?.target || []) as string[])
             .map(name => [
               name, {
-                _errors: ["duplicateValue"]
+                _errors: [t("duplicateValue")]
               }
             ])
           )
@@ -94,7 +96,10 @@ export const deleteGenre = action
       }
     }).catch(e => {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2003") {
-        throw new ForeignKeyError();
+        throw new BadRequestError({
+          title: "장르 삭제 실패",
+          message: "이 장르를 사용 중인 웹툰이 존재합니다."
+        });
       }
       throw e;
     });

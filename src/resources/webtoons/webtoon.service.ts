@@ -7,14 +7,14 @@ import {
 } from "@/resources/webtoons/webtoon.types";
 import { BidRoundApprovalStatus, BidRoundSchema, BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 import { UserTypeT } from "@/resources/users/user.types";
-import { WrongUserTypeError } from "@/handlers/errors";
 import { ListResponseSchema } from "@/resources/globalTypes";
-import { getTokenInfo } from "@/resources/tokens/token.service";
+import { assertCreator, getTokenInfo } from "@/resources/tokens/token.service";
 import { AdminLevel } from "@/resources/tokens/token.types";
 import prisma from "@/utils/prisma";
 import { getBidRoundStatus, mapToBidRoundDTO, offerableBidRoundFilter } from "@/resources/bidRounds/bidRound.utils";
 import z from "zod";
 import { action } from "@/handlers/safeAction";
+import { UnexpectedError } from "@/handlers/errors";
 
 // TODO 권한, 사용자 타입, 관리자 체크
 export const createOrUpdateWebtoon = action
@@ -265,10 +265,8 @@ export const listMyWebtoonsNotOnSale = action
   }))
   .outputSchema(ListResponseSchema(MyWebtoonNotOnSaleSchema))
   .action(async ({ parsedInput: { page } }) => {
-    const { metadata, userId } = await getTokenInfo();
-    if (metadata.type !== UserTypeT.Creator) {
-      throw new WrongUserTypeError();
-    }
+    await assertCreator();
+    const { userId } = await getTokenInfo();
 
     const where: Prisma.WebtoonWhereInput = {
       userId,
@@ -335,10 +333,8 @@ export const listMyWebtoonsOnSale = action
   }))
   .outputSchema(ListResponseSchema(MyWebtoonOnSaleSchema))
   .action(async ({ parsedInput: { page } }) => {
-    const { metadata, userId } = await getTokenInfo();
-    if (metadata.type !== UserTypeT.Creator) {
-      throw new WrongUserTypeError();
-    }
+    await assertCreator();
+    const { userId } = await getTokenInfo();
 
     const where: Prisma.WebtoonWhereInput = {
       userId,
@@ -421,15 +417,30 @@ export const getWebtoon = action
   .bindArgsSchemas([
     z.number() // webtoonId
   ])
-  // TODO validation 실패 시 기록
   .outputSchema(WebtoonDetailsSchema)
   .action(async ({
     bindArgsParsedInputs: [webtoonId]
   }) => {
-    // TODO 에러 핸들링
     const { userId, metadata } = await getTokenInfo();
+    const where: Prisma.WebtoonWhereUniqueInput = {
+      id: webtoonId
+    };
+    // 권한에 따른 조건 제한
+    if (metadata.adminLevel < AdminLevel.Admin) {
+      if (metadata.type === UserTypeT.Creator) {
+        // 저작권자는 자기 자신의 웹툰만 조회 가능
+        where.userId = userId;
+      } else {
+        // 바이어는 공개된 작품만 조회 가능
+        where.bidRounds = {
+          some: offerableBidRoundFilter()
+        };
+      }
+    }
+
+    // 조회
     const record = await prisma.webtoon.findUniqueOrThrow({
-      where: { id: webtoonId },
+      where,
       include: {
         user: {
           select: {
@@ -495,7 +506,7 @@ export const getWebtoon = action
     const { creator } = record.user;
     if (!creator) {
     // TODO http 에러로 대체
-      throw new Error("Creator should exist.");
+      throw new UnexpectedError("Creator should exist.");
     }
     const bidRoundRecord = record.bidRounds?.[0];
     const bidRound = bidRoundRecord
@@ -521,8 +532,8 @@ export const getWebtoon = action
       thumbPath: record.thumbPath,
       isEditable: metadata.type === UserTypeT.Creator
       && (record.userId === userId || metadata.adminLevel >= AdminLevel.Admin),
-      authorOrCreatorName: record.authorName ?? creator.name,
-      authorOrCreatorName_en: record.authorName_en ?? creator.name_en ?? undefined,
+      authorOrCreatorName: record.authorName ?? creator?.name,
+      authorOrCreatorName_en: record.authorName_en ?? creator?.name_en ?? undefined,
       likeCount: record._count.likes,
       myLike: record.likes.length > 0,
       genres: record.genreLinks

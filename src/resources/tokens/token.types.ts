@@ -15,3 +15,11 @@ export const TokenInfoSchema = z.object({
   }),
 });
 export type TokenInfo = z.infer<typeof TokenInfoSchema>;
+
+export type ClerkUser = {
+  id: string;
+  externalId: string;
+  primaryEmail: string;
+  fullName: string;
+  imageUrl?: string;
+};

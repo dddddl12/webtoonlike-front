@@ -3,10 +3,9 @@ import { IconHeartFill } from "@/components/svgs/IconHeartFill";
 import { Row } from "@/shadcn/ui/layouts";
 import { useState } from "react";
 import { toggleLike } from "@/resources/webtoonLikes/webtoonLike.service";
-import { useAction } from "next-safe-action/hooks";
 import { WebtoonLikeWithMineT } from "@/resources/webtoonLikes/webtoonLike.types";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 import { Button } from "@/shadcn/ui/button";
+import useSafeAction from "@/hooks/safeAction";
 
 // TODO buyer만 가능한가?
 export default function WebtoonDetailsLikeButton({
@@ -16,15 +15,14 @@ export default function WebtoonDetailsLikeButton({
 }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [webtoonLike, setWebtoonLike] = useState(initWebtoonLike);
-  const { execute } = useAction(toggleLike.bind(null, webtoonLike.webtoonId), {
+  const { execute } = useSafeAction(toggleLike.bind(null, webtoonLike.webtoonId), {
     onSettled: () => setIsProcessing(false),
     onSuccess: ({ data }) => {
       if (!data) {
         throw new Error("data is null");
       }
       setWebtoonLike(data);
-    },
-    onError: clientErrorHandler
+    }
   });
 
   return <Row>

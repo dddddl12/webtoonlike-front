@@ -23,9 +23,8 @@ import Spinner from "@/components/Spinner";
 import { formResolver } from "@/utils/forms";
 import ContractRangeForm from "@/app/[locale]/webtoons/components/forms/ContractRangeForm";
 import { NumericInput } from "@/shadcn/ui/input";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 import { createOrUpdateBidRound } from "@/resources/bidRounds/bidRound.service";
+import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 
 export default function BidRoundForm({ webtoonId, prev }: {
   webtoonId: number;
@@ -35,7 +34,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
   const [isAgreed, setIsAgreed] = useState(false);
   const router = useRouter();
   const { form, handleSubmitWithAction }
-    = useHookFormAction(
+    = useSafeHookFormAction(
       createOrUpdateBidRound.bind(null, webtoonId, prev?.id),
       (values) => {
         const { isNew, currentEpisodeNo, totalEpisodeCount } = values;
@@ -64,10 +63,6 @@ export default function BidRoundForm({ webtoonId, prev }: {
             } else {
               router.replace("/webtoons");
             }
-          },
-          onError: (args) => {
-            form.reset(args.input);
-            clientErrorHandler(args);
           }
         },
         formProps: {

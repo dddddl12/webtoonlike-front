@@ -8,9 +8,9 @@ import { BasicGenreT, listGenres } from "@/resources/genres/genre.service";
 import { Badge } from "@/shadcn/ui/badge";
 import { Button } from "@/shadcn/ui/button";
 import DeleteGenre from "@/app/[locale]/admin/genres/DeleteGenre";
-import { useAction } from "next-safe-action/hooks";
+import useSafeAction from "@/hooks/safeAction";
 
-
+// BadRequestError
 export default function ManageGenresPage() {
   return (
     <Col className="gap-10">
@@ -26,7 +26,7 @@ function ManageGenresContent() {
   const [genres, setGenres] = useState<BasicGenreT[]>();
 
   const boundListGenres = useMemo(() => listGenres, []);
-  const { execute } = useAction(boundListGenres, {
+  const { execute } = useSafeAction(boundListGenres, {
     onSuccess: ({ data }) => setGenres(data),
   });
   useEffect(() => {

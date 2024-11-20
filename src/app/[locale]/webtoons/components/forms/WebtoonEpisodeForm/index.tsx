@@ -28,9 +28,8 @@ import {
 } from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/reorderImages";
 import { EpisodeImageSet } from "@/app/[locale]/webtoons/components/forms/WebtoonEpisodeForm/types";
 import { DropzoneRootProps, useDropzone } from "react-dropzone";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
 import { createOrUpdateEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
+import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 
 const MAX_THUMBNAIL_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -50,7 +49,7 @@ export default function WebtoonEpisodeForm({
   const { toast } = useToast();
 
   const { form, handleSubmitWithAction }
-    = useHookFormAction(
+    = useSafeHookFormAction(
       createOrUpdateEpisode.bind(null, webtoonId, prev?.id),
       (values) => formResolver(WebtoonEpisodeFormSchema, values),
       {
@@ -67,10 +66,6 @@ export default function WebtoonEpisodeForm({
               });
               router.replace("/webtoons");
             }
-          },
-          onError: (args) => {
-            form.reset(args.input);
-            clientErrorHandler(args);
           }
         },
         formProps: {

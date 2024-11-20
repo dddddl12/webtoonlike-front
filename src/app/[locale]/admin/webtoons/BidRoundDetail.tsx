@@ -5,8 +5,7 @@ import { buildImgUrl } from "@/utils/media";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { useMemo } from "react";
-import { useAction } from "next-safe-action/hooks";
-import { clientErrorHandler } from "@/handlers/clientErrorHandler";
+import useSafeAction from "@/hooks/safeAction";
 
 export default function BidRoundDetail({
   bidRound, onHandleDetailReset
@@ -16,9 +15,8 @@ export default function BidRoundDetail({
 }) {
   const boundApproveOrDisapproveBidRound = useMemo(() => approveOrDisapproveBidRound
     .bind(null, bidRound.id), [bidRound.id]);
-  const { execute } = useAction(boundApproveOrDisapproveBidRound, {
-    onSuccess: () => onHandleDetailReset(),
-    onError: clientErrorHandler
+  const { execute } = useSafeAction(boundApproveOrDisapproveBidRound, {
+    onSuccess: onHandleDetailReset
   });
 
   function handleApprove() {
