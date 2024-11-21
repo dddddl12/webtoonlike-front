@@ -2,12 +2,12 @@
 
 import { Col, Grid, Row } from "@/shadcn/ui/layouts";
 import { Text } from "@/shadcn/ui/texts";
-import { Link } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import { buildImgUrl } from "@/utils/media";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/ui/avatar";
 import { displayName } from "@/utils/displayName";
 import { HomeCreatorItem } from "@/resources/home/home.types";
+import LinkWithAccessCheck from "@/components/HomePage/LinkWithAccessCheck";
 
 export default function CreatorGrid({ creators }: {
   creators: HomeCreatorItem[];
@@ -29,7 +29,10 @@ export function CreatorItem({ creator }: {
   const locale = useLocale();
 
   return (
-    <Link href={`/creators/${creator.id}`}>
+    <LinkWithAccessCheck
+      href={`/creators/${creator.id}`}
+      creatorUid={creator.id}
+    >
       <Col className="text-white bg-black-texts w-full h-[320px] rounded-md items-center justify-center transition ease-in-out delay-50 hover:bg-mint duration-300">
         <Avatar className="w-[100px] h-[100px]">
           <AvatarImage src={buildImgUrl(creator.thumbPath, {
@@ -47,6 +50,6 @@ export function CreatorItem({ creator }: {
           })}
         </span>
       </Col>
-    </Link>
+    </LinkWithAccessCheck>
   );
 }

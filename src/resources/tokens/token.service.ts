@@ -24,12 +24,12 @@ export const getClerkUser = async (): Promise<ClerkUser> => {
     throw await notAuthorizedErrorWithMessage();
   }
   const { id, primaryEmailAddress, firstName, lastName, externalId, imageUrl } = clerkUser;
-  if (!primaryEmailAddress || !externalId) {
+  if (!primaryEmailAddress) {
     throw await notAuthorizedErrorWithMessage();
   }
   return {
     id,
-    externalId,
+    externalId: externalId ?? "", //todo
     primaryEmail: primaryEmailAddress.emailAddress,
     fullName: [firstName, lastName].filter(Boolean).join(" "),
     imageUrl

@@ -10,7 +10,7 @@ import { Checkbox } from "@/shadcn/ui/checkbox";
 import { clsx } from "clsx";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AccountFormFooter from "@/components/forms/account/components/AccountFormFooter";
-import TermsOfUse from "@/components/forms/account/components/TermsOfUse";
+import Terms from "@/components/forms/account/components/Terms";
 
 export default function UserProfileForm({ userExtendedForm, setUserExtendedForm, setSignUpStage }: {
   userExtendedForm: Partial<UserExtendedFormT>;
@@ -83,7 +83,7 @@ export default function UserProfileForm({ userExtendedForm, setUserExtendedForm,
       />
 
 
-      <hr className="my-5"/>
+      <hr className="my-5 border-input"/>
 
 
       <Row className="justify-between gap-2">
@@ -165,15 +165,15 @@ export default function UserProfileForm({ userExtendedForm, setUserExtendedForm,
         )}
       />
 
-      <hr className="my-5"/>
+      <hr className="my-5 border-input"/>
 
-      <Col className="border rounded-sm">
+      <Col className="border border-input rounded-sm">
 
         <FormField
           control={form.control}
           name="agreed"
           render={({ field }) => (
-            <FormItem className="flex items-center p-3 border-b">
+            <FormItem className="flex items-center p-3 border-b border-input">
               <FormControl>
                 <Checkbox
                   checked={field.value || false}
@@ -189,11 +189,11 @@ export default function UserProfileForm({ userExtendedForm, setUserExtendedForm,
 
         <Col className={clsx("p-3 h-[233px] overflow-y-scroll bg-gray-light text-sm",
           "[&_h1]:font-bold [&_h1]:text-base")}>
-          <TermsOfUse/>
+          <Terms/>
         </Col>
       </Col>
 
-      <AccountFormFooter isValid={isValid} setSignUpStage={setSignUpStage} />
+      <AccountFormFooter isValid={isValid} setSignUpStage={setSignUpStage}/>
     </form>
   </Form>;
 }

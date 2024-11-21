@@ -2,12 +2,12 @@
 
 import { Col, Grid, Row } from "@/shadcn/ui/layouts";
 import { Text } from "@/shadcn/ui/texts";
-import { Link } from "@/i18n/routing";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import { displayName } from "@/utils/displayName";
 import { HomeWebtoonItem } from "@/resources/home/home.types";
+import LinkWithAccessCheck from "@/components/HomePage/LinkWithAccessCheck";
 
 export default function WebtoonGrid({ webtoons, className }: {
   webtoons: HomeWebtoonItem[];
@@ -38,9 +38,10 @@ function WebtoonItem({ webtoon }: {
 
   return (
     <Col className="gap-2">
-      <Link
+      <LinkWithAccessCheck
         className="justify-center bg-gray-darker rounded-md overflow-hidden border relative h-[330px]"
         href={`/webtoons/${webtoon?.id}`}
+        creatorUid={webtoon.creator.user.id}
       >
         <Image
           src={buildImgUrl(webtoon.thumbPath, { size: "sm" })}
@@ -48,7 +49,7 @@ function WebtoonItem({ webtoon }: {
           fill
           className="object-cover transition ease-in-out delay-50 hover:border-2 rounded-md border-red duration-300"
         />
-      </Link>
+      </LinkWithAccessCheck>
       <Col>
         <span
           className="text-[18px] font-bold">

@@ -86,7 +86,7 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
           placeholder={t("uploadBusinessReg")}
         />
 
-        <hr className="my-5"/>
+        <hr className="my-5 border-input"/>
 
         <BusinessNameField form={form}/>
         <AccountFormImageField
@@ -105,7 +105,7 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
           placeholder={t("attachEmploymentCert")}
         />
 
-        <hr className="my-5"/>
+        <hr className="my-5 border-input"/>
 
         <PurposeField form={form}/>
 
@@ -135,7 +135,7 @@ function BusinessNumberField({ form }: {
             {...field}
             type='text'
             inputMode="numeric"
-            placeholder={t("businessRegPlaceholder") + " *"}
+            placeholder={t("businessRegPlaceholder")}
           />
           {/* TODO  필수 표시*/}
         </FormControl>
@@ -155,7 +155,7 @@ function FieldTypeField({ form }: {
     .map(value => ({
       label: tBusinessFields(value, { plural: false }), value
     }));
-  const preSelectValue = form.getValues(fieldName);
+  const preSelectValue = form.getValues(fieldName) || [];
   const preSelectOptions = options.filter(option => preSelectValue.includes(option.value));
 
   return <FormItem>
@@ -190,7 +190,7 @@ function BusinessTypeField({ form }: {
     .map(value => ({
       label: t(`businessTypeItems.${value}`), value
     }));
-  const preSelectValue = form.getValues(fieldName);
+  const preSelectValue = form.getValues(fieldName) || [];
   const preSelectOptions = options.filter(option => preSelectValue.includes(option.value));
 
   return <FormItem>
@@ -229,7 +229,7 @@ function BusinessNameField({ form }: {
           <Input
             {...field}
             type="text"
-            placeholder={t("insertCompanyName") + " *"}
+            placeholder={t("insertCompanyName")}
           />
         </FormControl>
       </FormItem>

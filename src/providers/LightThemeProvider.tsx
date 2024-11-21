@@ -5,7 +5,6 @@ import { ReactNode, useLayoutEffect } from "react";
 export default function LightThemeProvider({ children }: {
   children: ReactNode;
 }) {
-  // TODO 다크모드로 통일하면 안되는지?
   useLayoutEffect(() => {
     console.log("Switched To Light");
     document.body.classList.add("light");

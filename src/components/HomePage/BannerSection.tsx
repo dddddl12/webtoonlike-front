@@ -8,12 +8,11 @@ import { clsx } from "clsx";
 import OffersIcon from "./icons/offers.svg";
 import { BannerWebtoonItem } from "@/resources/home/home.types";
 import { displayName } from "@/utils/displayName";
-import { useRouter } from "@/i18n/routing";
+import LinkWithAccessCheck from "@/components/HomePage/LinkWithAccessCheck";
 
 export default function BannerSection({ banners }: {
   banners: BannerWebtoonItem[];
 }) {
-  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const [firstVisibleIndex, setFirstVisibleIndex] = useState(0);
   const lastIndex = banners.length - 1;
@@ -34,13 +33,7 @@ export default function BannerSection({ banners }: {
             isVisible={firstVisibleIndex <= index && index < firstVisibleIndex + 3}
             isFirstVisible={firstVisibleIndex === index}
             isActive={activeIndex === index}
-            onClick={() => {
-              if (index === activeIndex) {
-                router.push(`/webtoons/${webtoon.id}`);
-              } else {
-                setActiveIndex(index);
-              }
-            }}
+            setAsActive={() => setActiveIndex(index)}
           />
         );
       })}
@@ -49,13 +42,13 @@ export default function BannerSection({ banners }: {
 }
 
 function Slide({
-  webtoon, isVisible, isFirstVisible, isActive, onClick
+  webtoon, isVisible, isFirstVisible, isActive, setAsActive
 }: {
   webtoon: BannerWebtoonItem;
   isVisible: boolean;
   isFirstVisible: boolean;
   isActive: boolean;
-  onClick: () => void;
+  setAsActive: () => void;
 }) {
 
   const t = useTranslations("homeMain");
@@ -72,53 +65,58 @@ function Slide({
           "ml-7": !isFirstVisible && isVisible,
         }
       )}
-      onClick={onClick}
+      onClick={setAsActive}
     >
-      <Image
-        src={webtoon.thumbPath}
-        alt="Item thumbnail"
-        draggable={false}
-        loading="eager"
-        fill={true}
-        className="object-cover object-center"
-      />
-      {isVisible && <div className="w-full h-full z-15">
-        <div style={{
-          position: "absolute",
-          height: "50%",
-          width: "100%",
-          bottom: 0,
-        }}></div>
-        {isActive && <div style={{
-          position: "absolute",
-          height: "100%",
-          width: "25%",
-          left: 0,
-        }}></div>}
-      </div>}
-      {isActive && <div className="z-20 text-white">
-        <div className="flex px-3 py-2 bg-white w-fit rounded-full font-bold text-black text-xs left-8 top-8 absolute">
-          <div className="flex items-center">
-            <Image src={OffersIcon} alt="offers" className="mr-2"/>
-            <span>
-              {t.rich("numberOfOffers", {
-                count: webtoon.offers,
-                hl: (chunks) => <HighlightedText>{chunks}</HighlightedText>
-              })}
-            </span>
+      <LinkWithAccessCheck
+        href={`/webtoons/${webtoon.id}`}
+        disabled={!isActive}
+      >
+        <Image
+          src={webtoon.thumbPath}
+          alt="Item thumbnail"
+          draggable={false}
+          loading="eager"
+          fill={true}
+          className="object-cover object-center"
+        />
+        {isVisible && <div className="w-full h-full z-15">
+          <div style={{
+            position: "absolute",
+            height: "50%",
+            width: "100%",
+            bottom: 0,
+          }}></div>
+          {isActive && <div style={{
+            position: "absolute",
+            height: "100%",
+            width: "25%",
+            left: 0,
+          }}></div>}
+        </div>}
+        {isActive && <div className="z-20 text-white">
+          <div className="flex px-3 py-2 bg-white w-fit rounded-full font-bold text-black text-xs left-8 top-8 absolute">
+            <div className="flex items-center">
+              <Image src={OffersIcon} alt="offers" className="mr-2"/>
+              <span>
+                {t.rich("numberOfOffers", {
+                  count: webtoon.offers,
+                  hl: (chunks) => <HighlightedText>{chunks}</HighlightedText>
+                })}
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="left-8 bottom-8 absolute flex flex-col gap-1">
-          <div className="flex gap-1">
-            <Badge>{webtoon.isNew ? "연재중" : "완결"}</Badge>
-            <Badge>{ageRestrictionT(webtoon.ageLimit)}</Badge>
+          <div className="left-8 bottom-8 absolute flex flex-col gap-1">
+            <div className="flex gap-1">
+              <Badge>{webtoon.isNew ? "연재중" : "완결"}</Badge>
+              <Badge>{ageRestrictionT(webtoon.ageLimit)}</Badge>
+            </div>
+            <div className="text-3xl font-bold">{webtoon.title}</div>
+            <div className="text-base">
+              {displayName(locale, webtoon.authorOrCreatorName, webtoon.authorOrCreatorName_en)}
+            </div>
           </div>
-          <div className="text-3xl font-bold">{webtoon.title}</div>
-          <div className="text-base">
-            {displayName(locale, webtoon.authorOrCreatorName, webtoon.authorOrCreatorName_en)}
-          </div>
-        </div>
-      </div>}
+        </div>}
+      </LinkWithAccessCheck>
     </Col>
   );
 }

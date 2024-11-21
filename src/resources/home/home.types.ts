@@ -9,6 +9,11 @@ export type HomeWebtoonItem = {
   title_en: string;
   authorOrCreatorName: string;
   authorOrCreatorName_en?: string;
+  creator: {
+    user: {
+      id: number;
+    };
+  };
 };
 
 export type BannerWebtoonItem = HomeWebtoonItem & {

@@ -40,10 +40,10 @@ export default function AccountFormImageField({ image, setImage, placeholder }: 
       </FormControl>
       <FormLabel className="flex h-10 w-full cursor-pointer">
         <div
-          className="flex-1 border rounded-l-md bg-background px-3 py-2 ring-offset-background text-muted-foreground text-base md:text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
+          className="flex-1 border border-input rounded-l-md bg-background px-3 py-2 ring-offset-background text-muted-foreground text-base md:text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
           {image?.displayUrl || placeholder}
         </div>
-        <div className="flex border-y border-r rounded-r-md bg-mint text-white items-center px-3">
+        <div className="flex border-y border-r border-input rounded-r-md bg-mint text-white items-center px-3">
           {tGeneral("selectFile")}
         </div>
       </FormLabel>

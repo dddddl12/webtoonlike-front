@@ -14,6 +14,7 @@ import ViewOfferSection from "@/app/[locale]/offers/components/OfferDetails";
 import Controls from "@/app/[locale]/offers/components/Controls";
 import useSafeAction from "@/hooks/safeAction";
 import useReload from "@/hooks/reload";
+import { clsx } from "clsx";
 
 // TODO 페이지네이션 없음
 export default function BidRequestMessageList({ curBidRequest, setCurBidRequest }: {
@@ -36,6 +37,7 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
     execute();
   }, [execute, reloadKey]);
 
+  const { tokenInfo } = useTokenInfo();
   const tBidRequestStatus = useTranslations("bidRequestStatus");
   if (!messagesResponse) {
     return <div>
@@ -77,8 +79,7 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
         seq={index + 1}
         user={message.user}
         createdAt={message.createdAt}
-        statusLabel={message.user.userType === UserTypeT.Creator
-          ? "수정 요청" : "제안"}
+        statusLabel={tokenInfo?.userId === message.user.id ? "제안" : "수정 요청"}
       >
         <MessageContentBox content={message.content} />
         {(messages.length - 1 === index && !done.isDone)
@@ -129,7 +130,9 @@ function MessageRow({ seq, createdAt, user, statusLabel, children }: {
   const locale = useLocale();
   const { tokenInfo } = useTokenInfo();
   return <>
-    <Row>
+    <Row className={clsx({
+      "bg-[#376C49] rounded-[10px]": showDetails
+    })}>
       <div className="w-[20%] p-2 flex justify-center">{seq + 1}</div>
       <div className="w-[20%] p-2 flex justify-center">{createdAt.toLocaleString(locale)}</div>
       <div className="w-[20%] p-2 flex justify-center">

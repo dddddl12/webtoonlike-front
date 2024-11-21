@@ -23,16 +23,16 @@ export default function OfferDetails({ contractRange, message }: {
       {/*웹툰 연재권*/}
       {webtoonRights.size > 0 && <div>
         <Heading2>{t("webtoonSerialRights")}</Heading2>
-        <Table className="text-white mt-5">
+        <Table className="mt-5 [&_td]:border [&_th]:border">
           <TableHeader>
             <TableRow>
-              <TableHead className="text-white w-[33%] text-center text-base border border-white">
+              <TableHead className="w-[33%] text-center text-base border border-white">
                 {t("serviceRegion")}
               </TableHead>
-              <TableHead className="text-white w-[33%] text-center text-base border border-white">
+              <TableHead className="w-[33%] text-center text-base border border-white">
                 {t("exclusiveRights")}
               </TableHead>
-              <TableHead className="text-white w-[33%] text-center text-base border border-white">
+              <TableHead className="w-[33%] text-center text-base border border-white">
                 {t("contractCondition")}
               </TableHead>
             </TableRow>
@@ -62,18 +62,19 @@ export default function OfferDetails({ contractRange, message }: {
       </div>}
 
       {/*2차 사업권*/}
+      {/*todo variant 도입*/}
       {derivativeRights.size > 0 && <div>
         <Heading2>{t("secondBusinessRight")}</Heading2>
-        <Table className="text-white mt-5">
+        <Table className="mt-5 [&_td]:border [&_th]:border">
           <TableHeader>
             <TableRow>
-              <TableHead className="text-white w-[33%] text-center text-base border">
+              <TableHead className="w-[33%] text-center">
                 {t("businessRightClassification")}
               </TableHead>
-              <TableHead className="text-white w-[33%] text-center text-base border">
+              <TableHead className="w-[33%] text-center">
                 {t("countryOfDistribution")}
               </TableHead>
-              <TableHead className="text-white w-[33%] text-center text-base border">
+              <TableHead className="w-[33%] text-center">
                 {t("contractCondition")}
               </TableHead>
             </TableRow>
@@ -86,14 +87,14 @@ export default function OfferDetails({ contractRange, message }: {
                   return null;
                 }
                 return <TableRow key={index}>
-                  <TableCell className="text-center border">
+                  <TableCell className="text-center">
                     {tBusinessFields(code, { plural: "true" })}
                   </TableCell>
-                  <TableCell className="text-center border">
+                  <TableCell className="text-center">
                     {itemData.map(el => tCountries(el.country))
                       .join(", ")}
                   </TableCell>
-                  <TableCell className="text-center border">
+                  <TableCell className="text-center">
                     {itemData.map(el => el.message)
                       .join("\n")}
                   </TableCell>

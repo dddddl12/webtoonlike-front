@@ -32,7 +32,7 @@ export default async function RootLayout({
     <html lang={locale}>
       <ClerkProvider localization={locale === "en" ? enUS : koKR}>
         <NextIntlClientProvider messages={messages}>
-          <body className={`${inter.className} bg-background text-primary min-h-screen flex flex-col`}>
+          <body className={`${inter.className} min-h-screen flex flex-col`}>
             <Header/>
             <main className="flex-grow flex">
               {children}

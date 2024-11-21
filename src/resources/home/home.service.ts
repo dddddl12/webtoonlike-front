@@ -78,11 +78,7 @@ const getBanners = async (tx: PrismaTransaction): Promise<BannerWebtoonItem[]> =
       }
       const bidRound = webtoon.bidRounds[0];
       return {
-        id: webtoon.id,
-        title: webtoon.title,
-        title_en: webtoon.title_en,
-        authorOrCreatorName: webtoon.authorName ?? creator.name,
-        authorOrCreatorName_en: webtoon.authorName_en ?? creator.name_en ?? undefined,
+        ...mapToHomeWebtoonItems(webtoon),
         thumbPath: record.bannerUrl,
         isNew: bidRound.isNew,
         offers: bidRound._count.bidRequests,
@@ -119,8 +115,8 @@ const getPopular = async (tx: PrismaTransaction): Promise<HomeWebtoonItem[]> => 
       }
     }
   });
-  return mapToHomeWebtoonItems(records
-    .map(record => record.webtoon));
+  return records
+    .map(record => mapToHomeWebtoonItems(record.webtoon));
 };
 
 // 최신
@@ -134,7 +130,8 @@ const getBrandNew = async (tx: PrismaTransaction): Promise<HomeWebtoonItem[]> =>
       { createdAt: "desc" },
     ],
     take: 5
-  }).then(mapToHomeWebtoonItems);
+  }).then(records => records
+    .map(mapToHomeWebtoonItems));
 };
 
 // 장르별 웹툰(최초 로드 이후 클라이언트에서 호출하는 데도 사용)
@@ -163,8 +160,8 @@ export const getPerGenre = async (
       }
     }
   });
-  return mapToHomeWebtoonItems(records
-    .map(record => record.webtoon));
+  return records
+    .map(record => mapToHomeWebtoonItems(record.webtoon));
 };
 
 // 전체 장르 목록 및 첫번째 장르에 해당하는 웹툰
@@ -226,6 +223,7 @@ const webtoonSelect = {
   authorName_en: true,
   user: {
     select: {
+      id: true,
       creator: {
         select: {
           id: true,
@@ -238,33 +236,26 @@ const webtoonSelect = {
   thumbPath: true,
 };
 
-const mapToHomeWebtoonItems = (records: {
-  user: {
+const mapToHomeWebtoonItems = (
+  record: Prisma.WebtoonGetPayload<{
+    select: typeof webtoonSelect;
+  }>
+): HomeWebtoonItem => {
+  const { creator } = record.user;
+  if (!creator) {
+    throw new Error("Unknown situation");
+  }
+  return {
+    id: record.id,
+    title: record.title,
+    title_en: record.title_en,
+    authorOrCreatorName: record.authorName ?? creator.name,
+    authorOrCreatorName_en: record.authorName_en ?? creator.name_en ?? undefined,
+    thumbPath: record.thumbPath,
     creator: {
-      id: number;
-      name: string;
-      name_en: string | null;
-    } | null;
-  };
-  id: number;
-  title: string;
-  title_en: string;
-  authorName: string | null;
-  authorName_en: string | null;
-  thumbPath: string;
-}[]): HomeWebtoonItem[] => {
-  return records.map((record) => {
-    const { creator } = record.user;
-    if (!creator) {
-      throw new Error("Unknown situation");
+      user: {
+        id: record.user.id,
+      }
     }
-    return {
-      id: record.id,
-      title: record.title,
-      title_en: record.title_en,
-      authorOrCreatorName: record.authorName ?? creator.name,
-      authorOrCreatorName_en: record.authorName_en ?? creator.name_en ?? undefined,
-      thumbPath: record.thumbPath,
-    };
-  });
+  };
 };

@@ -39,7 +39,7 @@ function ManageGenresContent() {
         <Button>장르 추가</Button>
       </GenreForm>
     </Row>
-    <Row className="flex-wrap gap-x-4 gap-y-3">
+    <Row className="flex-wrap gap-x-4 gap-y-3 mt-10">
       <GenreContainer genres={genres} reload={reload}/>
     </Row>
   </div>;
