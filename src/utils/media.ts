@@ -1,5 +1,5 @@
 import { RESOURCE_HOST } from "@/config";
-import { generatePreSignedUrl } from "@/resources/files/files.service";
+import { generatePreSignedUrl } from "@/resources/files/files.controller";
 import { fileTypeFromBlob } from "file-type";
 import { FileDirectoryT } from "@/resources/files/files.type";
 import axios from "axios";

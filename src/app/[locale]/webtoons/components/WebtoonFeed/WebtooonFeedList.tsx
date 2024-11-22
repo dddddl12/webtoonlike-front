@@ -2,12 +2,12 @@
 
 import { Col, Row } from "@/shadcn/ui/layouts";
 import { useLocale, useTranslations } from "next-intl";
-import { listWebtoons, WebtoonFilterT, WebtoonPreviewT } from "@/resources/webtoons/webtoon.service";
+import { listWebtoons, WebtoonFilterT, WebtoonPreviewT } from "@/resources/webtoons/webtoon.controller";
 import { ListResponse } from "@/resources/globalTypes";
 import useListData from "@/hooks/listData";
 import { displayName } from "@/utils/displayName";
 import WebtoonGridPaginated from "@/components/WebtoonGridPaginated";
-import { BasicGenreT } from "@/resources/genres/genre.service";
+import { BasicGenreT } from "@/resources/genres/genre.controller";
 import { Button } from "@/shadcn/ui/button";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";

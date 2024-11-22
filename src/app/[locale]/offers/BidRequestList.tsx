@@ -3,7 +3,7 @@
 import { Col, Row } from "@/shadcn/ui/layouts";
 import { Text } from "@/shadcn/ui/texts";
 import { useTranslations } from "next-intl";
-import { listAllBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
+import { listAllBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.controller";
 import Paginator from "@/components/Paginator";
 import { ListResponse } from "@/resources/globalTypes";
 import useListData from "@/hooks/listData";

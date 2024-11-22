@@ -3,7 +3,7 @@
 import Spinner from "@/components/Spinner";
 import { Col, Row } from "@/shadcn/ui/layouts";
 import useListData from "@/hooks/listData";
-import { AdminEntryT, listAdmins } from "@/resources/admins/admin.service";
+import { AdminEntryT, listAdmins } from "@/resources/admins/admin.controller";
 import { useTranslations } from "next-intl";
 import Paginator from "@/components/Paginator";
 import DeleteAdmin from "@/app/[locale]/admin/admins/DeleteAdmin";

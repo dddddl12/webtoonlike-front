@@ -12,7 +12,7 @@ import { ListResponse } from "@/resources/globalTypes";
 import { displayName } from "@/utils/displayName";
 import { useState } from "react";
 import BidRequestDetailsForInvoice from "@/app/[locale]/invoices/BidRequestDetailsForInvoice";
-import { listUninvoicedBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
+import { listUninvoicedBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.controller";
 
 export function UninvoicedBidRequestList({ initialBidRequestListResponse }: {
   initialBidRequestListResponse: ListResponse<SimpleBidRequestT>;

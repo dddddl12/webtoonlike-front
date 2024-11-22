@@ -1,4 +1,4 @@
-import { getWebtoon } from "@/resources/webtoons/webtoon.service";
+import { getWebtoon } from "@/resources/webtoons/webtoon.controller";
 import { responseHandler } from "@/handlers/responseHandler";
 import WebtoonPageContents from "@/app/[locale]/webtoons/components/WebtoonPageContents";
 

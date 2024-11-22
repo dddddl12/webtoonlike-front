@@ -3,9 +3,9 @@ import { Col, Row } from "@/shadcn/ui/layouts";
 import {
   BidRequestMessagesResponseT,
   listBidRequestMessages
-} from "@/resources/bidRequestMessages/bidRequestMessage.service";
+} from "@/resources/bidRequestMessages/bidRequestMessage.controller";
 import { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
-import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
+import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.controller";
 import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
 import { UserTypeT } from "@/resources/users/user.types";
 import useTokenInfo from "@/hooks/tokenInfo";

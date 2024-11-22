@@ -9,7 +9,7 @@ import { Link } from "@/i18n/routing";
 import Paginator from "@/components/Paginator";
 import useListData from "@/hooks/listData";
 import { ListResponse } from "@/resources/globalTypes";
-import { InvoiceWithWebtoonT, listInvoices } from "@/resources/invoices/invoice.service";
+import { InvoiceWithWebtoonT, listInvoices } from "@/resources/invoices/invoice.controller";
 import { displayName } from "@/utils/displayName";
 import { useState } from "react";
 import BidRequestDetailsForInvoice from "@/app/[locale]/invoices/BidRequestDetailsForInvoice";

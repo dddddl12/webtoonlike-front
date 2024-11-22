@@ -1,8 +1,8 @@
 import React from "react";
 import PageLayout from "@/components/PageLayout";
-import { getWebtoon } from "@/resources/webtoons/webtoon.service";
+import { getWebtoon } from "@/resources/webtoons/webtoon.controller";
 import { WebtoonForm } from "@/components/forms/WebtoonForm";
-import { listGenres } from "@/resources/genres/genre.service";
+import { listGenres } from "@/resources/genres/genre.controller";
 import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function UpdateWebtoonPage({ params }: {

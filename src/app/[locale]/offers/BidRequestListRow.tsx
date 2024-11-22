@@ -6,7 +6,7 @@ import { Gap } from "@/shadcn/ui/layouts";
 import { Link } from "@/i18n/routing";
 import BidRequestMessageList from "@/app/[locale]/offers/BidRequestMessageList";
 import { displayName } from "@/utils/displayName";
-import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
+import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.controller";
 import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
 import StatusBadge from "@/components/StatusBadge";
 

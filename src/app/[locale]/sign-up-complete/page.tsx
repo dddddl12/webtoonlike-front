@@ -2,7 +2,7 @@ import { Col, Gap } from "@/shadcn/ui/layouts";
 import { Heading } from "@/shadcn/ui/texts";
 import { getTranslations } from "next-intl/server";
 import PageLayout from "@/components/PageLayout";
-import { getClerkUser, updateTokenInfo } from "@/resources/tokens/token.service";
+import { getClerkUser, updateTokenInfo } from "@/resources/tokens/token.controller";
 import { SignUpCompleteForm } from "@/app/[locale]/sign-up-complete/SignUpCompleteForm";
 import LightThemeProvider from "@/providers/LightThemeProvider";
 import Logo from "@/components/Logo";

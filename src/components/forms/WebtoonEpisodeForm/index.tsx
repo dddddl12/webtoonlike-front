@@ -20,7 +20,7 @@ import { useRouter } from "@/i18n/routing";
 import { Form, FormControl, FormHeader, FormItem, FormLabel } from "@/shadcn/ui/form";
 import EpisodeImagePreview from "@/components/forms/WebtoonEpisodeForm/EpisodeImagePreview";
 import { DropzoneRootProps, useDropzone } from "react-dropzone";
-import { createOrUpdateEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
+import { createOrUpdateEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.controller";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";

@@ -7,7 +7,7 @@ import ContractRangeDerivative from "@/app/[locale]/webtoons/components/WebtoonP
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { Text } from "@/shadcn/ui/texts";
 import { useTranslations } from "next-intl";
-import { WebtoonDetailsT } from "@/resources/webtoons/webtoon.service";
+import { WebtoonDetailsT } from "@/resources/webtoons/webtoon.controller";
 
 export default function ActiveBidRound({ webtoon }: {
   webtoon: WebtoonDetailsT;

@@ -1,4 +1,4 @@
-import { getTokenInfo } from "@/resources/tokens/token.service";
+import { getTokenInfo } from "@/resources/tokens/token.controller";
 import { UserTypeT } from "@/resources/users/user.types";
 import WebtoonFeed from "@/app/[locale]/webtoons/components/WebtoonFeed";
 import ManageWebtoons from "@/app/[locale]/webtoons/components/ManageWebtoons";

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { buildImgUrl } from "@/utils/media";
 import Spinner from "@/components/Spinner";
-import { adminListInvoices, InvoiceWithWebtoonT } from "@/resources/invoices/invoice.service";
+import { adminListInvoices, InvoiceWithWebtoonT } from "@/resources/invoices/invoice.controller";
 import Paginator from "@/components/Paginator";
 import { Link } from "@/i18n/routing";
 import useListData from "@/hooks/listData";

@@ -7,7 +7,7 @@ import Image from "next/image";
 import { IconCross } from "@/components/svgs/IconCross";
 import { useLocale, useTranslations } from "next-intl";
 import Paginator from "@/components/Paginator";
-import { listMyWebtoonsNotOnSale, MyWebtoonNotOnSaleT } from "@/resources/webtoons/webtoon.service";
+import { listMyWebtoonsNotOnSale, MyWebtoonNotOnSaleT } from "@/resources/webtoons/webtoon.controller";
 import { Link } from "@/i18n/routing";
 import useListData from "@/hooks/listData";
 import { displayName } from "@/utils/displayName";

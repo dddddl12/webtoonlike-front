@@ -1,6 +1,6 @@
 "use client";
 
-import { WebtoonEpisodeDetailsT } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
+import { WebtoonEpisodeDetailsT } from "@/resources/webtoonEpisodes/webtoonEpisode.controller";
 import { Col, Row } from "@/shadcn/ui/layouts";
 import { buildImgUrl } from "@/utils/media";
 import axios from "axios";

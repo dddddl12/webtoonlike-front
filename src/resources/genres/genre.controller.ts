@@ -2,7 +2,7 @@
 
 import { GenreFormSchema, GenreSchema } from "@/resources/genres/genre.types";
 import prisma from "@/utils/prisma";
-import { assertAdmin } from "@/resources/tokens/token.service";
+import { assertAdmin } from "@/resources/tokens/token.controller";
 import z from "zod";
 import { Prisma } from "@prisma/client";
 import { action } from "@/handlers/safeAction";

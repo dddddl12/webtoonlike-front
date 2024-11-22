@@ -4,8 +4,8 @@ import { Gap, Row } from "@/shadcn/ui/layouts";
 import { Heading } from "@/shadcn/ui/texts";
 import { getTranslations } from "next-intl/server";
 import WebtooonFeedList from "@/app/[locale]/webtoons/components/WebtoonFeed/WebtooonFeedList";
-import { listGenres } from "@/resources/genres/genre.service";
-import { listWebtoons } from "@/resources/webtoons/webtoon.service";
+import { listGenres } from "@/resources/genres/genre.controller";
+import { listWebtoons } from "@/resources/webtoons/webtoon.controller";
 import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function WebtoonFeed() {

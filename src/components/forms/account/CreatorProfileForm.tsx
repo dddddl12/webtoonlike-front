@@ -11,7 +11,7 @@ import {
   UserExtendedFormSchema,
   UserWithCreatorFormT
 } from "@/resources/users/user.types";
-import { createUser } from "@/resources/users/user.service";
+import { createUser } from "@/resources/users/user.controller";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AccountFormImageField from "@/components/forms/account/components/AccountFormImageField";

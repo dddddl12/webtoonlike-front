@@ -1,8 +1,8 @@
 import { Col, Row } from "@/shadcn/ui/layouts";
 import Image from "next/image";
 import { Text } from "@/shadcn/ui/texts";
-import { getCreator } from "@/resources/creators/creator.service";
-import { listWebtoonsByUserId } from "@/resources/webtoons/webtoon.service";
+import { getCreator } from "@/resources/creators/creator.controller";
+import { listWebtoonsByUserId } from "@/resources/webtoons/webtoon.controller";
 import { displayName } from "@/utils/displayName";
 import { getLocale } from "next-intl/server";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";

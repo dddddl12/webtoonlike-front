@@ -6,7 +6,7 @@ import { buildImgUrl } from "@/utils/media";
 import { Col, Row } from "@/shadcn/ui/layouts";
 import { BidRoundApprovalStatus } from "@/resources/bidRounds/bidRound.types";
 import useListData from "@/hooks/listData";
-import { adminListBidRoundsWithWebtoon, AdminPageBidRoundT } from "@/resources/bidRounds/bidRound.service";
+import { adminListBidRoundsWithWebtoon, AdminPageBidRoundT } from "@/resources/bidRounds/bidRound.controller";
 import { Text } from "@/shadcn/ui/texts";
 import Paginator from "@/components/Paginator";
 import { Link } from "@/i18n/routing";

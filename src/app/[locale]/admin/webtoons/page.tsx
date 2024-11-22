@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { AdminPageBidRoundT } from "@/resources/bidRounds/bidRound.service";
+import { AdminPageBidRoundT } from "@/resources/bidRounds/bidRound.controller";
 import BidRoundDetail from "@/app/[locale]/admin/webtoons/BidRoundDetail";
 import BidRoundPendingList from "@/app/[locale]/admin/webtoons/BidRoundPendingList";
 import BidRoundList from "@/app/[locale]/admin/webtoons/BidRoundList";

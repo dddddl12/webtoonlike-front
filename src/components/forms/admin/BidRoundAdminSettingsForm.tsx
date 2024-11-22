@@ -13,7 +13,7 @@ import { Input } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
 import { Calendar } from "@/shadcn/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
-import { editBidRoundAdminSettings } from "@/resources/bidRounds/bidRound.service";
+import { editBidRoundAdminSettings } from "@/resources/bidRounds/bidRound.controller";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Control, FieldValues, UseFormReturn } from "react-hook-form";

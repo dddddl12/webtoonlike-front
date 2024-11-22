@@ -13,7 +13,7 @@ import { Button } from "@/shadcn/ui/button";
 import { Input } from "@/shadcn/ui/input";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
-import { BasicGenreT, createOrUpdateGenre } from "@/resources/genres/genre.service";
+import { BasicGenreT, createOrUpdateGenre } from "@/resources/genres/genre.controller";
 import { GenreFormSchema, GenreFormT } from "@/resources/genres/genre.types";
 import { UseFormReturn } from "react-hook-form";
 import Spinner from "@/components/Spinner";

@@ -1,13 +1,13 @@
 import { useTranslations } from "next-intl";
 import { Col } from "@/shadcn/ui/layouts";
 import { Heading } from "@/shadcn/ui/texts";
-import { getPublicBuyerInfoByUserId } from "@/resources/buyers/buyer.service";
+import { getPublicBuyerInfoByUserId } from "@/resources/buyers/buyer.controller";
 import { useEffect, useState } from "react";
 import { PublicBuyerInfoT } from "@/resources/buyers/buyer.types";
 import Spinner from "@/components/Spinner";
 import OfferDetails from "@/components/Details/OfferDetails";
 import Profile from "@/components/Details/Profile";
-import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
+import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.controller";
 
 export default function ViewOfferSection({ bidRequest }: {
   bidRequest: SimpleBidRequestT;

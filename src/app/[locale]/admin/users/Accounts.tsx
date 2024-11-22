@@ -1,7 +1,7 @@
 "use client";
 
 import Spinner from "@/components/Spinner";
-import { AdminPageAccountT, listUsers } from "@/resources/users/user.service";
+import { AdminPageAccountT, listUsers } from "@/resources/users/user.controller";
 import Paginator from "@/components/Paginator";
 import { Col } from "@/shadcn/ui/layouts";
 import { useTranslations } from "next-intl";

@@ -1,4 +1,4 @@
-import { BasicGenreT, deleteGenre } from "@/resources/genres/genre.service";
+import { BasicGenreT, deleteGenre } from "@/resources/genres/genre.controller";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { Button } from "@/shadcn/ui/button";
 import { useConfirm } from "@/hooks/alert";

@@ -3,10 +3,10 @@ import { ManageInvoiceList } from "@/app/[locale]/invoices/ManageInvoiceList";
 import PageLayout from "@/components/PageLayout";
 import { getTranslations } from "next-intl/server";
 import { Heading } from "@/shadcn/ui/texts";
-import { listInvoices } from "@/resources/invoices/invoice.service";
+import { listInvoices } from "@/resources/invoices/invoice.controller";
 import { Col } from "@/shadcn/ui/layouts";
 import { UninvoicedBidRequestList } from "@/app/[locale]/invoices/UninvoicedBidRequestList";
-import { listUninvoicedBidRequests } from "@/resources/bidRequests/bidRequest.service";
+import { listUninvoicedBidRequests } from "@/resources/bidRequests/bidRequest.controller";
 import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function Invoice() {

@@ -1,6 +1,6 @@
 import { Col, Row } from "@/shadcn/ui/layouts";
 import { Button } from "@/shadcn/ui/button";
-import { AdminPageBidRoundT, approveOrDisapproveBidRound } from "@/resources/bidRounds/bidRound.service";
+import { AdminPageBidRoundT, approveOrDisapproveBidRound } from "@/resources/bidRounds/bidRound.controller";
 import { buildImgUrl } from "@/utils/media";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";

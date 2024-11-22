@@ -10,7 +10,7 @@ import {
   DialogTrigger
 } from "@/shadcn/ui/dialog";
 import { Button } from "@/shadcn/ui/button";
-import { downloadInvoiceContent, InvoiceWithWebtoonT } from "@/resources/invoices/invoice.service";
+import { downloadInvoiceContent, InvoiceWithWebtoonT } from "@/resources/invoices/invoice.controller";
 import Spinner from "@/components/Spinner";
 import { displayName } from "@/utils/displayName";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";

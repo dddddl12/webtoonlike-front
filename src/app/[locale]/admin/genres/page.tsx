@@ -3,7 +3,7 @@ import { Pencil1Icon } from "@radix-ui/react-icons";
 import Spinner from "@/components/Spinner";
 import { Col, Row } from "@/shadcn/ui/layouts";
 import { useEffect, useMemo, useState } from "react";
-import { BasicGenreT, listGenres } from "@/resources/genres/genre.service";
+import { BasicGenreT, listGenres } from "@/resources/genres/genre.controller";
 import { Badge } from "@/shadcn/ui/badge";
 import { Button } from "@/shadcn/ui/button";
 import DeleteGenre from "@/app/[locale]/admin/genres/DeleteGenre";

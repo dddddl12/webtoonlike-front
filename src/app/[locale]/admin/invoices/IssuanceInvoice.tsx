@@ -2,7 +2,7 @@ import Spinner from "@/components/Spinner";
 import { IssuanceInvoiceSubmit } from "./IssuanceInvoiceSubmit";
 import useListData from "@/hooks/listData";
 import { Gap, Row } from "@/shadcn/ui/layouts";
-import { adminListUninvoicedBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.service";
+import { adminListUninvoicedBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.controller";
 import Paginator from "@/components/Paginator";
 import { buildImgUrl } from "@/utils/media";
 import Image from "next/image";

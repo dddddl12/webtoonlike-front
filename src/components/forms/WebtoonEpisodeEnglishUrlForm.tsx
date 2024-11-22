@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { Input } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
 import { useToast } from "@/shadcn/hooks/use-toast";
-import { updateEpisodeEnglishUrl } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
+import { updateEpisodeEnglishUrl } from "@/resources/webtoonEpisodes/webtoonEpisode.controller";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {

@@ -8,7 +8,7 @@ import { displayName } from "@/utils/displayName";
 import { ListResponse } from "@/resources/globalTypes";
 import { Dispatch, SetStateAction } from "react";
 import Paginator from "@/components/Paginator";
-import { WebtoonPreviewT } from "@/resources/webtoons/webtoon.service";
+import { WebtoonPreviewT } from "@/resources/webtoons/webtoon.controller";
 
 // type Filters = {
 //   page?: number;

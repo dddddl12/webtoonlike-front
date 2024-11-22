@@ -4,7 +4,7 @@ import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 import { Button } from "@/shadcn/ui/button";
 import { Dispatch, SetStateAction } from "react";
 import { useTranslations } from "next-intl";
-import { WebtoonDetailsT } from "@/resources/webtoons/webtoon.service";
+import { WebtoonDetailsT } from "@/resources/webtoons/webtoon.controller";
 
 export default function WebtoonDetailsButtons({ webtoon, setOpenBidRequestForm }: {
   webtoon: WebtoonDetailsT;

@@ -4,7 +4,7 @@ import prisma from "@/utils/prisma";
 import { CreatorSchema } from "@/resources/creators/creator.types";
 import { UserSchema } from "@/resources/users/user.types";
 import { ListResponseSchema } from "@/resources/globalTypes";
-import { assertAdmin } from "@/resources/tokens/token.service";
+import { assertAdmin } from "@/resources/tokens/token.controller";
 import z from "zod";
 import { action } from "@/handlers/safeAction";
 

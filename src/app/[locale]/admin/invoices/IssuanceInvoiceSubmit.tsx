@@ -13,7 +13,7 @@ import { Button } from "@/shadcn/ui/button";
 import { Row } from "@/shadcn/ui/layouts";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { createInvoice, previewInvoice } from "@/resources/invoices/invoice.service";
+import { createInvoice, previewInvoice } from "@/resources/invoices/invoice.controller";
 import useSafeAction from "@/hooks/safeAction";
 
 export function IssuanceInvoiceSubmit({

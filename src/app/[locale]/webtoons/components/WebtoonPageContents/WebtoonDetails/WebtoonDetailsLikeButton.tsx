@@ -2,7 +2,7 @@ import { IconHeart } from "@/components/svgs/IconHeart";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";
 import { Row } from "@/shadcn/ui/layouts";
 import { useState } from "react";
-import { toggleLike } from "@/resources/webtoonLikes/webtoonLike.service";
+import { toggleLike } from "@/resources/webtoonLikes/webtoonLike.controller";
 import { WebtoonLikeWithMineT } from "@/resources/webtoonLikes/webtoonLike.types";
 import { Button } from "@/shadcn/ui/button";
 import useSafeAction from "@/hooks/safeAction";

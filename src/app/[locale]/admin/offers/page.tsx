@@ -4,14 +4,14 @@ import Image from "next/image";
 import Spinner from "@/components/Spinner";
 import useListData from "@/hooks/listData";
 import { Col, Row } from "@/shadcn/ui/layouts";
-import { adminListBidRoundsWithOffers, AdminPageBidRoundWithOffersT } from "@/resources/bidRounds/bidRound.service";
+import { adminListBidRoundsWithOffers, AdminPageBidRoundWithOffersT } from "@/resources/bidRounds/bidRound.controller";
 import Paginator from "@/components/Paginator";
 import { buildImgUrl } from "@/utils/media";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/shadcn/ui/button";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { AdminOffersBidRequestT, adminListAdminOffersBidRequests } from "@/resources/bidRequests/bidRequest.service";
+import { AdminOffersBidRequestT, adminListAdminOffersBidRequests } from "@/resources/bidRequests/bidRequest.controller";
 import useSafeAction from "@/hooks/safeAction";
 
 // todo 디테일 누락

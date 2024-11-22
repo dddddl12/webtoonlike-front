@@ -3,7 +3,7 @@ import NavigationLink from "./NavigationLink";
 import { UserTypeT } from "@/resources/users/user.types";
 import { getTranslations } from "next-intl/server";
 import { AdminLevel } from "@/resources/tokens/token.types";
-import { getTokenInfo } from "@/resources/tokens/token.service";
+import { getTokenInfo } from "@/resources/tokens/token.controller";
 
 export type NavArrT = {
   name: string;

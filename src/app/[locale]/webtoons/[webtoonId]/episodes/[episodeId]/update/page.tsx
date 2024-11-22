@@ -1,4 +1,4 @@
-import { getEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
+import { getEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.controller";
 import WebtoonEpisodeForm from "@/components/forms/WebtoonEpisodeForm";
 import PageLayout from "@/components/PageLayout";
 import { responseHandler } from "@/handlers/responseHandler";

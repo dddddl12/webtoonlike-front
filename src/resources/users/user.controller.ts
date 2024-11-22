@@ -13,7 +13,7 @@ import {
   getTokenInfo,
   notAuthorizedErrorWithMessage,
   updateTokenInfo
-} from "@/resources/tokens/token.service";
+} from "@/resources/tokens/token.controller";
 import { BuyerCompanySchema, BuyerFormT } from "@/resources/buyers/buyer.types";
 import { ListResponseSchema } from "@/resources/globalTypes";
 import z from "zod";

@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/utils/prisma";
-import { getTokenInfo } from "@/resources/tokens/token.service";
+import { getTokenInfo } from "@/resources/tokens/token.controller";
 import { action } from "@/handlers/safeAction";
 import z from "zod";
 import { WebtoonLikeWithMine, WebtoonLikeWithMineT } from "@/resources/webtoonLikes/webtoonLike.types";

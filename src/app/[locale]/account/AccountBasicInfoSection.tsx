@@ -5,7 +5,7 @@ import { Col, Row } from "@/shadcn/ui/layouts";
 import { Button } from "@/shadcn/ui/button";
 import { Link } from "@/i18n/routing";
 import AccountBasicInfoSectionDeleteButton from "@/app/[locale]/account/AccountBasicInfoSectionDeleteButton";
-import { getSimpleUserProfile } from "@/resources/users/user.service";
+import { getSimpleUserProfile } from "@/resources/users/user.controller";
 import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function AccountBasicInfoSection() {

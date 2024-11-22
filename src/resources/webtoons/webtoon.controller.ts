@@ -8,10 +8,10 @@ import {
 import { BidRoundApprovalStatus, BidRoundSchema, BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
 import { UserTypeT } from "@/resources/users/user.types";
 import { ListResponseSchema } from "@/resources/globalTypes";
-import { assertCreator, getTokenInfo } from "@/resources/tokens/token.service";
+import { assertCreator, getTokenInfo } from "@/resources/tokens/token.controller";
 import { AdminLevel } from "@/resources/tokens/token.types";
 import prisma from "@/utils/prisma";
-import { getBidRoundStatusFromRecord, mapToBidRoundDTO, offerableBidRoundFilter } from "@/resources/bidRounds/bidRound.utils";
+import { getBidRoundStatusFromRecord, mapToBidRoundDTO, offerableBidRoundFilter } from "@/resources/bidRounds/bidRound.service";
 import z from "zod";
 import { action } from "@/handlers/safeAction";
 import { UnexpectedServerError } from "@/handlers/errors";

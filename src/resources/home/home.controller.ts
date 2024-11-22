@@ -5,7 +5,7 @@ import prisma from "@/utils/prisma";
 import { BannerWebtoonItem, HomeCreatorItem, HomeGenreItem, HomeWebtoonItem } from "@/resources/home/home.types";
 import { AgeLimit } from "@/resources/webtoons/webtoon.types";
 import { PrismaTransaction } from "@/resources/globalTypes";
-import { offerableBidRoundFilter } from "@/resources/bidRounds/bidRound.utils";
+import { offerableBidRoundFilter } from "@/resources/bidRounds/bidRound.service";
 import { action } from "@/handlers/safeAction";
 
 export const homeItems = action

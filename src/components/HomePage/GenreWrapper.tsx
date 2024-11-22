@@ -5,7 +5,7 @@ import { displayName } from "@/utils/displayName";
 import { useLocale } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import WebtoonGrid from "@/components/HomePage/WebtoonGrid";
-import { getPerGenre } from "@/resources/home/home.service";
+import { getPerGenre } from "@/resources/home/home.controller";
 import { clsx } from "clsx";
 
 export default function GenreWrapper({

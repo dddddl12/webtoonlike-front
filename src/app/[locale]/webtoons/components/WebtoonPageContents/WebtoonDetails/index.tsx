@@ -12,7 +12,7 @@ import { IconLink } from "@/components/svgs/IconLink";
 import { displayName } from "@/utils/displayName";
 import { useLocale, useTranslations } from "next-intl";
 import { Dispatch, SetStateAction } from "react";
-import { WebtoonDetailsT } from "@/resources/webtoons/webtoon.service";
+import { WebtoonDetailsT } from "@/resources/webtoons/webtoon.controller";
 
 export default function WebtoonDetails({ webtoon, openBidRequestForm, setOpenBidRequestForm }: {
   webtoon: WebtoonDetailsT;

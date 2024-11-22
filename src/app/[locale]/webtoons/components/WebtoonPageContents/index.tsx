@@ -4,7 +4,7 @@ import PageLayout from "@/components/PageLayout";
 import BidRequestForm from "@/components/forms/BidRequestForm";
 import { useState } from "react";
 import WebtoonDetails from "@/app/[locale]/webtoons/components/WebtoonPageContents/WebtoonDetails";
-import { WebtoonDetailsT } from "@/resources/webtoons/webtoon.service";
+import { WebtoonDetailsT } from "@/resources/webtoons/webtoon.controller";
 import ActiveBidRound from "@/app/[locale]/webtoons/components/WebtoonPageContents/ActiveBidRound";
 
 export default function WebtoonPageContents({ webtoon }: {

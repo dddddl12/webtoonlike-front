@@ -1,7 +1,7 @@
 import { Col } from "@/shadcn/ui/layouts";
 import { ReactNode } from "react";
 import LightThemeProvider from "@/providers/LightThemeProvider";
-import { assertAdmin } from "@/resources/tokens/token.service";
+import { assertAdmin } from "@/resources/tokens/token.controller";
 import AdminSidebar from "@/app/[locale]/admin/AdminSidebar";
 
 export default async function Admin({ children }: {

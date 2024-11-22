@@ -6,13 +6,13 @@ import DownloadEpisodeImage from "@/app/[locale]/webtoons/[webtoonId]/episodes/[
 import { buildImgUrl } from "@/utils/media";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { getEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
+import { getEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.controller";
 import { displayName } from "@/utils/displayName";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import NavButton from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/EpisodeNavButton";
 import { responseHandler } from "@/handlers/responseHandler";
-import { getTokenInfo } from "@/resources/tokens/token.service";
+import { getTokenInfo } from "@/resources/tokens/token.controller";
 import { AdminLevel } from "@/resources/tokens/token.types";
 
 export default async function WebtoonEpisodeDetail(

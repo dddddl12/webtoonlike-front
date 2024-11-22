@@ -11,7 +11,7 @@ import { FieldSet, Form, FormControl, FormField, FormItem } from "@/shadcn/ui/fo
 import { useEffect, useRef } from "react";
 import { useRouter } from "@/i18n/routing";
 import Spinner from "@/components/Spinner";
-import { createBidRequest } from "@/resources/bidRequests/bidRequest.service";
+import { createBidRequest } from "@/resources/bidRequests/bidRequest.controller";
 import { Row } from "@/shadcn/ui/layouts";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";

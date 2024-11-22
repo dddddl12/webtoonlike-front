@@ -1,6 +1,6 @@
 "use client";
 
-import { AdminPageCreatorT, changeExposed, listCreators } from "@/resources/creators/creator.service";
+import { AdminPageCreatorT, changeExposed, listCreators } from "@/resources/creators/creator.controller";
 import { Col, Row } from "@/shadcn/ui/layouts";
 import Paginator from "@/components/Paginator";
 import useListData from "@/hooks/listData";

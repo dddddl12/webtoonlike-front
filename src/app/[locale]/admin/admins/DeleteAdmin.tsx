@@ -1,6 +1,6 @@
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { Button } from "@/shadcn/ui/button";
-import { deleteAdmin } from "@/resources/admins/admin.service";
+import { deleteAdmin } from "@/resources/admins/admin.controller";
 import { useConfirm } from "@/hooks/alert";
 import { IconDelete } from "@/components/svgs/IconDelete";
 import useSafeAction from "@/hooks/safeAction";

@@ -1,4 +1,4 @@
-import { BidRequestDetailsT, getBidRequest } from "@/resources/bidRequests/bidRequest.service";
+import { BidRequestDetailsT, getBidRequest } from "@/resources/bidRequests/bidRequest.controller";
 import { Col, Gap, Row } from "@/shadcn/ui/layouts";
 import OfferDetails from "@/components/Details/OfferDetails";
 import { useEffect, useMemo, useState } from "react";

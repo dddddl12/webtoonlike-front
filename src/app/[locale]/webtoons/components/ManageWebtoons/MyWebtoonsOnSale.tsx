@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import Paginator from "@/components/Paginator";
 import useListData from "@/hooks/listData";
-import { listMyWebtoonsOnSale, MyWebtoonOnSaleT } from "@/resources/webtoons/webtoon.service";
+import { listMyWebtoonsOnSale, MyWebtoonOnSaleT } from "@/resources/webtoons/webtoon.controller";
 import { Link } from "@/i18n/routing";
 import { displayName } from "@/utils/displayName";
 import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";

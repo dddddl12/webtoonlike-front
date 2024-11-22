@@ -2,7 +2,7 @@ import { Col } from "@/shadcn/ui/layouts";
 import { Heading2 } from "@/shadcn/ui/texts";
 import { getTranslations } from "next-intl/server";
 import LikedWebtoonListGrid from "@/app/[locale]/account/LikedWebtoonListGrid";
-import { listLikedWebtoons } from "@/resources/webtoons/webtoon.service";
+import { listLikedWebtoons } from "@/resources/webtoons/webtoon.controller";
 import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function LikedWebtoonList() {

@@ -6,7 +6,7 @@ import { ListResponse, ListResponseSchema } from "@/resources/globalTypes";
 import { AdminSchema } from "@/resources/admins/admin.types";
 import prisma from "@/utils/prisma";
 import { UserSchema, UserTypeT } from "@/resources/users/user.types";
-import { assertAdmin, getTokenInfo } from "@/resources/tokens/token.service";
+import { assertAdmin, getTokenInfo } from "@/resources/tokens/token.controller";
 import { AdminLevel } from "@/resources/tokens/token.types";
 import { BadRequestError } from "@/handlers/errors";
 

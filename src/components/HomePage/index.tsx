@@ -4,7 +4,7 @@ import WebtoonGrid from "@/components/HomePage/WebtoonGrid";
 import CreatorGrid from "@/components/HomePage/CreatorGrid";
 import BannerSection from "@/components/HomePage/BannerSection";
 import PageLayout from "@/components/PageLayout";
-import { homeItems } from "@/resources/home/home.service";
+import { homeItems } from "@/resources/home/home.controller";
 import GenreWrapper from "@/components/HomePage/GenreWrapper";
 import { responseHandler } from "@/handlers/responseHandler";
 

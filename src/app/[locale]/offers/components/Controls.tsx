@@ -2,13 +2,13 @@ import { Col, Gap, Row } from "@/shadcn/ui/layouts";
 import { Button } from "@/shadcn/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/shadcn/ui/dialog";
 import { Textarea } from "@/shadcn/ui/textarea";
-import { createBidRequestMessage } from "@/resources/bidRequestMessages/bidRequestMessage.service";
+import { createBidRequestMessage } from "@/resources/bidRequestMessages/bidRequestMessage.controller";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import {
   changeBidRequestStatus,
   getSimpleBidRequest,
   SimpleBidRequestT
-} from "@/resources/bidRequests/bidRequest.service";
+} from "@/resources/bidRequests/bidRequest.controller";
 import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { UserTypeT } from "@/resources/users/user.types";

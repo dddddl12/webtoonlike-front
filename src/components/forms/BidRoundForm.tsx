@@ -22,7 +22,7 @@ import {
 import Spinner from "@/components/Spinner";
 import ContractRangeForm from "@/components/forms/ContractRangeForm";
 import { NumericInput } from "@/shadcn/ui/input";
-import { createOrUpdateBidRound } from "@/resources/bidRounds/bidRound.service";
+import { createOrUpdateBidRound } from "@/resources/bidRounds/bidRound.controller";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 

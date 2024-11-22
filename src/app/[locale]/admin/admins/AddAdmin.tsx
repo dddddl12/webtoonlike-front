@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
 import { Button } from "@/shadcn/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shadcn/ui/command";
-import { NonAdminUserSearchT, searchNonAdminUsers } from "@/resources/users/user.service";
+import { NonAdminUserSearchT, searchNonAdminUsers } from "@/resources/users/user.controller";
 import { useTranslations } from "next-intl";
 import useDebounce from "@/hooks/debounce";
 import { Badge } from "@/shadcn/ui/badge";
 import { UserTypeT } from "@/resources/users/user.types";
 import { useToast } from "@/shadcn/hooks/use-toast";
-import { createAdmin } from "@/resources/admins/admin.service";
+import { createAdmin } from "@/resources/admins/admin.controller";
 import { useConfirm } from "@/hooks/alert";
 import useSafeAction from "@/hooks/safeAction";
 
