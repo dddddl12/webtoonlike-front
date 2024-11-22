@@ -35,8 +35,10 @@ export class NotAuthorizedError extends ExpectedServerError {
 }
 // 403
 export class ForbiddenError extends ExpectedServerError {
-  constructor(params: { title: string; message: string; logError?: boolean }) {
-    super({ ...params, httpCode: 403 });
+  constructor(params?: {title: string; message: string; logError?: boolean }) {
+    const title = params?.title ?? "Forbidden";
+    const message = params?.message ?? "You are not authorized to perform this action.";
+    super({ title, message, ...params, httpCode: 403 });
   }
 }
 // 404

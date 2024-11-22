@@ -266,3 +266,44 @@ export function BooleanFormField<TFieldValues extends FieldValues>({ control, na
     />
   );
 }
+
+// export function NumberFormField<TFieldValues extends FieldValues>({ control, name }: {
+//   control: Control<TFieldValues>;
+//   name: FieldName<TFieldValues, number>;
+// }) {
+//   return (
+//     <FormField
+//       control={control}
+//       name={name}
+//       render={({ field }) => (
+//         <FormItem className={className}>
+//           <FormControl>
+//             <RadioGroup
+//               {...field}
+//               value={field.value?.toString() || ""}
+//               className="flex flex-wrap gap-3"
+//               onValueChange={(value) => {
+//                 field.onChange(JSON.parse(value));
+//               }}
+//               onChange={undefined}
+//             >
+//               {items.map((item, index) => (
+//                 <FormItem key={index} className="space-x-1 space-y-0 flex items-center">
+//                   <FormControl>
+//                     <RadioGroupItem
+//                       className="border border-white"
+//                       value={item.value.toString()}
+//                     />
+//                   </FormControl>
+//                   <FormLabel>
+//                     {item.label}
+//                   </FormLabel>
+//                 </FormItem>
+//               ))}
+//             </RadioGroup>
+//           </FormControl>
+//         </FormItem>
+//       )}
+//     />
+//   );
+// }

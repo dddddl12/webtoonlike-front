@@ -1,26 +1,23 @@
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/shadcn/ui/dialog";
 import { ReactNode } from "react";
 import Image from "next/image";
-import { EpisodeImageSet } from "@/components/forms/WebtoonEpisodeForm/types";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { EpisodeImageObject } from "@/components/forms/WebtoonEpisodeForm/hook";
 
-export default function EpisodeImagePreview({ imageSets, children }: {
-  imageSets: EpisodeImageSet[];
+export default function EpisodeImagePreview({ images, children }: {
+  images: EpisodeImageObject[];
   children: ReactNode;
 }) {
   return <Dialog>
     <DialogTrigger asChild>
       {children}
     </DialogTrigger>
-    <DialogContent>
+    <DialogContent className="max-h-[80%] overflow-y-auto">
       <VisuallyHidden>
         <DialogTitle/>
         <DialogDescription/>
       </VisuallyHidden>
-      {imageSets.map(({ image }, i) => {
-        if (!image.url) {
-          return null;
-        }
+      {images.map((image, i) => {
         return <Image
           key={i}
           src={image.url}

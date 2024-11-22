@@ -12,7 +12,7 @@ export default function NavButton({ webtoonId, episodeId, direction }: {
   direction: "previous" | "next";
 }) {
   const isDisabled = !episodeId;
-  const t = useTranslations("detailedInfoPage");
+  const t = useTranslations("episodePage");
   return <Button
     asChild
     disabled={isDisabled}

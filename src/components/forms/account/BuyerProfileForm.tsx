@@ -13,7 +13,12 @@ import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
 import { ImageObject } from "@/utils/media";
 import { FileDirectoryT } from "@/resources/files/files.type";
-import { SignUpStage, UserExtendedFormSchema, UserExtendedFormT } from "@/resources/users/user.types";
+import {
+  SignUpStage,
+  UserExtendedFormSchema,
+  UserExtendedFormT, UserWithBuyerFormSchema,
+  UserWithBuyerFormT
+} from "@/resources/users/user.types";
 import { createUser } from "@/resources/users/user.service";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,14 +27,14 @@ import AccountFormFooter from "@/components/forms/account/components/AccountForm
 
 
 export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : {
-  userExtendedForm: Partial<UserExtendedFormT>;
+  userExtendedForm: Partial<UserWithBuyerFormT>;
   setSignUpStage: Dispatch<SetStateAction<SignUpStage>>;
 }) {
   // 번역
   const t = useTranslations("buyerInfoPage");
   const tGeneral = useTranslations("general");
 
-  const prev = (userExtendedForm as any)?.buyer;
+  const prev = userExtendedForm.buyer;
   const prevCompany = prev?.company;
   const [thumbnail, setThumbnail] = useState(
     new ImageObject(prevCompany?.thumbPath));
@@ -41,7 +46,7 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createUser,
-      zodResolver(UserExtendedFormSchema),
+      zodResolver(UserWithBuyerFormSchema),
       {
         actionProps: {
           onSuccess: () => {

@@ -86,9 +86,7 @@ export default function GenreForm({ reload, children, prev }: {
           </DialogClose>
           <Button
             disabled={!isValid || isSubmitting || isSubmitSuccessful}
-            onClick={async (e) => {
-              await handleSubmitWithAction(e);
-            }}
+            onClick={handleSubmitWithAction}
           >
             {prev ? "수정" : "추가"}
           </Button>

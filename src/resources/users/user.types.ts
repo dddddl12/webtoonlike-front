@@ -35,15 +35,21 @@ export const UserFormSchema = UserBaseSchema.extend({
 export type UserFormT = z.infer<typeof UserFormSchema>;
 
 // 저작권자 또는 바이어 정보 포함
+export const UserWithCreatorFormSchema = UserFormSchema.extend({
+  userType: z.literal(UserTypeT.Creator),
+  creator: CreatorFormSchema
+});
+export type UserWithCreatorFormT = z.infer<typeof UserWithCreatorFormSchema>;
+
+export const UserWithBuyerFormSchema = UserFormSchema.extend({
+  userType: z.literal(UserTypeT.Buyer),
+  buyer: BuyerFormSchema
+});
+export type UserWithBuyerFormT = z.infer<typeof UserWithBuyerFormSchema>;
+
 export const UserExtendedFormSchema = z.discriminatedUnion("userType", [
-  UserFormSchema.extend({
-    userType: z.literal(UserTypeT.Creator),
-    creator: CreatorFormSchema
-  }),
-  UserFormSchema.extend({
-    userType: z.literal(UserTypeT.Buyer),
-    buyer: BuyerFormSchema
-  })
+  UserWithCreatorFormSchema,
+  UserWithBuyerFormSchema
 ]);
 export type UserExtendedFormT = z.infer<typeof UserExtendedFormSchema>;
 

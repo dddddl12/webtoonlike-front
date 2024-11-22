@@ -6,7 +6,11 @@ import { useTranslations } from "next-intl";
 import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import Spinner from "@/components/Spinner";
 import { FileDirectoryT } from "@/resources/files/files.type";
-import { SignUpStage, UserExtendedFormSchema, UserExtendedFormT } from "@/resources/users/user.types";
+import {
+  SignUpStage,
+  UserExtendedFormSchema,
+  UserWithCreatorFormT
+} from "@/resources/users/user.types";
 import { createUser } from "@/resources/users/user.service";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,14 +18,14 @@ import AccountFormImageField from "@/components/forms/account/components/Account
 import AccountFormFooter from "@/components/forms/account/components/AccountFormFooter";
 
 export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }: {
-  userExtendedForm: Partial<UserExtendedFormT>;
+  userExtendedForm: Partial<UserWithCreatorFormT>;
   setSignUpStage: Dispatch<SetStateAction<SignUpStage>>;
 }) {
   // 번역
   const t = useTranslations("setupPageNextForCreators");
   const tGeneral = useTranslations("general");
 
-  const prev = (userExtendedForm as any)?.creator;
+  const prev = userExtendedForm.creator;
   const [thumbnail, setThumbnail] = useState(
     new ImageObject(prev?.thumbPath));
 

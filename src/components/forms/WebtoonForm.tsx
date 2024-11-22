@@ -350,6 +350,7 @@ function GenresFieldSet({ form, selectableGenres }: {
               key={genre.id}
               control={form.control}
               name="genreIds"
+              defaultValue={[]}
               render={({ field }) => {
                 return (
                   <FormItem className="flex flex-row items-center gap-1.5">
@@ -444,6 +445,7 @@ function TargetAgeFieldSet({ form }: {
               key={index}
               control={form.control}
               name="targetAges"
+              defaultValue={[]}
               render={({ field }) => {
                 return (
                   <FormItem className="flex flex-row items-center gap-1.5">

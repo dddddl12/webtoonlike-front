@@ -1,9 +1,8 @@
 import PageLayout from "@/components/PageLayout";
-import { Col, Gap, Row } from "@/shadcn/ui/layouts";
+import { Col, Row } from "@/shadcn/ui/layouts";
 import { IconLeftBrackets } from "@/components/svgs/IconLeftBrackets";
-import { Text } from "@/shadcn/ui/texts";
-// import { AddEnglishEpisodeUrl } from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/AddEnglishEpisodeUrl";
-// import { DownloadEpisodeImage } from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/DownloadEpisodeImage";
+import WebtoonEpisodeEnglishUrlForm from "@/components/forms/WebtoonEpisodeEnglishUrlForm";
+import DownloadEpisodeImage from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/DownloadEpisodeImage";
 import { buildImgUrl } from "@/utils/media";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
@@ -13,12 +12,12 @@ import { Pencil1Icon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import NavButton from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/EpisodeNavButton";
 import { responseHandler } from "@/handlers/responseHandler";
-
-// TODO 에피소드 추가는 어디서?
+import { getTokenInfo } from "@/resources/tokens/token.service";
+import { AdminLevel } from "@/resources/tokens/token.types";
 
 export default async function WebtoonEpisodeDetail(
   { params }:
-  {params: Promise<{webtoonId: string; episodeId: string}>},
+  {params: Promise<{webtoonId: string; episodeId: string}>}
 ) {
   const episodeId = await params
     .then(({ episodeId }) => Number(episodeId));
@@ -27,12 +26,13 @@ export default async function WebtoonEpisodeDetail(
   const { webtoon } = episode;
 
   const locale = await getLocale();
-  const t = await getTranslations("detailedInfoPage");
+  const t = await getTranslations("episodePage");
   const tGeneral = await getTranslations("general");
+  const { metadata } = await getTokenInfo();
 
   return (
     <PageLayout>
-      <div className="flex flex-row items-stretch">
+      <div className="flex flex-row items-stretch gap-4">
         <div className="flex-1 flex justify-center">
           <NavButton
             webtoonId={webtoon.id}
@@ -40,37 +40,33 @@ export default async function WebtoonEpisodeDetail(
             direction="previous"
           />
         </div>
-        <div className="max-w-[800px] w-full h-auto min-h-screen">
+        <div className="max-w-[800px] w-full h-auto">
           <Row>
             <Link href={`/webtoons/${webtoon.id}`}>
               <IconLeftBrackets className="fill-white" />
             </Link>
-            <Text className="text-3xl font-bold text-white ml-4">
+            <p className="text-3xl font-bold ml-4 flex-1">
               {`${displayName(locale, webtoon.title, webtoon.title_en)} _ ${t("episodeSeq", {
                 number: episode.episodeNo
               })}`}
-            </Text>
-          </Row>
-
-          <Gap y={10} />
-
-          {/*<AddEnglishEpisodeUrl webtoon={webtoon} episode={episode} />*/}
-          {/*<DownloadEpisodeImage webtoon={webtoon} episode={episode} />*/}
-
-          {/*<Gap y={10} />*/}
-
-          <Row className="justify-between">
+            </p>
             {episode.isEditable && (
-              <Link href={`/webtoons/${webtoon.id}/episodes/${episode.id}/update`}>
-                <Pencil1Icon className="text-mint" width={25} height={25} />
-                <Gap x={1} />
-                <Text className="text-mint">{tGeneral("edit")}</Text>
+              <Link href={`/webtoons/${webtoon.id}/episodes/${episode.id}/update`}
+                className="flex gap-1 text-mint">
+                <Pencil1Icon width={25} height={25} />
+                <span>{tGeneral("edit")}</span>
               </Link>
             )}
           </Row>
 
-          <Gap y={4} />
-          <Col>
+          {metadata.adminLevel >= AdminLevel.Admin
+            && <Col className="mt-10 gap-4">
+              <p className="text-xl font-bold">{t("administratorFeatures.title")}</p>
+              <WebtoonEpisodeEnglishUrlForm episode={episode}/>
+              <DownloadEpisodeImage episode={episode}/>
+            </Col>}
+
+          <Col className="mt-4">
             {episode.imagePaths.map((imagePath, i) => {
               return (
                 <Image

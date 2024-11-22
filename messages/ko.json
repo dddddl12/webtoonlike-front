@@ -127,10 +127,18 @@
         "webtoonRights": "웹툰 연재권",
         "secondaryRights": "2차 사업권"
     },
-    "detailedInfoPage": {
+    "episodePage": {
         "episodeSeq": "{number}화",
         "viewPreviousEpisode": "이전화 보기",
-        "viewNextEpisode": "다음화 보기"
+        "viewNextEpisode": "다음화 보기",
+        "administratorFeatures": {
+            "title": "관리자 기능",
+            "addEpisodeURLheader": "영어 에피소드 URL",
+            "addEnglishEpisodeURLPlaceholder": "영어 에피소드 URL 추가",
+            "register": "등록",
+            "download": "다운로드",
+            "success": "영어 에피소드 URL이 등록되었습니다."
+        }
     },
     "episodeForm": {
         "episodePreview": "회차 미리보기",
@@ -317,15 +325,6 @@
         "headingError": "작품 등록 오류",
         "subheaderError": "최소 3개의 에피소드 등록 후 판매 등록이 가능합니다.",
         "confirm": "확인"
-    },
-    "administratorFeatures": {
-        "administratorFeatures": "관리자 기능",
-        "addEpisodeURLheader": "영어 에피소드 URL",
-        "addEnglishEpisodeURLPlaceholder": "영어 에피소드 URL 추가",
-        "register": "등록",
-        "download": "다운로드",
-        "success": "영어 에피소드 URL이 등록되었습니다.",
-        "error": "영어 에피소드 URL 등록에 실패했습니다."
     },
     "pagination": {
         "previous": "이전",

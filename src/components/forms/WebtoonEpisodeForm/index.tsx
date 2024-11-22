@@ -1,10 +1,9 @@
 "use client";
 
-import { Dispatch, FormEvent, SetStateAction, useCallback, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Input, NumericInput } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
 import { Col, Row } from "@/shadcn/ui/layouts";
-import { ImageObject } from "@/utils/media";
 import { useTranslations } from "next-intl";
 import {
   WebtoonEpisodeFormSchema,
@@ -18,18 +17,14 @@ import { IconDownArrow } from "@/components/svgs/IconDownArrow";
 import { IconUpload } from "@/components/svgs/IconUpload";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { useRouter } from "@/i18n/routing";
-import Spinner from "@/components/Spinner";
 import { Form, FormControl, FormHeader, FormItem, FormLabel } from "@/shadcn/ui/form";
 import EpisodeImagePreview from "@/components/forms/WebtoonEpisodeForm/EpisodeImagePreview";
-import {
-  reorderImages,
-  ReorderImagesError
-} from "@/components/forms/WebtoonEpisodeForm/reorderImages";
-import { EpisodeImageSet } from "@/components/forms/WebtoonEpisodeForm/types";
 import { DropzoneRootProps, useDropzone } from "react-dropzone";
 import { createOrUpdateEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.service";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { clsx } from "clsx";
+import { ImageList, useEpisodeImageList } from "@/components/forms/WebtoonEpisodeForm/hook";
 
 const MAX_THUMBNAIL_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -40,14 +35,13 @@ export default function WebtoonEpisodeForm({
   webtoonId: number;
   prev?: WebtoonEpisodeT;
 }) {
-  const [episodeImageSets, setEpisodeImageSets] = useState<EpisodeImageSet[]>(
-    prev?.imagePaths.map((path) => ({
-      image: new ImageObject(path),
-      selected: false
-    })) ?? []);
+  const imageList = useEpisodeImageList(prev?.imagePaths);
+  const { episodeImages } = imageList;
+
   const t = useTranslations("episodeForm");
   const { toast } = useToast();
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createOrUpdateEpisode.bind(null, webtoonId, prev?.id),
@@ -59,14 +53,15 @@ export default function WebtoonEpisodeForm({
               toast({
                 description: "성공적으로 업데이트되었습니다."
               });
-              router.replace(`/webtoons/${prev.id}`);
+              router.replace(`/webtoons/${webtoonId}/episodes/${prev.id}`);
             } else {
               toast({
                 description: "성공적으로 생성되었습니다."
               });
-              router.replace("/webtoons");
+              router.replace(`/webtoons/${webtoonId}`);
             }
-          }
+          },
+          onError: () => setIsSubmitting(false)
         },
         formProps: {
           defaultValues: prev,
@@ -74,35 +69,43 @@ export default function WebtoonEpisodeForm({
         }
       });
 
+  useEffect(() => {
+    // 제출이 아닌 validation 통과용
+    // 제출 시에는 실제 remote 서버에 이미지 업로드 후 해당 url 사용
+    form.setValue("imagePaths", episodeImages
+      .map(image => image.url), {
+      shouldValidate: true
+    });
+  }, [episodeImages, form]);
+
   // 제출 이후 동작
   const router = useRouter();
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setIsSubmitting(true);
     const imagePaths = [];
-    for (const { image } of episodeImageSets) {
+    for (const image of episodeImages) {
       const path = await image.uploadAndGetRemotePath(FileDirectoryT.WebtoonEpisodeImages);
       if (path !== undefined) {
         imagePaths.push(path);
       }
     }
     form.setValue("imagePaths", imagePaths);
-    // todo error handling
-
     await handleSubmitWithAction(e);
   }
 
-  // 스피너
-  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
-  if (isSubmitting || isSubmitSuccessful) {
-    return <Spinner/>;
-  }
+  const { formState: { isValid } } = form;
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit} className="w-[500px] mx-auto">
+      <form onSubmit={onSubmit} className={clsx("w-[600px] mx-auto", {
+        "form-overlay": isSubmitting
+      })}>
         <FormHeader
           title={prev ? t("editEpisode") : t("addEpisode")}
-          goBackHref={prev ? `/webtoons/${webtoonId}/episodes/$` : "/webtoons"}
+          goBackHref={prev
+            ? `/webtoons/${webtoonId}/episodes/${prev.id}`
+            : `/webtoons/${webtoonId}`}
         />
 
         <FormItem>
@@ -118,9 +121,10 @@ export default function WebtoonEpisodeForm({
           </FormControl>
         </FormItem>
 
-        <ImageListField episodeImageSets={episodeImageSets} setEpisodeImageSets={setEpisodeImageSets} />
-        <Row className="justify-end">
+        <ImageListField imageList={imageList} className="mt-8" />
+        <Row className="justify-end mt-8">
           <Button
+            type="submit"
             disabled={!isValid}
             className="rounded-full"
             variant="mint"
@@ -134,15 +138,16 @@ export default function WebtoonEpisodeForm({
   );
 }
 
-function ImageListField({ episodeImageSets, setEpisodeImageSets }: {
-  episodeImageSets: EpisodeImageSet[];
-  setEpisodeImageSets: Dispatch<SetStateAction<EpisodeImageSet[]>>;
+function ImageListField({ imageList, className }: {
+  imageList: ImageList;
+  className?: string;
 }) {
 
+  const { add } = imageList;
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: useCallback((acceptedFiles: File[]) => {
       let hasFileExceedingMaxSize = false;
-      const newImageSets = acceptedFiles
+      const filesFiltered = acceptedFiles
         .filter(
           (file) => {
             if (file.size > MAX_THUMBNAIL_SIZE){
@@ -151,27 +156,20 @@ function ImageListField({ episodeImageSets, setEpisodeImageSets }: {
             }
             return true;
           }
-        )
-        .map((file) => ({
-          image: new ImageObject(file),
-          selected: false
-        }));
+        );
       if (hasFileExceedingMaxSize) {
         toast({
           description: "5MB가 넘는 파일은 포함할 없습니다.",
         });
       }
-      setEpisodeImageSets(prev => [
-        ...prev,
-        ...newImageSets
-      ]);
-    }, [setEpisodeImageSets])
+      add(filesFiltered);
+    }, [add])
   });
   const dropzoneRootProps = getRootProps();
 
   const t = useTranslations("episodeForm");
 
-  return <FormItem>
+  return <FormItem className={className}>
     <FormLabel>
       {t("episodeImage")}
     </FormLabel>
@@ -183,8 +181,7 @@ function ImageListField({ episodeImageSets, setEpisodeImageSets }: {
       />
     </FormControl>
     <ImageListCanvas
-      episodeImageSets={episodeImageSets}
-      setEpisodeImageSets={setEpisodeImageSets}
+      imageList={imageList}
       dropzoneRootProps={dropzoneRootProps}
     />
     <Row className="justify-between mt-4">
@@ -197,40 +194,27 @@ function ImageListField({ episodeImageSets, setEpisodeImageSets }: {
         {t("imageUpload")}
       </Button>
 
-      <EpisodeImagePreview imageSets={episodeImageSets}>
-        <Button variant="mint" onClick={(e) => e.preventDefault()}>
+      <EpisodeImagePreview images={imageList.episodeImages}>
+        <Button variant="mint">
           {t("episodePreview")}
         </Button>
       </EpisodeImagePreview>
     </Row>
-    <ul className="list-disc p-5 text-gray-text">
+    <ul className="list-disc p-5 text-gray-text text-sm">
       <li>{t("noteDesc1")}</li>
       <li>{t("noteDesc2")}</li>
     </ul>
   </FormItem>;
 }
 
-function ImageListCanvas({ episodeImageSets, setEpisodeImageSets, dropzoneRootProps }: {
-  episodeImageSets: EpisodeImageSet[];
-  setEpisodeImageSets: Dispatch<SetStateAction<EpisodeImageSet[]>>;
+function ImageListCanvas({ imageList, dropzoneRootProps }: {
+  imageList: ImageList;
   dropzoneRootProps: DropzoneRootProps;
 }) {
   const t = useTranslations("episodeForm");
-  const { toast } = useToast();
+  const { episodeImages, select, remove, reorder } = imageList;
 
-  function handleReorderButtonClick(isUp: boolean) {
-    try {
-      setEpisodeImageSets(prev => reorderImages(prev, isUp));
-    } catch (e) {
-      if (e instanceof ReorderImagesError) {
-        toast({
-          description: e.message
-        });
-      }
-    }
-  }
-
-  if (episodeImageSets.length === 0) {
+  if (episodeImages.length === 0) {
     return <div
       {...dropzoneRootProps}
       className="flex flex-col gap-3 justify-center items-center bg-gray-darker text-gray-text rounded-sm cursor-pointer w-full h-[340px]"
@@ -244,34 +228,37 @@ function ImageListCanvas({ episodeImageSets, setEpisodeImageSets, dropzoneRootPr
   return <Row className="min-h-[80px] items-stretch">
     <Col
       {...dropzoneRootProps}
-      onClick={undefined} // 아이템이 있는 경우 클락 시에는 파일 선택 브라우저가 뜨면 안됨
-      className="bg-gray-darker rounded-l-md flex-1 px-5 py-2">
-      {episodeImageSets.map((imageSet, cInx) => (
+      onClick={undefined} // 아이템이 있는 경우 클릭 시에는 파일 선택 브라우저가 뜨면 안됨
+      className="bg-gray-darker rounded-l-md flex-1 px-5 py-2 overflow-hidden">
+      {episodeImages.map((image, cInx) => (
         <EpisodeImageItem
           key={cInx}
-          imageSet={imageSet}
-          removeHandler={() => {
-            setEpisodeImageSets((prev) =>
-              prev.filter((prevImageSet) => prevImageSet !== imageSet)
-            );
-          }}
+          image={image}
+          select={(value) => select(cInx, value)}
+          remove={() => remove((cInx))}
         />
       ))}
     </Col>
     <Col className="w-[50px]">
-      <div
-        onClick={() => handleReorderButtonClick(true)}
-        className="flex-1 rounded-tr-md bg-gray-text flex justify-center items-center"
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          reorder(true);
+        }}
+        className="flex-1 rounded-tr-md bg-gray-text hover:bg-gray-text/60 flex justify-center items-center cursor-pointer"
       >
         <IconUpArrow className="fill-white" />
-      </div>
+      </button>
       <hr className="border-black" />
-      <div
-        onClick={() => handleReorderButtonClick(false)}
-        className="flex-1 rounded-br-md bg-gray-text flex justify-center items-center"
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          reorder(false);
+        }}
+        className="flex-1 rounded-br-md bg-gray-text hover:bg-gray-text/60 flex justify-center items-center cursor-pointer"
       >
         <IconDownArrow className="fill-white" />
-      </div>
+      </button>
     </Col>
   </Row>;
 }

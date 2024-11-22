@@ -20,6 +20,7 @@ export default function Alert() {
   // Listen for alert events
   useEffect(() => {
     const handleAlert = (wrapper: AlertOrConfirmWrapper) => {
+      (document.activeElement as HTMLElement | null)?.blur();
       setWrapper(wrapper);
     };
 

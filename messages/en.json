@@ -127,10 +127,18 @@
         "webtoonRights": "Webtoon Service Rights",
         "secondaryRights": "Secondary Business Rights"
     },
-    "detailedInfoPage": {
+    "episodePage": {
         "episodeSeq": "Episode {number}",
         "viewPreviousEpisode": "Next",
-        "viewNextEpisode": "Previous"
+        "viewNextEpisode": "Previous",
+        "administratorFeatures": {
+            "title": "Administrator Features",
+            "addEpisodeURLheader": "English Episode URL",
+            "addEnglishEpisodeURLPlaceholder": "Add English Episode URL",
+            "register": "Register",
+            "download": "Download",
+            "success": "English Episode URL successfully registered."
+        }
     },
     "episodeForm": {
         "episodePreview": "Episode Preview",
@@ -318,15 +326,6 @@
         "headingError": "Series Registration Error",
         "subheaderError": "You can register for sale after registering at least 3 episodes.",
         "confirm": "Confirm"
-    },
-    "administratorFeatures": {
-        "administratorFeatures": "Administrator Features",
-        "addEpisodeURLheader": "English Episode URL",
-        "addEnglishEpisodeURLPlaceholder": "Add English Episode URL",
-        "register": "Register",
-        "download": "Download",
-        "success": "English Episode URL succesfully registered.",
-        "error": "English Episode URL registration failed."
     },
     "pagination": {
         "previous": "Previous",

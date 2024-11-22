@@ -16,6 +16,8 @@ export default function useSafeAction<
   safeActionFn: HookSafeActionFn<ServerError, S, BAS, CVE, CBAVE, Data>,
   utils?: HookBaseUtils<S> & HookCallbacks<ServerError, S, BAS, CVE, CBAVE, Data>
 ): UseActionHookReturn<ServerError, S, BAS, CVE, CBAVE, Data> {
-  const actionProps = useClientActionHandler(utils);
+  const actionProps = useClientActionHandler(utils, {
+    reportValidationError: true,
+  });
   return useAction(safeActionFn, actionProps);
 }

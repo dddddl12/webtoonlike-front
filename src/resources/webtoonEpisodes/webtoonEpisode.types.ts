@@ -3,12 +3,23 @@ import { ResourceSchema } from "@/resources/globalTypes";
 
 const WebtoonEpisodeBaseSchema = z.object({
   episodeNo: z.number(),
-  englishUrl: z.string().optional(),
-  imagePaths: z.array(z.string()),
+  englishUrl: z.string().url().optional(),
+  imagePaths: z.array(z.string()).min(1),
 });
 
-export const WebtoonEpisodeFormSchema = WebtoonEpisodeBaseSchema;
+export const WebtoonEpisodeFormSchema = WebtoonEpisodeBaseSchema
+  .omit({
+    englishUrl: true
+    // 관리자 기능이므로 제외
+  });
 export type WebtoonEpisodeFormT = z.infer<typeof WebtoonEpisodeFormSchema>;
+
+
+export const WebtoonEpisodeEnglishUrlFormSchema = WebtoonEpisodeBaseSchema
+  .pick({
+    englishUrl: true
+  });
+export type WebtoonEpisodeEnglishUrlFormT = z.infer<typeof WebtoonEpisodeEnglishUrlFormSchema>;
 
 
 export const WebtoonEpisodeSchema = WebtoonEpisodeBaseSchema

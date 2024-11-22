@@ -2,16 +2,16 @@
 
 import prisma from "@/utils/prisma";
 import {
+  WebtoonEpisodeEnglishUrlFormSchema,
   WebtoonEpisodeFormSchema,
-  WebtoonEpisodeFormT,
   WebtoonEpisodeSchema
 } from "@/resources/webtoonEpisodes/webtoonEpisode.types";
 import { AdminLevel } from "@/resources/tokens/token.types";
-import { getTokenInfo } from "@/resources/tokens/token.service";
+import { assertAdmin, getTokenInfo } from "@/resources/tokens/token.service";
 import { UserTypeT } from "@/resources/users/user.types";
 import z from "zod";
 import { action } from "@/handlers/safeAction";
-import { Prisma } from "@prisma/client";
+import { createEpisode, updateEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.utils";
 
 
 const WebtoonEpisodeDetailsSchema = WebtoonEpisodeSchema
@@ -27,15 +27,15 @@ const WebtoonEpisodeDetailsSchema = WebtoonEpisodeSchema
       nextId: z.number().optional(),
     })
   });
+export type WebtoonEpisodeDetailsT = z.infer<typeof WebtoonEpisodeDetailsSchema>;
 export const getEpisode = action
   .metadata({ actionName: "getEpisode" })
   .bindArgsSchemas([
     z.number() // episodeId
   ])
-  .outputSchema(WebtoonEpisodeDetailsSchema)
   .action(async ({
     bindArgsParsedInputs: [episodeId],
-  }) => {
+  }): Promise<WebtoonEpisodeDetailsT> => {
     const { userId, metadata } = await getTokenInfo();
     const record = await prisma.webtoonEpisode.findUniqueOrThrow({
       where: { id: episodeId },
@@ -105,30 +105,18 @@ export const createOrUpdateEpisode = action
     }
   });
 
-async function createEpisode(webtoonId: number, form: WebtoonEpisodeFormT) {
-  const insertData: Prisma.WebtoonEpisodeCreateInput = {
-    ...form,
-    webtoon: {
-      connect: {
-        id: webtoonId
-      }
-    }
-  };
-  await prisma.$transaction(async (tx) => {
-    await tx.webtoonEpisode.create({
-      data: insertData
-    });
+// Admin only
+export const updateEpisodeEnglishUrl = action
+  .metadata({ actionName: "updateEpisodeEnglishUrl" })
+  .bindArgsSchemas([
+    z.number(), // webtoonId
+    z.number() // episodeId
+  ])
+  .schema(WebtoonEpisodeEnglishUrlFormSchema)
+  .action(async ({
+    parsedInput: formData,
+    bindArgsParsedInputs: [webtoonId, episodeId],
+  }) => {
+    await assertAdmin();
+    await updateEpisode(webtoonId, episodeId, formData);
   });
-}
-
-async function updateEpisode(webtoonId: number, episodeId: number, form: WebtoonEpisodeFormT) {
-  await prisma.$transaction(async (tx) => {
-    await tx.webtoonEpisode.update({
-      data: form,
-      where: {
-        id: episodeId,
-        webtoonId
-      }
-    });
-  });
-}

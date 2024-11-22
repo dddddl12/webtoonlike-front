@@ -99,10 +99,17 @@
 }
 
 @layer base {
-  * {
-    @apply border-foreground;
+    * {
+        @apply border-foreground;
     }
-  body {
-    @apply bg-background text-foreground;
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+@layer utilities {
+    .form-overlay {
+        @apply relative before:absolute before:bg-background/60 before:w-full before:h-full before:z-[10] before:pointer-events-auto before:inset-0;
     }
 }

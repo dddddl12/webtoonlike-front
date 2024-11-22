@@ -4,40 +4,47 @@ import { IconClose } from "@/components/svgs/IconClose";
 import { useTranslations } from "next-intl";
 import EpisodeImagePreview from "@/components/forms/WebtoonEpisodeForm/EpisodeImagePreview";
 import { FormControl, FormItem, FormLabel } from "@/shadcn/ui/form";
-import { EpisodeImageSet } from "@/components/forms/WebtoonEpisodeForm/types";
 import { useConfirm } from "@/hooks/alert";
 import { Button } from "@/shadcn/ui/button";
+import { EpisodeImageObject } from "@/components/forms/WebtoonEpisodeForm/hook";
 
 export default function EpisodeImageItem({
-  imageSet,
-  removeHandler,
+  image,
+  select,
+  remove,
 }: {
-  imageSet: EpisodeImageSet;
-  removeHandler: () => void;
+  image: EpisodeImageObject;
+  select: (value: boolean) => void;
+  remove: () => void;
 }) {
   const t = useTranslations("episodeForm");
   const confirm = useConfirm({
     title: t("removeImageTitle"),
     message: t("removeImageDescription"),
     confirmText: t("removeConfirm"),
-    onConfirm: removeHandler
+    onConfirm: remove
   });
 
   return (
     <Row className="justify-between gap-3">
-      <FormItem className="flex-1 flex gap-2 w-full">
+      <FormItem className="flex-1 flex gap-2 overflow-hidden">
         <FormControl>
-          <Checkbox checked={imageSet.selected} />
+          <Checkbox
+            checked={image.selected}
+            onCheckedChange={select}
+          />
         </FormControl>
-        <FormLabel>{imageSet.image.displayUrl}</FormLabel>
+        <FormLabel className="whitespace-pre overflow-ellipsis overflow-hidden">
+          {image.displayUrl}
+        </FormLabel>
       </FormItem>
       <Row className="flex gap-2 items-center text-sm">
-        <EpisodeImagePreview imageSets={[imageSet]}>
+        <EpisodeImagePreview images={[image]}>
           <span className="text-mint underline cursor-pointer">
             {t("preview")}
           </span>
         </EpisodeImagePreview>
-        <Button size="smallIcon" asChild onClick={(e) => {
+        <Button size="smallIcon" variant="ghost" asChild onClick={(e) => {
           e.preventDefault();
           confirm.open();
         }}>

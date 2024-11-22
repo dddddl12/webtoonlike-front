@@ -55,15 +55,15 @@ export class ImageObject {
   url?: string;
   displayUrl?: string;
 
-  constructor(fileOrPath?: File | string) {
+  constructor(fileOrPath?: File | string, displaySize: ImageSizeT = "sm") {
     this._fileOrPath = fileOrPath;
 
     if (fileOrPath instanceof File) {
       this.url = URL.createObjectURL(fileOrPath);
       this.displayUrl = fileOrPath.name;
     } else if (typeof fileOrPath === "string") {
-      this.url = buildImgUrl(fileOrPath, { size: "sm" });
-      this.displayUrl = this.url;
+      this.url = buildImgUrl(fileOrPath, { size: displaySize });
+      this.displayUrl = fileOrPath;
     }
   }
 
@@ -74,7 +74,7 @@ export class ImageObject {
     const file = this._fileOrPath;
     const fileType = await fileTypeFromBlob(file);
     if (!fileType) {
-      return;
+      throw new Error("Invalid file type");
     }
     const { preSignedUrl, urlPath } = await generatePreSignedUrl(directory, fileType);
     await axios.put(preSignedUrl, file, {
