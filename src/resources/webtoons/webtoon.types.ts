@@ -1,4 +1,3 @@
-import { BidRoundSchema } from "@/resources/bidRounds/bidRound.types";
 import { ResourceSchema } from "@/resources/globalTypes";
 import z from "zod";
 
@@ -47,3 +46,14 @@ export type WebtoonFormT = z.infer<typeof WebtoonFormSchema>;
 export const WebtoonSchema = ResourceSchema
   .merge(WebtoonBaseSchema);
 export type WebtoonT = z.infer<typeof WebtoonSchema>;
+
+// 그리드에 표시하기 위한 기본폼
+export const WebtoonPreviewSchema = WebtoonSchema.pick({
+  id: true,
+  title: true,
+  title_en: true,
+  description: true,
+  description_en: true,
+  thumbPath: true,
+});
+export type WebtoonPreviewT = z.infer<typeof WebtoonPreviewSchema>;

@@ -1,13 +1,15 @@
 import { Col } from "@/shadcn/ui/layouts";
 import { ReactNode } from "react";
 import LightThemeProvider from "@/providers/LightThemeProvider";
-import { assertAdmin } from "@/resources/tokens/token.controller";
 import AdminSidebar from "@/app/[locale]/admin/AdminSidebar";
+import { getTokenInfo } from "@/resources/tokens/token.service";
 
 export default async function Admin({ children }: {
   children: ReactNode;
 }) {
-  await assertAdmin();
+  await getTokenInfo({
+    admin: true,
+  });
   return (
     <LightThemeProvider>
       <div className="flex w-full light bg-background text-primary">

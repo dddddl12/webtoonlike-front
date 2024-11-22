@@ -1,160 +1,214 @@
-import { InvoiceContentT } from "@/resources/invoices/invoice.types";
-import { getTranslations } from "next-intl/server";
+import "server-only";
+import prisma from "@/utils/prisma";
+import z from "zod";
+import { BidRequestContractRangeItemSchema } from "@/resources/bidRequests/bidRequest.types";
+import { BuyerCompanySchema } from "@/resources/buyers/buyer.types";
+import { InvoiceContent } from "@/resources/invoices/invoice.types";
+import { convertInvoiceToHtml } from "@/resources/invoices/invoice.utils";
+import { ListResponse } from "@/resources/globalTypes";
+import { getTokenInfo } from "@/resources/tokens/token.service";
+import { InvoiceWithWebtoonT } from "@/resources/invoices/invoice.controller";
+import bidRequestService from "@/resources/bidRequests/bidRequest.service";
 
-export async function convertInvoiceToHtml(content: InvoiceContentT) {
-  const locale = "ko";
-  const [tCountries, tBusinessFields, tContractType] = await Promise.all([
-    getTranslations({ locale, namespace: "countries" }),
-    getTranslations({ locale, namespace: "businessFields" }),
-    getTranslations({ locale, namespace: "contractType" }),
-  ]);
+class InvoiceService {
+  async previewOrCreateInvoice(bidRequestId: number, storeToDb: boolean) {
+    return prisma.$transaction(async (tx) => {
+      const record = await tx.bidRequest.findUniqueOrThrow({
+        where: { id: bidRequestId },
+        select: {
+        // 계약 조건
+          contractRange: true,
 
-  const { webtoon, bidRequest, buyer, creator, issuedAt } = content;
-  const { contractRange } = bidRequest;
-  const validUntil = new Date(issuedAt);
-  validUntil.setFullYear(issuedAt.getFullYear() + 1);
+          // 바이어
+          user: {
+            include: {
+              buyer: {
+                select: {
+                  id: true,
+                  company: true
+                }
+              }
+            }
+          },
+          bidRound: {
+            select: {
+            // 웹툰
+              webtoon: {
+                select: {
+                  id: true,
+                  title: true,
+                  title_en: true,
+                  // 판매자
+                  user: {
+                    include: {
+                      creator: {
+                        select: {
+                          id: true,
+                          name: true,
+                          name_en: true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      });
 
-  const html = `<html lang=${locale}>
-    <head>
-      <title>인보이스</title>
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
-      <style>
-        body {
-          padding: 16px;
-          font-size: 14px;
-          color: black;
-          font-family: "Nanum Gothic", sans-serif;
-          font-weight: 400;
-          font-style: normal;
-        }
-        h1 {
-          font-size: 26px;
-          font-weight: bold;
-        }
-        .table {
-          font-size: 14px;
-          display: grid;
-          border: 1px solid black;
-          grid-template-columns: 1fr 1fr 1fr 2fr;
-          padding: 0;
-        }
-        .header {
-          font-weight: bold;
-        }
-        .row {
-          padding: 0;
-          display: contents; /* Treat each row as a part of the grid */
-        }
-        .cell {
-          border: 1px solid black;
-          padding: 0 8px;
-          display: flex;
-          align-items: center;
-        }
-        .cell p {
-          text-align: center;
-        }
-        .cell.left-align p {
-          text-align: left;
-        }
-  
-        .subtitle {
-          font-size: 22px;
-          font-weight: bold;
-        }
-        .box {
-          border: 2px solid black;
-          padding: 20px;
-        }
-        .bold {
-          font-weight: bold;
-        }
-        .text-center {
-          text-align: center;
-        }
-      </style>
-    </head>
-    <body>
-      <h1 class="text-center">협의 내역서</h1>
-      <p class="subtitle">구매자</p>
-      <div class="box">
-        <p>회사명: ${buyer.name}</p>
-        <p>담당자명: ${buyer.user.name}</p>
-        <p>주소: ${buyer.user.addressLine1} ${buyer.user.addressLine2}</p>
-        <p>연락처: ${buyer.user.phone}</p>
-        <p>사업자번호: ${buyer.businessNumber}</p>
-      </div>
+      // 레코드 분석
+      const contractRange = z.array(BidRequestContractRangeItemSchema)
+        .parse(record.contractRange);
+      const { webtoon } = record.bidRound;
+      const buyerUser = record.user;
+      const buyerCompany = BuyerCompanySchema.parse(buyerUser.buyer?.company);
+      const creatorUser = record.bidRound.webtoon.user;
+      if (!buyerUser.buyer || !creatorUser.creator) {
+        throw new Error("bidRequest not found");
+      }
 
-      <div style="height: 40px"></div>
+      // 컨텐츠 작성
+      const invoiceContent: z.infer<typeof InvoiceContent> = {
+        templateVersion: InvoiceContent.shape.templateVersion.value,
+        buyer: {
+          id: buyerUser.buyer.id,
+          name: buyerCompany.name,
+          businessNumber: buyerCompany.businessNumber,
+          user: {
+            id: buyerUser.id,
+            name: buyerUser.name,
+            addressLine1: buyerUser.addressLine1 || "", //todo db 컬럼 required로 변경
+            addressLine2: buyerUser.addressLine2 || "",
+            phone: buyerUser.phone
+          }
+        },
+        creator: {
+          id: creatorUser.creator.id,
+          name: creatorUser.creator.name,
+          name_en: creatorUser.creator.name_en ?? undefined,
+          user: {
+            id: creatorUser.id,
+            name: creatorUser.name,
+            addressLine1: creatorUser.addressLine1 || "", //todo db 컬럼 required로 변경
+            addressLine2: creatorUser.addressLine2 || "",
+            phone: creatorUser.phone
+          }
+        },
+        webtoon: {
+          id: webtoon.id,
+          title: webtoon.title,
+          title_en: webtoon.title_en
+        },
+        bidRequest: {
+          id: bidRequestId,
+          contractRange
+        },
+        issuedAt: new Date()
+      };
 
-      <p class="subtitle">판매자</p>
-      <div class="box">
-        <p>작가명: ${creator.name}</p>
-        <p>연락처: ${creator.user.phone}</p>
-        <p>주소: ${creator.user.addressLine1} ${creator.user.addressLine2}</p>
-        <p>작품명: ${webtoon?.title}</p>
-      </div>
+      const invoiceContentValidated = InvoiceContent.parse(invoiceContent);
+      if (storeToDb) {
+        await tx.invoice.create({
+          data: {
+            bidRequestId,
+            content: invoiceContentValidated
+          }
+        });
+      }
+      return convertInvoiceToHtml(invoiceContentValidated);
+    });
+  }
 
-      <div style="height: 40px"></div>
+  async list({
+    page = 1,
+    isAdmin = false,
+  }: {
+    page?: number;
+    isAdmin?: boolean;
+  } = {}): Promise<ListResponse<InvoiceWithWebtoonT>> {
+  // TODO join 최적화
+  // https://www.prisma.io/blog/prisma-orm-now-lets-you-choose-the-best-join-strategy-preview
+    if (isAdmin) {
+      await getTokenInfo({
+        admin: true
+      });
+    }
+    const bidRequestWhere = await bidRequestService.whereWithReadAccess();
+    const where = {
+      bidRequest: bidRequestWhere
+    };
+    const limit = 5;
+    const [records, totalRecords] = await prisma.$transaction([
+      prisma.invoice.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        include: {
+          bidRequest: {
+            select: {
+              userId: true,
+              user: {
+                select: {
+                  name: true
+                }
+              },
+              bidRound: {
+                select: {
+                  webtoon: {
+                    select: {
+                      id: true,
+                      title: true,
+                      title_en: true,
+                      thumbPath: true,
+                      userId: true,
+                      user: {
+                        select: {
+                          name: true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+        }
+      }),
+      prisma.invoice.count({ where }),
+    ]);
+    return {
+      items: records.map(record => {
+        const { bidRequest } = record;
+        const { webtoon } = bidRequest.bidRound;
 
-      <p class="subtitle">조건</p>
-
-      <div class="table">
-        <div class="row header">
-          <div class="cell">
-            <p>서비스 권역</p>
-          </div>
-          <div class="cell">
-            <p>사업권</p>
-          </div>
-          <div class="cell">
-            <p>독점 권리</p>
-          </div>
-          <div class="cell">
-            <p>합의 조건</p>
-          </div>
-        </div>
-          ${contractRange.map((item) => {
-            return (
-              `
-      <div class="row">
-        <div class="cell">
-          <p>${tCountries(item.country)}</p>
-        </div>
-        <div class="cell">
-          <p>${tBusinessFields(item.businessField)}</p>
-        </div>
-        <div class="cell">
-          <p>${tContractType(item.contract)}</p>
-        </div>
-        <div class="cell left-align">
-          <p>${item.message}</p>
-        </div>
-      </div>
-      `
-            );
-          }).join("")}
-      </div>
-
-      <p class="text-center">협의 내역서 만료 기간: ${validUntil.toLocaleString(locale, {
-        timeZone: "Asia/Seoul",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })}</p>
-
-      <p class="bold subtitle text-center">위 협의 사항을 웹툰라이크가 보증합니다. </p>
-
-      <p class="text-center">${issuedAt.toLocaleString(locale, {
-        timeZone: "Asia/Seoul",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })}</p>
-
-    </body>
-  </html>`;
-  return html.replace(/\n/g, "").replace(/\s{2,}/g, " ");
+        return {
+          id: record.id,
+          createdAt: record.createdAt,
+          updatedAt: record.updatedAt,
+          bidRequestId: record.bidRequestId,
+          webtoon: {
+            id: webtoon.id,
+            title: webtoon.title,
+            title_en: webtoon.title_en ?? undefined,
+            thumbPath: webtoon.thumbPath
+          },
+          creatorUsername: webtoon.user.name,
+          buyerUsername: bidRequest.user.name,
+        };
+      }),
+      totalPages: Math.ceil(totalRecords / limit),
+    };
+  }
+  async download(invoiceId: number) {
+    const { content } = await prisma.invoice.findUniqueOrThrow({
+      where: { id: invoiceId },
+      select: {
+        content: true
+      }
+    });
+    return convertInvoiceToHtml(InvoiceContent.parse(content));
+  }
 }
+const invoiceService = new InvoiceService();
+export default invoiceService;

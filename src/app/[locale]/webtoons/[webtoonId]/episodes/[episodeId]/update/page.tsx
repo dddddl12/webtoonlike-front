@@ -8,9 +8,12 @@ export default async function UpdateWebtoonEpisode(
   {params: Promise<{webtoonId: string; episodeId: string}>},
 ) {
 
-  const episodeId = await params
-    .then(({ episodeId }) => Number(episodeId));
-  const episode = await getEpisode(episodeId)
+  const { webtoonId, episodeId } = await params
+    .then(({ webtoonId, episodeId }) => ({
+      webtoonId: Number(webtoonId),
+      episodeId: Number(episodeId)
+    }));
+  const episode = await getEpisode(webtoonId, episodeId)
     .then(responseHandler);
 
   return (

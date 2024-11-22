@@ -2,12 +2,13 @@ import { useTranslations } from "next-intl";
 import { Col } from "@/shadcn/ui/layouts";
 import { Heading } from "@/shadcn/ui/texts";
 import { getPublicBuyerInfoByUserId } from "@/resources/buyers/buyer.controller";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PublicBuyerInfoT } from "@/resources/buyers/buyer.types";
 import Spinner from "@/components/Spinner";
 import OfferDetails from "@/components/Details/OfferDetails";
 import Profile from "@/components/Details/Profile";
 import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.controller";
+import useSafeAction from "@/hooks/safeAction";
 
 export default function ViewOfferSection({ bidRequest }: {
   bidRequest: SimpleBidRequestT;
@@ -15,10 +16,20 @@ export default function ViewOfferSection({ bidRequest }: {
   const [buyer, setBuyer] = useState<PublicBuyerInfoT>();
   const buyerUserId = bidRequest.buyer.user.id;
 
+  const boundGetPublicBuyerInfoByUserId = useMemo(() =>
+    getPublicBuyerInfoByUserId.bind(null, buyerUserId), [buyerUserId]);
+  const { execute } = useSafeAction(boundGetPublicBuyerInfoByUserId, {
+    onSuccess: ({ data }) => {
+      if (!data) {
+        throw new Error("data is null");
+      }
+      setBuyer(data);
+    }
+  });
+
   useEffect(() => {
-    getPublicBuyerInfoByUserId(buyerUserId)
-      .then(setBuyer);
-  }, [buyerUserId]);
+    execute();
+  }, [execute]);
 
   if (!buyer) {
     return <Spinner />;

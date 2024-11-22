@@ -12,16 +12,19 @@ import { Pencil1Icon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import NavButton from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/EpisodeNavButton";
 import { responseHandler } from "@/handlers/responseHandler";
-import { getTokenInfo } from "@/resources/tokens/token.controller";
+import { getTokenInfo } from "@/resources/tokens/token.service";
 import { AdminLevel } from "@/resources/tokens/token.types";
 
 export default async function WebtoonEpisodeDetail(
   { params }:
   {params: Promise<{webtoonId: string; episodeId: string}>}
 ) {
-  const episodeId = await params
-    .then(({ episodeId }) => Number(episodeId));
-  const episode = await getEpisode(episodeId)
+  const { webtoonId, episodeId } = await params
+    .then(({ webtoonId, episodeId }) => ({
+      webtoonId: Number(webtoonId),
+      episodeId: Number(episodeId)
+    }));
+  const episode = await getEpisode(webtoonId, episodeId)
     .then(responseHandler);
   const { webtoon } = episode;
 

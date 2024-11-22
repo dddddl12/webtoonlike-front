@@ -5,8 +5,10 @@ import { displayName } from "@/utils/displayName";
 import { useLocale } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import WebtoonGrid from "@/components/HomePage/WebtoonGrid";
-import { getPerGenre } from "@/resources/home/home.controller";
 import { clsx } from "clsx";
+import { getPerGenreItems } from "@/resources/home/home.controller";
+import useSafeAction from "@/hooks/safeAction";
+import { Row } from "@/shadcn/ui/layouts";
 
 export default function GenreWrapper({
   genres, firstGenreItems
@@ -18,6 +20,15 @@ export default function GenreWrapper({
   const [genreId, setGenreId] = useState<number>(genres[0].id);
   const [webtoons, setWebtoons] = useState<HomeWebtoonItem[]>(firstGenreItems ?? []);
 
+  const { execute } = useSafeAction(getPerGenreItems, {
+    onSuccess: ({ data }) => {
+      if (!data) {
+        throw new Error("data is null");
+      }
+      setWebtoons(data);
+    }
+  });
+
   const isInitialRender = useRef(true);
   useEffect(() => {
     if (isInitialRender.current) {
@@ -25,12 +36,13 @@ export default function GenreWrapper({
       isInitialRender.current = false;
       return;
     }
-    getPerGenre(genreId)
-      .then(newPerGenreItems => setWebtoons(newPerGenreItems));
-  }, [genreId]);
+    execute({
+      genreId
+    });
+  }, [genreId, execute]);
 
   return <>
-    <div>
+    <Row className="gap-2">
       {genres.map((genre) => {
         const isActive = genre.id === genreId;
         return <Badge
@@ -44,7 +56,7 @@ export default function GenreWrapper({
           {displayName(locale, genre.label, genre.label_en)}
         </Badge>;
       })}
-    </div>
+    </Row>
     <WebtoonGrid webtoons={webtoons} className="mt-9" />
   </>;
 }

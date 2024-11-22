@@ -1,26 +1,29 @@
 // 홈 화면
 
 import { AgeLimit } from "@/resources/webtoons/webtoon.types";
+import z from "zod";
 
-export type HomeWebtoonItem = {
-  id: number;
-  thumbPath: string;
-  title: string;
-  title_en: string;
-  authorOrCreatorName: string;
-  authorOrCreatorName_en?: string;
-  creator: {
-    user: {
-      id: number;
-    };
-  };
-};
+export const HomeWebtoonItemSchema = z.object({
+  id: z.number(),
+  thumbPath: z.string(),
+  title: z.string(),
+  title_en: z.string(),
+  authorOrCreatorName: z.string(),
+  authorOrCreatorName_en: z.string().optional(),
+  creator: z.object({
+    user: z.object({
+      id: z.number(),
+    })
+  })
+});
+export type HomeWebtoonItem = z.infer<typeof HomeWebtoonItemSchema>;
 
-export type BannerWebtoonItem = HomeWebtoonItem & {
-  offers: number;
-  ageLimit: AgeLimit;
-  isNew: boolean;
-};
+export const BannerWebtoonItemSchema = HomeWebtoonItemSchema.extend({
+  offers: z.number(),
+  ageLimit: z.nativeEnum(AgeLimit),
+  isNew: z.boolean()
+});
+export type BannerWebtoonItem = z.infer<typeof BannerWebtoonItemSchema>;
 
 export type HomeGenreItem = {
   id: number;

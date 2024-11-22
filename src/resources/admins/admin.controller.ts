@@ -4,11 +4,8 @@ import { action } from "@/handlers/safeAction";
 import z from "zod";
 import { ListResponse, ListResponseSchema } from "@/resources/globalTypes";
 import { AdminSchema } from "@/resources/admins/admin.types";
-import prisma from "@/utils/prisma";
-import { UserSchema, UserTypeT } from "@/resources/users/user.types";
-import { assertAdmin, getTokenInfo } from "@/resources/tokens/token.controller";
-import { AdminLevel } from "@/resources/tokens/token.types";
-import { BadRequestError } from "@/handlers/errors";
+import { UserSchema } from "@/resources/users/user.types";
+import adminService from "@/resources/admins/admin.service";
 
 const AdminEntrySchema = AdminSchema.pick({
   id: true,
@@ -33,64 +30,17 @@ export const listAdmins = action
     ListResponseSchema(AdminEntrySchema)
   )
   .action(
-    async ({
-      parsedInput: { page },
-    }): Promise<ListResponse<AdminEntryT>> => {
-      await assertAdmin();
-      const { userId, metadata } = await getTokenInfo();
-      const limit = 10;
-      const [records, totalRecords] = await prisma.$transaction([
-        prisma.admin.findMany({
-          take: limit,
-          skip: (page - 1) * limit,
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                userType: true
-              }
-            }
-          }
-        }),
-        prisma.admin.count()
-      ]);
-      return {
-        items: records.map(record => ({
-          id: record.id,
-          isSuper: record.isSuper,
-          createdAt: record.createdAt,
-          user: {
-            name: record.user.name,
-            email: record.user.email,
-            userType: record.user.userType as UserTypeT
-          },
-          isDeletable: (metadata.adminLevel >= AdminLevel.SuperAdmin
-            && record.user.id !== userId)
-        })),
-        totalPages: Math.ceil(totalRecords / limit),
-      };
+    async ({ parsedInput }): Promise<ListResponse<AdminEntryT>> => {
+      return adminService.list(parsedInput);
     });
 
 export const createAdmin = action
-  .metadata({ actionName: "deleteAdmin" })
+  .metadata({ actionName: "createAdmin" })
   .schema(z.object({
     targetUserId: z.number()
   }))
-  .action(async ({
-    parsedInput: { targetUserId },
-  }) => {
-    await assertAdmin({ needsSuperPermission: true });
-    await prisma.admin.create({
-      data: {
-        user: {
-          connect: {
-            id: targetUserId
-          }
-        }
-      }
-    });
+  .action(async ({ parsedInput }) => {
+    return adminService.create(parsedInput);
   });
 
 
@@ -102,23 +52,5 @@ export const deleteAdmin = action
   .action(async ({
     bindArgsParsedInputs: [adminId],
   }) => {
-    await assertAdmin({ needsSuperPermission: true });
-    const { userId } = await getTokenInfo();
-    await prisma.$transaction(async (tx) => {
-      const { userId: targetUserId } = await tx.admin.delete({
-        where: {
-          id: adminId
-        },
-        select: {
-          userId: true
-        }
-      });
-      if (userId === targetUserId){
-        throw new BadRequestError({
-          title: "관리자 권한 삭제 불가",
-          message: "자신의 권한은 삭제할 수 없습니다.",
-          logError: true,
-        });
-      }
-    });
+    return adminService.delete(adminId);
   });

@@ -5,7 +5,7 @@ import {
 } from "@/resources/bidRequestMessages/bidRequestMessage.types";
 import prisma from "@/utils/prisma";
 import { UserSchema, UserTypeT } from "@/resources/users/user.types";
-import { getTokenInfo } from "@/resources/tokens/token.controller";
+import { getTokenInfo } from "@/resources/tokens/token.service";
 import { InvoiceSchema } from "@/resources/invoices/invoice.types";
 import z from "zod";
 import { action } from "@/handlers/safeAction";

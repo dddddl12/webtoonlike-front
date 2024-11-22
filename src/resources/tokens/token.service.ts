@@ -44,9 +44,42 @@ const getClerkAuth = async () => {
   return clerkUser;
 };
 
-export const getTokenInfo = async (): Promise<TokenInfo> => {
+export const getTokenInfo = async (allowedRoles?: {
+  superAdmin?: boolean;
+  admin?: boolean;
+  buyer?: boolean;
+  creator?: boolean;
+}): Promise<TokenInfo> => {
   const clerkUser = await getClerkAuth();
-  return TokenInfoSchema.parse(clerkUser.sessionClaims.serviceInfo);
+  const token = TokenInfoSchema.parse(clerkUser.sessionClaims.serviceInfo);
+  if (!allowedRoles) {
+    return token;
+  }
+  // roles이 주어진 경우 추가 체크
+  const { metadata } = token;
+  const isAuthorized = Object.entries(allowedRoles)
+    .some(([role, isAllowed]) => {
+      if (!isAllowed) {
+        return false;
+      }
+      switch (role) {
+        case "superAdmin":
+          return metadata.adminLevel >= AdminLevel.SuperAdmin;
+        case "admin":
+          return metadata.adminLevel >= AdminLevel.Admin;
+        case "buyer":
+          return metadata.type === UserTypeT.Buyer;
+        case "creator":
+          return metadata.type === UserTypeT.Creator;
+        default:
+          throw new Error("Unexpected role");
+      }
+    });
+  if (!isAuthorized) {
+    // todo 메시지 번역
+    throw new ForbiddenError();
+  }
+  return token;
 };
 
 export async function updateTokenInfo(tx?: PrismaTransaction): Promise<{
@@ -113,52 +146,6 @@ const getAdminLevel = (admin: {
     return AdminLevel.SuperAdmin;
   }
   throw new Error("Unexpected admin level");
-};
-
-export const assertAdmin = async (params?: {
-  needsSuperPermission: boolean;
-}) => {
-  const needsSuperPermission = params?.needsSuperPermission || false;
-  const { metadata } = await getTokenInfo();
-  if (needsSuperPermission && metadata.adminLevel < AdminLevel.SuperAdmin) {
-    const t = await getTranslations("errors.ForbiddenError.adminLevel");
-    throw new ForbiddenError({
-      title: t("title"),
-      message: t("superAdminMessage"),
-      logError: true,
-    });
-  } else if (metadata.adminLevel < AdminLevel.Admin) {
-    const t = await getTranslations("errors.ForbiddenError.adminLevel");
-    throw new ForbiddenError({
-      title: t("title"),
-      message: t("message"),
-      logError: true,
-    });
-  }
-};
-
-export const assertBuyer = async () => {
-  const { metadata } = await getTokenInfo();
-  if (metadata.type !== UserTypeT.Buyer) {
-    const t = await getTranslations("errors.ForbiddenError.buyersOnly");
-    throw new NotAuthorizedError({
-      title: t("title"),
-      message: t("message"),
-      logError: true,
-    });
-  }
-};
-
-export const assertCreator = async () => {
-  const { metadata } = await getTokenInfo();
-  if (metadata.type !== UserTypeT.Creator) {
-    const t = await getTranslations("errors.ForbiddenError.creatorsOnly");
-    throw new NotAuthorizedError({
-      title: t("title"),
-      message: t("message"),
-      logError: true,
-    });
-  }
 };
 
 export const getClerkUserMap = async (clerkUserIds: string[]): Promise<Map<string, User>> => {

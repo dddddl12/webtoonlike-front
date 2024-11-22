@@ -9,7 +9,7 @@ import { FileTypeResult } from "file-type";
 
 export async function generatePreSignedUrl(directory: FileDirectoryT, fileType: FileTypeResult) {
   let computedDirectory: string = directory;
-  if(STAGE === "dev") {
+  if (STAGE === "dev") {
     computedDirectory = "dev/" + directory;
   }
   const key = `${computedDirectory}/${uuidv4()}.${fileType.ext}`;

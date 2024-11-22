@@ -2,7 +2,7 @@
 
 import { Col, Row } from "@/shadcn/ui/layouts";
 import { useLocale, useTranslations } from "next-intl";
-import { listWebtoons, WebtoonFilterT, WebtoonPreviewT } from "@/resources/webtoons/webtoon.controller";
+import { listWebtoons, WebtoonFilterT } from "@/resources/webtoons/webtoon.controller";
 import { ListResponse } from "@/resources/globalTypes";
 import useListData from "@/hooks/listData";
 import { displayName } from "@/utils/displayName";
@@ -16,7 +16,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger
 } from "@/shadcn/ui/dropdown-menu";
-import { AgeLimit } from "@/resources/webtoons/webtoon.types";
+import { AgeLimit, WebtoonPreviewT } from "@/resources/webtoons/webtoon.types";
 
 export default function WebtooonFeedList({
   genres, initialWebtoonListResponse,

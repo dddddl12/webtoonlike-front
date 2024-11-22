@@ -1,7 +1,7 @@
 import { Col, Row } from "@/shadcn/ui/layouts";
 import Image from "next/image";
 import { Text } from "@/shadcn/ui/texts";
-import { getCreator } from "@/resources/creators/creator.controller";
+import { getCreatorByUserId } from "@/resources/creators/creator.controller";
 import { listWebtoonsByUserId } from "@/resources/webtoons/webtoon.controller";
 import { displayName } from "@/utils/displayName";
 import { getLocale } from "next-intl/server";
@@ -18,7 +18,7 @@ export default async function CreatorPage({
 }) {
   const creatorUid = await params.then(p => Number(p.creatorUid));
   const [creator, initialWebtoonListResponse] = await Promise.all([
-    getCreator(creatorUid).then(responseHandler),
+    getCreatorByUserId(creatorUid).then(responseHandler),
     listWebtoonsByUserId({ userId: creatorUid }).then(responseHandler)
   ]);
 

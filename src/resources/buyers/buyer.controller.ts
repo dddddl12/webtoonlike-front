@@ -1,30 +1,21 @@
 "use server";
 
-import { BuyerCompanySchema, PublicBuyerInfoT } from "@/resources/buyers/buyer.types";
-import prisma from "@/utils/prisma";
+import { action } from "@/handlers/safeAction";
+import z from "zod";
+import buyerService from "@/resources/buyers/buyer.service";
+import { PublicBuyerInfoSchema } from "@/resources/buyers/buyer.types";
 
-export const getPublicBuyerInfoByUserId = async (userId: number): Promise<PublicBuyerInfoT> => {
-  const record = await prisma.buyer.findUniqueOrThrow({
-    where: {
-      userId
-    },
-    select: {
-      company: true,
-      user: {
-        select: {
-          name: true
-        }
-      }
-    }
-  });
-  const company = BuyerCompanySchema.parse(record.company);
-  return {
-    username: record.user.name,
-    company: {
-      name: company.name,
-      thumbPath: company.thumbPath,
-      dept: company.dept,
-      position: company.position,
-    }
-  };
-};
+export const getPublicBuyerInfoByUserId = action
+  .metadata({
+    actionName: "getPublicBuyerInfoByUserId"
+  })
+  .bindArgsSchemas([
+    z.number() // userId
+  ])
+  .outputSchema(PublicBuyerInfoSchema)
+  .action(
+    async ({
+      bindArgsParsedInputs: [userId]
+    }) => {
+      return buyerService.getPublicByUserId(userId);
+    });
