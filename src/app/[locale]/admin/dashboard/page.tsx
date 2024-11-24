@@ -1,4 +1,4 @@
-import { Col, Row } from "@/shadcn/ui/layouts";
+import { Col, Row } from "@/components/ui/common";
 
 export default function DashboardPage() {
 

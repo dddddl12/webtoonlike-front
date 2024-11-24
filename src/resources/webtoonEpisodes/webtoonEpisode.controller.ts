@@ -1,29 +1,15 @@
 "use server";
 
 import {
+  WebtoonEpisodeDetailsSchema,
   WebtoonEpisodeEnglishUrlFormSchema,
-  WebtoonEpisodeFormSchema,
-  WebtoonEpisodeSchema
-} from "@/resources/webtoonEpisodes/webtoonEpisode.types";
+  WebtoonEpisodeFormSchema
+} from "@/resources/webtoonEpisodes/webtoonEpisode.dto";
 import z from "zod";
 import { action } from "@/handlers/safeAction";
 import webtoonEpisodeService from "@/resources/webtoonEpisodes/webtoonEpisode.service";
 
 
-const WebtoonEpisodeDetailsSchema = WebtoonEpisodeSchema
-  .extend({
-    isEditable: z.boolean(),
-    webtoon: z.object({
-      id: z.number(),
-      title: z.string(),
-      title_en: z.string().optional(),
-    }),
-    navigation: z.object({
-      previousId: z.number().optional(),
-      nextId: z.number().optional(),
-    })
-  });
-export type WebtoonEpisodeDetailsT = z.infer<typeof WebtoonEpisodeDetailsSchema>;
 export const getEpisode = action
   .metadata({ actionName: "getEpisode" })
   .bindArgsSchemas([

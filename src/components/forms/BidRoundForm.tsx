@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Heading2 } from "@/shadcn/ui/texts";
-import { Gap, Row } from "@/shadcn/ui/layouts";
+import { Heading2 } from "@/components/ui/common";
+import { Row } from "@/components/ui/common";
 import { Button } from "@/shadcn/ui/button";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { IconExclamation } from "@/components/svgs/IconExclamation";
 import { Checkbox } from "@/shadcn/ui/checkbox";
 import { useTranslations } from "next-intl";
-import { BidRoundFormSchema, BidRoundFormT, BidRoundT } from "@/resources/bidRounds/bidRound.types";
+import { BidRoundFormSchema, BidRoundFormT, BidRoundT } from "@/resources/bidRounds/dtos/bidRound.dto";
 import { UseFormReturn, useWatch } from "react-hook-form";
 import { useRouter } from "@/i18n/routing";
 import {
@@ -19,10 +19,10 @@ import {
   FormItem,
   FormLabel
 } from "@/shadcn/ui/form";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/ui/Spinner";
 import ContractRangeForm from "@/components/forms/ContractRangeForm";
 import { NumericInput } from "@/shadcn/ui/input";
-import { createOrUpdateBidRound } from "@/resources/bidRounds/bidRound.controller";
+import { createOrUpdateBidRound } from "@/resources/bidRounds/controllers/bidRound.controller";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -133,10 +133,8 @@ export default function BidRoundForm({ webtoonId, prev }: {
           </FormControl>
         </FormItem>
 
-        <Gap y={20}/>
-
         {/* 등록 버튼 */}
-        <Row className="justify-end">
+        <Row className="justify-end mt-20">
           <Button
             disabled={!isValid || !isAgreed}
             className="rounded-full"

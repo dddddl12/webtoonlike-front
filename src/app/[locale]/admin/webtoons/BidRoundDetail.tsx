@@ -1,11 +1,12 @@
-import { Col, Row } from "@/shadcn/ui/layouts";
+import { Col, Row } from "@/components/ui/common";
 import { Button } from "@/shadcn/ui/button";
-import { AdminPageBidRoundT, approveOrDisapproveBidRound } from "@/resources/bidRounds/bidRound.controller";
 import { buildImgUrl } from "@/utils/media";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { useMemo } from "react";
 import useSafeAction from "@/hooks/safeAction";
+import { AdminPageBidRoundT } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
+import { approveOrDisapproveBidRound } from "@/resources/bidRounds/controllers/bidRoundAdmin.controller";
 
 export default function BidRoundDetail({
   bidRound, onHandleDetailReset
@@ -48,13 +49,13 @@ export default function BidRoundDetail({
           </div>
           <Col className="max-w-[80%]">
             <Link
-              className="text-[16pt] text-mint underline cursor-pointer"
+              className="text-[16pt] clickable"
               href={`/webtoons/${webtoon.id}`}
             >
-              제목: {webtoon.title}
+              제목: {webtoon.localized.title}
             </Link>
             <p className="text-[12pt]">작가: {creator.user.name}</p>
-            <p className="text-[12pt]">줄거리: {webtoon.description}</p>
+            <p className="text-[12pt]">줄거리: {webtoon.localized.description}</p>
           </Col>
         </Row>
       </Col>

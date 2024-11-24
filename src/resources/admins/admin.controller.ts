@@ -3,23 +3,9 @@
 import { action } from "@/handlers/safeAction";
 import z from "zod";
 import { ListResponse, ListResponseSchema } from "@/resources/globalTypes";
-import { AdminSchema } from "@/resources/admins/admin.types";
-import { UserSchema } from "@/resources/users/user.types";
+import { AdminEntrySchema, AdminEntryT } from "@/resources/admins/admin.dto";
 import adminService from "@/resources/admins/admin.service";
 
-const AdminEntrySchema = AdminSchema.pick({
-  id: true,
-  isSuper: true,
-  createdAt: true,
-}).extend({
-  user: UserSchema.pick({
-    name: true,
-    email: true,
-    userType: true
-  }),
-  isDeletable: z.boolean()
-});
-export type AdminEntryT = z.infer<typeof AdminEntrySchema>;
 export const listAdmins = action
   .metadata({ actionName: "listAdmins" })
   .schema(z.object({

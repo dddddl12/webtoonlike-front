@@ -1,11 +1,12 @@
 "use client";
 
-import Spinner from "@/components/Spinner";
-import { AdminPageAccountT, listUsers } from "@/resources/users/user.controller";
-import Paginator from "@/components/Paginator";
-import { Col } from "@/shadcn/ui/layouts";
+import Spinner from "@/components/ui/Spinner";
+import Paginator from "@/components/ui/Paginator";
+import { Col } from "@/components/ui/common";
 import { useTranslations } from "next-intl";
 import useListData from "@/hooks/listData";
+import { listUsers } from "@/resources/users/controllers/userAdmin.controller";
+import { AdminPageAccountT } from "@/resources/users/dtos/userAdmin.dto";
 
 
 export default function Accounts() {

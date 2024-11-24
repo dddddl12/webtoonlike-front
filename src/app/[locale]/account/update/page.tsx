@@ -1,11 +1,11 @@
-import { getUser } from "@/resources/users/user.controller";
-import PageLayout from "@/components/PageLayout";
+import PageLayout from "@/components/ui/PageLayout";
 import UpdateAccountWrapper from "@/app/[locale]/account/update/UpdateAccountWrapper";
-import { Col, Gap } from "@/shadcn/ui/layouts";
-import { Heading } from "@/shadcn/ui/texts";
+import { Col } from "@/components/ui/common";
+import { Heading } from "@/components/ui/common";
 import LightThemeProvider from "@/providers/LightThemeProvider";
-import Logo from "@/components/Logo";
+import Logo from "@/components/ui/Logo";
 import { responseHandler } from "@/handlers/responseHandler";
+import { getUser } from "@/resources/users/controllers/userAccount.controller";
 
 export default async function UpdateAccount () {
   const user = await getUser()
@@ -15,11 +15,10 @@ export default async function UpdateAccount () {
       <PageLayout lightTheme={true}>
         <Col className="w-[400px] mx-auto">
           <Logo lightTheme={true} />
-          <Gap y={10} />
-          <Heading className="text-black font-bold text-[20pt]">
+          <Heading className="text-black font-bold text-[20pt] mt-10">
             회원 정보 업데이트
           </Heading>
-          <UpdateAccountWrapper userExtendedForm={user} />
+          <UpdateAccountWrapper userAccountForm={user} />
         </Col>
       </PageLayout>
     </LightThemeProvider>

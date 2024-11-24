@@ -3,9 +3,9 @@
 import { useTranslations } from "next-intl";
 import { ListResponse } from "@/resources/globalTypes";
 import useListData from "@/hooks/listData";
-import { listLikedWebtoons } from "@/resources/webtoons/webtoon.controller";
-import WebtoonGridPaginated from "@/components/WebtoonGridPaginated";
-import { WebtoonPreviewT } from "@/resources/webtoons/webtoon.types";
+import WebtoonGridPaginated from "@/components/shared/WebtoonGridPaginated";
+import { WebtoonPreviewT } from "@/resources/webtoons/dtos/webtoonPreview.dto";
+import { listLikedWebtoons } from "@/resources/webtoons/controllers/webtoonPreview.controller";
 
 export default function LikedWebtoonListGrid({ initialMyLikesListResponse }: {
   initialMyLikesListResponse: ListResponse<WebtoonPreviewT>;

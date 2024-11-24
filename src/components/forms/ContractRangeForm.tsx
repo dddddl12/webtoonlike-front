@@ -1,8 +1,7 @@
 import { useTranslations } from "next-intl";
-import { Gap, Row } from "@/shadcn/ui/layouts";
+import { Row } from "@/components/ui/common";
 import { Button } from "@/shadcn/ui/button";
 import { IconCross } from "@/components/svgs/IconCross";
-import { Text } from "@/shadcn/ui/texts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shadcn/ui/table";
 import {
   Select,
@@ -13,9 +12,9 @@ import {
 } from "@/shadcn/ui/select";
 import { IconDelete } from "@/components/svgs/IconDelete";
 import { UseFormReturn, useWatch } from "react-hook-form";
-import { BidRoundFormT, ContractRangeItemSchema, ContractRangeItemT } from "@/resources/bidRounds/bidRound.types";
+import { BidRoundFormT, ContractRangeItemSchema, ContractRangeItemT } from "@/resources/bidRounds/dtos/bidRound.dto";
 import { FormControl, FormField, FormItem } from "@/shadcn/ui/form";
-import { BidRequestFormT } from "@/resources/bidRequests/bidRequest.types";
+import { BidRequestFormT } from "@/resources/bidRequests/dtos/bidRequest.dto";
 import { Input } from "@/shadcn/ui/input";
 
 type FormT = BidRoundFormT | BidRequestFormT;
@@ -34,20 +33,19 @@ export default function ContractRangeForm({ form, formType }: {
   return (
     <div>
       <Row className="justify-end">
-        <Button className="bg-mint" onClick={(e) => {
+        <Button variant="mint" onClick={(e) => {
           e.preventDefault();
           const newContractRange = form.getValues("contractRange") || [];
-          newContractRange.push({} as any);
+          newContractRange.push({} as any); //todo
           form.setValue("contractRange", newContractRange, {
             shouldValidate: true
           });
         }}>
-          <IconCross className="fill-white" />
-          <Text className="text-white">{t("addItem")}</Text>
+          <IconCross/>
+          <span>{t("addItem")}</span>
         </Button>
       </Row>
-      <Gap y={3} />
-      <Table>
+      <Table className="mt-3">
         <TableHeader>
           <TableRow className="bg-gray-dark">
             <TableHead className="text-center text-gray-text">
@@ -156,7 +154,7 @@ function BusinessFieldCell({ form, row, idx }: {
   const tBusinessFields = useTranslations("businessFields");
   if (row.businessField === "WEBTOONS") {
     return <TableCell className="text-center w-[200px]">
-      <Text>-</Text>
+      -
     </TableCell>;
   }
   return <TableCell className="text-center w-[200px]">

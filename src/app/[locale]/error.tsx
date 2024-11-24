@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import PageLayout from "@/components/PageLayout";
+import PageLayout from "@/components/ui/PageLayout";
 import { ActionErrorSchema, ActionErrorT } from "@/handlers/errors";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import z from "zod";
-import { Col } from "@/shadcn/ui/layouts";
+import { Col } from "@/components/ui/common";
 import { Button } from "@/shadcn/ui/button";
 
 // todo 특수 에러의 경우 특수 처리

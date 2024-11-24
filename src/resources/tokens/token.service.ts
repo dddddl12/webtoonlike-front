@@ -4,7 +4,7 @@ import { PrismaTransaction } from "@/resources/globalTypes";
 import { AdminLevel, ClerkUser, TokenInfo, TokenInfoSchema } from "@/resources/tokens/token.types";
 import prisma from "@/utils/prisma";
 import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
-import { UserTypeT } from "@/resources/users/user.types";
+import { UserTypeT } from "@/resources/users/dtos/user.dto";
 import { ForbiddenError, NotAuthorizedError } from "@/handlers/errors";
 import { User } from "@clerk/backend";
 import { getTranslations } from "next-intl/server";

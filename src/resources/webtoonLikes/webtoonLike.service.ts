@@ -1,5 +1,5 @@
 import "server-only";
-import { WebtoonLikeWithMineT } from "@/resources/webtoonLikes/webtoonLike.types";
+import { WebtoonLikeWithMineT } from "@/resources/webtoonLikes/webtoonLike.dto";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 import prisma from "@/utils/prisma";
 

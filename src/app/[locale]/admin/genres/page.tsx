@@ -1,20 +1,22 @@
 "use client";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import Spinner from "@/components/Spinner";
-import { Col, Row } from "@/shadcn/ui/layouts";
-import { useEffect, useMemo, useState } from "react";
-import { BasicGenreT, listGenres } from "@/resources/genres/genre.controller";
+import Spinner from "@/components/ui/Spinner";
+import { Col, Row } from "@/components/ui/common";
+import { useEffect, useState } from "react";
+import { listGenres } from "@/resources/genres/genre.controller";
 import { Badge } from "@/shadcn/ui/badge";
 import { Button } from "@/shadcn/ui/button";
 import DeleteGenre from "@/app/[locale]/admin/genres/DeleteGenre";
 import useSafeAction from "@/hooks/safeAction";
 import useReload from "@/hooks/reload";
 import GenreForm from "@/components/forms/admin/GenreForm";
+import { GenreT } from "@/resources/genres/genre.dto";
 
 // BadRequestError
 export default function ManageGenresPage() {
   return (
     <Col className="gap-10">
+      {/*todo pt 제거*/}
       <p className='font-bold text-[18pt]'>장르 관리</p>
       <ManageGenresContent />
     </Col>
@@ -23,10 +25,9 @@ export default function ManageGenresPage() {
 
 function ManageGenresContent() {
   const { reload, reloadKey } = useReload();
-  const [genres, setGenres] = useState<BasicGenreT[]>();
+  const [genres, setGenres] = useState<GenreT[]>();
 
-  const boundListGenres = useMemo(() => listGenres, []);
-  const { execute } = useSafeAction(boundListGenres, {
+  const { execute } = useSafeAction(listGenres, {
     onSuccess: ({ data }) => setGenres(data),
   });
   useEffect(() => {
@@ -47,7 +48,7 @@ function ManageGenresContent() {
 
 function GenreContainer({ reload, genres }: {
   reload: () => void;
-  genres?: BasicGenreT[];
+  genres?: GenreT[];
 }) {
 
   if (!genres) {

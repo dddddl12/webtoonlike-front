@@ -1,15 +1,12 @@
-import { Col, Row } from "@/shadcn/ui/layouts";
+import { Col, Row } from "@/components/ui/common";
 import Image from "next/image";
-import { Text } from "@/shadcn/ui/texts";
 import { getCreatorByUserId } from "@/resources/creators/creator.controller";
-import { listWebtoonsByUserId } from "@/resources/webtoons/webtoon.controller";
-import { displayName } from "@/utils/displayName";
-import { getLocale } from "next-intl/server";
 import { IconHeartFill } from "@/components/svgs/IconHeartFill";
-import PageLayout from "@/components/PageLayout";
+import PageLayout from "@/components/ui/PageLayout";
 import CreatorWebtoonList from "@/app/[locale]/creators/[creatorUid]/CreatorWebtoonList";
 import { buildImgUrl } from "@/utils/media";
 import { responseHandler } from "@/handlers/responseHandler";
+import { listWebtoonsByUserId } from "@/resources/webtoons/controllers/webtoonPreview.controller";
 
 export default async function CreatorPage({
   params,
@@ -21,8 +18,6 @@ export default async function CreatorPage({
     getCreatorByUserId(creatorUid).then(responseHandler),
     listWebtoonsByUserId({ userId: creatorUid }).then(responseHandler)
   ]);
-
-  const locale = await getLocale();
 
   return <PageLayout>
     <Row className="gap-12">
@@ -38,9 +33,9 @@ export default async function CreatorPage({
         height={160}
       />
       <Col className="items-center justify-center w-full sm:items-start gap-5">
-        <Text className="font-bold text-[26pt]">
-          {displayName(locale, creator.name, creator.name_en)}
-        </Text>
+        <p className="font-bold text-[26pt]">
+          {creator.localized.name}
+        </p>
         <Row className="w-full justify-between sm:flex-row">
           {/*TODO 좋아요 기준*/}
           <Row className="bg-white/10 px-3 py-2 rounded-sm cursor-default">

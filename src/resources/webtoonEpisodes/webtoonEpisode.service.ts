@@ -1,29 +1,22 @@
 import "server-only";
 import {
+  WebtoonEpisodeDetailsT,
   WebtoonEpisodeEnglishUrlFormT,
   WebtoonEpisodeFormT,
-  WebtoonEpisodeT
-} from "@/resources/webtoonEpisodes/webtoonEpisode.types";
+} from "@/resources/webtoonEpisodes/webtoonEpisode.dto";
 import prisma from "@/utils/prisma";
 import { authorizeWebtoonAccess } from "@/resources/authorization";
-import { WebtoonEpisode as WebtoonEpisodeRecord } from "@prisma/client";
 import { getTokenInfo } from "@/resources/tokens/token.service";
-import { UserTypeT } from "@/resources/users/user.types";
+import { UserTypeT } from "@/resources/users/dtos/user.dto";
 import { AdminLevel } from "@/resources/tokens/token.types";
-import webtoonService from "@/resources/webtoons/webtoon.service";
+import webtoonHelper from "@/resources/webtoons/helpers/webtoon.helper";
+import webtoonEpisodeHelper from "@/resources/webtoonEpisodes/webtoonEpisode.heloper";
+import { getLocale } from "next-intl/server";
+import { displayName } from "@/resources/displayName";
 
-export class WebtoonEpisodeService {
-  mapToDTO = (record: WebtoonEpisodeRecord): WebtoonEpisodeT => ({
-    id: record.id,
-    createdAt: record.createdAt,
-    updatedAt: record.updatedAt,
-    webtoonId: record.webtoonId,
-    episodeNo: record.episodeNo,
-    imagePaths: record.imagePaths as string[]
-  });
-
-  async get(webtoonId: number, episodeId: number) {
-    const webtoonWhere = await webtoonService.whereWithReadAccess(webtoonId);
+class WebtoonEpisodeService {
+  async get(webtoonId: number, episodeId: number): Promise<WebtoonEpisodeDetailsT> {
+    const webtoonWhere = await webtoonHelper.whereWithReadAccess(webtoonId);
     const { userId, metadata } = await getTokenInfo();
 
     const record = await prisma.webtoonEpisode.findUniqueOrThrow({
@@ -62,13 +55,15 @@ export class WebtoonEpisodeService {
       previousId: episodeIds[episodeIds.indexOf(episodeId) - 1],
     };
 
+    const locale = await getLocale();
     return {
-      ...this.mapToDTO(record),
+      ...webtoonEpisodeHelper.mapToDTO(record),
       isEditable,
       webtoon: {
         id: record.webtoon.id,
-        title: record.webtoon.title,
-        title_en: record.webtoon.title_en ?? undefined,
+        localized: {
+          title: displayName(locale, record.webtoon.title, record.webtoon.title_en)
+        }
       },
       navigation
     };
@@ -88,7 +83,7 @@ export class WebtoonEpisodeService {
         }
       });
     });
-    return this.mapToDTO(episodeRecord);
+    return webtoonEpisodeHelper.mapToDTO(episodeRecord);
   }
 
   async update(
@@ -119,7 +114,7 @@ export class WebtoonEpisodeService {
         }
       });
     });
-    return this.mapToDTO(episodeRecord);
+    return webtoonEpisodeHelper.mapToDTO(episodeRecord);
   }
 }
 

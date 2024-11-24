@@ -1,13 +1,10 @@
 "use client";
 
-import { Col, Row } from "@/shadcn/ui/layouts";
-import { useLocale, useTranslations } from "next-intl";
-import { listWebtoons, WebtoonFilterT } from "@/resources/webtoons/webtoon.controller";
+import { Col, Row } from "@/components/ui/common";
+import { useTranslations } from "next-intl";
 import { ListResponse } from "@/resources/globalTypes";
 import useListData from "@/hooks/listData";
-import { displayName } from "@/utils/displayName";
-import WebtoonGridPaginated from "@/components/WebtoonGridPaginated";
-import { BasicGenreT } from "@/resources/genres/genre.controller";
+import WebtoonGridPaginated from "@/components/shared/WebtoonGridPaginated";
 import { Button } from "@/shadcn/ui/button";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
@@ -16,12 +13,15 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger
 } from "@/shadcn/ui/dropdown-menu";
-import { AgeLimit, WebtoonPreviewT } from "@/resources/webtoons/webtoon.types";
+import { AgeLimit } from "@/resources/webtoons/dtos/webtoon.dto";
+import { WebtoonPreviewT } from "@/resources/webtoons/dtos/webtoonPreview.dto";
+import { listWebtoons, WebtoonFilterT } from "@/resources/webtoons/controllers/webtoonPreview.controller";
+import { GenreT } from "@/resources/genres/genre.dto";
 
 export default function WebtooonFeedList({
   genres, initialWebtoonListResponse,
 }: {
-  genres: BasicGenreT[];
+  genres: GenreT[];
   initialWebtoonListResponse: ListResponse<WebtoonPreviewT>;
 }) {
 
@@ -33,18 +33,17 @@ export default function WebtooonFeedList({
   const { listResponse, filters, setFilters } = useListData(
     listWebtoons, initialFilters, initialWebtoonListResponse);
 
-  const locale = useLocale();
   const TallSeries = useTranslations("allSeries");
   const Tage = useTranslations("ageRestriction");
 
   return (
-    <Col className="gap-10">
+    <Col className="gap-10 mt-10">
       <Row className="gap-4">
         <FilterSelector
           filterTitle={TallSeries("genre")}
           filterKey="genreIds"
           items={genres.map(genre => ({
-            label: displayName(locale, genre.label, genre.label_en),
+            label: genre.localized.label,
             value: genre.id,
           }))}
           filters={filters}

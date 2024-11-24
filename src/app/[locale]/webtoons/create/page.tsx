@@ -1,4 +1,4 @@
-import PageLayout from "@/components/PageLayout";
+import PageLayout from "@/components/ui/PageLayout";
 import { WebtoonForm } from "@/components/forms/WebtoonForm";
 import { listGenres } from "@/resources/genres/genre.controller";
 import { responseHandler } from "@/handlers/responseHandler";

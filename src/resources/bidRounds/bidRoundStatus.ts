@@ -1,4 +1,4 @@
-import { BidRoundApprovalStatus, BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
+import { BidRoundApprovalStatus, BidRoundStatus } from "@/resources/bidRounds/dtos/bidRound.dto";
 
 export const getBidRoundStatus = ({
   bidStartsAt, negoStartsAt, processEndsAt, approvalStatus

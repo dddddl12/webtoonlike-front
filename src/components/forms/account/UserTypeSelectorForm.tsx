@@ -1,13 +1,15 @@
 import { Dispatch, SetStateAction } from "react";
-import { SignUpStage, UserExtendedFormT, UserTypeT } from "@/resources/users/user.types";
+import { UserTypeT } from "@/resources/users/dtos/user.dto";
+import { SignUpStage, UserAccountFormT } from "@/resources/users/dtos/userAccount.dto";
 import { useTranslations } from "next-intl";
-import { Col, Row } from "@/shadcn/ui/layouts";
+import { Col, Row } from "@/components/ui/common";
 import { IconSignupCreator } from "@/components/svgs/IconSignupCreatori";
 import { Button } from "@/shadcn/ui/button";
 import { IconSignupBuyer } from "@/components/svgs/IconSignupBuyer";
 
-export default function UserTypeSelectorForm({ setUserExtendedForm, setSignUpStage }: {
-  setUserExtendedForm: Dispatch<SetStateAction<Partial<UserExtendedFormT>>>;
+// todo setUserAccountForm context로 변경
+export default function UserTypeSelectorForm({ setUserAccountForm, setSignUpStage }: {
+  setUserAccountForm: Dispatch<SetStateAction<Partial<UserAccountFormT>>>;
   setSignUpStage: Dispatch<SetStateAction<SignUpStage>>;
 }) {
   const t = useTranslations("setupPage");
@@ -18,7 +20,7 @@ export default function UserTypeSelectorForm({ setUserExtendedForm, setSignUpSta
     <Row className="justify-evenly">
       <RoleColumn
         userType={UserTypeT.Creator}
-        setUserExtendedForm={setUserExtendedForm}
+        setUserAccountForm={setUserAccountForm}
         setSignUpStage={setSignUpStage}
       />
 
@@ -26,16 +28,16 @@ export default function UserTypeSelectorForm({ setUserExtendedForm, setSignUpSta
 
       <RoleColumn
         userType={UserTypeT.Buyer}
-        setUserExtendedForm={setUserExtendedForm}
+        setUserAccountForm={setUserAccountForm}
         setSignUpStage={setSignUpStage}
       />
     </Row>
   </>;
 }
 
-function RoleColumn({ userType, setUserExtendedForm, setSignUpStage }: {
+function RoleColumn({ userType, setUserAccountForm, setSignUpStage }: {
   userType: UserTypeT;
-  setUserExtendedForm: Dispatch<SetStateAction<Partial<UserExtendedFormT>>>;
+  setUserAccountForm: Dispatch<SetStateAction<Partial<UserAccountFormT>>>;
   setSignUpStage: Dispatch<SetStateAction<SignUpStage>>;
 }) {
   const t = useTranslations("setupPage");
@@ -52,7 +54,7 @@ function RoleColumn({ userType, setUserExtendedForm, setSignUpStage }: {
 
     <Button
       onClick={() => {
-        setUserExtendedForm(prev => ({
+        setUserAccountForm(prev => ({
           ...prev,
           userType,
         }));

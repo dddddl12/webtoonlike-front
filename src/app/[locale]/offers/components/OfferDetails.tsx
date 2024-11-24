@@ -1,17 +1,17 @@
 import { useTranslations } from "next-intl";
-import { Col } from "@/shadcn/ui/layouts";
-import { Heading } from "@/shadcn/ui/texts";
+import { Col } from "@/components/ui/common";
+import { Heading } from "@/components/ui/common";
 import { getPublicBuyerInfoByUserId } from "@/resources/buyers/buyer.controller";
 import { useEffect, useMemo, useState } from "react";
-import { PublicBuyerInfoT } from "@/resources/buyers/buyer.types";
-import Spinner from "@/components/Spinner";
-import OfferDetails from "@/components/Details/OfferDetails";
-import Profile from "@/components/Details/Profile";
-import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.controller";
+import { PublicBuyerInfoT } from "@/resources/buyers/buyer.dto";
+import Spinner from "@/components/ui/Spinner";
+import OfferDetails from "@/components/shared/OfferDetails";
+import Profile from "@/components/shared/Profile";
 import useSafeAction from "@/hooks/safeAction";
+import { BidRequestWithMetaDataT } from "@/resources/bidRequests/dtos/bidRequestWithMetadata.dto";
 
 export default function ViewOfferSection({ bidRequest }: {
-  bidRequest: SimpleBidRequestT;
+  bidRequest: BidRequestWithMetaDataT;
 }) {
   const [buyer, setBuyer] = useState<PublicBuyerInfoT>();
   const buyerUserId = bidRequest.buyer.user.id;

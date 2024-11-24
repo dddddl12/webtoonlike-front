@@ -13,23 +13,25 @@ import { Input } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
 import { Calendar } from "@/shadcn/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
-import { editBidRoundAdminSettings } from "@/resources/bidRounds/bidRound.controller";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Control, FieldValues, UseFormReturn } from "react-hook-form";
 import {
-  BidRoundAdminSettingsT,
   BidRoundApprovalStatus,
-  StrictBidRoundAdminSettingsSchem, StrictBidRoundAdminSettingsT
-} from "@/resources/bidRounds/bidRound.types";
-import Spinner from "@/components/Spinner";
+} from "@/resources/bidRounds/dtos/bidRound.dto";
+import Spinner from "@/components/ui/Spinner";
 import { FieldName, Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
 import { clsx } from "clsx";
 import { CalendarIcon } from "lucide-react";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Col } from "@/shadcn/ui/layouts";
+import { Col } from "@/components/ui/common";
 import { getBidRoundStatus } from "@/resources/bidRounds/bidRoundStatus";
+import {
+  BidRoundAdminSettingsT,
+  StrictBidRoundAdminSettingsSchem, StrictBidRoundAdminSettingsT
+} from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
+import { editBidRoundAdminSettings } from "@/resources/bidRounds/controllers/bidRoundAdmin.controller";
 
 export default function BidRoundAdminSettingsForm({
   bidRoundId, adminSettings, children, reload

@@ -3,12 +3,12 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Input, NumericInput } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
-import { Col, Row } from "@/shadcn/ui/layouts";
+import { Col, Row } from "@/components/ui/common";
 import { useTranslations } from "next-intl";
 import {
   WebtoonEpisodeFormSchema,
   WebtoonEpisodeT
-} from "@/resources/webtoonEpisodes/webtoonEpisode.types";
+} from "@/resources/webtoonEpisodes/webtoonEpisode.dto";
 import { toast, useToast } from "@/shadcn/hooks/use-toast";
 import { FileDirectoryT } from "@/resources/files/files.type";
 import EpisodeImageItem from "@/components/forms/WebtoonEpisodeForm/EpisodeImageItem";

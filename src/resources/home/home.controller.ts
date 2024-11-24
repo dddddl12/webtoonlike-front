@@ -3,10 +3,11 @@
 import { action } from "@/handlers/safeAction";
 import homeService from "@/resources/home/home.service";
 import z from "zod";
-import { HomeWebtoonItemSchema } from "@/resources/home/home.types";
+import { HomeItemsSchema, HomeWebtoonItemSchema } from "@/resources/home/home.dto";
 
 export const homeItems = action
   .metadata({ actionName: "homeItems" })
+  .outputSchema(HomeItemsSchema)
   .action(homeService.getHomeItems);
 
 const GenreFilterSchema = z.object({

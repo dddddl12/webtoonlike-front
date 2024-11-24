@@ -1,11 +1,11 @@
-import { Col, Gap } from "@/shadcn/ui/layouts";
-import { Heading } from "@/shadcn/ui/texts";
+import { Col } from "@/components/ui/common";
+import { Heading } from "@/components/ui/common";
 import { getTranslations } from "next-intl/server";
-import PageLayout from "@/components/PageLayout";
+import PageLayout from "@/components/ui/PageLayout";
 import { getClerkUser, updateTokenInfo } from "@/resources/tokens/token.service";
 import { SignUpCompleteForm } from "@/app/[locale]/sign-up-complete/SignUpCompleteForm";
 import LightThemeProvider from "@/providers/LightThemeProvider";
-import Logo from "@/components/Logo";
+import Logo from "@/components/ui/Logo";
 
 export default async function SignUpComplete() {
   const t = await getTranslations("setupPage");
@@ -16,8 +16,7 @@ export default async function SignUpComplete() {
     <PageLayout lightTheme={true}>
       <Col className="w-[400px] mx-auto">
         <Logo lightTheme={true} />
-        <Gap y={10} />
-        <Heading className="text-black font-bold text-[20pt]">
+        <Heading className="mt-10 font-bold text-[20pt]">
           {t("setupAccount")}
         </Heading>
         <SignUpCompleteForm

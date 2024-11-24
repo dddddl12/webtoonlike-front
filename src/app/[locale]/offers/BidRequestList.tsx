@@ -1,15 +1,16 @@
 "use client";
 
-import { Col, Row } from "@/shadcn/ui/layouts";
-import { Text } from "@/shadcn/ui/texts";
+import { Col } from "@/components/ui/common";
 import { useTranslations } from "next-intl";
-import { listAllBidRequests, SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.controller";
-import Paginator from "@/components/Paginator";
+import Paginator from "@/components/ui/Paginator";
 import { ListResponse } from "@/resources/globalTypes";
 import useListData from "@/hooks/listData";
 import BidRequestListRow from "@/app/[locale]/offers/BidRequestListRow";
+import { BidRequestWithMetaDataT } from "@/resources/bidRequests/dtos/bidRequestWithMetadata.dto";
+import { listAllBidRequests } from "@/resources/bidRequests/controllers/bidRequestWithMetadata.controller";
+import NoItems from "@/components/ui/NoItems";
 
-type BidRequestListResponse = ListResponse<SimpleBidRequestT>;
+type BidRequestListResponse = ListResponse<BidRequestWithMetaDataT>;
 
 export default function BidRequestList({ initialBidRequestListResponse }: {
   initialBidRequestListResponse: BidRequestListResponse;
@@ -22,14 +23,12 @@ export default function BidRequestList({ initialBidRequestListResponse }: {
   );
 
   if (listResponse.items.length === 0) {
-    return <Row className="rounded-md bg-gray-darker h-[84px] justify-center">
-      <Text className="text-white">오퍼가 없습니다.</Text>
-    </Row>;
+    return <NoItems message="오퍼가 없습니다."/>;
   }
 
   return <>
     <Col>
-      <div className="flex p-2 text-white">
+      <div className="flex p-2">
         <div className="w-[40%] p-2 flex justify-start font-bold">{t("seriesName")}</div>
         <div className="w-[20%] p-2 flex justify-center font-bold">오퍼 제출 날짜</div>
         <div className="w-[20%] p-2 flex justify-center font-bold">협상 내역 보기</div>

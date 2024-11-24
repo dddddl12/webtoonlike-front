@@ -1,21 +1,17 @@
-import PageLayout from "@/components/PageLayout";
+import PageLayout from "@/components/ui/PageLayout";
 import AccountBasicInfoSection from "@/app/[locale]/account/AccountBasicInfoSection";
 import LikedWebtoonList from "@/app/[locale]/account/LikedWebtoonList";
-import { Gap } from "@/shadcn/ui/layouts";
 import { getTokenInfo } from "@/resources/tokens/token.service";
-import { UserTypeT } from "@/resources/users/user.types";
+import { UserTypeT } from "@/resources/users/dtos/user.dto";
 
 export default async function AccountPage() {
   const { metadata } = await getTokenInfo();
 
   return (
-    <PageLayout>
+    <PageLayout className="space-y-20">
       <AccountBasicInfoSection/>
       {metadata.type === UserTypeT.Buyer
-      && <>
-        <Gap y={40}/>
-        <LikedWebtoonList />
-      </>}
+      && <LikedWebtoonList />}
     </PageLayout>
   );
 }

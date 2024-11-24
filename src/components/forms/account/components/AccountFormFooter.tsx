@@ -1,8 +1,8 @@
-import { SignUpStage } from "@/resources/users/user.types";
 import { useTranslations } from "next-intl";
-import { Row } from "@/shadcn/ui/layouts";
+import { Row } from "@/components/ui/common";
 import { Button } from "@/shadcn/ui/button";
 import { Dispatch, SetStateAction } from "react";
+import { SignUpStage } from "@/resources/users/dtos/userAccount.dto";
 
 export default function AccountFormFooter({ isValid, setSignUpStage, goNextLabel }: {
   isValid: boolean;

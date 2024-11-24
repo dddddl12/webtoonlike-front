@@ -1,13 +1,12 @@
 import { useLocale, useTranslations } from "next-intl";
-import { Col, Row } from "@/shadcn/ui/layouts";
+import { Col, Row } from "@/components/ui/common";
 import {
   BidRequestMessagesResponseT,
   listBidRequestMessages
 } from "@/resources/bidRequestMessages/bidRequestMessage.controller";
 import { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
-import { SimpleBidRequestT } from "@/resources/bidRequests/bidRequest.controller";
-import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
-import { UserTypeT } from "@/resources/users/user.types";
+import { BidRequestStatus } from "@/resources/bidRequests/dtos/bidRequest.dto";
+import { UserTypeT } from "@/resources/users/dtos/user.dto";
 import useTokenInfo from "@/hooks/tokenInfo";
 import { Skeleton } from "@/shadcn/ui/skeleton";
 import ViewOfferSection from "@/app/[locale]/offers/components/OfferDetails";
@@ -15,16 +14,17 @@ import Controls from "@/app/[locale]/offers/components/Controls";
 import useSafeAction from "@/hooks/safeAction";
 import useReload from "@/hooks/reload";
 import { clsx } from "clsx";
+import { BidRequestWithMetaDataT } from "@/resources/bidRequests/dtos/bidRequestWithMetadata.dto";
 
 // TODO 페이지네이션 없음
 export default function BidRequestMessageList({ curBidRequest, setCurBidRequest }: {
-  curBidRequest: SimpleBidRequestT;
-  setCurBidRequest: Dispatch<SetStateAction<SimpleBidRequestT>>;
+  curBidRequest: BidRequestWithMetaDataT;
+  setCurBidRequest: Dispatch<SetStateAction<BidRequestWithMetaDataT>>;
 }) {
   const headingRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     headingRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [headingRef]);
+  }, []);
 
   const { reload, reloadKey } = useReload();
   const [messagesResponse, setMessagesResponse] = useState<BidRequestMessagesResponseT>();
@@ -138,7 +138,7 @@ function MessageRow({ seq, createdAt, user, statusLabel, children }: {
       <div className="w-[20%] p-2 flex justify-center">
         {tokenInfo?.userId === user.id ? "나" : user.name}
       </div>
-      <div className="w-[20%] p-2 flex justify-center text-mint underline cursor-pointer"
+      <div className="w-[20%] p-2 flex justify-center clickable"
         onClick={() => setShowDetails(prev => !prev)}>
         {showDetails ? "접기" : "보기"}
       </div>
@@ -157,7 +157,7 @@ function MessageContentBox({ content }: {content: string}) {
 }
 
 const determineIfDone = (
-  curBidRequest: SimpleBidRequestT,
+  curBidRequest: BidRequestWithMetaDataT,
   messages: BidRequestMessagesResponseT["messages"],
 ) => {
   const isDone = curBidRequest.status === BidRequestStatus.Accepted

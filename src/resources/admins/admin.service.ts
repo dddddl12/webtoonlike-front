@@ -1,9 +1,11 @@
 import "server-only";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 import prisma from "@/utils/prisma";
-import { UserTypeT } from "@/resources/users/user.types";
+import { UserTypeT } from "@/resources/users/dtos/user.dto";
 import { AdminLevel } from "@/resources/tokens/token.types";
 import { BadRequestError } from "@/handlers/errors";
+import { AdminEntryT } from "@/resources/admins/admin.dto";
+import { ListResponse } from "@/resources/globalTypes";
 
 class AdminService {
   async create({ targetUserId }: {
@@ -49,7 +51,7 @@ class AdminService {
 
   async list({ page }: {
     page: number;
-  }) {
+  }): Promise<ListResponse<AdminEntryT>> {
     const { userId, metadata } = await getTokenInfo({
       admin: true,
     });
@@ -76,6 +78,7 @@ class AdminService {
         id: record.id,
         isSuper: record.isSuper,
         createdAt: record.createdAt,
+        updatedAt: record.updatedAt,
         user: {
           name: record.user.name,
           email: record.user.email,

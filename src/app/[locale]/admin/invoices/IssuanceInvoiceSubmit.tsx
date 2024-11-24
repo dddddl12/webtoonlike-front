@@ -1,4 +1,4 @@
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/ui/Spinner";
 import { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
@@ -10,11 +10,11 @@ import {
   DialogTrigger
 } from "@/shadcn/ui/dialog";
 import { Button } from "@/shadcn/ui/button";
-import { Row } from "@/shadcn/ui/layouts";
+import { Row } from "@/components/ui/common";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { createInvoice, previewInvoice } from "@/resources/invoices/invoice.controller";
 import useSafeAction from "@/hooks/safeAction";
+import { createInvoice, previewInvoice } from "@/resources/invoices/controllers/invoiceContent.controller";
 
 export function IssuanceInvoiceSubmit({
   bidRequestId, reload

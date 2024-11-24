@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { AdminPageBidRoundT } from "@/resources/bidRounds/bidRound.controller";
 import BidRoundDetail from "@/app/[locale]/admin/webtoons/BidRoundDetail";
 import BidRoundPendingList from "@/app/[locale]/admin/webtoons/BidRoundPendingList";
 import BidRoundList from "@/app/[locale]/admin/webtoons/BidRoundList";
-import { Col } from "@/shadcn/ui/layouts";
+import { Col } from "@/components/ui/common";
+import { AdminPageBidRoundT } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
 
 
 export default function ManageBidRoundPage() {

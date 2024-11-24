@@ -1,24 +1,20 @@
 "use client";
 
-import { WebtoonEpisodeDetailsT } from "@/resources/webtoonEpisodes/webtoonEpisode.controller";
-import { Col, Row } from "@/shadcn/ui/layouts";
+import { Col, Row } from "@/components/ui/common";
 import { buildImgUrl } from "@/utils/media";
 import axios from "axios";
-import { displayName } from "@/utils/displayName";
-import { useLocale } from "next-intl";
+import { WebtoonEpisodeDetailsT } from "@/resources/webtoonEpisodes/webtoonEpisode.dto";
 
 export default function DownloadEpisodeImage({ episode }: {
   episode: WebtoonEpisodeDetailsT;
 }) {
   const { webtoon } = episode;
-  const locale = useLocale();
   if (episode.imagePaths.length === 0) {
     return null;
   }
   return <Col className="w-full rounded-sm bg-gray-darker px-5 py-2">
     {episode.imagePaths.map((path, idx) => {
-      const filename = `${displayName(
-        locale, webtoon.title, webtoon.title_en)}_${episode.episodeNo}_${idx + 1}.jpeg`;
+      const filename = `${webtoon.localized.title}_${episode.episodeNo}_${idx + 1}.jpeg`;
       return <Row key={idx} className="my-1 text-[10px] gap-1">
         <span>{filename}</span>
         <span className="bg-mint rounded-sm px-2 cursor-pointer"

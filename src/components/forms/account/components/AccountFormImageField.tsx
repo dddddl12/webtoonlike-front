@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Gap } from "@/shadcn/ui/layouts";
+import { Col } from "@/components/ui/common";
 import { FormControl, FormItem, FormLabel } from "@/shadcn/ui/form";
 import { Input } from "@/shadcn/ui/input";
 import { ImageObject } from "@/utils/media";
@@ -12,7 +12,7 @@ export default function AccountFormImageField({ image, setImage, placeholder }: 
   placeholder: string;
 }){
   const tGeneral = useTranslations("general");
-  return <>
+  return <Col className="gap-5">
     {image.url && <div className="w-[200px] h-[200px] overflow-hidden relative rounded-sm mx-auto">
       <Image
         draggable={false}
@@ -23,7 +23,6 @@ export default function AccountFormImageField({ image, setImage, placeholder }: 
         style={{ objectFit: "cover" }}
         fill
       />
-      <Gap y={5}/>
     </div>}
 
     <FormItem>
@@ -48,5 +47,5 @@ export default function AccountFormImageField({ image, setImage, placeholder }: 
         </div>
       </FormLabel>
     </FormItem>
-  </>;
+  </Col>;
 }

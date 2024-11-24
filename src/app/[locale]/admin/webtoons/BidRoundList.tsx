@@ -1,11 +1,12 @@
-import { Col, Row } from "@/shadcn/ui/layouts";
-import { Text } from "@/shadcn/ui/texts";
+import { Col } from "@/components/ui/common";
 import useListData from "@/hooks/listData";
-import Spinner from "@/components/Spinner";
-import Paginator from "@/components/Paginator";
-import { adminListBidRoundsWithWebtoon, AdminPageBidRoundT } from "@/resources/bidRounds/bidRound.controller";
-import { BidRoundApprovalStatus } from "@/resources/bidRounds/bidRound.types";
-import { Link } from "@/i18n/routing";
+import Spinner from "@/components/ui/Spinner";
+import Paginator from "@/components/ui/Paginator";
+import { BidRoundApprovalStatus } from "@/resources/bidRounds/dtos/bidRound.dto";
+import { adminListBidRoundsWithWebtoon } from "@/resources/bidRounds/controllers/bidRoundAdmin.controller";
+import { AdminPageBidRoundT } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
+import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
+import NoItems from "@/components/ui/NoItems";
 
 
 export default function BidRoundList() {
@@ -16,14 +17,11 @@ export default function BidRoundList() {
       approvalStatus: BidRoundApprovalStatus.Approved
     });
 
-
   if (!listResponse) {
     return <Spinner />;
   }
   if (listResponse.items.length === 0) {
-    return <Row className="justify-center bg-gray p-4 rounded-sm">
-      <Text>현재 관리할 수 있는 작품이 없습니다</Text>
-    </Row>;
+    return <NoItems message="현재 관리할 수 있는 작품이 없습니다"/>;
   }
 
   return (
@@ -53,11 +51,7 @@ function TableRow({ bidRound }:{
   return (
     <div key={bidRound.id} className="flex bg-white rounded-sm p-2 my-2">
       <div className="w-[60%] p-2 flex justify-start">
-        <Link
-          className="text-mint underline"
-          href={`/webtoons/${bidRound.webtoon.id}`}>
-          {bidRound.webtoon.title}
-        </Link>
+        <WebtoonAvatar webtoon={bidRound.webtoon}/>
       </div>
       <div className="w-[20%] p-2 flex justify-center">{bidRound.creator.user.name}</div>
       <div className="w-[20%] p-2 flex justify-center">

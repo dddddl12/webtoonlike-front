@@ -1,19 +1,18 @@
-import PageLayout from "@/components/PageLayout";
-import { Col, Row } from "@/shadcn/ui/layouts";
+import PageLayout from "@/components/ui/PageLayout";
+import { Col, Row } from "@/components/ui/common";
 import { IconLeftBrackets } from "@/components/svgs/IconLeftBrackets";
 import WebtoonEpisodeEnglishUrlForm from "@/components/forms/WebtoonEpisodeEnglishUrlForm";
 import DownloadEpisodeImage from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/DownloadEpisodeImage";
 import { buildImgUrl } from "@/utils/media";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { getEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.controller";
-import { displayName } from "@/utils/displayName";
-import { Pencil1Icon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import NavButton from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/EpisodeNavButton";
 import { responseHandler } from "@/handlers/responseHandler";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 import { AdminLevel } from "@/resources/tokens/token.types";
+import EditLink from "@/components/ui/EditLink";
 
 export default async function WebtoonEpisodeDetail(
   { params }:
@@ -28,9 +27,7 @@ export default async function WebtoonEpisodeDetail(
     .then(responseHandler);
   const { webtoon } = episode;
 
-  const locale = await getLocale();
   const t = await getTranslations("episodePage");
-  const tGeneral = await getTranslations("general");
   const { metadata } = await getTokenInfo();
 
   return (
@@ -49,17 +46,14 @@ export default async function WebtoonEpisodeDetail(
               <IconLeftBrackets className="fill-white" />
             </Link>
             <p className="text-3xl font-bold ml-4 flex-1">
-              {`${displayName(locale, webtoon.title, webtoon.title_en)} _ ${t("episodeSeq", {
+              {`${webtoon.localized.title} _ ${t("episodeSeq", {
                 number: episode.episodeNo
               })}`}
             </p>
-            {episode.isEditable && (
-              <Link href={`/webtoons/${webtoon.id}/episodes/${episode.id}/update`}
-                className="flex gap-1 text-mint">
-                <Pencil1Icon width={25} height={25} />
-                <span>{tGeneral("edit")}</span>
-              </Link>
-            )}
+            <EditLink
+              href={`/webtoons/${webtoon.id}/episodes/${episode.id}/update`}
+              isVisible={episode.isEditable}
+            />
           </Row>
 
           {metadata.adminLevel >= AdminLevel.Admin

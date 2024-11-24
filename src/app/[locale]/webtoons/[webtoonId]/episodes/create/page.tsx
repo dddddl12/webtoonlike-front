@@ -1,4 +1,4 @@
-import PageLayout from "@/components/PageLayout";
+import PageLayout from "@/components/ui/PageLayout";
 import WebtoonEpisodeForm from "@/components/forms/WebtoonEpisodeForm";
 
 export default async function CreateWebtoonPost({ params } : {

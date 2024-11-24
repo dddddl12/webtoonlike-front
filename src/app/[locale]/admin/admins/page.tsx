@@ -1,14 +1,15 @@
 "use client";
 
-import Spinner from "@/components/Spinner";
-import { Col, Row } from "@/shadcn/ui/layouts";
+import Spinner from "@/components/ui/Spinner";
+import { Col, Row } from "@/components/ui/common";
 import useListData from "@/hooks/listData";
-import { AdminEntryT, listAdmins } from "@/resources/admins/admin.controller";
+import { listAdmins } from "@/resources/admins/admin.controller";
 import { useTranslations } from "next-intl";
-import Paginator from "@/components/Paginator";
+import Paginator from "@/components/ui/Paginator";
 import DeleteAdmin from "@/app/[locale]/admin/admins/DeleteAdmin";
 import AddAdmin from "@/app/[locale]/admin/admins/AddAdmin";
 import useReload from "@/hooks/reload";
+import { AdminEntryT } from "@/resources/admins/admin.dto";
 
 export default function ManageAdminsPage() {
   const { reload, reloadKey } = useReload();

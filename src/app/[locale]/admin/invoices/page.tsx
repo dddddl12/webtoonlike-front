@@ -1,5 +1,5 @@
 "use client";
-import { Col } from "@/shadcn/ui/layouts";
+import { Col } from "@/components/ui/common";
 import IssuanceInvoice from "@/app/[locale]/admin/invoices/IssuanceInvoice";
 import ManageInvoice from "@/app/[locale]/admin/invoices/ManageInvoice";
 import useReload from "@/hooks/reload";

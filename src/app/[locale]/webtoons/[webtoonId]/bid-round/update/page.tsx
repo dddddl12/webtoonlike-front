@@ -1,8 +1,8 @@
-import { Heading } from "@/shadcn/ui/texts";
+import { Heading } from "@/components/ui/common";
 import BidRoundForm from "@/components/forms/BidRoundForm";
 import { getTranslations } from "next-intl/server";
-import PageLayout from "@/components/PageLayout";
-import { getBidRoundByWebtoonId } from "@/resources/bidRounds/bidRound.controller";
+import PageLayout from "@/components/ui/PageLayout";
+import { getBidRoundByWebtoonId } from "@/resources/bidRounds/controllers/bidRound.controller";
 import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function UpdateBidRoundPage({ params }: {

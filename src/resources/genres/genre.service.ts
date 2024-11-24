@@ -1,11 +1,12 @@
 import "server-only";
 import prisma from "@/utils/prisma";
-import { GenreFormSchema, GenreFormT } from "@/resources/genres/genre.types";
+import { GenreFormSchema, GenreFormT } from "@/resources/genres/genre.dto";
 import { Prisma } from "@prisma/client";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { returnValidationErrors } from "next-safe-action";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 import { BadRequestError } from "@/handlers/errors";
+import genreHelper from "@/resources/genres/genre.helper";
 
 const duplicateHandler = async (e: Error) => {
   // 중복 에러 처리
@@ -74,12 +75,9 @@ class GenreService {
         }
       ],
     });
-    return records.map(r=>({
-      id: r.id,
-      label: r.label,
-      label_en: r.label_en ?? undefined,
-      rank: r.rank ?? undefined
-    }));
+    const locale = await getLocale();
+    return records.map(r=>
+      genreHelper.mapToDto(r, locale));
   }
 }
 const genreService = new GenreService();

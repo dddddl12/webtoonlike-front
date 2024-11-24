@@ -1,14 +1,16 @@
 import "server-only";
 import { PrismaTransaction } from "@/resources/globalTypes";
-import { BannerWebtoonItem, HomeCreatorItem, HomeGenreItem, HomeWebtoonItem } from "@/resources/home/home.types";
-import { AgeLimit } from "@/resources/webtoons/webtoon.types";
-import bidRoundService from "@/resources/bidRounds/bidRound.service";
+import { HomeItemsT, HomeWebtoonItem } from "@/resources/home/home.dto";
+import { AgeLimit } from "@/resources/webtoons/dtos/webtoon.dto";
 import prisma from "@/utils/prisma";
 import { Prisma } from "@prisma/client";
 import { GenreFilterT } from "@/resources/home/home.controller";
+import { displayName } from "@/resources/displayName";
+import { getLocale } from "next-intl/server";
+import bidRoundHelper from "@/resources/bidRounds/helpers/bidRound.helper";
 
 class HomeService {
-  async getHomeItems() {
+  async getHomeItems(): Promise<HomeItemsT> {
     const [banners, popular, brandNew, genreSets, creators] = await prisma.$transaction(async (tx) => {
       return Promise.all([
         getBanners(tx),
@@ -38,7 +40,7 @@ export default homeService;
 
 
 // 배너 작품
-const getBanners = async (tx: PrismaTransaction): Promise<BannerWebtoonItem[]> => {
+const getBanners = async (tx: PrismaTransaction): Promise<HomeItemsT["banners"]> => {
   const now = new Date();
   const records = await tx.webtoonBanner.findMany({
     where: {
@@ -74,6 +76,7 @@ const getBanners = async (tx: PrismaTransaction): Promise<BannerWebtoonItem[]> =
     }
   });
 
+  const locale = await getLocale();
   return records
     .filter(record => record.webtoon.bidRounds.length > 0)
     .map(record => {
@@ -84,7 +87,7 @@ const getBanners = async (tx: PrismaTransaction): Promise<BannerWebtoonItem[]> =
       }
       const bidRound = webtoon.bidRounds[0];
       return {
-        ...mapToHomeWebtoonItems(webtoon),
+        ...mapToHomeWebtoonItems(webtoon, locale),
         thumbPath: record.bannerUrl,
         isNew: bidRound.isNew,
         offers: bidRound._count.bidRequests,
@@ -94,12 +97,12 @@ const getBanners = async (tx: PrismaTransaction): Promise<BannerWebtoonItem[]> =
 };
 
 // 인기 웹툰
-const getPopular = async (tx: PrismaTransaction): Promise<HomeWebtoonItem[]> => {
+const getPopular = async (tx: PrismaTransaction): Promise<HomeItemsT["popular"]> => {
   const records = await tx.bidRound.findMany({
     take: 5,
     distinct: ["webtoonId"],
     where: {
-      ...bidRoundService.offerableBidRoundFilter(),
+      ...bidRoundHelper.offerableBidRoundWhere(),
       webtoon: {
         user: {
           creator: {
@@ -121,13 +124,14 @@ const getPopular = async (tx: PrismaTransaction): Promise<HomeWebtoonItem[]> => 
       }
     }
   });
+  const locale = await getLocale();
   return records
-    .map(record => mapToHomeWebtoonItems(record.webtoon));
+    .map(record => mapToHomeWebtoonItems(record.webtoon, locale));
 };
 
 // 최신
-const getBrandNew = async (tx: PrismaTransaction): Promise<HomeWebtoonItem[]> => {
-  return tx.webtoon.findMany({
+const getBrandNew = async (tx: PrismaTransaction): Promise<HomeItemsT["brandNew"]> => {
+  const records = await tx.webtoon.findMany({
     where: {
       isFeaturedAsNew: true
     },
@@ -136,8 +140,10 @@ const getBrandNew = async (tx: PrismaTransaction): Promise<HomeWebtoonItem[]> =>
       { createdAt: "desc" },
     ],
     take: 5
-  }).then(records => records
-    .map(mapToHomeWebtoonItems));
+  });
+  const locale = await getLocale();
+  return records
+    .map(r => mapToHomeWebtoonItems(r, locale));
 };
 
 // 장르별 웹툰(최초 로드 이후 클라이언트에서 호출하는 데도 사용)
@@ -156,7 +162,7 @@ const getPerGenre = async (
           }
         },
         bidRounds: {
-          some: bidRoundService.offerableBidRoundFilter(),
+          some: bidRoundHelper.offerableBidRoundWhere(),
         }
       }
     },
@@ -166,25 +172,25 @@ const getPerGenre = async (
       }
     }
   });
+  const locale = await getLocale();
   return records
-    .map(record => mapToHomeWebtoonItems(record.webtoon));
+    .map(record => mapToHomeWebtoonItems(record.webtoon, locale));
 };
 
 // 전체 장르 목록 및 첫번째 장르에 해당하는 웹툰
-const getGenreSets = async (tx: PrismaTransaction): Promise<{
-  genres: HomeGenreItem[];
-  firstGenreItems?: HomeWebtoonItem[];
-}> => {
+const getGenreSets = async (tx: PrismaTransaction): Promise<HomeItemsT["genreSets"]> => {
   // 장르 목록
   const genreRecords = await tx.genre.findMany({
     orderBy: {
       createdAt: "asc",
     }
   });
-  const genres: HomeGenreItem[] = genreRecords.map(record => ({
+  const locale = await getLocale();
+  const genres: HomeItemsT["genreSets"]["genres"] = genreRecords.map(record => ({
     id: record.id,
-    label: record.label,
-    label_en: record.label_en ?? undefined,
+    localized: {
+      label: displayName(locale, record.label, record.label_en)
+    }
   }));
   if (genres.length === 0) {
     return { genres };
@@ -197,13 +203,21 @@ const getGenreSets = async (tx: PrismaTransaction): Promise<{
 
 // 작가(Random selection 때문에 raw query 사용)
 // TODO creator ~ user join 보호 확인
-const getCreators = async (tx: PrismaTransaction): Promise<HomeCreatorItem[]> => {
-  return tx.$queryRaw(
+const getCreators = async(
+  tx: PrismaTransaction
+): Promise<HomeItemsT["creators"]> => {
+  const records: {
+    id: number;
+    name: string;
+    name_en: string | null;
+    thumb_path: string | null;
+    webtoon_count: number;
+  }[] = await tx.$queryRaw(
     Prisma.sql`SELECT c.name,
-                      COALESCE(c.name_en, '') AS name_en,
-                      COALESCE(c.thumb_path, '') AS "thumbPath",
+                      c.name_en,
+                      c.thumb_path,
                       u.id        AS id,
-                      CAST(COUNT(DISTINCT w.id) AS INTEGER) AS "numOfWebtoons"
+                      CAST(COUNT(DISTINCT w.id) AS INTEGER) AS "webtoon_count"
                FROM creators c
                         JOIN users u ON u.id = c.user_id
                         LEFT JOIN webtoons w ON w.user_id = u.id
@@ -219,6 +233,15 @@ const getCreators = async (tx: PrismaTransaction): Promise<HomeCreatorItem[]> =>
                         u.id
                ORDER BY RANDOM()
                LIMIT 5`);
+  const locale = await getLocale();
+  return records.map(r => ({
+    id: r.id,
+    thumbPath: r.thumb_path ?? undefined,
+    webtoonCount: r.webtoon_count,
+    localized: {
+      name: displayName(locale, r.name, r.name_en),
+    }
+  }));
 };
 
 const webtoonSelect = {
@@ -243,25 +266,27 @@ const webtoonSelect = {
 };
 
 const mapToHomeWebtoonItems = (
-  record: Prisma.WebtoonGetPayload<{
+  r: Prisma.WebtoonGetPayload<{
     select: typeof webtoonSelect;
-  }>
+  }>,
+  locale: string,
 ): HomeWebtoonItem => {
-  const { creator } = record.user;
+  const { creator } = r.user;
   if (!creator) {
     throw new Error("Unknown situation");
   }
   return {
-    id: record.id,
-    title: record.title,
-    title_en: record.title_en,
-    authorOrCreatorName: record.authorName ?? creator.name,
-    authorOrCreatorName_en: record.authorName_en ?? creator.name_en ?? undefined,
-    thumbPath: record.thumbPath,
+    id: r.id,
+    thumbPath: r.thumbPath,
     creator: {
       user: {
-        id: record.user.id,
+        id: r.user.id,
       }
+    },
+    localized: {
+      title: displayName(locale, r.title, r.title_en),
+      authorOrCreatorName: displayName(locale, r.authorName, r.authorName_en)
+          ?? displayName(locale, creator.name, creator.name_en)
     }
   };
 };

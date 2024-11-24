@@ -1,18 +1,19 @@
 "use client";
 
-import Image from "next/image";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/ui/Spinner";
 import useListData from "@/hooks/listData";
-import { Col, Row } from "@/shadcn/ui/layouts";
-import { adminListBidRoundsWithOffers, AdminPageBidRoundWithOffersT } from "@/resources/bidRounds/bidRound.controller";
-import Paginator from "@/components/Paginator";
-import { buildImgUrl } from "@/utils/media";
-import { Link } from "@/i18n/routing";
+import { Col, Row } from "@/components/ui/common";
+import Paginator from "@/components/ui/Paginator";
 import { Button } from "@/shadcn/ui/button";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { AdminOffersBidRequestT, adminListAdminOffersBidRequests } from "@/resources/bidRequests/bidRequest.controller";
+import { adminListAdminOffersBidRequests } from "@/resources/bidRequests/controllers/bidRequest.controller";
 import useSafeAction from "@/hooks/safeAction";
+import { adminListBidRoundsWithOffers } from "@/resources/bidRounds/controllers/bidRoundAdmin.controller";
+import { AdminPageBidRoundWithOffersT } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
+import { AdminOffersBidRequestT } from "@/resources/bidRequests/dtos/bidRequest.dto";
+import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
+import NoItems from "@/components/ui/NoItems";
 
 // todo 디테일 누락
 export default function AdminOffersPage() {
@@ -34,9 +35,7 @@ function AdminOffers() {
     return <Spinner />;
   }
   if (listResponse.items.length === 0) {
-    return <Row className="justify-center bg-gray p-4 rounded-sm">
-      <p>현재 오퍼 중 작품이 없습니다</p>
-    </Row>;
+    return <NoItems message="현재 오퍼 중 작품이 없습니다."/>;
   }
 
   return <>
@@ -66,20 +65,9 @@ function TableRow({ bidRound }:{
   return (
     <>
       <Row className="w-full bg-white rounded-sm p-2 my-2 items-center">
-        <Row className="w-[30%] p-2 flex gap-2">
-          <Image
-            src={buildImgUrl(bidRound.webtoon.thumbPath, { size: "xxs" } )}
-            alt={`${bidRound.webtoon.thumbPath}`}
-            style={{ objectFit: "cover" }}
-            width={50}
-            height={50}
-          />
-          <Link
-            className="text-mint underline"
-            href={`/webtoons/${bidRound.webtoon.id}`}>
-            {bidRound.webtoon.title}
-          </Link>
-        </Row>
+        <div className="w-[30%] p-2 flex gap-2">
+          <WebtoonAvatar webtoon={bidRound.webtoon}/>
+        </div>
         <div className="w-[15%] p-2 flex justify-center">
           {bidRound.creator.user.name}
         </div>
@@ -88,7 +76,7 @@ function TableRow({ bidRound }:{
         </div>
         <div className="w-[20%] p-2 flex justify-center">
           {/*TODO negotiation 기준이 맞나? */}
-          {bidRound.negoStartsAt?.toLocaleDateString("ko") ?? "-"}
+          {bidRound.adminSettings.negoStartsAt?.toLocaleDateString("ko") ?? "-"}
         </div>
         <div className="w-[15%] p-2 flex justify-center">
           <Button variant="default" onClick={() => setIsExpanded(!isExpanded)}>

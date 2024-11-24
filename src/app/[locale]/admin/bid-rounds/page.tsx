@@ -1,19 +1,18 @@
 "use client";
 
-import Spinner from "@/components/Spinner";
-import Image from "next/image";
-import { buildImgUrl } from "@/utils/media";
-import { Col, Row } from "@/shadcn/ui/layouts";
-import { BidRoundApprovalStatus } from "@/resources/bidRounds/bidRound.types";
+import Spinner from "@/components/ui/Spinner";
+import { Col } from "@/components/ui/common";
+import { BidRoundApprovalStatus } from "@/resources/bidRounds/dtos/bidRound.dto";
 import useListData from "@/hooks/listData";
-import { adminListBidRoundsWithWebtoon, AdminPageBidRoundT } from "@/resources/bidRounds/bidRound.controller";
-import { Text } from "@/shadcn/ui/texts";
-import Paginator from "@/components/Paginator";
-import { Link } from "@/i18n/routing";
+import Paginator from "@/components/ui/Paginator";
 import { useTranslations } from "next-intl";
 import BidRoundAdminSettingsForm from "@/components/forms/admin/BidRoundAdminSettingsForm";
 import { Button } from "@/shadcn/ui/button";
 import useReload from "@/hooks/reload";
+import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
+import { adminListBidRoundsWithWebtoon } from "@/resources/bidRounds/controllers/bidRoundAdmin.controller";
+import { AdminPageBidRoundT } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
+import NoItems from "@/components/ui/NoItems";
 
 export default function BidRoundPage() {
   const { reload, reloadKey } = useReload();
@@ -40,7 +39,7 @@ function ListSection({ title, noItemsMessage, approvalStatus, reload }: {
   reload: () => void;
 }) {
   return <Col>
-    <Text className="font-bold text-[18pt]">{title}</Text>
+    <p className="font-bold text-[18pt]">{title}</p>
     <ListSectionContent noItemsMessage={noItemsMessage} approvalStatus={approvalStatus}
       reload={reload}/>
   </Col>;
@@ -62,9 +61,7 @@ function ListSectionContent({ noItemsMessage, approvalStatus, reload }: {
     return <Spinner />;
   }
   if (listResponse.items.length === 0) {
-    return <Row className="justify-center bg-gray p-4 rounded-sm">
-      <Text>{noItemsMessage}</Text>
-    </Row>;
+    return <NoItems message={noItemsMessage}/>;
   }
 
   return <>
@@ -94,21 +91,9 @@ function TableRow({ bidRound, reload }: {
   const t = useTranslations("bidRoundStatus");
   return (
     <div key={bidRound.id} className="flex bg-white rounded-sm p-2 my-2 items-center">
-      <Row className="w-[30%] p-2 gap-2">
-        <div className="min-w-[50px] min-h-[50px] overflow-hidden relative rounded-sm">
-          <Image
-            src={buildImgUrl(bidRound.webtoon.thumbPath, { size: "xxs" } )}
-            alt={`${bidRound.webtoon.thumbPath}`}
-            style={{ objectFit: "cover" }}
-            fill
-          />
-        </div>
-        <Link
-          className="text-mint underline max-w-[70%]"
-          href={`/webtoons/${bidRound.webtoon.id}`}>
-          {bidRound.webtoon.title}
-        </Link>
-      </Row>
+      <div className="w-[30%] p-2 flex justify-start">
+        <WebtoonAvatar webtoon={bidRound.webtoon}/>
+      </div>
       <div className="w-[15%] p-2 flex justify-center">
         {bidRound.adminSettings.bidStartsAt?.toLocaleDateString("ko") ?? "-"}
       </div>

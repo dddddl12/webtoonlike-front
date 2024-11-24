@@ -1,18 +1,18 @@
 "use client";
 
-import { Heading } from "@/shadcn/ui/texts";
+import { Heading } from "@/components/ui/common";
 import { Button } from "@/shadcn/ui/button";
 import { useTranslations } from "next-intl";
 import ContractRangeForm from "@/components/forms/ContractRangeForm";
 import { Textarea } from "@/shadcn/ui/textarea";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
-import { BidRequestFormSchema } from "@/resources/bidRequests/bidRequest.types";
+import { BidRequestFormSchema } from "@/resources/bidRequests/dtos/bidRequest.dto";
 import { FieldSet, Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import { useEffect, useRef } from "react";
 import { useRouter } from "@/i18n/routing";
-import Spinner from "@/components/Spinner";
-import { createBidRequest } from "@/resources/bidRequests/bidRequest.controller";
-import { Row } from "@/shadcn/ui/layouts";
+import Spinner from "@/components/ui/Spinner";
+import { createBidRequest } from "@/resources/bidRequests/controllers/bidRequest.controller";
+import { Row } from "@/components/ui/common";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";

@@ -4,35 +4,35 @@ import { ImageObject } from "@/utils/media";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/shadcn/ui/select";
 import { useTranslations } from "next-intl";
 import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/ui/Spinner";
 import { FileDirectoryT } from "@/resources/files/files.type";
-import {
-  SignUpStage,
-  UserExtendedFormSchema,
-  UserWithCreatorFormT
-} from "@/resources/users/user.types";
-import { createUser } from "@/resources/users/user.controller";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AccountFormImageField from "@/components/forms/account/components/AccountFormImageField";
 import AccountFormFooter from "@/components/forms/account/components/AccountFormFooter";
+import {
+  SignUpStage,
+  UserAccountFormSchema,
+  UserAccountWithCreatorFormT
+} from "@/resources/users/dtos/userAccount.dto";
+import { createUser } from "@/resources/users/controllers/userAccount.controller";
 
-export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }: {
-  userExtendedForm: Partial<UserWithCreatorFormT>;
+export default function CreatorProfileForm({ userAccountForm, setSignUpStage }: {
+  userAccountForm: Partial<UserAccountWithCreatorFormT>;
   setSignUpStage: Dispatch<SetStateAction<SignUpStage>>;
 }) {
   // 번역
   const t = useTranslations("setupPageNextForCreators");
   const tGeneral = useTranslations("general");
 
-  const prev = userExtendedForm.creator;
+  const prev = userAccountForm.creator;
   const [thumbnail, setThumbnail] = useState(
     new ImageObject(prev?.thumbPath));
 
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createUser,
-      zodResolver(UserExtendedFormSchema),
+      zodResolver(UserAccountFormSchema),
       {
         actionProps: {
           onSuccess: () => {
@@ -40,7 +40,7 @@ export default function CreatorProfileForm({ userExtendedForm, setSignUpStage }:
           }
         },
         formProps: {
-          defaultValues: userExtendedForm,
+          defaultValues: userAccountForm,
           mode: "onChange"
         }
       }

@@ -13,17 +13,17 @@ import { Button } from "@/shadcn/ui/button";
 import { Input } from "@/shadcn/ui/input";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
-import { BasicGenreT, createOrUpdateGenre } from "@/resources/genres/genre.controller";
-import { GenreFormSchema, GenreFormT } from "@/resources/genres/genre.types";
+import { createOrUpdateGenre } from "@/resources/genres/genre.controller";
+import { GenreFormSchema, GenreFormT, GenreT } from "@/resources/genres/genre.dto";
 import { UseFormReturn } from "react-hook-form";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/ui/Spinner";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function GenreForm({ reload, children, prev }: {
   reload: () => void;
   children: ReactNode;
-  prev?: BasicGenreT;
+  prev?: GenreT;
 }) {
   const [editorOpen, setEditorOpen] = useState<boolean>(false);
   const { toast } = useToast();

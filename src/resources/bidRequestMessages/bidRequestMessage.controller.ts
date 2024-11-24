@@ -2,11 +2,11 @@
 
 import {
   BidRequestMessageSchema,
-} from "@/resources/bidRequestMessages/bidRequestMessage.types";
+} from "@/resources/bidRequestMessages/bidRequestMessage.dto";
 import prisma from "@/utils/prisma";
-import { UserSchema, UserTypeT } from "@/resources/users/user.types";
+import { UserSchema, UserTypeT } from "@/resources/users/dtos/user.dto";
 import { getTokenInfo } from "@/resources/tokens/token.service";
-import { InvoiceSchema } from "@/resources/invoices/invoice.types";
+import { InvoiceSchema } from "@/resources/invoices/dtos/invoice.dto";
 import z from "zod";
 import { action } from "@/handlers/safeAction";
 

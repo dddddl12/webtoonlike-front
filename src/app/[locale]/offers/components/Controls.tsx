@@ -1,26 +1,26 @@
-import { Col, Gap, Row } from "@/shadcn/ui/layouts";
+import { Col, Row } from "@/components/ui/common";
 import { Button } from "@/shadcn/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/shadcn/ui/dialog";
 import { Textarea } from "@/shadcn/ui/textarea";
 import { createBidRequestMessage } from "@/resources/bidRequestMessages/bidRequestMessage.controller";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import {
-  changeBidRequestStatus,
-  getSimpleBidRequest,
-  SimpleBidRequestT
-} from "@/resources/bidRequests/bidRequest.controller";
-import { BidRequestStatus } from "@/resources/bidRequests/bidRequest.types";
+import { BidRequestStatus } from "@/resources/bidRequests/dtos/bidRequest.dto";
 import { useToast } from "@/shadcn/hooks/use-toast";
-import { UserTypeT } from "@/resources/users/user.types";
+import { UserTypeT } from "@/resources/users/dtos/user.dto";
 import useTokenInfo from "@/hooks/tokenInfo";
 import useSafeAction from "@/hooks/safeAction";
 import { useTranslations } from "next-intl";
 import { useConfirm } from "@/hooks/alert";
+import { BidRequestWithMetaDataT } from "@/resources/bidRequests/dtos/bidRequestWithMetadata.dto";
+import {
+  changeBidRequestStatus,
+  getBidRequestWithMetaDataSchema
+} from "@/resources/bidRequests/controllers/bidRequestWithMetadata.controller";
 
 export default function Controls({ bidRequestId, reload, setCurBidRequest, whoCanDecideAtThisTurn, refMessageId }: {
   bidRequestId: number;
   reload: () => void;
-  setCurBidRequest: Dispatch<SetStateAction<SimpleBidRequestT>>;
+  setCurBidRequest: Dispatch<SetStateAction<BidRequestWithMetaDataT>>;
   whoCanDecideAtThisTurn: UserTypeT;
   refMessageId?: number;
 }) {
@@ -67,7 +67,7 @@ export default function Controls({ bidRequestId, reload, setCurBidRequest, whoCa
   });
 
   // 오퍼 실패 시 업데이트
-  const boundGetSimpleBidRequest = useMemo(() => getSimpleBidRequest
+  const boundGetSimpleBidRequest = useMemo(() => getBidRequestWithMetaDataSchema
     .bind(null, bidRequestId), [bidRequestId]);
   const { execute: executeOnFailure } = useSafeAction(boundGetSimpleBidRequest, {
     onSuccess: ({ data }) => {
@@ -150,16 +150,13 @@ function SendMessage({ bidRequestId, reload }: {
           />
         </Row>
 
-        <Gap y={4} />
-
-        <Row className="justify-end">
+        <Row className="mt-4 gap-2 justify-end">
           <Button
             className="bg-red"
             onClick={() => setEditorOpen(false)}
           >
             {tGeneral("cancel")}
           </Button>
-          <Gap x={2} />
           <Button
             className="bg-mint"
             onClick={handleSubmit}

@@ -81,8 +81,6 @@ const logError = (error: Error, serverErrorFunctionUtils: ServerErrorFunctionUti
     actionName,
     clientInput,
     bindArgsClientInputs,
-    errorName: error.name,
-    errorMessage: error.message,
-    errorStack: error.stack,
+    error,
   });
 };

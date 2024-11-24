@@ -8,33 +8,33 @@ import {
   BuyerCompanyFieldSchema,
   BuyerCompanyTypeSchema,
   BuyerPurposeSchema,
-} from "@/resources/buyers/buyer.types";
+} from "@/resources/buyers/buyer.dto";
 import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/ui/Spinner";
 import { ImageObject } from "@/utils/media";
 import { FileDirectoryT } from "@/resources/files/files.type";
-import {
-  SignUpStage,
-  UserExtendedFormSchema,
-  UserExtendedFormT, UserWithBuyerFormSchema,
-  UserWithBuyerFormT
-} from "@/resources/users/user.types";
-import { createUser } from "@/resources/users/user.controller";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AccountFormImageField from "@/components/forms/account/components/AccountFormImageField";
 import AccountFormFooter from "@/components/forms/account/components/AccountFormFooter";
+import {
+  SignUpStage,
+  UserAccountFormT,
+  UserAccountWithBuyerFormSchema,
+  UserAccountWithBuyerFormT
+} from "@/resources/users/dtos/userAccount.dto";
+import { createUser } from "@/resources/users/controllers/userAccount.controller";
 
 
-export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : {
-  userExtendedForm: Partial<UserWithBuyerFormT>;
+export default function BuyerProfileForm({ userAccountForm, setSignUpStage } : {
+  userAccountForm: Partial<UserAccountWithBuyerFormT>;
   setSignUpStage: Dispatch<SetStateAction<SignUpStage>>;
 }) {
   // 번역
   const t = useTranslations("buyerInfoPage");
   const tGeneral = useTranslations("general");
 
-  const prev = userExtendedForm.buyer;
+  const prev = userAccountForm.buyer;
   const prevCompany = prev?.company;
   const [thumbnail, setThumbnail] = useState(
     new ImageObject(prevCompany?.thumbPath));
@@ -46,7 +46,7 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createUser,
-      zodResolver(UserWithBuyerFormSchema),
+      zodResolver(UserAccountWithBuyerFormSchema),
       {
         actionProps: {
           onSuccess: () => {
@@ -54,7 +54,7 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
           }
         },
         formProps: {
-          defaultValues: userExtendedForm,
+          defaultValues: userAccountForm,
           mode: "onChange"
         }
       }
@@ -91,7 +91,7 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
           placeholder={t("uploadBusinessReg")}
         />
 
-        <hr className="my-5 border-input"/>
+        <hr className="my-5"/>
 
         <BusinessNameField form={form}/>
         <AccountFormImageField
@@ -110,7 +110,7 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
           placeholder={t("attachEmploymentCert")}
         />
 
-        <hr className="my-5 border-input"/>
+        <hr className="my-5"/>
 
         <PurposeField form={form}/>
 
@@ -126,7 +126,7 @@ export default function BuyerProfileForm({ userExtendedForm, setSignUpStage } : 
 
 
 function BusinessNumberField({ form }: {
-  form: UseFormReturn<UserExtendedFormT>;
+  form: UseFormReturn<UserAccountFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
 
@@ -150,7 +150,7 @@ function BusinessNumberField({ form }: {
 }
 
 function FieldTypeField({ form }: {
-  form: UseFormReturn<UserExtendedFormT>;
+  form: UseFormReturn<UserAccountFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
   const tBusinessFields = useTranslations("businessFields");
@@ -186,7 +186,7 @@ function FieldTypeField({ form }: {
 }
 
 function BusinessTypeField({ form }: {
-  form: UseFormReturn<UserExtendedFormT>;
+  form: UseFormReturn<UserAccountFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
 
@@ -221,7 +221,7 @@ function BusinessTypeField({ form }: {
 }
 
 function BusinessNameField({ form }: {
-  form: UseFormReturn<UserExtendedFormT>;
+  form: UseFormReturn<UserAccountFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
 
@@ -243,7 +243,7 @@ function BusinessNameField({ form }: {
 }
 
 function DepartmentField({ form }: {
-  form: UseFormReturn<UserExtendedFormT>;
+  form: UseFormReturn<UserAccountFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
 
@@ -265,7 +265,7 @@ function DepartmentField({ form }: {
 }
 
 function PositionField({ form }: {
-  form: UseFormReturn<UserExtendedFormT>;
+  form: UseFormReturn<UserAccountFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
   return <FormField
@@ -286,7 +286,7 @@ function PositionField({ form }: {
 }
 
 function PositionDetailField({ form }: {
-  form: UseFormReturn<UserExtendedFormT>;
+  form: UseFormReturn<UserAccountFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
 
@@ -308,7 +308,7 @@ function PositionDetailField({ form }: {
 }
 
 function PurposeField({ form }: {
-  form: UseFormReturn<UserExtendedFormT>;
+  form: UseFormReturn<UserAccountFormT>;
 }) {
   const t = useTranslations("buyerInfoPage");
 

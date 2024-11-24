@@ -5,11 +5,11 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { NextIntlClientProvider } from "next-intl";
 import { enUS, koKR } from "@clerk/localizations";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
+import { Footer } from "@/components/root/Footer";
+import { Header } from "@/components/root/Header";
 import { getLocale, getMessages } from "next-intl/server";
 import { Toaster } from "@/shadcn/ui/toaster";
-import Alert from "@/components/Alert";
+import Alert from "@/components/root/Alert";
 
 const inter = Inter({ subsets: ["latin"] });
 

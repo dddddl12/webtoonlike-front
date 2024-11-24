@@ -1,27 +1,26 @@
 "use client";
 
-import { Col, Gap, Row } from "@/shadcn/ui/layouts";
-import { Text } from "@/shadcn/ui/texts";
-import { buildImgUrl } from "@/utils/media";
-import Image from "next/image";
+import { Col } from "@/components/ui/common";
 import { useLocale, useTranslations } from "next-intl";
-import Paginator from "@/components/Paginator";
+import Paginator from "@/components/ui/Paginator";
 import useListData from "@/hooks/listData";
-import { listMyWebtoonsOnSale, MyWebtoonOnSaleT } from "@/resources/webtoons/webtoon.controller";
-import { Link } from "@/i18n/routing";
-import { displayName } from "@/utils/displayName";
-import { BidRoundStatus } from "@/resources/bidRounds/bidRound.types";
-import StatusBadge from "@/components/StatusBadge";
+import { BidRoundStatus } from "@/resources/bidRounds/dtos/bidRound.dto";
+import StatusBadge from "@/components/ui/StatusBadge";
 import { ListResponse } from "@/resources/globalTypes";
+import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
+import { MyWebtoonOnSaleT } from "@/resources/webtoons/dtos/webtoonPreview.dto";
+import { listMyWebtoonsOnSale } from "@/resources/webtoons/controllers/webtoonPreview.controller";
+import NoItems from "@/components/ui/NoItems";
 
 export default function MyWebtoonsOnSale({ initialWebtoonListResponse }: {
   initialWebtoonListResponse: ListResponse<MyWebtoonOnSaleT>;
 }) {
+  const t = useTranslations("manageContents");
   const { listResponse, filters, setFilters } = useListData(
     listMyWebtoonsOnSale, { page: 1 }, initialWebtoonListResponse);
 
   if (listResponse.items.length === 0) {
-    return <NoItemsFound />;
+    return <NoItems message={t("noSeriesBeingSold")} />;
   }
 
   return (<>
@@ -66,25 +65,7 @@ function TableRow({ webtoon }: {
   return (
     <div className="flex p-2 mb-2 text-white rounded-md bg-gray-darker items-center">
       <div className="w-[40%] p-2 flex justify-start items-center">
-        <Image
-          src={
-            buildImgUrl(webtoon.thumbPath, {
-              size: "sm",
-            })
-          }
-          alt={webtoon.thumbPath}
-          style={{ objectFit: "cover" }}
-          width={60}
-          height={60}
-          className="rounded-sm"
-        />
-        <Gap x={4} />
-        <Link
-          className="text-mint underline cursor-pointer"
-          href={`/webtoons/${webtoon.id}`}
-        >
-          {displayName(locale, webtoon.title, webtoon.title_en)}
-        </Link>
+        <WebtoonAvatar webtoon={webtoon}/>
       </div>
 
       <div className="w-[40%] p-2 flex justify-center">
@@ -96,15 +77,6 @@ function TableRow({ webtoon }: {
       </div>
     </div>
   );
-}
-
-function NoItemsFound() {
-  const t = useTranslations("manageContents");
-  return <Row className="rounded-md bg-gray-darker h-[84px] justify-center">
-    <Text className="text-white">
-      {t("noSeriesBeingSold")}
-    </Text>
-  </Row>;
 }
 
 function BidRoundStatusBadge({ status }:{

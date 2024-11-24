@@ -1,13 +1,14 @@
 "use client";
-import { SignUpStage, UserExtendedFormT, UserTypeT } from "@/resources/users/user.types";
+import { UserTypeT } from "@/resources/users/dtos/user.dto";
 import { useRouter } from "@/i18n/routing";
 import CreatorProfileForm from "@/components/forms/account/CreatorProfileForm";
 import BuyerProfileForm from "@/components/forms/account/BuyerProfileForm";
 import { useEffect, useState } from "react";
 import { useToast } from "@/shadcn/hooks/use-toast";
+import { SignUpStage, UserAccountFormT } from "@/resources/users/dtos/userAccount.dto";
 
-export default function UpdateAccountWrapper({ userExtendedForm }: {
-  userExtendedForm: UserExtendedFormT;
+export default function UpdateAccountWrapper({ userAccountForm }: {
+  userAccountForm: UserAccountFormT;
 }) {
   const router = useRouter();
   const [signUpStage, setSignUpStage] = useState<SignUpStage>(
@@ -29,14 +30,14 @@ export default function UpdateAccountWrapper({ userExtendedForm }: {
     }
   }, [router, signUpStage, toast]);
 
-  if (userExtendedForm.userType === UserTypeT.Creator) {
+  if (userAccountForm.userType === UserTypeT.Creator) {
     return <CreatorProfileForm
-      userExtendedForm={userExtendedForm}
+      userAccountForm={userAccountForm}
       setSignUpStage={setSignUpStage}
     />;
-  } else if (userExtendedForm.userType === UserTypeT.Buyer) {
+  } else if (userAccountForm.userType === UserTypeT.Buyer) {
     return <BuyerProfileForm
-      userExtendedForm={userExtendedForm}
+      userAccountForm={userAccountForm}
       setSignUpStage={setSignUpStage}
     />;
   }

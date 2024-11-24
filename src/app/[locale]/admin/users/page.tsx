@@ -1,4 +1,4 @@
-import { Col } from "@/shadcn/ui/layouts";
+import { Col } from "@/components/ui/common";
 import Accounts from "@/app/[locale]/admin/users/Accounts";
 import Creators from "@/app/[locale]/admin/users/Creators";
 

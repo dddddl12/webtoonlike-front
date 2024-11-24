@@ -1,6 +1,6 @@
 import "server-only";
 import prisma from "@/utils/prisma";
-import { BuyerCompanySchema, PublicBuyerInfoT } from "@/resources/buyers/buyer.types";
+import { BuyerCompanySchema, PublicBuyerInfoT } from "@/resources/buyers/buyer.dto";
 
 class BuyerService {
   // todo 인증 방식 확인

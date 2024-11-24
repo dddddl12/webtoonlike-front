@@ -1,11 +1,16 @@
 import "server-only";
 
 import prisma from "@/utils/prisma";
-import { AdminPageCreatorT, ChangeExposedT } from "@/resources/creators/creator.controller";
+import { ChangeExposedT } from "@/resources/creators/creator.controller";
 import { getTokenInfo } from "@/resources/tokens/token.service";
+import { AdminPageCreatorT, PublicCreatorT } from "@/resources/creators/creator.dto";
+import { displayName } from "@/resources/displayName";
+import { getLocale } from "next-intl/server";
+import { ListResponse } from "@/resources/globalTypes";
+import creatorHelper from "@/resources/creators/creator.helper";
 
 class CreatorService {
-  async getByUserId(userId: number) {
+  async getByUserId(userId: number): Promise<PublicCreatorT> {
     await getTokenInfo({
       admin: true,
       buyer: true,
@@ -21,16 +26,18 @@ class CreatorService {
         thumbPath: true,
       }
     });
+    const locale = await getLocale();
     return {
-      name: record.name,
-      name_en: record.name_en ?? undefined,
       thumbPath: record.thumbPath ?? undefined,
+      localized: {
+        name: displayName(locale, record.name, record.name_en)
+      }
     };
   }
 
   async list({ page }: {
     page: number;
-  }) {
+  }): Promise<ListResponse<AdminPageCreatorT>> {
     await getTokenInfo({
       admin: true,
     });
@@ -42,46 +49,24 @@ class CreatorService {
         orderBy: {
           createdAt: "desc"
         },
-        select: {
-          id: true,
-          name: true,
-          isExposed: true,
-          user: {
-            select: {
-              name: true,
-              createdAt: true
-            }
-          }
-        }
+        ...creatorHelper.adminPageQuery
       }),
       prisma.creator.count()
     ]);
-    const items: AdminPageCreatorT[] = records.map(r => {
-      return {
-        id: r.id,
-        name: r.name,
-        isExposed: r.isExposed,
-        user: {
-          name: r.user.name,
-          createdAt: r.user.createdAt
-        }
-      };
-    });
+    const items = records.map(creatorHelper.adminPageMapToDTO);
     return {
       items,
       totalPages: Math.ceil(totalRecords / limit),
     };
   }
 
-  async changeExposed(creatorId: number, { isExposed }: ChangeExposedT) {
+  async changeExposed(creatorId: number, { isExposed }: ChangeExposedT): Promise<ChangeExposedT> {
     await getTokenInfo({
       admin: true,
     });
     // throw new NotAuthorized("Not implemented");
-    const { isExposed: newIsExposed } = await prisma.creator.update({
-      select: {
-        isExposed: true
-      },
+    const r = await prisma.creator.update({
+      ...creatorHelper.adminPageQuery,
       where: {
         id: creatorId
       },
@@ -89,7 +74,7 @@ class CreatorService {
         isExposed
       }
     });
-    return { isExposed: newIsExposed };
+    return creatorHelper.adminPageMapToDTO(r);
   }
 }
 

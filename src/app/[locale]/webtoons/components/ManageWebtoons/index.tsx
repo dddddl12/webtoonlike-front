@@ -1,12 +1,15 @@
 import React from "react";
-import { Col, Gap } from "@/shadcn/ui/layouts";
-import PageLayout from "@/components/PageLayout";
-import { listMyWebtoonsNotOnSale, listMyWebtoonsOnSale } from "@/resources/webtoons/webtoon.controller";
+import { Col } from "@/components/ui/common";
+import PageLayout from "@/components/ui/PageLayout";
 import { getTranslations } from "next-intl/server";
 import MyWebtoonsNotOnSale from "@/app/[locale]/webtoons/components/ManageWebtoons/MyWebtoonsNotOnSale";
 import MyWebtoonsOnSale from "@/app/[locale]/webtoons/components/ManageWebtoons/MyWebtoonsOnSale";
-import { Heading } from "@/shadcn/ui/texts";
+import { Heading } from "@/components/ui/common";
 import { responseHandler } from "@/handlers/responseHandler";
+import {
+  listMyWebtoonsNotOnSale,
+  listMyWebtoonsOnSale
+} from "@/resources/webtoons/controllers/webtoonPreview.controller";
 
 export default async function ManageWebtoons() {
   const [
@@ -26,8 +29,7 @@ export default async function ManageWebtoons() {
         </Heading>
         <MyWebtoonsNotOnSale initialWebtoonListResponse={initialWebtoonListNotOnSaleResponse} />
       </Col>
-      <Gap y={20} />
-      <Col>
+      <Col className="mt-20">
         <Heading>
           {t("registeredSeries")}
         </Heading>

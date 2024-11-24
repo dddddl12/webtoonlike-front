@@ -1,20 +1,13 @@
 "use server";
 
-import { GenreFormSchema, GenreSchema } from "@/resources/genres/genre.types";
+import { GenreFormSchema, GenreSchema } from "@/resources/genres/genre.dto";
 import z from "zod";
 import { action } from "@/handlers/safeAction";
 import genreService from "@/resources/genres/genre.service";
 
-const BasicGenreSchema = GenreSchema.pick({
-  id: true,
-  label: true,
-  label_en: true,
-  rank: true
-});
-export type BasicGenreT = z.infer<typeof BasicGenreSchema>;
 export const listGenres = action
   .metadata({ actionName: "listGenres" })
-  .outputSchema(z.array(BasicGenreSchema))
+  .outputSchema(z.array(GenreSchema))
   .action(genreService.list);
 
 export const createOrUpdateGenre = action

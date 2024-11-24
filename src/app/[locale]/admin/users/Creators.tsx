@@ -1,14 +1,16 @@
 "use client";
 
-import { AdminPageCreatorT, changeExposed, listCreators } from "@/resources/creators/creator.controller";
-import { Col, Row } from "@/shadcn/ui/layouts";
-import Paginator from "@/components/Paginator";
+import { changeExposed, listCreators } from "@/resources/creators/creator.controller";
+import { Col } from "@/components/ui/common";
+import Paginator from "@/components/ui/Paginator";
 import useListData from "@/hooks/listData";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/ui/Spinner";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { Switch } from "@/shadcn/ui/switch";
 import { useState } from "react";
 import useSafeAction from "@/hooks/safeAction";
+import NoItems from "@/components/ui/NoItems";
+import { AdminPageCreatorT } from "@/resources/creators/creator.dto";
 
 
 export default function Creators() {
@@ -21,9 +23,7 @@ export default function Creators() {
     return <Spinner />;
   }
   if (listResponse.items.length === 0) {
-    return <Row className="justify-center bg-gray p-4 rounded-sm">
-      <p>저작권자 회원이 없습니다.</p>
-    </Row>;
+    return <NoItems message="저작권자 회원이 없습니다."/>;
   }
 
   return <>

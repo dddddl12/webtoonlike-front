@@ -4,36 +4,35 @@ import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { Input } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
 import { Textarea } from "@/shadcn/ui/textarea";
-import { Gap, Row } from "@/shadcn/ui/layouts";
+import { Row } from "@/components/ui/common";
 import { Checkbox } from "@/shadcn/ui/checkbox";
-import { Text } from "@/shadcn/ui/texts";
 import { RadioGroup, RadioGroupItem } from "@/shadcn/ui/radio-group";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { IconUpload } from "@/components/svgs/IconUpload";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import {
   AgeLimit,
   TargetAge,
   TargetGender,
   WebtoonFormSchema,
   WebtoonFormT
-} from "@/resources/webtoons/webtoon.types";
+} from "@/resources/webtoons/dtos/webtoon.dto";
 import { FieldSet, Form, FormControl, FormField, FormHeader, FormItem, FormLabel } from "@/shadcn/ui/form";
 import { UseFormReturn } from "react-hook-form";
 import Image from "next/image";
-import Spinner from "@/components/Spinner";
-import { displayName } from "@/utils/displayName";
+import Spinner from "@/components/ui/Spinner";
 import { useRouter } from "@/i18n/routing";
 import { ImageObject } from "@/utils/media";
 import { FileDirectoryT } from "@/resources/files/files.type";
-import { BasicGenreT } from "@/resources/genres/genre.controller";
-import { createOrUpdateWebtoon, WebtoonDetailsT } from "@/resources/webtoons/webtoon.controller";
+import { createOrUpdateWebtoon } from "@/resources/webtoons/controllers/webtoon.controller";
 import { toast } from "@/shadcn/hooks/use-toast";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { GenreT } from "@/resources/genres/genre.dto";
+import { WebtoonDetailsT } from "@/resources/webtoons/dtos/webtoonDetails.dto";
 
 export function WebtoonForm({ selectableGenres, prev }: {
-  selectableGenres: BasicGenreT[];
+  selectableGenres: GenreT[];
   prev?: WebtoonDetailsT;
 }) {
   const t = useTranslations("addSeries");
@@ -242,10 +241,9 @@ function ThumbnailFieldSet({ form, thumbnail, setThumbnail }: {
         ) : (
           <>
             <IconUpload className="fill-gray-text"/>
-            <Gap y={5}/>
-            <Text className="text-gray-text">
+            <p className="mt-5 text-gray-text">
               300 X 450
-            </Text>
+            </p>
           </>
         )}
       </FormLabel>
@@ -333,9 +331,8 @@ function ExternalLinkFieldSet({ form }: {
 
 function GenresFieldSet({ form, selectableGenres }: {
   form: UseFormReturn<WebtoonFormT>;
-  selectableGenres: BasicGenreT[];
+  selectableGenres: GenreT[];
 }) {
-  const locale = useLocale();
   const t = useTranslations("addSeries");
 
   return <FieldSet>
@@ -374,7 +371,7 @@ function GenresFieldSet({ form, selectableGenres }: {
                       />
                     </FormControl>
                     <FormLabel>
-                      {displayName(locale, genre.label, genre.label_en)}
+                      {genre.localized.label}
                     </FormLabel>
                   </FormItem>
                 );
@@ -518,13 +515,3 @@ function AgeLimitFieldSet({ form }: {
     />
   </FieldSet>;
 }
-
-//TODO
-{/* <Label>{t("seriesKeywords")}</Label>
-      <Input
-        className="text-black"
-        id="keyword"
-        value={keyword || undefined}
-        onChange={handleKeywordChange}
-        placeholder={t("pleaseEnterKeywords")}
-      /> */}

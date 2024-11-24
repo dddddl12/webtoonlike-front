@@ -7,7 +7,7 @@
 // import type { NotificationFormT, NotificationT, ListNotificationOptionT } from "@/types";
 //
 // @Injectable()
-// export class NotificationService {
+// class NotificationService {
 //   constructor() {}
 //
 //   async create(form: NotificationFormT): Promise<NotificationT> {

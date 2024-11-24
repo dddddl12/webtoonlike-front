@@ -1,16 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
 import { Button } from "@/shadcn/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shadcn/ui/command";
-import { NonAdminUserSearchT, searchNonAdminUsers } from "@/resources/users/user.controller";
 import { useTranslations } from "next-intl";
 import useDebounce from "@/hooks/debounce";
 import { Badge } from "@/shadcn/ui/badge";
-import { UserTypeT } from "@/resources/users/user.types";
+import { UserTypeT } from "@/resources/users/dtos/user.dto";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { createAdmin } from "@/resources/admins/admin.controller";
 import { useConfirm } from "@/hooks/alert";
 import useSafeAction from "@/hooks/safeAction";
+import { NonAdminUserSearchT } from "@/resources/users/dtos/userAdmin.dto";
+import { searchNonAdminUsers } from "@/resources/users/controllers/userAdmin.controller";
 
 export default function AddAdmin({ reload }: {
   reload: () => void;
@@ -25,8 +26,7 @@ export default function AddAdmin({ reload }: {
     }
   }, [open]);
 
-  const boundSearchNonAdminUsers = useMemo(() => searchNonAdminUsers, []);
-  const { execute } = useSafeAction(boundSearchNonAdminUsers, {
+  const { execute } = useSafeAction(searchNonAdminUsers, {
     onSuccess: ({ data }) => {
       setUsers(data || []);
       setInputStatus("complete");

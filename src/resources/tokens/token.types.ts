@@ -1,5 +1,5 @@
 import z from "zod";
-import { UserTypeT } from "@/resources/users/user.types";
+import { UserTypeT } from "@/resources/users/dtos/user.dto";
 
 export enum AdminLevel {
   None = 0,

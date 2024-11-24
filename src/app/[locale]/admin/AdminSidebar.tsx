@@ -1,5 +1,5 @@
 "use client";
-import { Col } from "@/shadcn/ui/layouts";
+import { Col } from "@/components/ui/common";
 import { IconDashboard } from "@/components/svgs/IconDashboard";
 import { IconUser } from "@/components/svgs/IconUser";
 import { IconAddUser } from "@/components/svgs/IconAddUser";

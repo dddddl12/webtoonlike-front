@@ -242,8 +242,7 @@
     },
     "invoiceManagement": {
         "invoiceManagement": "인보이스 관리",
-        "noInvoiceIssued": "발행 된 인보이스가 없습니다",
-        "registerWebtoon": "신규 웹툰을 등록해 보세요.",
+        "noInvoiceIssued": "발행된 인보이스가 없습니다",
         "seriesName": "작품명",
         "authorName": "작가명",
         "buyerName": "바이어명",

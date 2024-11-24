@@ -10,9 +10,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   WebtoonEpisodeEnglishUrlFormSchema,
   WebtoonEpisodeT
-} from "@/resources/webtoonEpisodes/webtoonEpisode.types";
+} from "@/resources/webtoonEpisodes/webtoonEpisode.dto";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
-import { Row } from "@/shadcn/ui/layouts";
+import { Row } from "@/components/ui/common";
 import { clsx } from "clsx";
 
 export default function WebtoonEpisodeEnglishUrlForm({ episode }:{

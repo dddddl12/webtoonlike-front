@@ -1,9 +1,10 @@
-import { SignUpStage, UserExtendedFormT, UserFormSchema, UserFormT } from "@/resources/users/user.types";
+import { UserFormSchema, UserFormT } from "@/resources/users/dtos/user.dto";
+import { SignUpStage, UserAccountFormT } from "@/resources/users/dtos/userAccount.dto";
 import { Dispatch, SetStateAction } from "react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
-import { Col, Row } from "@/shadcn/ui/layouts";
+import { Col, Row } from "@/components/ui/common";
 import { Input } from "@/shadcn/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shadcn/ui/select";
 import { Checkbox } from "@/shadcn/ui/checkbox";
@@ -12,9 +13,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import AccountFormFooter from "@/components/forms/account/components/AccountFormFooter";
 import Terms from "@/components/forms/account/components/Terms";
 
-export default function UserProfileForm({ userExtendedForm, setUserExtendedForm, setSignUpStage }: {
-  userExtendedForm: Partial<UserExtendedFormT>;
-  setUserExtendedForm: Dispatch<SetStateAction<Partial<UserExtendedFormT>>>;
+export default function UserProfileForm({ userAccountForm, setUserAccountForm, setSignUpStage }: {
+  userAccountForm: Partial<UserAccountFormT>;
+  setUserAccountForm: Dispatch<SetStateAction<Partial<UserAccountFormT>>>;
   setSignUpStage: Dispatch<SetStateAction<SignUpStage>>;
 }) {
   const t = useTranslations("setupForm");
@@ -22,7 +23,7 @@ export default function UserProfileForm({ userExtendedForm, setUserExtendedForm,
   const tCountries = useTranslations("countries");
   // todo
   const form = useForm<UserFormT>({
-    defaultValues: userExtendedForm,
+    defaultValues: userAccountForm,
     mode: "onChange",
     resolver: zodResolver(UserFormSchema)
   });
@@ -33,7 +34,7 @@ export default function UserProfileForm({ userExtendedForm, setUserExtendedForm,
   return <Form {...form}>
     <form
       onSubmit={form.handleSubmit((values) => {
-        setUserExtendedForm(prev => ({
+        setUserAccountForm(prev => ({
           ...prev,
           ...values
         }));
@@ -43,7 +44,7 @@ export default function UserProfileForm({ userExtendedForm, setUserExtendedForm,
     >
       <span>
         {t("selectedUserType", {
-          userType: tUserType(userExtendedForm.userType)
+          userType: tUserType(userAccountForm.userType)
         })}
       </span>
 
@@ -83,7 +84,7 @@ export default function UserProfileForm({ userExtendedForm, setUserExtendedForm,
       />
 
 
-      <hr className="my-5 border-input"/>
+      <hr className="my-5"/>
 
 
       <Row className="justify-between gap-2">
@@ -165,15 +166,15 @@ export default function UserProfileForm({ userExtendedForm, setUserExtendedForm,
         )}
       />
 
-      <hr className="my-5 border-input"/>
+      <hr className="my-5"/>
 
-      <Col className="border border-input rounded-sm">
+      <Col className="border rounded-sm">
 
         <FormField
           control={form.control}
           name="agreed"
           render={({ field }) => (
-            <FormItem className="flex items-center p-3 border-b border-input">
+            <FormItem className="flex items-center p-3 border-b">
               <FormControl>
                 <Checkbox
                   checked={field.value || false}

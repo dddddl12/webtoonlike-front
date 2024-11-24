@@ -14,7 +14,7 @@ import {
 
 import { cn } from "@/shadcn/lib/utils";
 import { Label } from "@/shadcn/ui/label";
-import { Row } from "@/shadcn/ui/layouts";
+import { Row } from "@/components/ui/common";
 import { Button } from "@/shadcn/ui/button";
 import { Link } from "@/i18n/routing";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";

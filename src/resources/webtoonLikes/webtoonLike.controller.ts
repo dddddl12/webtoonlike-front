@@ -2,7 +2,7 @@
 
 import { action } from "@/handlers/safeAction";
 import z from "zod";
-import { WebtoonLikeWithMine } from "@/resources/webtoonLikes/webtoonLike.types";
+import { WebtoonLikeWithMine } from "@/resources/webtoonLikes/webtoonLike.dto";
 import webtoonLikeService from "@/resources/webtoonLikes/webtoonLike.service";
 
 export const toggleLike = action

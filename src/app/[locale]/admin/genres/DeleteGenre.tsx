@@ -1,13 +1,14 @@
-import { BasicGenreT, deleteGenre } from "@/resources/genres/genre.controller";
+import { deleteGenre } from "@/resources/genres/genre.controller";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { Button } from "@/shadcn/ui/button";
 import { useConfirm } from "@/hooks/alert";
 import { IconDelete } from "@/components/svgs/IconDelete";
 import useSafeAction from "@/hooks/safeAction";
+import { GenreT } from "@/resources/genres/genre.dto";
 
 export default function useDeleteGenre({ reload, genre }: {
   reload: () => void;
-  genre: BasicGenreT;
+  genre: GenreT;
 }) {
   const { toast } = useToast();
   const { execute } = useSafeAction(deleteGenre.bind(null, genre.id), {

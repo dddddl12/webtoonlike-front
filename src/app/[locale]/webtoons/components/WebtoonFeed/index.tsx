@@ -1,12 +1,11 @@
 import React from "react";
-import PageLayout from "@/components/PageLayout";
-import { Gap, Row } from "@/shadcn/ui/layouts";
-import { Heading } from "@/shadcn/ui/texts";
+import PageLayout from "@/components/ui/PageLayout";
+import { Heading } from "@/components/ui/common";
 import { getTranslations } from "next-intl/server";
 import WebtooonFeedList from "@/app/[locale]/webtoons/components/WebtoonFeed/WebtooonFeedList";
 import { listGenres } from "@/resources/genres/genre.controller";
-import { listWebtoons } from "@/resources/webtoons/webtoon.controller";
 import { responseHandler } from "@/handlers/responseHandler";
+import { listWebtoons } from "@/resources/webtoons/controllers/webtoonPreview.controller";
 
 export default async function WebtoonFeed() {
   const [ genres, webtoonListResponse ] = await Promise.all([
@@ -17,12 +16,9 @@ export default async function WebtoonFeed() {
 
   return (
     <PageLayout>
-      <Row className="w-[1200px]">
-        <Heading className="text-white text-[32px] font-bold">
-          {TallSeries("allSeries")}
-        </Heading>
-      </Row>
-      <Gap y={10} />
+      <Heading className="text-[32px] font-bold">
+        {TallSeries("allSeries")}
+      </Heading>
       <WebtooonFeedList
         genres={genres}
         initialWebtoonListResponse={webtoonListResponse}

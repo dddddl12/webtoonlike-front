@@ -1,4 +1,4 @@
-import { Col } from "@/shadcn/ui/layouts";
+import { Col } from "@/components/ui/common";
 import { ReactNode } from "react";
 import LightThemeProvider from "@/providers/LightThemeProvider";
 import AdminSidebar from "@/app/[locale]/admin/AdminSidebar";

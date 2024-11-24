@@ -2,9 +2,9 @@
 
 import { ListResponse } from "@/resources/globalTypes";
 import useListData from "@/hooks/listData";
-import { listWebtoonsByUserId } from "@/resources/webtoons/webtoon.controller";
-import WebtoonGridPaginated from "@/components/WebtoonGridPaginated";
-import { WebtoonPreviewT } from "@/resources/webtoons/webtoon.types";
+import WebtoonGridPaginated from "@/components/shared/WebtoonGridPaginated";
+import { WebtoonPreviewT } from "@/resources/webtoons/dtos/webtoonPreview.dto";
+import { listWebtoonsByUserId } from "@/resources/webtoons/controllers/webtoonPreview.controller";
 
 export default function CreatorWebtoonList({ initialWebtoonListResponse, creatorUid }: {
   initialWebtoonListResponse: ListResponse<WebtoonPreviewT>;

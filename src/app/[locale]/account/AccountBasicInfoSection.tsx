@@ -1,11 +1,10 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { Text } from "@/shadcn/ui/texts";
-import { Col, Row } from "@/shadcn/ui/layouts";
+import { Col, Row } from "@/components/ui/common";
 import { Button } from "@/shadcn/ui/button";
 import { Link } from "@/i18n/routing";
 import AccountBasicInfoSectionDeleteButton from "@/app/[locale]/account/AccountBasicInfoSectionDeleteButton";
-import { getSimpleUserProfile } from "@/resources/users/user.controller";
+import { getSimpleUserProfile } from "@/resources/users/controllers/user.controller";
 import { responseHandler } from "@/handlers/responseHandler";
 
 export default async function AccountBasicInfoSection() {
@@ -22,9 +21,9 @@ export default async function AccountBasicInfoSection() {
       height={160}
     />
     <Col className="items-center justify-center w-full sm:items-start gap-5">
-      <Text className="font-bold text-[26pt]">
+      <p className="font-bold text-[26pt]">
         {user.name}
-      </Text>
+      </p>
       <Row className="w-full justify-between sm:flex-row">
         <Col className="sm:flex-row">
           {/*TODO 이 페이지가 필요한가*/}

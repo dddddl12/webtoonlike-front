@@ -1,4 +1,4 @@
-import { Row } from "@/shadcn/ui/layouts";
+import { Row } from "@/components/ui/common";
 import { Checkbox } from "@/shadcn/ui/checkbox";
 import { IconClose } from "@/components/svgs/IconClose";
 import { useTranslations } from "next-intl";
@@ -40,7 +40,7 @@ export default function EpisodeImageItem({
       </FormItem>
       <Row className="flex gap-2 items-center text-sm">
         <EpisodeImagePreview images={[image]}>
-          <span className="text-mint underline cursor-pointer">
+          <span className="clickable">
             {t("preview")}
           </span>
         </EpisodeImagePreview>

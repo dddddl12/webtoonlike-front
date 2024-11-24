@@ -100,7 +100,8 @@
 
 @layer base {
     * {
-        @apply border-foreground;
+        /*todo 색상 검토*/
+        @apply border-border;
     }
 
     body {
@@ -111,5 +112,8 @@
 @layer utilities {
     .form-overlay {
         @apply relative before:absolute before:bg-background/60 before:w-full before:h-full before:z-[10] before:pointer-events-auto before:inset-0;
+    }
+    .clickable {
+        @apply underline cursor-pointer text-mint hover:text-mint/70;
     }
 }

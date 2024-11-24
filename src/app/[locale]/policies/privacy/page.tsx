@@ -1,7 +1,7 @@
-import PrivacyPolicyEn from "@/components/policies/privacy/PrivacyPolicyEn";
-import PrivacyPolicyKo from "@/components/policies/privacy/PrivacyPolicyKo";
+import PrivacyPolicyEn from "@/components/shared/policies/privacy/PrivacyPolicyEn";
+import PrivacyPolicyKo from "@/components/shared/policies/privacy/PrivacyPolicyKo";
 import { getLocale } from "next-intl/server";
-import PageLayout from "@/components/PageLayout";
+import PageLayout from "@/components/ui/PageLayout";
 
 export default async function PrivacyPolicyPage() {
   const locale = await getLocale();

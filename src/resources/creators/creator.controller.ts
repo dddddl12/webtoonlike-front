@@ -1,17 +1,11 @@
 "use server";
 
-import { CreatorSchema } from "@/resources/creators/creator.types";
-import { UserSchema } from "@/resources/users/user.types";
+import { AdminPageCreatorSchema, PublicCreatorSchema } from "@/resources/creators/creator.dto";
 import { ListResponseSchema } from "@/resources/globalTypes";
 import z from "zod";
 import { action } from "@/handlers/safeAction";
 import creatorService from "@/resources/creators/creator.service";
 
-const PublicCreatorSchema = z.object({
-  name: z.string(),
-  name_en: z.string().optional(),
-  thumbPath: z.string().optional(),
-});
 export const getCreatorByUserId = action
   .metadata({ actionName: "getCreatorByUserId" })
   .bindArgsSchemas([
@@ -24,17 +18,6 @@ export const getCreatorByUserId = action
     return creatorService.getByUserId(userId);
   });
 
-const AdminPageCreatorSchema = CreatorSchema.pick({
-  id: true,
-  name: true,
-  isExposed: true,
-}).extend({
-  user: UserSchema.pick({
-    name: true,
-    createdAt: true
-  })
-});
-export type AdminPageCreatorT = z.infer<typeof AdminPageCreatorSchema>;
 export const listCreators = action
   .metadata({ actionName: "listCreators" })
   .schema(z.object({

@@ -1,19 +1,17 @@
 "use client";
 
-import { Col, Row } from "@/shadcn/ui/layouts";
-import { Text } from "@/shadcn/ui/texts";
-import { buildImgUrl } from "@/utils/media";
-import Image from "next/image";
+import { Col } from "@/components/ui/common";
 import { useLocale, useTranslations } from "next-intl";
-import { Link } from "@/i18n/routing";
-import Paginator from "@/components/Paginator";
+import Paginator from "@/components/ui/Paginator";
 import useListData from "@/hooks/listData";
 import { ListResponse } from "@/resources/globalTypes";
-import { InvoiceWithWebtoonT, listInvoices } from "@/resources/invoices/invoice.controller";
-import { displayName } from "@/utils/displayName";
+import { listInvoices } from "@/resources/invoices/controllers/invoice.controller";
 import { useState } from "react";
 import BidRequestDetailsForInvoice from "@/app/[locale]/invoices/BidRequestDetailsForInvoice";
-import InvoiceDownload from "@/components/InvoiceDownload";
+import InvoiceDownload from "@/components/shared/InvoiceDownload";
+import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
+import { InvoiceWithWebtoonT } from "@/resources/invoices/dtos/invoice.dto";
+import NoItems from "@/components/ui/NoItems";
 
 type InvoiceListResponse = ListResponse<InvoiceWithWebtoonT>;
 
@@ -28,9 +26,7 @@ export function ManageInvoiceList({ initialInvoiceListResponse }: {
   );
 
   if (listResponse.items.length === 0) {
-    return <Row className="rounded-md bg-gray-darker h-[84px] justify-center">
-      <Text className="text-white">{t("noInvoiceIssued")}</Text>
-    </Row>;
+    return <NoItems message={t("noInvoiceIssued")}/>;
   }
 
   return <>
@@ -72,20 +68,7 @@ function TableRow({ invoice }: { invoice: InvoiceWithWebtoonT }) {
     <>
       <div className="flex p-2 mb-2 text-white rounded-md bg-gray-darker items-center">
         <div className="w-[20%] p-2 flex justify-start items-center">
-          <div className="w-[60px] h-[60px] overflow-hidden relative rounded-sm">
-            <Image
-              src={buildImgUrl(invoice.webtoon.thumbPath, { size: "xxs" })}
-              alt={invoice.webtoon.thumbPath}
-              style={{ objectFit: "cover" }}
-              fill
-            />
-          </div>
-          <Link
-            className="text-mint underline cursor-pointer ml-4"
-            href={`/webtoons/${invoice.webtoon.id}`}
-          >
-            {displayName(locale, invoice.webtoon.title, invoice.webtoon.title_en)}
-          </Link>
+          <WebtoonAvatar webtoon={invoice.webtoon}/>
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
@@ -96,7 +79,7 @@ function TableRow({ invoice }: { invoice: InvoiceWithWebtoonT }) {
           {invoice.buyerUsername}
         </div>
 
-        <div className="w-[20%] p-2 flex justify-center text-mint underline cursor-pointer"
+        <div className="w-[20%] p-2 flex justify-center clickable"
           onClick={() => setShowNegotiation(!showNegotiation)}>
           {showNegotiation ? "접기" : "보기"}
         </div>

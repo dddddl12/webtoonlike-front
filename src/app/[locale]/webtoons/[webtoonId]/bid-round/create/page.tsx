@@ -1,6 +1,6 @@
-import { Heading } from "@/shadcn/ui/texts";
+import { Heading } from "@/components/ui/common";
 import BidRoundForm from "@/components/forms/BidRoundForm";
-import PageLayout from "@/components/PageLayout";
+import PageLayout from "@/components/ui/PageLayout";
 import { getTranslations } from "next-intl/server";
 
 export default async function CreateBidRoundPage({ params }: {

@@ -4,11 +4,12 @@ import BuyerProfileForm from "@/components/forms/account/BuyerProfileForm";
 import { redirect, useRouter } from "@/i18n/routing";
 import { useSession } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
-import { SignUpStage, UserExtendedFormT, UserTypeT } from "@/resources/users/user.types";
+import { UserTypeT } from "@/resources/users/dtos/user.dto";
 import UserTypeSelectorForm from "@/components/forms/account/UserTypeSelectorForm";
 import UserProfileForm from "@/components/forms/account/UserProfileForm";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { useLocale, useTranslations } from "next-intl";
+import { SignUpStage, UserAccountFormT } from "@/resources/users/dtos/userAccount.dto";
 
 export function SignUpCompleteForm ({ clerkUserFullName, signUpFinished }: {
   signUpFinished: boolean;
@@ -44,31 +45,31 @@ export function SignUpCompleteForm ({ clerkUserFullName, signUpFinished }: {
   }, [isSignedIn, locale, router, session, signUpStage]);
 
   // User form과 관련한 회원가입 status 조절
-  const [userExtendedForm, setUserExtendedForm] = useState<Partial<UserExtendedFormT>>({
+  const [userAccountForm, setUserAccountForm] = useState<Partial<UserAccountFormT>>({
     name: clerkUserFullName,
   });
 
 
   if (signUpStage === SignUpStage.Begin) {
     return <UserTypeSelectorForm
-      setUserExtendedForm={setUserExtendedForm}
+      setUserAccountForm={setUserAccountForm}
       setSignUpStage={setSignUpStage}
     />;
   } else if (signUpStage === SignUpStage.FillUserInfo) {
     return <UserProfileForm
-      userExtendedForm={userExtendedForm}
-      setUserExtendedForm={setUserExtendedForm}
+      userAccountForm={userAccountForm}
+      setUserAccountForm={setUserAccountForm}
       setSignUpStage={setSignUpStage}
     />;
   } else if (signUpStage === SignUpStage.FillRoleInfo) {
-    if (userExtendedForm.userType === UserTypeT.Creator) {
+    if (userAccountForm.userType === UserTypeT.Creator) {
       return <CreatorProfileForm
-        userExtendedForm={userExtendedForm}
+        userAccountForm={userAccountForm}
         setSignUpStage={setSignUpStage}
       />;
-    } else if (userExtendedForm.userType === UserTypeT.Buyer) {
+    } else if (userAccountForm.userType === UserTypeT.Buyer) {
       return <BuyerProfileForm
-        userExtendedForm={userExtendedForm}
+        userAccountForm={userAccountForm}
         setSignUpStage={setSignUpStage}
       />;
     }

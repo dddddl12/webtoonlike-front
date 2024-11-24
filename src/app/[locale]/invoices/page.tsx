@@ -1,13 +1,13 @@
 import React from "react";
 import { ManageInvoiceList } from "@/app/[locale]/invoices/ManageInvoiceList";
-import PageLayout from "@/components/PageLayout";
+import PageLayout from "@/components/ui/PageLayout";
 import { getTranslations } from "next-intl/server";
-import { Heading } from "@/shadcn/ui/texts";
-import { listInvoices } from "@/resources/invoices/invoice.controller";
-import { Col } from "@/shadcn/ui/layouts";
+import { Heading } from "@/components/ui/common";
+import { listInvoices } from "@/resources/invoices/controllers/invoice.controller";
+import { Col } from "@/components/ui/common";
 import { UninvoicedBidRequestList } from "@/app/[locale]/invoices/UninvoicedBidRequestList";
-import { listUninvoicedBidRequests } from "@/resources/bidRequests/bidRequest.controller";
 import { responseHandler } from "@/handlers/responseHandler";
+import { listUninvoicedBidRequests } from "@/resources/bidRequests/controllers/bidRequestWithMetadata.controller";
 
 export default async function Invoice() {
   const t = await getTranslations("invoiceManagement");
