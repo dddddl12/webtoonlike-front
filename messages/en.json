@@ -7,7 +7,9 @@
         "selectFile": "Select File",
         "dismiss": "Dismiss",
         "close": "Close",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "expand": "See details",
+        "collapse": "Hide details"
     },
     "userType": {
         "CREATOR": "Creator",
@@ -72,16 +74,14 @@
         "kenazCoLtd": "Kenaz Co., Ltd.",
         "CEOname": "CEO Woojae Lee"
     },
-    "inquiryMenu": {
+    "headerNav": {
         "home": "Home",
-        "seeAll": "See All",
-        "offer": "Offer",
-        "manageContents": "Manage Contents",
-        "manageOffers": "Manage Offers",
-        "invoice": "Invoice",
+        "seeAll": "All Webtoons",
+        "manageContents": "My Webtoons",
+        "manageOffers": "Offers",
+        "invoice": "Invoices",
         "myInfo": "My Info",
-        "login": "Log in",
-        "market": "Market"
+        "login": "Log In"
     },
     "offerPage": {
         "offerStatus": "Offer Status",
@@ -243,7 +243,8 @@
     },
     "invoiceManagement": {
         "invoiceManagement": "Invoice Management",
-        "noInvoiceIssued": "There is no invoice issued",
+        "noInvoiceIssued": "No invoices issued",
+        "noUnvoiced": "No offers pending invoices",
         "seriesName": "Title of Series",
         "authorName": "Author",
         "buyerName": "Buyer",

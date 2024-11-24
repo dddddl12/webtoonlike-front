@@ -9,11 +9,11 @@ import { listAllBidRequests } from "@/resources/bidRequests/controllers/bidReque
 export default async function OffersPage() {
   const initialBidRequestListResponse = await listAllBidRequests({})
     .then(responseHandler);
-  const t = await getTranslations("manageOffers");
+  const t = await getTranslations("headerNav");
   return (
     <PageLayout>
       <Heading>
-        오퍼 관리
+        {t("manageOffers")}
       </Heading>
       <BidRequestList initialBidRequestListResponse={initialBidRequestListResponse} />
     </PageLayout>

@@ -7,7 +7,9 @@
         "selectFile": "파일 선택",
         "dismiss": "확인",
         "close": "닫기",
-        "cancel": "취소"
+        "cancel": "취소",
+        "expand": "보기",
+        "collapse": "접기"
     },
     "userType": {
         "CREATOR": "저작권자",
@@ -72,16 +74,14 @@
         "kenazCoLtd": "(주)케나즈",
         "CEOname": "대표 이우재"
     },
-    "inquiryMenu": {
+    "headerNav": {
         "home": "홈",
         "seeAll": "전체 작품",
-        "offer": "오퍼",
         "manageContents": "작품 관리",
         "manageOffers": "오퍼 관리",
         "invoice": "인보이스",
         "myInfo": "내 정보",
-        "login": "로그인하기",
-        "market": "마켓"
+        "login": "로그인하기"
     },
     "offerPage": {
         "offerStatus": "오퍼 현황",
@@ -243,6 +243,7 @@
     "invoiceManagement": {
         "invoiceManagement": "인보이스 관리",
         "noInvoiceIssued": "발행된 인보이스가 없습니다",
+        "noUnvoiced": "인보이스 발행 대기 중인 오퍼가 없습니다.",
         "seriesName": "작품명",
         "authorName": "작가명",
         "buyerName": "바이어명",

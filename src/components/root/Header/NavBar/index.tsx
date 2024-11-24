@@ -12,7 +12,7 @@ export type NavArrT = {
 }[];
 
 export async function NavBar() {
-  const t = await getTranslations("inquiryMenu");
+  const t = await getTranslations("headerNav");
   const tokenInfo = await getTokenInfo()
     .catch(() => undefined);
   const userType = tokenInfo?.metadata.type;

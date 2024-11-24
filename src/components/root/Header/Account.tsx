@@ -6,7 +6,7 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
 
 export function Account() {
-  const Tinquiry = useTranslations("inquiryMenu");
+  const Tinquiry = useTranslations("headerNav");
 
   return <>
     <SignedOut>

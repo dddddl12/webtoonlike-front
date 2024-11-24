@@ -127,6 +127,7 @@ function MessageRow({ seq, createdAt, user, statusLabel, children }: {
   children: ReactNode;
 }) {
   const [showDetails, setShowDetails] = useState(false);
+  const tGeneral = useTranslations("general");
   const locale = useLocale();
   const { tokenInfo } = useTokenInfo();
   return <>
@@ -140,7 +141,7 @@ function MessageRow({ seq, createdAt, user, statusLabel, children }: {
       </div>
       <div className="w-[20%] p-2 flex justify-center clickable"
         onClick={() => setShowDetails(prev => !prev)}>
-        {showDetails ? "접기" : "보기"}
+        {showDetails ? tGeneral("collapse") : tGeneral("expand")}
       </div>
       <div className="w-[20%] p-2 flex justify-center">{statusLabel}</div>
     </Row>

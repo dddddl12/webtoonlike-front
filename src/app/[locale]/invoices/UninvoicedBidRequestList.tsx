@@ -23,7 +23,7 @@ export function UninvoicedBidRequestList({ initialBidRequestListResponse }: {
   );
 
   if (listResponse.items.length === 0) {
-    return <NoItems message="인보이스 발행 대기 중인 오퍼가 없습니다."/>;
+    return <NoItems message={t("noUnvoiced")}/>;
   }
 
   return <>
@@ -58,8 +58,8 @@ function TableHeader() {
 
 function TableRow({ bidRequest }: { bidRequest: BidRequestWithMetaDataT }) {
   const locale = useLocale();
-  const [showNegotiation, setShowNegotiation] = useState(false);
-  const t = useTranslations("invoiceManagement");
+  const [showDetails, setShowDetails] = useState(false);
+  const tGeneral = useTranslations("general");
 
   return (
     <>
@@ -76,8 +76,8 @@ function TableRow({ bidRequest }: { bidRequest: BidRequestWithMetaDataT }) {
           {bidRequest.buyer.user.name}
         </div>
 
-        <div className="w-[20%] p-2 flex justify-center clickable" onClick={() => setShowNegotiation(!showNegotiation)}>
-          {showNegotiation ? "접기" : "보기"}
+        <div className="w-[20%] p-2 flex justify-center clickable" onClick={() => setShowDetails(!showDetails)}>
+          {showDetails ? tGeneral("collapse") : tGeneral("expand")}
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
@@ -88,7 +88,7 @@ function TableRow({ bidRequest }: { bidRequest: BidRequestWithMetaDataT }) {
           -
         </div>
       </div>
-      {showNegotiation
+      {showDetails
         && <BidRequestDetailsForInvoice
           bidRequestId={bidRequest.id} />}
     </>

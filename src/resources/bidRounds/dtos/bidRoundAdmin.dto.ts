@@ -1,9 +1,7 @@
 /* 관리자 기능 */
 import z from "zod";
 import { BidRoundSchema } from "@/resources/bidRounds/dtos/bidRound.dto";
-import { WebtoonSchema } from "@/resources/webtoons/dtos/webtoon.dto";
 import { UserSchema } from "@/resources/users/dtos/user.dto";
-import WebtoonPreviewService from "@/resources/webtoons/services/webtoonPreview.service";
 import { WebtoonPreviewSchema } from "@/resources/webtoons/dtos/webtoonPreview.dto";
 
 export const BidRoundAdminSettingsSchema = z.object({

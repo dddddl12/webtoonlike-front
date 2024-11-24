@@ -61,8 +61,8 @@ function TableHeader() {
 
 function TableRow({ invoice }: { invoice: InvoiceWithWebtoonT }) {
   const locale = useLocale();
-  const [showNegotiation, setShowNegotiation] = useState(false);
-  const t = useTranslations("invoiceManagement");
+  const [showDetails, setShowDetails] = useState(false);
+  const tGeneral = useTranslations("general");
 
   return (
     <>
@@ -80,8 +80,8 @@ function TableRow({ invoice }: { invoice: InvoiceWithWebtoonT }) {
         </div>
 
         <div className="w-[20%] p-2 flex justify-center clickable"
-          onClick={() => setShowNegotiation(!showNegotiation)}>
-          {showNegotiation ? "접기" : "보기"}
+          onClick={() => setShowDetails(!showDetails)}>
+          {showDetails ? tGeneral("collapse") : tGeneral("expand")}
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
@@ -92,7 +92,7 @@ function TableRow({ invoice }: { invoice: InvoiceWithWebtoonT }) {
           <InvoiceDownload invoice={invoice}/>
         </div>
       </div>
-      {showNegotiation
+      {showDetails
         && <BidRequestDetailsForInvoice
           bidRequestId={invoice.bidRequestId}/>}
     </>

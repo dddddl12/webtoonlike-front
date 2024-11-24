@@ -19,7 +19,7 @@ export default function NavigationLink({
       className={clsx(
         "w-[100px] h-full text-[18px] flex items-center justify-center font-bold",
         isActive ? "text-red border-red border-b-[4px]"
-        : "text-white hover:text-red"
+          : "text-white hover:text-red"
       )}
       href={href}
       {...rest}
