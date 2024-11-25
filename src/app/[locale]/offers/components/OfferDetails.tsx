@@ -2,12 +2,11 @@ import { useTranslations } from "next-intl";
 import { Col } from "@/components/ui/common";
 import { Heading } from "@/components/ui/common";
 import { getPublicBuyerInfoByUserId } from "@/resources/buyers/buyer.controller";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { PublicBuyerInfoT } from "@/resources/buyers/buyer.dto";
 import Spinner from "@/components/ui/Spinner";
 import OfferDetails from "@/components/shared/OfferDetails";
 import Profile from "@/components/shared/Profile";
-import useSafeAction from "@/hooks/safeAction";
 import { BidRequestWithMetaDataT } from "@/resources/bidRequests/dtos/bidRequestWithMetadata.dto";
 
 export default function ViewOfferSection({ bidRequest }: {
@@ -16,20 +15,10 @@ export default function ViewOfferSection({ bidRequest }: {
   const [buyer, setBuyer] = useState<PublicBuyerInfoT>();
   const buyerUserId = bidRequest.buyer.user.id;
 
-  const boundGetPublicBuyerInfoByUserId = useMemo(() =>
-    getPublicBuyerInfoByUserId.bind(null, buyerUserId), [buyerUserId]);
-  const { execute } = useSafeAction(boundGetPublicBuyerInfoByUserId, {
-    onSuccess: ({ data }) => {
-      if (!data) {
-        throw new Error("data is null");
-      }
-      setBuyer(data);
-    }
-  });
-
   useEffect(() => {
-    execute();
-  }, [execute]);
+    getPublicBuyerInfoByUserId(buyerUserId)
+      .then(res => setBuyer(res?.data));
+  }, [buyerUserId]);
 
   if (!buyer) {
     return <Spinner />;

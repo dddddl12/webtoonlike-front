@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import {
   Dialog,
   DialogFooter,
@@ -13,12 +13,11 @@ import { Button } from "@/shadcn/ui/button";
 import { Input } from "@/shadcn/ui/input";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
-import { createOrUpdateGenre } from "@/resources/genres/genre.controller";
-import { GenreFormSchema, GenreFormT, GenreT } from "@/resources/genres/genre.dto";
-import { UseFormReturn } from "react-hook-form";
-import useSafeHookFormAction from "@/hooks/safeHookFormAction";
+import { createOrUpdateGenre, getGenre } from "@/resources/genres/genre.controller";
+import { GenreFormSchema, GenreT } from "@/resources/genres/genre.dto";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
+import useSafeActionForm from "@/hooks/safeActionForm";
 
 export default function GenreForm({ reload, children, prev }: {
   reload: () => void;
@@ -26,38 +25,6 @@ export default function GenreForm({ reload, children, prev }: {
   prev?: GenreT;
 }) {
   const [editorOpen, setEditorOpen] = useState<boolean>(false);
-  const { toast } = useToast();
-
-  const { form, handleSubmitWithAction }
-    = useSafeHookFormAction(
-      createOrUpdateGenre.bind(null, prev?.id),
-      zodResolver(GenreFormSchema),
-      {
-        actionProps: {
-          onSuccess: () => {
-            toast({
-              description: prev ? "장르가 수정되었습니다." : "장르가 추가되었습니다."
-            });
-            setEditorOpen(false);
-            reload();
-          }
-        },
-        formProps: {
-          mode: "onChange"
-        }
-      });
-  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
-
-  useEffect(() => {
-    if (editorOpen) {
-      form.reset({
-        label: prev?.label ?? "" ,
-        label_en: prev?.label_en ?? ""
-      });
-    }
-  }, [prev, editorOpen, form]);
-
-  // TODO 순서(rank 사용)
 
   return (
     <Dialog
@@ -68,79 +35,111 @@ export default function GenreForm({ reload, children, prev }: {
         {children}
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader className="gap-2">
-          <DialogTitle>
-            {prev ? "장르 수정하기" : "장르 추가하기"}
-          </DialogTitle>
-          <DialogDescription>
-            장르 정보를 입력해주세요.
-          </DialogDescription>
-        </DialogHeader>
-        <GenreFormContent form={form} />
-        <DialogFooter className='justify-end'>
-          <DialogClose asChild>
-            <Button variant='ghost'>
-              취소
-            </Button>
-          </DialogClose>
-          {/*todo disable 처리 일관성 확보*/}
-          <Button
-            disabled={!isValid || isSubmitting || isSubmitSuccessful}
-            onClick={handleSubmitWithAction}
-          >
-            {prev ? "수정" : "추가"}
-          </Button>
-        </DialogFooter>
-
+        <DialogContentWrapper
+          prev={prev}
+          reload={() => {
+            setEditorOpen(false);
+            reload();
+          }} />
       </DialogContent>
     </Dialog>
   );
 }
 
-function GenreFormContent({
-  form,
-}: {
-  form: UseFormReturn<GenreFormT>;
+function DialogContentWrapper({ reload, prev }: {
+  reload: () => void;
+  prev?: GenreT;
 }) {
-  const { formState: { isSubmitting, isSubmitSuccessful } } = form;
-  return <Form {...form}>
-    <form className={clsx("space-y-4", {
-      "form-overlay": isSubmitting || isSubmitSuccessful
-    })}>
-      <FormField
-        control={form.control}
-        name="label"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>한글</FormLabel>
-            <FormControl>
-              <Input
-                {...field}
-                type='text'
-                placeholder='ex) 로맨스, 액션, 스릴러 등...'
-              />
-            </FormControl>
-            <FormMessage/>
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="label_en"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>영어</FormLabel>
-            <FormControl>
-              <Input
-                {...field}
-                type='text'
-                placeholder='ex) romance, action, thriller ...'
-              />
-            </FormControl>
-            <FormMessage/>
-          </FormItem>
-        )}
-      />
-    </form>
-  </Form>;
+  const { toast } = useToast();
+  const { isFormSubmitting, form, onSubmit } = useSafeActionForm(
+    createOrUpdateGenre.bind(null, prev?.id), {
+      resolver: zodResolver(GenreFormSchema),
+      defaultValues: prev
+        ? async () => getGenre(prev.id)
+          .then(res => {
+            if (!res?.data) {
+              throw new Error("No data");
+            }
+            return {
+              label: res.data.label,
+              label_en: res.data.label_en,
+              rank: res.data.rank,
+            };
+          })
+        : undefined,
+      mode: "onChange",
+      actionProps: {
+        onSuccess: () => {
+          toast({
+            description: prev ? "장르가 수정되었습니다." : "장르가 추가되었습니다."
+          });
+          reload();
+        }
+      }
+    });
+  const { formState: { isLoading, isValid, isDirty } } = form;
+
+  return <>
+    <DialogHeader className="gap-2">
+      <DialogTitle>
+        {prev ? "장르 수정하기" : "장르 추가하기"}
+      </DialogTitle>
+      <DialogDescription>
+        장르 정보를 입력해주세요.
+      </DialogDescription>
+    </DialogHeader>
+    <Form {...form}>
+      <form onSubmit={onSubmit} className={clsx("space-y-4", {
+        "form-overlay": isFormSubmitting || isLoading
+      })}>
+
+        <FormField
+          control={form.control}
+          name="label"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>한글</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type='text'
+                  placeholder='ex) 로맨스, 액션, 스릴러 등...'
+                />
+              </FormControl>
+              <FormMessage/>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="label_en"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>영어</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type='text'
+                  placeholder='ex) romance, action, thriller ...'
+                />
+              </FormControl>
+              <FormMessage/>
+            </FormItem>
+          )}
+        />
+      </form>
+    </Form>
+
+    <DialogFooter className='justify-end'>
+      <DialogClose asChild>
+        <Button variant='ghost'>
+          취소
+        </Button>
+      </DialogClose>
+      <Button type="submit" disabled={!isValid || !isDirty || isFormSubmitting}
+        onClick={() => onSubmit()}>
+        {prev ? "수정" : "추가"}
+      </Button>
+    </DialogFooter>
+  </>;
 }

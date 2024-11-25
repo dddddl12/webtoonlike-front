@@ -22,9 +22,9 @@ import {
 import ContractRangeForm from "@/components/forms/ContractRangeForm";
 import { NumericInput } from "@/shadcn/ui/input";
 import { createOrUpdateBidRound } from "@/resources/bidRounds/controllers/bidRound.controller";
-import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
+import useSafeActionForm from "@/hooks/safeActionForm";
 
 export default function BidRoundForm({ webtoonId, prev }: {
   webtoonId: number;
@@ -33,11 +33,12 @@ export default function BidRoundForm({ webtoonId, prev }: {
   const t = useTranslations("bidRoundDetails");
   const [isAgreed, setIsAgreed] = useState(false);
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { form, handleSubmitWithAction }
-    = useSafeHookFormAction(
-      createOrUpdateBidRound.bind(null, webtoonId, prev?.id),
-      (values, ...rest) => {
+  const { isFormSubmitting, form, onSubmit } = useSafeActionForm(
+    createOrUpdateBidRound.bind(null, webtoonId, prev?.id),
+    {
+      defaultValues: prev,
+      mode: "onChange",
+      resolver: (values, ...rest) => {
         const { isNew, currentEpisodeNo, totalEpisodeCount } = values;
         if (isNew
         && typeof currentEpisodeNo === "number"
@@ -56,22 +57,16 @@ export default function BidRoundForm({ webtoonId, prev }: {
         }
         return zodResolver(BidRoundFormSchema)(values, ...rest);
       },
-      {
-        actionProps: {
-          onSuccess: () => {
-            if (prev) {
-              router.replace(`/webtoons/${webtoonId}`);
-            } else {
-              router.replace("/webtoons");
-            }
-          },
-          onError: () => setIsSubmitting(false)
-        },
-        formProps: {
-          defaultValues: prev,
-          mode: "onChange"
+      actionProps: {
+        onSuccess: () => {
+          if (prev) {
+            router.replace(`/webtoons/${webtoonId}`);
+          } else {
+            router.replace("/webtoons");
+          }
         }
-      });
+      }
+    });
 
   // 조건부 필드
   const isNew = useWatch({
@@ -79,16 +74,12 @@ export default function BidRoundForm({ webtoonId, prev }: {
     name: "isNew"
   });
 
-  const { formState: { isValid } } = form;
+  const { formState: { isValid, isDirty } } = form;
 
   return (
     <Form {...form}>
-      <form onSubmit={async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        await handleSubmitWithAction(e);
-      }} className={clsx({
-        "form-overlay": isSubmitting
+      <form onSubmit={onSubmit} className={clsx({
+        "form-overlay": isFormSubmitting
       })}>
         {/* 기본 정보 */}
         <Heading2>
@@ -135,7 +126,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
         {/* 등록 버튼 */}
         <Row className="justify-end mt-20">
           <Button
-            disabled={!isValid || !isAgreed}
+            disabled={!isValid || !isAgreed || !isDirty}
             className="rounded-full"
             variant="mint"
           >

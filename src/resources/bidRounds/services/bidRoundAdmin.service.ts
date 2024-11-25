@@ -12,6 +12,7 @@ import {
 import bidRoundAdminHelper from "@/resources/bidRounds/helpers/bidRoundAdmin.helper";
 import { ListResponse } from "@/resources/globalTypes";
 import { getLocale } from "next-intl/server";
+import bidRoundHelper from "@/resources/bidRounds/helpers/bidRound.helper";
 
 class BidRoundAdminService {
   async adminListBidRoundsWithWebtoon({
@@ -49,20 +50,7 @@ class BidRoundAdminService {
       admin: true,
     });
     const limit = 5;
-    const now = new Date();
-    const where: Prisma.BidRoundWhereInput = {
-      approvalStatus: BidRoundApprovalStatus.Approved,
-      isActive: true,
-      bidRequests: {
-        some: {}
-      },
-      negoStartsAt: {
-        gt: now
-      },
-      bidStartsAt: {
-        lte: now
-      }
-    };
+    const where = bidRoundHelper.offerableBidRoundWhere();
     const [records, totalRecords] = await prisma.$transaction([
       prisma.bidRound.findMany({
         take: limit,
@@ -118,6 +106,21 @@ class BidRoundAdminService {
         approvalDecidedAt: new Date(),
       }
     });
+  }
+
+  async getBidRoundAdminSettings(bidRoundId: number) {
+    await getTokenInfo({
+      admin: true,
+    });
+    const r = await prisma.bidRound.findUniqueOrThrow({
+      where: {
+        id: bidRoundId
+      },
+      ...bidRoundAdminHelper.query
+    });
+    const locale = await getLocale();
+    return bidRoundAdminHelper.mapToDTO(r, locale)
+      .adminSettings;
   }
 
   async editBidRoundAdminSettings(bidRoundId: number, settings: StrictBidRoundAdminSettingsT) {

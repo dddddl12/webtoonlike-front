@@ -5,6 +5,18 @@ import z from "zod";
 import { action } from "@/handlers/safeAction";
 import genreService from "@/resources/genres/genre.service";
 
+export const getGenre = action
+  .metadata({ actionName: "getGenre" })
+  .bindArgsSchemas([
+    z.number()
+  ])
+  .outputSchema(GenreSchema)
+  .action(async ({
+    bindArgsParsedInputs: [genreId]
+  }) => {
+    return genreService.get(genreId);
+  });
+
 export const listGenres = action
   .metadata({ actionName: "listGenres" })
   .outputSchema(z.array(GenreSchema))

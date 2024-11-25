@@ -1,12 +1,13 @@
 import "server-only";
 import prisma from "@/utils/prisma";
-import { GenreFormSchema, GenreFormT } from "@/resources/genres/genre.dto";
+import { GenreFormSchema, GenreFormT, GenreT } from "@/resources/genres/genre.dto";
 import { Prisma } from "@prisma/client";
 import { getLocale, getTranslations } from "next-intl/server";
 import { returnValidationErrors } from "next-safe-action";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 import { BadRequestError } from "@/handlers/errors";
 import genreHelper from "@/resources/genres/genre.helper";
+import GenreHelper from "@/resources/genres/genre.helper";
 
 const duplicateHandler = async (e: Error) => {
   // 중복 에러 처리
@@ -27,6 +28,15 @@ const duplicateHandler = async (e: Error) => {
 };
 
 class GenreService {
+  async get(genreId: number): Promise<GenreT> {
+    const r = await prisma.genre.findUniqueOrThrow({
+      where: {
+        id: genreId, }
+    });
+    const locale = await getLocale();
+    return GenreHelper.mapToDto(r, locale);
+  }
+
   async create(formData: GenreFormT) {
     await getTokenInfo({
       admin: true,

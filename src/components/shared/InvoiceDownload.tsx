@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Dialog,
@@ -14,7 +14,6 @@ import Spinner from "@/components/ui/Spinner";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { jsPDF } from "jspdf";
 import { Row } from "@/components/ui/common";
-import useSafeAction from "@/hooks/safeAction";
 import { InvoiceWithWebtoonT } from "@/resources/invoices/dtos/invoice.dto";
 import { downloadInvoiceContent } from "@/resources/invoices/controllers/invoiceContent.controller";
 
@@ -28,18 +27,13 @@ export default function InvoiceDownload({
   const [invoiceDownloadOpen, setInvoiceDownloadOpen] = useState(false);
   const [previewContent, setPreviewContent] = useState<string>();
 
-  const boundDownloadInvoiceContent = useMemo(() => downloadInvoiceContent.bind(null, invoice.id), [invoice.id]);
-  const { execute } = useSafeAction(boundDownloadInvoiceContent, {
-    onSuccess: ({ data }) => {
-      setPreviewContent(data);
-    }
-  });
-
   useEffect(() => {
-    if (invoiceDownloadOpen) {
-      execute();
+    if (!invoiceDownloadOpen) {
+      return;
     }
-  }, [execute, invoiceDownloadOpen]);
+    downloadInvoiceContent(invoice.id)
+      .then(res => setPreviewContent(res?.data));
+  }, [invoice.id, invoiceDownloadOpen]);
 
   return (
     <Dialog

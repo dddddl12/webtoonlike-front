@@ -12,7 +12,6 @@ import {
 import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import { ImageObject } from "@/utils/media";
 import { FileDirectoryT } from "@/resources/files/files.type";
-import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AccountFormImageField from "@/components/forms/account/components/AccountFormImageField";
 import AccountFormFooter from "@/components/forms/account/components/AccountFormFooter";
@@ -24,6 +23,7 @@ import {
 } from "@/resources/users/dtos/userAccount.dto";
 import { createUser } from "@/resources/users/controllers/userAccount.controller";
 import { clsx } from "clsx";
+import useSafeActionForm from "@/hooks/safeActionForm";
 
 
 export default function BuyerProfileForm({ userAccountForm, setSignUpStage } : {
@@ -43,44 +43,33 @@ export default function BuyerProfileForm({ userAccountForm, setSignUpStage } : {
   const [businessCard, setBusinessCard] = useState(
     new ImageObject(prevCompany?.businessCardPath));
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { form, handleSubmitWithAction }
-    = useSafeHookFormAction(
-      createUser,
-      zodResolver(UserAccountWithBuyerFormSchema),
-      {
-        actionProps: {
-          onSuccess: () => {
-            setSignUpStage(prevState => prevState + 1);
-          },
-          onError: () => setIsSubmitting(false)
-        },
-        formProps: {
-          defaultValues: userAccountForm,
-          mode: "onChange"
+  const { isFormSubmitting, form, onSubmit } = useSafeActionForm(
+    createUser, {
+      resolver: zodResolver(UserAccountWithBuyerFormSchema),
+      defaultValues: userAccountForm,
+      mode: "onChange",
+      actionProps: {
+        onSuccess: () => {
+          setSignUpStage(prevState => prevState + 1);
         }
+      },
+      beforeSubmission: async () => {
+        await thumbnail.uploadAndGetRemotePath(FileDirectoryT.BuyersThumbnails)
+          .then(remotePath => form.setValue("buyer.company.thumbPath", remotePath));
+        await businessCert.uploadAndGetRemotePath(FileDirectoryT.BuyersCerts)
+          .then(remotePath => form.setValue("buyer.company.businessCertPath", remotePath));
+        await businessCard.uploadAndGetRemotePath(FileDirectoryT.BuyersCards)
+          .then(remotePath => form.setValue("buyer.company.businessCardPath", remotePath));
       }
-    );
-
-  // 제출 이후 동작
+    });
   const { formState: { isValid } } = form;
 
   return (
     <Form {...form}>
       <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          setIsSubmitting(true);
-          await thumbnail.uploadAndGetRemotePath(FileDirectoryT.BuyersThumbnails)
-            .then(remotePath => form.setValue("buyer.company.thumbPath", remotePath));
-          await businessCert.uploadAndGetRemotePath(FileDirectoryT.BuyersCerts)
-            .then(remotePath => form.setValue("buyer.company.businessCertPath", remotePath));
-          await businessCard.uploadAndGetRemotePath(FileDirectoryT.BuyersCards)
-            .then(remotePath => form.setValue("buyer.company.businessCardPath", remotePath));
-          await handleSubmitWithAction(e);
-        }}
+        onSubmit={onSubmit}
         className={clsx("flex flex-col gap-5", {
-          "form-overlay": isSubmitting
+          "form-overlay": isFormSubmitting
         })}
       >
         <span className="mb-10">{t("headerDesc")}</span>

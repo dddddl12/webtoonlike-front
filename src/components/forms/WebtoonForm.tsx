@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Input } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
 import { Textarea } from "@/shadcn/ui/textarea";
@@ -24,11 +24,11 @@ import { useRouter } from "@/i18n/routing";
 import { ImageObject } from "@/utils/media";
 import { FileDirectoryT } from "@/resources/files/files.type";
 import { createOrUpdateWebtoon } from "@/resources/webtoons/controllers/webtoon.controller";
-import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GenreT } from "@/resources/genres/genre.dto";
 import { WebtoonDetailsT } from "@/resources/webtoons/dtos/webtoonDetails.dto";
 import { clsx } from "clsx";
+import useSafeActionForm from "@/hooks/safeActionForm";
 
 export function WebtoonForm({ selectableGenres, prev }: {
   selectableGenres: GenreT[];
@@ -41,48 +41,37 @@ export function WebtoonForm({ selectableGenres, prev }: {
   const [thumbnail, setThumbnail] = useState(
     new ImageObject(prev?.thumbPath));
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { form, handleSubmitWithAction }
-    = useSafeHookFormAction(
-      createOrUpdateWebtoon.bind(null, prev?.id),
-      zodResolver(WebtoonFormSchema),
-      {
-        actionProps: {
-          onSuccess: () => {
-            if (prev) {
-              router.replace(`/webtoons/${prev.id}`);
-            } else {
-              router.replace("/webtoons");
-            }
-          },
-          onError: () => setIsSubmitting(false)
-        },
-        formProps: {
-          defaultValues: {
-            ...prev,
-            genreIds: prev?.genres.map(genre => genre.id) || [],
-          },
-          mode: "onChange"
+  const { isFormSubmitting, form, onSubmit } = useSafeActionForm(
+    createOrUpdateWebtoon.bind(null, prev?.id), {
+      resolver: zodResolver(WebtoonFormSchema),
+      defaultValues: {
+        ...prev,
+        genreIds: prev?.genres.map(genre => genre.id) || [],
+      },
+      mode: "onChange",
+      actionProps: {
+        onSuccess: () => {
+          if (prev) {
+            router.replace(`/webtoons/${prev.id}`);
+          } else {
+            router.replace("/webtoons");
+          }
         }
-      });
+      },
+      beforeSubmission: async () => {
+        const remotePath = await thumbnail.uploadAndGetRemotePath(FileDirectoryT.WebtoonsThumbnails);
+        if (!remotePath) {
+          throw new Error("Thumbnail upload failed.");
+        }
+        form.setValue("thumbPath", remotePath);
+      }
+    });
+  const { formState: { isValid, isDirty } } = form;
 
-  // 제출 이후 동작
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    const remotePath = await thumbnail.uploadAndGetRemotePath(FileDirectoryT.WebtoonsThumbnails);
-    if (!remotePath) {
-      throw new Error("Thumbnail upload failed.");
-    }
-    form.setValue("thumbPath", remotePath);
-    await handleSubmitWithAction(e);
-  };
-
-  const { formState: { isValid } } = form;
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className={clsx("w-[600px] mx-auto", {
-        "form-overlay": isSubmitting
+        "form-overlay": isFormSubmitting
       })}>
         <FormHeader
           title={prev ? t("editSeries") : t("addSeries")}
@@ -100,7 +89,7 @@ export function WebtoonForm({ selectableGenres, prev }: {
 
         <Row className="justify-end mt-14">
           <Button
-            disabled={!isValid}
+            disabled={!isValid || !isDirty}
             variant="mint"
           >
             {prev

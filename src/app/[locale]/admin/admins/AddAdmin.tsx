@@ -26,23 +26,20 @@ export default function AddAdmin({ reload }: {
     }
   }, [open]);
 
-  const { execute } = useSafeAction(searchNonAdminUsers, {
-    onSuccess: ({ data }) => {
-      setUsers(data || []);
-      setInputStatus("complete");
-    }
-  });
-
   // 검색어
   const [searchText, setSearchText] = useState("");
   const debouncedSearchText = useDebounce(searchText, 100);
   useEffect(() => {
     if (debouncedSearchText) {
-      execute({ q: debouncedSearchText });
+      searchNonAdminUsers({ q: debouncedSearchText })
+        .then((res) => {
+          setUsers(res?.data || []);
+          setInputStatus("complete");
+        });
     } else {
       setUsers([]);
     }
-  }, [debouncedSearchText, execute]);
+  }, [debouncedSearchText]);
 
 
   // 어드민 추가 시 이벤트

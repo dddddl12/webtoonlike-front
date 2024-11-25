@@ -9,7 +9,8 @@ class WebtoonEpisodeHeloper {
     updatedAt: record.updatedAt,
     webtoonId: record.webtoonId,
     episodeNo: record.episodeNo,
-    imagePaths: record.imagePaths as string[]
+    imagePaths: record.imagePaths as string[],
+    englishUrl: record.englishUrl ?? undefined
   });
 }
 

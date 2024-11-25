@@ -171,7 +171,7 @@ export default function PrivacyPolicyKo() {
       <p>- 주소 : (03171)서울특별시 종로구 세종대로 209 정부서울청사 4층</p>
       <br/>
       <p>▶ 대검찰청 사이버범죄수사단 : 02-3480-3573 (www.spo.go.kr)</p>
-      <p>▶ 경찰청 사이버안전국 : 182 (http://cyberbureau.police.go.kr)</p>
+      <p>▶ 경찰청 사이버안전국 : 182 (https://cyberbureau.police.go.kr)</p>
       <br/>
       <p>제12조(개인정보 처리방침 시행 및 변경)</p>
       <p>이 개인정보 처리방침은 2024. 4. 1부터 적용됩니다.</p>

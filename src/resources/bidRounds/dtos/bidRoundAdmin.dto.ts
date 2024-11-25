@@ -12,7 +12,7 @@ export const BidRoundAdminSettingsSchema = z.object({
 });
 export type BidRoundAdminSettingsT = z.infer<typeof BidRoundAdminSettingsSchema>;
 
-export const StrictBidRoundAdminSettingsSchem = BidRoundAdminSettingsSchema
+export const StrictBidRoundAdminSettingsSchema = BidRoundAdminSettingsSchema
   .required({
     bidStartsAt: true,
     negoStartsAt: true,
@@ -47,7 +47,7 @@ export const StrictBidRoundAdminSettingsSchem = BidRoundAdminSettingsSchema
       return z.NEVER;
     }
   });
-export type StrictBidRoundAdminSettingsT = z.infer<typeof StrictBidRoundAdminSettingsSchem>;
+export type StrictBidRoundAdminSettingsT = z.infer<typeof StrictBidRoundAdminSettingsSchema>;
 
 export const AdminPageBidRoundSchema = BidRoundSchema.pick({
   id: true,

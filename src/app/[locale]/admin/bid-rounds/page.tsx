@@ -107,7 +107,6 @@ function TableRow({ bidRound, reload }: {
         {t(bidRound.status)}
       </div>
       <BidRoundAdminSettingsForm bidRoundId={bidRound.id}
-        adminSettings={bidRound.adminSettings}
         reload={reload}>
         <Button>수정</Button>
       </BidRoundAdminSettingsForm>

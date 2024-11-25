@@ -5,7 +5,6 @@ import { Input } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { updateEpisodeEnglishUrl } from "@/resources/webtoonEpisodes/webtoonEpisode.controller";
-import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   WebtoonEpisodeEnglishUrlFormSchema,
@@ -14,16 +13,19 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
 import { Row } from "@/components/ui/common";
 import { clsx } from "clsx";
+import useSafeActionForm from "@/hooks/safeActionForm";
 
 export default function WebtoonEpisodeEnglishUrlForm({ episode }:{
   episode: WebtoonEpisodeT;
 }) {
   const t = useTranslations("episodePage.administratorFeatures");
   const { toast } = useToast();
-  const { form, handleSubmitWithAction } = useSafeHookFormAction(
+  const { form, onSubmit } = useSafeActionForm(
     updateEpisodeEnglishUrl.bind(null, episode.webtoonId, episode.id),
-    zodResolver(WebtoonEpisodeEnglishUrlFormSchema),
     {
+      resolver: zodResolver(WebtoonEpisodeEnglishUrlFormSchema),
+      defaultValues: episode,
+      mode: "onChange",
       actionProps: {
         onSuccess: (args) => {
           form.reset(args.input);
@@ -33,18 +35,14 @@ export default function WebtoonEpisodeEnglishUrlForm({ episode }:{
             description: t("success")
           });
         }
-      },
-      formProps: {
-        defaultValues: episode,
-        mode: "onChange",
       }
     }
   );
 
-  const { formState: { isValid, isSubmitting } } = form;
-
+  // 완료 후 다시 재작성 가능해야 하므로 여기선 isFormSubmitting 대신 isSubmitting 사용
+  const { formState: { isValid, isDirty, isSubmitting } } = form;
   return <Form {...form}>
-    <form onSubmit={handleSubmitWithAction} className={clsx("w-full gap-5", {
+    <form onSubmit={onSubmit} className={clsx("w-full gap-5", {
       "form-overlay": isSubmitting
     })}>
       <FormField
@@ -64,7 +62,7 @@ export default function WebtoonEpisodeEnglishUrlForm({ episode }:{
                 />
               </FormControl>
               <Button type="submit" variant="mint"
-                disabled={!isValid}
+                disabled={!isValid || !isDirty}
               >
                 {t("register")}
               </Button>

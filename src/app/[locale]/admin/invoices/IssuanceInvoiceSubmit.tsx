@@ -1,5 +1,5 @@
 import Spinner from "@/components/ui/Spinner";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -73,16 +73,10 @@ function Previewer({ bidRequestId }: {
   bidRequestId: number;
 }) {
   const [previewContent, setPreviewContent] = useState<string>();
-  const boundPreviewInvoice = useMemo(() => previewInvoice.bind(null, bidRequestId), [bidRequestId]);
-  const { execute } = useSafeAction(boundPreviewInvoice, {
-    onSuccess: ({ data }) => {
-      setPreviewContent(data);
-    }
-  });
-
   useEffect(() => {
-    execute();
-  }, [execute]);
+    previewInvoice(bidRequestId)
+      .then(res => setPreviewContent(res?.data));
+  }, [bidRequestId]);
 
   if (!previewContent) {
     return <Spinner/>;

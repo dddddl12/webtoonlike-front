@@ -8,14 +8,14 @@ import { Textarea } from "@/shadcn/ui/textarea";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { BidRequestFormSchema } from "@/resources/bidRequests/dtos/bidRequest.dto";
 import { FieldSet, Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "@/i18n/routing";
 import { createBidRequest } from "@/resources/bidRequests/controllers/bidRequest.controller";
 import { Row } from "@/components/ui/common";
 import { useToast } from "@/shadcn/hooks/use-toast";
-import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
+import useSafeActionForm from "@/hooks/safeActionForm";
 
 
 export default function BidRequestForm({ bidRoundId }: {
@@ -27,26 +27,20 @@ export default function BidRequestForm({ bidRoundId }: {
   const { toast } = useToast();
   const router = useRouter();
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { form, handleSubmitWithAction }
-    = useSafeHookFormAction(
-      createBidRequest.bind(null, bidRoundId),
-      zodResolver(BidRequestFormSchema),
-      {
-        actionProps: {
-          onSuccess: () => {
-            toast({
-              description: "오퍼를 보냈습니다."
-            });
-            router.replace("/offers");
-          },
-          onError: () => setIsSubmitting(false)
-        },
-        formProps: {
-          mode: "onChange",
+  const { isFormSubmitting, form, onSubmit } = useSafeActionForm(
+    createBidRequest.bind(null, bidRoundId),
+    {
+      resolver: zodResolver(BidRequestFormSchema),
+      mode: "onChange",
+      actionProps: {
+        onSuccess: () => {
+          toast({
+            description: "오퍼를 보냈습니다."
+          });
+          router.replace("/offers");
         }
-      });
-
+      }
+    });
 
   // Create a ref for the Heading component
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -56,15 +50,11 @@ export default function BidRequestForm({ bidRoundId }: {
     headingRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [headingRef]);
 
-  const { formState: { isValid } } = form;
+  const { formState: { isValid, isDirty } } = form;
   return (
     <Form {...form}>
-      <form onSubmit={async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        await handleSubmitWithAction(e);
-      }} className={clsx({
-        "form-overlay": isSubmitting
+      <form onSubmit={onSubmit} className={clsx({
+        "form-overlay": isFormSubmitting
       })}>
         <Heading ref={headingRef}>
           {tMakeAnOffer("makeOffer")}
@@ -100,7 +90,7 @@ export default function BidRequestForm({ bidRoundId }: {
           <Button
             className="ml-auto rounded-full"
             variant="secondary"
-            disabled={!isValid}
+            disabled={!isValid || !isDirty}
           >
             {tGeneral("submit")}
             <IconRightBrackets />

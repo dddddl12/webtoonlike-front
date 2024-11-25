@@ -7,7 +7,7 @@ import { BidRoundApprovalStatus } from "@/resources/bidRounds/dtos/bidRound.dto"
 import { ListResponseSchema } from "@/resources/globalTypes";
 import {
   AdminPageBidRoundSchema,
-  AdminPageBidRoundWithOffersSchema, StrictBidRoundAdminSettingsSchem
+  AdminPageBidRoundWithOffersSchema, BidRoundAdminSettingsSchema, StrictBidRoundAdminSettingsSchema
 } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
 import bidRoundAdminService from "@/resources/bidRounds/services/bidRoundAdmin.service";
 
@@ -55,12 +55,23 @@ export const approveOrDisapproveBidRound = action
     }
   });
 
+export const getBidRoundAdminSettings = action
+  .metadata({ actionName: "getBidRoundAdminSettings" })
+  .bindArgsSchemas([
+    z.number() // bidRoundId
+  ])
+  .outputSchema(BidRoundAdminSettingsSchema)
+  .action(async (
+    { bindArgsParsedInputs: [bidRoundId] }) => {
+    return bidRoundAdminService.getBidRoundAdminSettings(bidRoundId);
+  });
+
 export const editBidRoundAdminSettings = action
   .metadata({ actionName: "editBidRoundAdminSettings" })
   .bindArgsSchemas([
     z.number() // bidRoundId
   ])
-  .schema(StrictBidRoundAdminSettingsSchem)
+  .schema(StrictBidRoundAdminSettingsSchema)
   .action(async ({ bindArgsParsedInputs: [bidRoundId], parsedInput: settings }) => {
     return bidRoundAdminService.editBidRoundAdminSettings(bidRoundId, settings);
   });

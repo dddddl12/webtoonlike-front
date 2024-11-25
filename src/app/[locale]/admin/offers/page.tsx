@@ -5,10 +5,9 @@ import useListData from "@/hooks/listData";
 import { Col, Row } from "@/components/ui/common";
 import Paginator from "@/components/ui/Paginator";
 import { Button } from "@/shadcn/ui/button";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { adminListAdminOffersBidRequests } from "@/resources/bidRequests/controllers/bidRequest.controller";
-import useSafeAction from "@/hooks/safeAction";
 import { adminListBidRoundsWithOffers } from "@/resources/bidRounds/controllers/bidRoundAdmin.controller";
 import { AdminPageBidRoundWithOffersT } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
 import { AdminOffersBidRequestT } from "@/resources/bidRequests/dtos/bidRequest.dto";
@@ -93,16 +92,10 @@ function BidRequestList({ bidRoundId }: {
   bidRoundId: number;
 }) {
   const [items, setItems] = useState<AdminOffersBidRequestT[]>();
-  const boundAdminListAdminOffersBidRequests = useMemo(() => adminListAdminOffersBidRequests.bind(null, bidRoundId), [bidRoundId]);
-  const { execute } = useSafeAction(boundAdminListAdminOffersBidRequests, {
-    onSuccess: ({ data }) => {
-      setItems(data);
-    }
-  });
-
   useEffect(() => {
-    execute();
-  }, [execute]);
+    adminListAdminOffersBidRequests(bidRoundId)
+      .then(res => setItems(res?.data));
+  }, [bidRoundId]);
 
   if (!items) {
     return <Spinner />;
@@ -139,9 +132,9 @@ function BidRequestListItem({ bidRequest }: {
       <div className="w-[40%] p-2 flex justify-center">
         {bidRequest.contractRange.map((item) =>
           item.businessField === "WEBTOONS"
-            ? `${tBusinessFields(item.businessField)}(${tCountries(item.country)}), `
-            : `2차(${tBusinessFields(item.businessField)}), `
-        )}
+            ? `${tBusinessFields(item.businessField)}(${tCountries(item.country)})`
+            : `2차(${tBusinessFields(item.businessField)})`
+        ).join(", ")}
       </div>
       <div className="w-[15%] p-2 flex justify-center">
         {/*TODO 추가 페이지*/}

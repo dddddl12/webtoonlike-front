@@ -4,14 +4,13 @@ import {
   BidRequestMessagesResponseT,
   listBidRequestMessages
 } from "@/resources/bidRequestMessages/bidRequestMessage.controller";
-import { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react";
 import { BidRequestStatus } from "@/resources/bidRequests/dtos/bidRequest.dto";
 import { UserTypeT } from "@/resources/users/dtos/user.dto";
 import useTokenInfo from "@/hooks/tokenInfo";
 import { Skeleton } from "@/shadcn/ui/skeleton";
 import ViewOfferSection from "@/app/[locale]/offers/components/OfferDetails";
 import Controls from "@/app/[locale]/offers/components/Controls";
-import useSafeAction from "@/hooks/safeAction";
 import useReload from "@/hooks/reload";
 import { clsx } from "clsx";
 import { BidRequestWithMetaDataT } from "@/resources/bidRequests/dtos/bidRequestWithMetadata.dto";
@@ -29,13 +28,10 @@ export default function BidRequestMessageList({ curBidRequest, setCurBidRequest 
   const { reload, reloadKey } = useReload();
   const [messagesResponse, setMessagesResponse] = useState<BidRequestMessagesResponseT>();
 
-  const boundListBidRequestMessages = useMemo(() => listBidRequestMessages.bind(null, curBidRequest.id), [curBidRequest.id]);
-  const { execute } = useSafeAction(boundListBidRequestMessages, {
-    onSuccess: ({ data }) => setMessagesResponse(data)
-  });
   useEffect(() => {
-    execute();
-  }, [execute, reloadKey]);
+    listBidRequestMessages(curBidRequest.id)
+      .then(res => setMessagesResponse(res?.data));
+  }, [curBidRequest.id, reloadKey]);
 
   const { tokenInfo } = useTokenInfo();
   const tBidRequestStatus = useTranslations("bidRequestStatus");

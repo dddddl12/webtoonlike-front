@@ -3,7 +3,7 @@ import * as React from "react";
 import { cn } from "@/shadcn/lib/utils";
 import { FieldValues, UseFormRegister } from "react-hook-form";
 import { FieldName } from "@/shadcn/ui/form";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -41,7 +41,7 @@ export function NumericInput<TFieldValues extends FieldValues>(
   { register, name, ...props }: NumericInputProps<TFieldValues>
 ) {
   const [displayValue, setDisplayValue] = useState<string>("");
-  const field = register(name, {
+  const field = useMemo(() => register(name, {
     setValueAs: (rawInput: string) => {
       const intValue = parseInt(rawInput);
       if (intValue >= 0) {
@@ -51,7 +51,7 @@ export function NumericInput<TFieldValues extends FieldValues>(
         setDisplayValue("");
       }
     }
-  });
+  }), [name, register]);
   return <Input
     {...props}
     {...field}

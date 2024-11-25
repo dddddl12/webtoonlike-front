@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import WebtoonGrid from "@/components/root/HomePage/WebtoonGrid";
 import { clsx } from "clsx";
 import { getPerGenreItems } from "@/resources/home/home.controller";
-import useSafeAction from "@/hooks/safeAction";
 import { Row } from "@/components/ui/common";
 
 export default function GenreWrapper({
@@ -14,15 +13,6 @@ export default function GenreWrapper({
   const [genreId, setGenreId] = useState<number>(genres[0].id);
   const [webtoons, setWebtoons] = useState<HomeWebtoonItem[]>(firstGenreItems ?? []);
 
-  const { execute } = useSafeAction(getPerGenreItems, {
-    onSuccess: ({ data }) => {
-      if (!data) {
-        throw new Error("data is null");
-      }
-      setWebtoons(data);
-    }
-  });
-
   const isInitialRender = useRef(true);
   useEffect(() => {
     if (isInitialRender.current) {
@@ -30,10 +20,15 @@ export default function GenreWrapper({
       isInitialRender.current = false;
       return;
     }
-    execute({
+    getPerGenreItems({
       genreId
+    }).then(res => {
+      if (!res?.data) {
+        throw new Error("data is null");
+      }
+      setWebtoons(res.data);
     });
-  }, [genreId, execute]);
+  }, [genreId]);
 
   return <>
     <Row className="gap-2">

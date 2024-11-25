@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { Input, NumericInput } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
 import { Col, Row } from "@/components/ui/common";
@@ -21,10 +21,10 @@ import { Form, FormControl, FormHeader, FormItem, FormLabel } from "@/shadcn/ui/
 import EpisodeImagePreview from "@/components/forms/WebtoonEpisodeForm/EpisodeImagePreview";
 import { DropzoneRootProps, useDropzone } from "react-dropzone";
 import { createOrUpdateEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.controller";
-import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
 import { ImageList, useEpisodeImageList } from "@/components/forms/WebtoonEpisodeForm/hook";
+import useSafeActionForm from "@/hooks/safeActionForm";
 
 const MAX_THUMBNAIL_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -40,34 +40,40 @@ export default function WebtoonEpisodeForm({
 
   const t = useTranslations("episodeForm");
   const { toast } = useToast();
+  const router = useRouter();
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { form, handleSubmitWithAction }
-    = useSafeHookFormAction(
-      createOrUpdateEpisode.bind(null, webtoonId, prev?.id),
-      zodResolver(WebtoonEpisodeFormSchema),
-      {
-        actionProps: {
-          onSuccess: () => {
-            if (prev) {
-              toast({
-                description: "성공적으로 업데이트되었습니다."
-              });
-              router.replace(`/webtoons/${webtoonId}/episodes/${prev.id}`);
-            } else {
-              toast({
-                description: "성공적으로 생성되었습니다."
-              });
-              router.replace(`/webtoons/${webtoonId}`);
-            }
-          },
-          onError: () => setIsSubmitting(false)
-        },
-        formProps: {
-          defaultValues: prev,
-          mode: "onChange",
+  const { form, onSubmit, isFormSubmitting } = useSafeActionForm(
+    createOrUpdateEpisode.bind(null, webtoonId, prev?.id), {
+      resolver: zodResolver(WebtoonEpisodeFormSchema),
+      defaultValues: prev,
+      mode: "onChange",
+      actionProps: {
+        onSuccess: () => {
+          if (prev) {
+            toast({
+              description: "성공적으로 업데이트되었습니다."
+            });
+            router.replace(`/webtoons/${webtoonId}/episodes/${prev.id}`);
+          } else {
+            toast({
+              description: "성공적으로 생성되었습니다."
+            });
+            router.replace(`/webtoons/${webtoonId}`);
+          }
         }
-      });
+      },
+      beforeSubmission: async () => {
+        const imagePaths = [];
+        for (const image of episodeImages) {
+          const path = await image.uploadAndGetRemotePath(FileDirectoryT.WebtoonEpisodeImages);
+          if (path !== undefined) {
+            imagePaths.push(path);
+          }
+        }
+        form.setValue("imagePaths", imagePaths);
+      }
+    });
+  const { formState: { isValid, isDirty } } = form;
 
   useEffect(() => {
     // 제출이 아닌 validation 통과용
@@ -78,28 +84,10 @@ export default function WebtoonEpisodeForm({
     });
   }, [episodeImages, form]);
 
-  // 제출 이후 동작
-  const router = useRouter();
-  async function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setIsSubmitting(true);
-    const imagePaths = [];
-    for (const image of episodeImages) {
-      const path = await image.uploadAndGetRemotePath(FileDirectoryT.WebtoonEpisodeImages);
-      if (path !== undefined) {
-        imagePaths.push(path);
-      }
-    }
-    form.setValue("imagePaths", imagePaths);
-    await handleSubmitWithAction(e);
-  }
-
-  const { formState: { isValid } } = form;
-
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className={clsx("w-[600px] mx-auto", {
-        "form-overlay": isSubmitting
+        "form-overlay": isFormSubmitting
       })}>
         <FormHeader
           title={prev ? t("editEpisode") : t("addEpisode")}
@@ -125,7 +113,7 @@ export default function WebtoonEpisodeForm({
         <Row className="justify-end mt-8">
           <Button
             type="submit"
-            disabled={!isValid}
+            disabled={!isValid || !isDirty}
             className="rounded-full"
             variant="mint"
           >

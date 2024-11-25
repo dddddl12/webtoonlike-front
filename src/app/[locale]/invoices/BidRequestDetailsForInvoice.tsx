@@ -1,10 +1,9 @@
 import { getBidRequest } from "@/resources/bidRequests/controllers/bidRequest.controller";
 import { Col, Row } from "@/components/ui/common";
 import OfferDetails from "@/components/shared/OfferDetails";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Spinner from "@/components/ui/Spinner";
 import Profile from "@/components/shared/Profile";
-import useSafeAction from "@/hooks/safeAction";
 import { BidRequestDetailsT } from "@/resources/bidRequests/dtos/bidRequest.dto";
 import WebtoonDetails from "@/components/shared/WebtoonPageContents/WebtoonDetails";
 
@@ -12,13 +11,10 @@ export default function BidRequestDetailsForInvoice({ bidRequestId }: {
   bidRequestId: number;
 }) {
   const [bidRequest, setBidRequest] = useState<BidRequestDetailsT>();
-  const boundGetBidRequest = useMemo(() => getBidRequest.bind(null, bidRequestId), [bidRequestId]);
-  const { execute } = useSafeAction(boundGetBidRequest, {
-    onSuccess: ({ data }) => setBidRequest(data)
-  });
   useEffect(() => {
-    execute();
-  }, [execute]);
+    getBidRequest(bidRequestId)
+      .then(res => setBidRequest(res?.data));
+  }, [bidRequestId]);
 
   if (!bidRequest) {
     return <Spinner/>;
