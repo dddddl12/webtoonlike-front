@@ -50,10 +50,10 @@ function TableRow({ invoice }: {
         <WebtoonAvatar webtoon={invoice.webtoon}/>
       </div>
       <div className="w-[20%] p-2 flex justify-center">
-        <p className="clickable">{invoice.creatorUsername}</p>
+        <p className="clickable">{invoice.creator.user.name}</p>
       </div>
       <div className="w-[20%] p-2 flex justify-center">
-        <p className="clickable">{invoice.buyerUsername}</p>
+        <p className="clickable">{invoice.buyer.user.name}</p>
       </div>
       <div className="w-[20%] p-2 flex justify-center">{invoice.createdAt.toLocaleString("ko")}</div>
       <div className="w-[20%] p-2 flex justify-center">

@@ -5,7 +5,8 @@ import { getTokenInfo } from "@/resources/tokens/token.service";
 import { InvoiceWithWebtoonT } from "@/resources/invoices/dtos/invoice.dto";
 import bidRequestHelper from "@/resources/bidRequests/helpers/bidRequest.helper";
 import { getLocale } from "next-intl/server";
-import { displayName } from "@/resources/displayName";
+import webtoonPreviewHelper from "@/resources/webtoons/helpers/webtoonPreview.helper";
+import WebtoonPreviewHelper from "@/resources/webtoons/helpers/webtoonPreview.helper";
 
 class InvoiceService {
   async list({
@@ -35,9 +36,9 @@ class InvoiceService {
         include: {
           bidRequest: {
             select: {
-              userId: true,
               user: {
                 select: {
+                  id: true,
                   name: true
                 }
               },
@@ -45,14 +46,11 @@ class InvoiceService {
                 select: {
                   webtoon: {
                     select: {
-                      id: true,
-                      title: true,
-                      title_en: true,
-                      thumbPath: true,
-                      userId: true,
+                      ...webtoonPreviewHelper.query.select,
                       user: {
                         select: {
-                          name: true
+                          id: true,
+                          name: true,
                         }
                       }
                     }
@@ -70,21 +68,27 @@ class InvoiceService {
       items: records.map(record => {
         const { bidRequest } = record;
         const { webtoon } = bidRequest.bidRound;
+        const creatingUser = webtoon.user;
+        const buyingUser = record.bidRequest.user;
 
         return {
           id: record.id,
           createdAt: record.createdAt,
           updatedAt: record.updatedAt,
           bidRequestId: record.bidRequestId,
-          webtoon: {
-            id: webtoon.id,
-            thumbPath: webtoon.thumbPath,
-            localized: {
-              title: displayName(locale, webtoon.title, webtoon.title_en),
+          webtoon: WebtoonPreviewHelper.mapToDTO(webtoon, locale),
+          creator: {
+            user: {
+              id: creatingUser.id,
+              name: creatingUser.name
             }
           },
-          creatorUsername: webtoon.user.name,
-          buyerUsername: bidRequest.user.name,
+          buyer: {
+            user: {
+              id: buyingUser.id,
+              name: buyingUser.name
+            }
+          }
         };
       }),
       totalPages: Math.ceil(totalRecords / limit),

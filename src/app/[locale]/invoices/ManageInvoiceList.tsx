@@ -12,6 +12,7 @@ import InvoiceDownload from "@/components/shared/InvoiceDownload";
 import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
 import { InvoiceWithWebtoonT } from "@/resources/invoices/dtos/invoice.dto";
 import NoItems from "@/components/ui/NoItems";
+import { Link } from "@/i18n/routing";
 
 type InvoiceListResponse = ListResponse<InvoiceWithWebtoonT>;
 
@@ -72,11 +73,13 @@ function TableRow({ invoice }: { invoice: InvoiceWithWebtoonT }) {
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {invoice.creatorUsername}
+          <Link href={`/creators/${invoice.creator.user.id}`} className="clickable">
+            {invoice.creator.user.name}
+          </Link>
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {invoice.buyerUsername}
+          {invoice.buyer.user.name}
         </div>
 
         <div className="w-[20%] p-2 flex justify-center clickable"

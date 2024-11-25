@@ -11,6 +11,7 @@ import { BidRequestWithMetaDataT } from "@/resources/bidRequests/dtos/bidRequest
 import { listUninvoicedBidRequests } from "@/resources/bidRequests/controllers/bidRequestWithMetadata.controller";
 import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
 import NoItems from "@/components/ui/NoItems";
+import { Link } from "@/i18n/routing";
 
 export function UninvoicedBidRequestList({ initialBidRequestListResponse }: {
   initialBidRequestListResponse: ListResponse<BidRequestWithMetaDataT>;
@@ -69,7 +70,10 @@ function TableRow({ bidRequest }: { bidRequest: BidRequestWithMetaDataT }) {
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {bidRequest.creator.user.name}
+          {/*todo isExposed*/}
+          <Link href={`/creators/${bidRequest.creator.user.id}`} className="clickable">
+            {bidRequest.creator.user.name}
+          </Link>
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">

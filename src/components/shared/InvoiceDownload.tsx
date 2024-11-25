@@ -99,7 +99,7 @@ function DownloadButton({ previewContent, invoice }: {
       doc.html(a, {
         callback: function(doc) {
           // Save the PDF
-          doc.save(`${invoice.webtoon.localized.title}_${invoice.creatorUsername}_${invoice.buyerUsername}_invoice.pdf`);
+          doc.save(`${invoice.webtoon.localized.title}_${invoice.creator.user.name}_${invoice.buyer.user.name}_invoice.pdf`);
         },
         width: 180,
         windowWidth: 700,
