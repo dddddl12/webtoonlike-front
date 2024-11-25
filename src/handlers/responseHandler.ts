@@ -1,3 +1,5 @@
+// todo 클라이언트용 핸들러
+import "server-only";
 import { SafeActionResult } from "next-safe-action";
 import { Schema } from "next-safe-action/adapters/types";
 import { ActionErrorT } from "@/handlers/errors";
