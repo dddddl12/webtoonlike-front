@@ -28,7 +28,7 @@
         "insertPostalCode": "우편번호 입력",
         "insertAddress1": "주소 입력",
         "insertAddress2": "상세주소 입력",
-        "termsAndConditions": "webtoonlike 이용약관",
+        "termsAndConditions": "Kipstock 이용약관",
         "required": "(필수)",
         "doYouAgree": "이용약관에 동의하시겠습니까?",
         "completeToast": "회원 가입을 마쳤습니다."
@@ -66,7 +66,7 @@
         "termsAndConditions": "이용약관",
         "privacyPolicy": "개인정보처리방침",
         "customerCenter": "고객센터",
-        "description": "㈜케나즈는 저작물 판매자의 당사자가 아니며, 디지털 거래에 관한 의무와 책임은 사용자 본인에게 있습니다. 웹툰라이크의 모든 저작물은 저작권법에 의거 보호받고 있습니다. 저작권자 또는 회사의 승인없이 저작물의 일부 또는 전체를 복사, 수정하여 무단복제, 전송, 배포, 스크래핑 등의 행위는 저작권법, 콘텐츠사업 진흥법 등 관계법령에 의거 법적조치에 처해질 수 있습니다.",
+        "description": "㈜케나즈는 저작물 판매자의 당사자가 아니며, 디지털 거래에 관한 의무와 책임은 사용자 본인에게 있습니다. Kipstock의 모든 저작물은 저작권법에 의거 보호받고 있습니다. 저작권자 또는 회사의 승인없이 저작물의 일부 또는 전체를 복사, 수정하여 무단복제, 전송, 배포, 스크래핑 등의 행위는 저작권법, 콘텐츠사업 진흥법 등 관계법령에 의거 법적조치에 처해질 수 있습니다.",
         "registrationNumber": "사업자등록번호",
         "mailSalesRegistrationNumber": "통신판매업신고번호",
         "address": "주소",
@@ -95,7 +95,7 @@
         "makeOffer": "오퍼하기",
         "toCreator": "저작권자에게",
         "inputAdditionalRequirements": "추가 요구사항을 입력해 주세요",
-        "note": "*전화번호, SNS계정 등 별도 연락수단을 기재할 경우 웹툰라이크 이용이 제한될 수 있습니다.",
+        "note": "*전화번호, SNS계정 등 별도 연락수단을 기재할 경우 Kipstock 이용이 제한될 수 있습니다.",
         "offerDetails": "오퍼 상세",
         "offerer": "보낸 사람",
         "thereIsNoMessageWrittenByTheBuyer": "바이어가 작성한 메시지가 없습니다."

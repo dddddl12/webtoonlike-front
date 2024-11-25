@@ -146,7 +146,7 @@ export async function convertInvoiceToHtml(content: InvoiceContentT) {
         day: "numeric",
       })}</p>
 
-      <p class="bold subtitle text-center">위 협의 사항을 웹툰라이크가 보증합니다. </p>
+      <p class="bold subtitle text-center">위 협의 사항을 Kipstock이 보증합니다. </p>
 
       <p class="text-center">${issuedAt.toLocaleString(locale, {
         timeZone: "Asia/Seoul",

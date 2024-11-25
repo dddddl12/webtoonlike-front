@@ -5,7 +5,7 @@ export default function TermsOfUseEn() {
       <br/>
       <p>Article 1 (Purpose)</p>
       <p>These Terms and Conditions regulate the rights of those who use the content distribution platform (hereinafter
-        “Members”) and various services (hereinafter “Platform”) provided by Webtoonlike Co., Ltd. (hereinafter
+        “Members”) and various services (hereinafter “Platform”) provided by Kipstock (hereinafter
         “Company”) to stipulate both company and members’ rights and responsibilities.</p>
       <br/>
       <p>Article 2 (Definitions)</p>
@@ -221,17 +221,17 @@ export default function TermsOfUseEn() {
           method determined by the company.
         <ol>
           <li>Copyright holder`s name (company name and representative name in the case of a corporation), e-mail
-              address, contact information, and mail-order-sales registration number (limited to businesses falling
-              under Article 2, Paragraph 3 of the Act on Consumer Protection in Electronic Commerce, etc.)
+            address, contact information, and mail-order-sales registration number (limited to businesses falling
+            under Article 2, Paragraph 3 of the Act on Consumer Protection in Electronic Commerce, etc.)
           </li>
           <li>Content and its bibliographic information (content type, completion status, total number of episodes,
-              etc.), disclosure target, disclosure scope
+            etc.), disclosure target, disclosure scope
           </li>
           <li>Content and its translation, visualization in video form, and publishing, In case of
-              commercialization.
+            commercialization.
           </li>
           <li>Specify and provide content registration details on the other platform, in case the content was uploaded
-              on other platforms.
+            on other platforms.
           </li>
         </ol>
         </li>
@@ -264,23 +264,23 @@ export default function TermsOfUseEn() {
           with Article 11, and if he/she agrees to these terms and conditions, he/she is deemed to have guaranteed them.
         <ol>
           <li>In case of content creation done by the copyright holder: The fact that the intellectual property
-              rights, etc. of others have not been infringed and that the intellectual property rights, etc. have not
-              been transferred to others.
+            rights, etc. of others have not been infringed and that the intellectual property rights, etc. have not
+            been transferred to others.
           </li>
           <li>If the copyright holder did not create the content: The copyright holder of the content or the fact that
-              the rights to the content were transferred from the copyright holder.
+            the rights to the content were transferred from the copyright holder.
           </li>
           <li>Content of the content: The fact that the content does not constitute pornography or child/adolescent
-              sexual content, the fact that it does not go against good morals and other social order and that in the
-              case of content marked as available for general audience, the fact that it does not constitute media
-              harmful to youth, third parties, and the fact that it does not infringe on personal information or
-              defamation of character.
+            sexual content, the fact that it does not go against good morals and other social order and that in the
+            case of content marked as available for general audience, the fact that it does not constitute media
+            harmful to youth, third parties, and the fact that it does not infringe on personal information or
+            defamation of character.
           </li>
           <li>Intellectual property rights: Intellectual property rights of content (webtoon servicing rights,
-              translation rights, overseas publishing rights, rights to secondary copyrights such as movies and dramas).
-              The current status of the intellectual property rights of content information and the intellectual
-              property rights of content information registered on the website is, in fact, not different from each
-              other.
+            translation rights, overseas publishing rights, rights to secondary copyrights such as movies and dramas).
+            The current status of the intellectual property rights of content information and the intellectual
+            property rights of content information registered on the website is, in fact, not different from each
+            other.
           </li>
         </ol>
         </li>

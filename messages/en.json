@@ -28,9 +28,9 @@
         "insertPostalCode": "Postal Code / Zipcode",
         "insertAddress1": "Address",
         "insertAddress2": "Address 2",
-        "termsAndConditions": "Webtoonlike Terms and Conditions",
+        "termsAndConditions": "Kipstock Terms and Conditions",
         "required": "(required)",
-        "doYouAgree": "Do you agree with Webtoonlike Terms and Conditions?",
+        "doYouAgree": "Do you agree with Kipstock Terms and Conditions?",
         "completeToast": "Successfully signed up."
     },
     "setupPageNextForCreators": {
@@ -66,7 +66,7 @@
         "termsAndConditions": "Terms and Conditions",
         "privacyPolicy": "Privacy Policy",
         "customerCenter": "Customer Service Center",
-        "description": "All Webtoons on Webtoonlike are protected under Copyright Law. Copying part or all of a Webtoon and posting it on other media (including personal media) without the copyright holder or Webtoonlike's permission, the individual may be subject to legal action under the Copyright Act. Contents and operation policies may apply differ depending on language / country / region.",
+        "description": "All Webtoons on Kipstock are protected under Copyright Law. Copying part or all of a Webtoon and posting it on other media (including personal media) without the copyright holder or Kipstock's permission, the individual may be subject to legal action under the Copyright Act. Contents and operation policies may apply differ depending on language / country / region.",
         "registrationNumber": "Company Registration Number",
         "mailSalesRegistrationNumber": "Mail-order-sales Registration Number",
         "address": "Address",
