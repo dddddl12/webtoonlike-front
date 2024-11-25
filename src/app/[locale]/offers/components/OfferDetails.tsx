@@ -23,7 +23,7 @@ export default function ViewOfferSection({ bidRequest }: {
   if (!buyer) {
     return <Spinner />;
   }
-  return <Col className="w-full my-10">
+  return <Col className="w-full my-10 [&_*]:border-foreground">
     <Offerer buyer={buyer} />
     <hr className="my-10" />
     <OfferDetails
