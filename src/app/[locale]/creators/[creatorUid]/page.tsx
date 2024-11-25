@@ -1,12 +1,13 @@
 import { Col, Row } from "@/components/ui/common";
 import Image from "next/image";
 import { getCreatorByUserId } from "@/resources/creators/creator.controller";
-import { IconHeartFill } from "@/components/svgs/IconHeartFill";
 import PageLayout from "@/components/ui/PageLayout";
 import CreatorWebtoonList from "@/app/[locale]/creators/[creatorUid]/CreatorWebtoonList";
 import { buildImgUrl } from "@/utils/media";
 import { responseHandler } from "@/handlers/responseHandler";
 import { listWebtoonsByUserId } from "@/resources/webtoons/controllers/webtoonPreview.controller";
+import { getLikeCountByUserId } from "@/resources/webtoonLikes/webtoonLike.controller";
+import LikeBadge from "@/components/ui/LikeBadge";
 
 export default async function CreatorPage({
   params,
@@ -14,9 +15,10 @@ export default async function CreatorPage({
   params: Promise<{ creatorUid: string }>;
 }) {
   const creatorUid = await params.then(p => Number(p.creatorUid));
-  const [creator, initialWebtoonListResponse] = await Promise.all([
+  const [creator, likeCountResponse, initialWebtoonListResponse] = await Promise.all([
     getCreatorByUserId(creatorUid).then(responseHandler),
-    listWebtoonsByUserId({ userId: creatorUid }).then(responseHandler)
+    getLikeCountByUserId(creatorUid).then(responseHandler),
+    listWebtoonsByUserId(creatorUid, {}).then(responseHandler)
   ]);
 
   return <PageLayout>
@@ -32,17 +34,12 @@ export default async function CreatorPage({
         width={160}
         height={160}
       />
-      <Col className="items-center justify-center w-full sm:items-start gap-5">
+      {/*todo 그림 사이즈 고정*/}
+      <Col className="sm:items-start gap-5">
         <p className="font-bold text-[26pt]">
           {creator.localized.name}
         </p>
-        <Row className="w-full justify-between sm:flex-row">
-          {/*TODO 좋아요 기준*/}
-          <Row className="bg-white/10 px-3 py-2 rounded-sm cursor-default">
-            {0}
-            <IconHeartFill fill="red" />
-          </Row>
-        </Row>
+        <LikeBadge likeCount={likeCountResponse.likeCount }/>
       </Col>
     </Row>
     <CreatorWebtoonList

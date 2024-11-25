@@ -6,11 +6,21 @@ import { Link } from "@/i18n/routing";
 import AccountBasicInfoSectionDeleteButton from "@/app/[locale]/account/AccountBasicInfoSectionDeleteButton";
 import { getSimpleUserProfile } from "@/resources/users/controllers/user.controller";
 import { responseHandler } from "@/handlers/responseHandler";
+import { getMyLikeCount } from "@/resources/webtoonLikes/webtoonLike.controller";
+import { getTokenInfo } from "@/resources/tokens/token.service";
+import { UserTypeT } from "@/resources/users/dtos/user.dto";
+import LikeBadge from "@/components/ui/LikeBadge";
 
 export default async function AccountBasicInfoSection() {
   const TeditProfile = await getTranslations("accountPage");
-  const user = await getSimpleUserProfile()
-    .then(responseHandler);
+  const { metadata } = await getTokenInfo();
+  const [user, likeCountResponse] = await Promise.all([
+    getSimpleUserProfile().then(responseHandler),
+    metadata.type === UserTypeT.Creator
+      ? getMyLikeCount().then(responseHandler)
+      : Promise.resolve(undefined)
+  ]);
+  // getMyLikeCount
   return <Row className="gap-12">
     <Image
       src={user.thumbPath ?? "/img/mock_profile_image.png"}
@@ -25,23 +35,17 @@ export default async function AccountBasicInfoSection() {
         {user.name}
       </p>
       <Row className="w-full justify-between sm:flex-row">
-        <Col className="sm:flex-row">
-          {/*TODO 이 페이지가 필요한가*/}
-          {/*TODO 좋아요 기준*/}
-          {/*<Row className="bg-white/10 px-3 py-2 rounded-sm cursor-default">*/}
-          {/*  {creators.filter((item) => item.id === me?.creator?.id)[0]?.numWebtoonLike || 0}*/}
-          {/*  <IconHeartFill fill="red" />*/}
-          {/*</Row>*/}
+        <Row className="gap-4">
+          {likeCountResponse
+            && <LikeBadge likeCount={likeCountResponse.likeCount}/>}
           <Button variant="secondary" asChild>
             <Link href="/account/update">
               {TeditProfile("editProfile")}
             </Link>
           </Button>
-        </Col>
-
-        <Row className="w-full justify-end">
-          <AccountBasicInfoSectionDeleteButton />
         </Row>
+
+        <AccountBasicInfoSectionDeleteButton />
       </Row>
     </Col>
   </Row>;

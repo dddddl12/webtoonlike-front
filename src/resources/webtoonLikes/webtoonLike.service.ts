@@ -1,5 +1,5 @@
 import "server-only";
-import { WebtoonLikeWithMineT } from "@/resources/webtoonLikes/webtoonLike.dto";
+import { WebtoonLikeCountT, WebtoonLikeWithMineT } from "@/resources/webtoonLikes/webtoonLike.dto";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 import prisma from "@/utils/prisma";
 
@@ -51,6 +51,33 @@ class WebtoonLikeService {
     };
   }
 
+  async getCountByUserId(userId?: number): Promise<WebtoonLikeCountT> {
+    if (userId !== undefined) {
+      // /creators/[userId] 페이지
+      await getTokenInfo({
+        buyer: true,
+        admin: true
+      });
+    } else {
+      // 저작권자 본인 계정 관리 페이지
+      userId = await getTokenInfo({
+        creator: true
+      }).then(({ userId }) => userId);
+    }
+
+    const likeCount = await prisma.webtoonLike.count({
+      where: {
+        webtoon: {
+          is: {
+            userId
+          }
+        }
+      }
+    });
+    return {
+      likeCount
+    };
+  }
 }
 const webtoonLikeService = new WebtoonLikeService();
 export default webtoonLikeService;

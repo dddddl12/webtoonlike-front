@@ -2,8 +2,31 @@
 
 import { action } from "@/handlers/safeAction";
 import z from "zod";
-import { WebtoonLikeWithMine } from "@/resources/webtoonLikes/webtoonLike.dto";
+import { WebtoonLikeCount, WebtoonLikeWithMine } from "@/resources/webtoonLikes/webtoonLike.dto";
 import webtoonLikeService from "@/resources/webtoonLikes/webtoonLike.service";
+
+// 바이어용
+export const getLikeCountByUserId = action
+  .metadata({ actionName: "getLikeCountByUserId" })
+  .bindArgsSchemas([
+    z.number() // userId
+  ])
+  .outputSchema(WebtoonLikeCount)
+  .action(
+    async ( { bindArgsParsedInputs: [userId] }) => {
+      return webtoonLikeService.getCountByUserId(userId);
+    }
+  );
+
+// 저작권자용
+export const getMyLikeCount = action
+  .metadata({ actionName: "getMyLikeCount" })
+  .outputSchema(WebtoonLikeCount)
+  .action(
+    async () => {
+      return webtoonLikeService.getCountByUserId();
+    }
+  );
 
 export const toggleLike = action
   .metadata({ actionName: "toggleLike" })

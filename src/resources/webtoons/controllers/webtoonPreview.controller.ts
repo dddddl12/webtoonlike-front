@@ -30,13 +30,21 @@ export const listWebtoons = action
 
 export const listWebtoonsByUserId = action
   .metadata({ actionName: "listWebtoonsByUserId" })
+  .bindArgsSchemas([
+    z.number()
+  ])
   .schema(z.object({
-    userId: z.number(),
     page: z.number().default(1)
   }))
   .outputSchema(ListResponseSchema(WebtoonPreviewSchema))
-  .action(async ({ parsedInput: formData }) => {
-    return webtoonPreviewService.list(formData);
+  .action(async ({
+    bindArgsParsedInputs: [userId],
+    parsedInput: formData
+  }) => {
+    return webtoonPreviewService.list({
+      ...formData,
+      userId
+    });
   });
 
 // 바이어용
