@@ -8,14 +8,14 @@ import { Textarea } from "@/shadcn/ui/textarea";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { BidRequestFormSchema } from "@/resources/bidRequests/dtos/bidRequest.dto";
 import { FieldSet, Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "@/i18n/routing";
-import Spinner from "@/components/ui/Spinner";
 import { createBidRequest } from "@/resources/bidRequests/controllers/bidRequest.controller";
 import { Row } from "@/components/ui/common";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { clsx } from "clsx";
 
 
 export default function BidRequestForm({ bidRoundId }: {
@@ -27,7 +27,7 @@ export default function BidRequestForm({ bidRoundId }: {
   const { toast } = useToast();
   const router = useRouter();
 
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createBidRequest.bind(null, bidRoundId),
@@ -39,7 +39,8 @@ export default function BidRequestForm({ bidRoundId }: {
               description: "오퍼를 보냈습니다."
             });
             router.replace("/offers");
-          }
+          },
+          onError: () => setIsSubmitting(false)
         },
         formProps: {
           mode: "onChange",
@@ -55,21 +56,16 @@ export default function BidRequestForm({ bidRoundId }: {
     headingRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [headingRef]);
 
-
-  // 제출 이후 동작
-  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
-
-  // 스피너
-  if (isSubmitting || isSubmitSuccessful) {
-    return <Spinner/>;
-  }
-
+  const { formState: { isValid } } = form;
   return (
     <Form {...form}>
       <form onSubmit={async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
         await handleSubmitWithAction(e);
-      }}>
+      }} className={clsx({
+        "form-overlay": isSubmitting
+      })}>
         <Heading ref={headingRef}>
           {tMakeAnOffer("makeOffer")}
         </Heading>

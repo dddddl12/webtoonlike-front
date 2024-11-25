@@ -16,9 +16,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { createOrUpdateGenre } from "@/resources/genres/genre.controller";
 import { GenreFormSchema, GenreFormT, GenreT } from "@/resources/genres/genre.dto";
 import { UseFormReturn } from "react-hook-form";
-import Spinner from "@/components/ui/Spinner";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { clsx } from "clsx";
 
 export default function GenreForm({ reload, children, prev }: {
   reload: () => void;
@@ -44,8 +44,7 @@ export default function GenreForm({ reload, children, prev }: {
         },
         formProps: {
           mode: "onChange"
-        },
-        errorMapProps: {}
+        }
       });
   const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
 
@@ -84,6 +83,7 @@ export default function GenreForm({ reload, children, prev }: {
               취소
             </Button>
           </DialogClose>
+          {/*todo disable 처리 일관성 확보*/}
           <Button
             disabled={!isValid || isSubmitting || isSubmitSuccessful}
             onClick={handleSubmitWithAction}
@@ -103,11 +103,10 @@ function GenreFormContent({
   form: UseFormReturn<GenreFormT>;
 }) {
   const { formState: { isSubmitting, isSubmitSuccessful } } = form;
-  if (isSubmitting || isSubmitSuccessful) {
-    return <Spinner />;
-  }
   return <Form {...form}>
-    <form className="space-y-4">
+    <form className={clsx("space-y-4", {
+      "form-overlay": isSubmitting || isSubmitSuccessful
+    })}>
       <FormField
         control={form.control}
         name="label"

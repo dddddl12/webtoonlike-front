@@ -10,7 +10,6 @@ import {
   BuyerPurposeSchema,
 } from "@/resources/buyers/buyer.dto";
 import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
-import Spinner from "@/components/ui/Spinner";
 import { ImageObject } from "@/utils/media";
 import { FileDirectoryT } from "@/resources/files/files.type";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
@@ -24,6 +23,7 @@ import {
   UserAccountWithBuyerFormT
 } from "@/resources/users/dtos/userAccount.dto";
 import { createUser } from "@/resources/users/controllers/userAccount.controller";
+import { clsx } from "clsx";
 
 
 export default function BuyerProfileForm({ userAccountForm, setSignUpStage } : {
@@ -43,6 +43,7 @@ export default function BuyerProfileForm({ userAccountForm, setSignUpStage } : {
   const [businessCard, setBusinessCard] = useState(
     new ImageObject(prevCompany?.businessCardPath));
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createUser,
@@ -51,7 +52,8 @@ export default function BuyerProfileForm({ userAccountForm, setSignUpStage } : {
         actionProps: {
           onSuccess: () => {
             setSignUpStage(prevState => prevState + 1);
-          }
+          },
+          onError: () => setIsSubmitting(false)
         },
         formProps: {
           defaultValues: userAccountForm,
@@ -61,16 +63,14 @@ export default function BuyerProfileForm({ userAccountForm, setSignUpStage } : {
     );
 
   // 제출 이후 동작
-  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
-
-  if (isSubmitting || isSubmitSuccessful) {
-    return <Spinner />;
-  }
+  const { formState: { isValid } } = form;
 
   return (
     <Form {...form}>
       <form
         onSubmit={async (e) => {
+          e.preventDefault();
+          setIsSubmitting(true);
           await thumbnail.uploadAndGetRemotePath(FileDirectoryT.BuyersThumbnails)
             .then(remotePath => form.setValue("buyer.company.thumbPath", remotePath));
           await businessCert.uploadAndGetRemotePath(FileDirectoryT.BuyersCerts)
@@ -79,7 +79,9 @@ export default function BuyerProfileForm({ userAccountForm, setSignUpStage } : {
             .then(remotePath => form.setValue("buyer.company.businessCardPath", remotePath));
           await handleSubmitWithAction(e);
         }}
-        className="flex flex-col gap-5"
+        className={clsx("flex flex-col gap-5", {
+          "form-overlay": isSubmitting
+        })}
       >
         <span className="mb-10">{t("headerDesc")}</span>
         <BusinessNumberField form={form}/>

@@ -23,6 +23,8 @@ class WebtoonHelper {
       title_en: r.title_en,
       description: r.description ?? undefined,
       description_en: r.description_en ?? undefined,
+      authorName: r.authorName ?? undefined,
+      authorName_en: r.authorName_en ?? undefined,
       externalUrl: r.externalUrl ?? undefined,
       targetAges: r.targetAges
         .map(a => a as TargetAge),

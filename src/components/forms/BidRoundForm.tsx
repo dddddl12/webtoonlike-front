@@ -19,12 +19,12 @@ import {
   FormItem,
   FormLabel
 } from "@/shadcn/ui/form";
-import Spinner from "@/components/ui/Spinner";
 import ContractRangeForm from "@/components/forms/ContractRangeForm";
 import { NumericInput } from "@/shadcn/ui/input";
 import { createOrUpdateBidRound } from "@/resources/bidRounds/controllers/bidRound.controller";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { clsx } from "clsx";
 
 export default function BidRoundForm({ webtoonId, prev }: {
   webtoonId: number;
@@ -33,6 +33,7 @@ export default function BidRoundForm({ webtoonId, prev }: {
   const t = useTranslations("bidRoundDetails");
   const [isAgreed, setIsAgreed] = useState(false);
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createOrUpdateBidRound.bind(null, webtoonId, prev?.id),
@@ -63,7 +64,8 @@ export default function BidRoundForm({ webtoonId, prev }: {
             } else {
               router.replace("/webtoons");
             }
-          }
+          },
+          onError: () => setIsSubmitting(false)
         },
         formProps: {
           defaultValues: prev,
@@ -77,20 +79,17 @@ export default function BidRoundForm({ webtoonId, prev }: {
     name: "isNew"
   });
 
-  // 제출 이후 동작
-  const { formState: { isSubmitting, isSubmitSuccessful, isValid } } = form;
-
-  // 스피너
-  if (isSubmitting || isSubmitSuccessful) {
-    return <Spinner/>;
-  }
+  const { formState: { isValid } } = form;
 
   return (
     <Form {...form}>
       <form onSubmit={async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
         await handleSubmitWithAction(e);
-      }}>
+      }} className={clsx({
+        "form-overlay": isSubmitting
+      })}>
         {/* 기본 정보 */}
         <Heading2>
           {t("generalInformation")}

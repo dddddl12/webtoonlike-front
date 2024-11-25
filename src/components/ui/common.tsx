@@ -20,6 +20,7 @@ export function Col({ className, ...props }: ColProps) {
 }
 
 
+// todo tailwind 공통 서식으로 대체
 interface HeadingProps extends React.HTMLProps<HTMLHeadingElement> {}
 
 export function Heading({ className, ...props }: HeadingProps) {

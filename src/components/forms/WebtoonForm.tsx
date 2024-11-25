@@ -20,16 +20,15 @@ import {
 import { FieldSet, Form, FormControl, FormField, FormHeader, FormItem, FormLabel } from "@/shadcn/ui/form";
 import { UseFormReturn } from "react-hook-form";
 import Image from "next/image";
-import Spinner from "@/components/ui/Spinner";
 import { useRouter } from "@/i18n/routing";
 import { ImageObject } from "@/utils/media";
 import { FileDirectoryT } from "@/resources/files/files.type";
 import { createOrUpdateWebtoon } from "@/resources/webtoons/controllers/webtoon.controller";
-import { toast } from "@/shadcn/hooks/use-toast";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GenreT } from "@/resources/genres/genre.dto";
 import { WebtoonDetailsT } from "@/resources/webtoons/dtos/webtoonDetails.dto";
+import { clsx } from "clsx";
 
 export function WebtoonForm({ selectableGenres, prev }: {
   selectableGenres: GenreT[];
@@ -41,6 +40,8 @@ export function WebtoonForm({ selectableGenres, prev }: {
 
   const [thumbnail, setThumbnail] = useState(
     new ImageObject(prev?.thumbPath));
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createOrUpdateWebtoon.bind(null, prev?.id),
@@ -53,7 +54,8 @@ export function WebtoonForm({ selectableGenres, prev }: {
             } else {
               router.replace("/webtoons");
             }
-          }
+          },
+          onError: () => setIsSubmitting(false)
         },
         formProps: {
           defaultValues: {
@@ -67,26 +69,21 @@ export function WebtoonForm({ selectableGenres, prev }: {
   // 제출 이후 동작
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
     const remotePath = await thumbnail.uploadAndGetRemotePath(FileDirectoryT.WebtoonsThumbnails);
-    if (remotePath) {
-      form.setValue("thumbPath", remotePath);
-      await handleSubmitWithAction(e);
-    } else {
-      toast({
-        description: "썸네일 이미지를 업로드하지 못했습니다.",
-      });
+    if (!remotePath) {
+      throw new Error("Thumbnail upload failed.");
     }
+    form.setValue("thumbPath", remotePath);
+    await handleSubmitWithAction(e);
   };
 
-  // 스피너
-  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
-  if (isSubmitting || isSubmitSuccessful) {
-    return <Spinner/>;
-  }
-
+  const { formState: { isValid } } = form;
   return (
     <Form {...form}>
-      <form className="w-[600px] mx-auto" onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className={clsx("w-[600px] mx-auto", {
+        "form-overlay": isSubmitting
+      })}>
         <FormHeader
           title={prev ? t("editSeries") : t("addSeries")}
           goBackHref={prev ? `/webtoons/${prev.id}` : "/webtoons"}

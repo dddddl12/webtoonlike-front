@@ -4,7 +4,6 @@ import { ImageObject } from "@/utils/media";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/shadcn/ui/select";
 import { useTranslations } from "next-intl";
 import { Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
-import Spinner from "@/components/ui/Spinner";
 import { FileDirectoryT } from "@/resources/files/files.type";
 import useSafeHookFormAction from "@/hooks/safeHookFormAction";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +15,7 @@ import {
   UserAccountWithCreatorFormT
 } from "@/resources/users/dtos/userAccount.dto";
 import { createUser } from "@/resources/users/controllers/userAccount.controller";
+import { clsx } from "clsx";
 
 export default function CreatorProfileForm({ userAccountForm, setSignUpStage }: {
   userAccountForm: Partial<UserAccountWithCreatorFormT>;
@@ -29,6 +29,7 @@ export default function CreatorProfileForm({ userAccountForm, setSignUpStage }: 
   const [thumbnail, setThumbnail] = useState(
     new ImageObject(prev?.thumbPath));
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { form, handleSubmitWithAction }
     = useSafeHookFormAction(
       createUser,
@@ -37,7 +38,8 @@ export default function CreatorProfileForm({ userAccountForm, setSignUpStage }: 
         actionProps: {
           onSuccess: () => {
             setSignUpStage(prevState => prevState + 1);
-          }
+          },
+          onError: () => setIsSubmitting(false)
         },
         formProps: {
           defaultValues: userAccountForm,
@@ -46,22 +48,21 @@ export default function CreatorProfileForm({ userAccountForm, setSignUpStage }: 
       }
     );
 
-  // 제출 이후 동작
-  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
-
-  if (isSubmitting || isSubmitSuccessful) {
-    return <Spinner />;
-  }
-
+  // todo enter 오류
+  const { formState: { isValid } } = form;
   return (
     <Form {...form}>
       <form
         onSubmit={async (e) => {
+          e.preventDefault();
+          setIsSubmitting(true);
           await thumbnail.uploadAndGetRemotePath(FileDirectoryT.CreatorsThumbnails)
             .then(remotePath => form.setValue("creator.thumbPath", remotePath));
           await handleSubmitWithAction(e);
         }}
-        className="flex flex-col gap-5"
+        className={clsx("flex flex-col gap-5", {
+          "form-overlay": isSubmitting
+        })}
       >
         <span className="mb-10">{t("profileDesc")}</span>
         <AccountFormImageField image={thumbnail} setImage={setThumbnail} placeholder={t("uploadProfilePic")}/>

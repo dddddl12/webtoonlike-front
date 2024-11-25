@@ -31,7 +31,7 @@ class GenreService {
     await getTokenInfo({
       admin: true,
     });
-    prisma.genre.create({
+    await prisma.genre.create({
       data: formData,
     }).catch(duplicateHandler);
   }
@@ -40,7 +40,7 @@ class GenreService {
     await getTokenInfo({
       admin: true,
     });
-    prisma.genre.update({
+    await prisma.genre.update({
       data: formData,
       where: {
         id: genreId,

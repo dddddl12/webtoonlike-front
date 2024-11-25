@@ -19,7 +19,6 @@ import { Control, FieldValues, UseFormReturn } from "react-hook-form";
 import {
   BidRoundApprovalStatus,
 } from "@/resources/bidRounds/dtos/bidRound.dto";
-import Spinner from "@/components/ui/Spinner";
 import { FieldName, Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
 import { clsx } from "clsx";
 import { CalendarIcon } from "lucide-react";
@@ -86,7 +85,7 @@ function DialogContentWrapper({
         }
       }
     );
-  const { formState: { isValid } } = form;
+  const { formState: { isValid, isSubmitting, isSubmitSuccessful } } = form;
 
   return <DialogContent>
     <VisuallyHidden>
@@ -103,7 +102,7 @@ function DialogContentWrapper({
       <Button
         variant="mint"
         onClick={handleSubmitWithAction}
-        disabled={!isValid}
+        disabled={!isValid || isSubmitting || isSubmitSuccessful}
       >
         적용
       </Button>
@@ -123,11 +122,10 @@ function FormWrapper({ form }: {
     approvalStatus: BidRoundApprovalStatus.Approved
   })) : "-";
 
-  if (isSubmitting || isSubmitSuccessful) {
-    return <Spinner />;
-  }
   return <Form {...form}>
-    <form className="space-y-4 mt-4">
+    <form className={clsx("space-y-4 mt-4", {
+      "form-overlay": isSubmitting || isSubmitSuccessful
+    })}>
       <CalendarFormField
         control={form.control}
         name="bidStartsAt"
@@ -145,7 +143,7 @@ function FormWrapper({ form }: {
         <Col className="flex-1 gap-1">
           <Input
             className="flex-1"
-            type='text'
+            type="text"
             disabled={true}
             value={statusLabel}
           />
@@ -162,7 +160,7 @@ function FormWrapper({ form }: {
                 <Input
                   {...field}
                   className="flex-1"
-                  type='text'
+                  type="text"
                   placeholder="관리자 메모"
                 />
               </FormControl>
