@@ -1,48 +1,39 @@
-import { Col, Row } from "@/components/ui/common";
+import { Row } from "@/components/ui/common";
 import { Button } from "@/shadcn/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/shadcn/ui/dialog";
-import { Textarea } from "@/shadcn/ui/textarea";
-import { createBidRequestMessage } from "@/resources/bidRequestMessages/bidRequestMessage.controller";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { BidRequestStatus } from "@/resources/bidRequests/dtos/bidRequest.dto";
+import {
+  changeOfferProposalStatus,
+} from "@/resources/offers/controllers/offerProposal.controller";
+import { useContext, useMemo, useState } from "react";
 import { useToast } from "@/shadcn/hooks/use-toast";
-import { UserTypeT } from "@/resources/users/dtos/user.dto";
-import useTokenInfo from "@/hooks/tokenInfo";
 import useSafeAction from "@/hooks/safeAction";
 import { useTranslations } from "next-intl";
 import { useConfirm } from "@/hooks/alert";
-import { BidRequestWithMetaDataT } from "@/resources/bidRequests/dtos/bidRequestWithMetadata.dto";
-import {
-  changeBidRequestStatus,
-  getBidRequestWithMetaDataSchema
-} from "@/resources/bidRequests/controllers/bidRequestWithMetadata.controller";
+import { OfferProposalDetailsT, OfferProposalStatus } from "@/resources/offers/dtos/offerProposal.dto";
+import OfferProposalForm from "@/components/forms/offer/OfferProposalForm";
+import ReloadOfferContext from "@/app/[locale]/offers/ReloadOfferContext";
 
-export default function Controls({ bidRequestId, reload, setCurBidRequest, whoCanDecideAtThisTurn, refMessageId }: {
-  bidRequestId: number;
-  reload: () => void;
-  setCurBidRequest: Dispatch<SetStateAction<BidRequestWithMetaDataT>>;
-  whoCanDecideAtThisTurn: UserTypeT;
-  refMessageId?: number;
+export default function Controls({ offerProposal }: {
+  offerProposal: OfferProposalDetailsT;
 }) {
   const { toast } = useToast();
-  const { tokenInfo } = useTokenInfo();
   const t = useTranslations("offerControls");
-  const boundChangeBidRequestStatus = useMemo(() => changeBidRequestStatus
-    .bind(null, bidRequestId), [bidRequestId]);
-  const { execute } = useSafeAction(boundChangeBidRequestStatus, {
-    onSuccess: ({ data }) => {
-      if (!data) {
+  const boundChangeOfferProposalStatus = useMemo(() => changeOfferProposalStatus
+    .bind(null, offerProposal.id), [offerProposal.id]);
+  const reload = useContext(ReloadOfferContext);
+  const { execute } = useSafeAction(boundChangeOfferProposalStatus, {
+    onSuccess: ({ input }) => {
+      if (!input) {
         throw new Error("data is null");
       }
-      setCurBidRequest(data);
       toast({
-        description: data.status === BidRequestStatus.Accepted
+        description: input.changeTo === OfferProposalStatus.Accepted
           ? t("accept.toast")
           : t("decline.toast")
       });
+      reload();
     },
     onError: () => {
-      executeOnFailure();
+      // executeOnFailure();
     }
   });
 
@@ -51,8 +42,7 @@ export default function Controls({ bidRequestId, reload, setCurBidRequest, whoCa
     message: t("decline.alertMessage"),
     confirmText: t("decline.confirm"),
     onConfirm: () => execute({
-      changeTo: BidRequestStatus.Declined,
-      refMessageId
+      changeTo: OfferProposalStatus.Declined
     })
   });
 
@@ -61,114 +51,39 @@ export default function Controls({ bidRequestId, reload, setCurBidRequest, whoCa
     message: t("accept.alertMessage"),
     confirmText: t("accept.confirm"),
     onConfirm: () => execute({
-      changeTo: BidRequestStatus.Accepted,
-      refMessageId
+      changeTo: OfferProposalStatus.Accepted
     })
   });
 
   // 오퍼 실패 시 업데이트
-  const boundGetSimpleBidRequest = useMemo(() => getBidRequestWithMetaDataSchema
-    .bind(null, bidRequestId), [bidRequestId]);
-  const { execute: executeOnFailure } = useSafeAction(boundGetSimpleBidRequest, {
-    onSuccess: ({ data }) => {
-      if (!data) {
-        throw new Error("data is null");
-      }
-      setCurBidRequest(data);
-    }
-  });
+  // const boundGetSimpleBidRequest = useMemo(() => getOfferWithMetaDataSchema
+  //   .bind(null, bidRequestId), [bidRequestId]);
+  // const { execute: executeOnFailure } = useSafeAction(boundGetSimpleBidRequest, {
+  //   onSuccess: ({ data }) => {
+  //     if (!data) {
+  //       throw new Error("data is null");
+  //     }
+  //     setCurBidRequest(data);
+  //   }
+  // });
 
-  return <Row className="gap-20 mx-auto mb-10" >
-    {tokenInfo?.metadata.type === whoCanDecideAtThisTurn
-      && <Button variant="red" onClick={declineConfirm.open}>
+  const [showForm, setShowForm] = useState<boolean>(false);
+
+  return <>
+    <Row className="gap-20 mx-auto mt-14 mb-10" >
+      <Button variant="red" onClick={declineConfirm.open}>
         {t("decline.actionButton")}
-      </Button>}
-    <SendMessage bidRequestId={bidRequestId}
-      reload={reload} />
-    {tokenInfo?.metadata.type === whoCanDecideAtThisTurn
-      && <Button variant="mint" onClick={acceptConfirm.open}>
-        {t("accept.actionButton")}
-      </Button>}
-  </Row>;
-}
-
-function SendMessage({ bidRequestId, reload }: {
-  bidRequestId: number;
-  reload: () => void;
-}) {
-  const { toast } = useToast();
-  const [editorOpen, setEditorOpen] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
-  const t = useTranslations("offerControls");
-  const tGeneral = useTranslations("general");
-
-  const boundCreateBidRequestMessage = useMemo(() => createBidRequestMessage
-    .bind(null, bidRequestId), [bidRequestId]);
-  const { execute } = useSafeAction(boundCreateBidRequestMessage, {
-    onSuccess: () => {
-      toast({
-        description: t("message.toast")
-      });
-      reload();
-      setEditorOpen(false);
-    }
-  });
-
-  useEffect(() => {
-    if (!editorOpen) {
-      setMessage("");
-    }
-  }, [editorOpen]);
-
-  const handleSubmit = async () => {
-    if (!message) {
-      return;
-    }
-    execute({ content: message });
-  };
-
-  return <Dialog
-    open={editorOpen}
-    onOpenChange={setEditorOpen}
-  >
-    <DialogTrigger asChild>
-      <Button variant="gray">
+      </Button>
+      <Button variant="gray" onClick={() =>
+        setShowForm(prev => !prev)}>
         {t("message.actionButton")}
       </Button>
-    </DialogTrigger>
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>{t("message.dialogTitle")}</DialogTitle>
-      </DialogHeader>
-      <Col>
-
-        <Row className="w-full">
-          <Textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder={t("message.placeholder")}
-          />
-        </Row>
-
-        <Row className="mt-4 gap-2 justify-end">
-          <Button
-            className="bg-red"
-            onClick={() => setEditorOpen(false)}
-          >
-            {tGeneral("cancel")}
-          </Button>
-          <Button
-            className="bg-mint"
-            onClick={handleSubmit}
-            disabled={!message}
-          >
-            {t("message.confirm")}
-          </Button>
-        </Row>
-      </Col>
-
-
-    </DialogContent>
-  </Dialog>;
-
+      <Button variant="mint" onClick={acceptConfirm.open}>
+        {t("accept.actionButton")}
+      </Button>
+    </Row>
+    {showForm && <OfferProposalForm
+      offerId={offerProposal.offerId}
+      refOfferProposalId={offerProposal.id}/>}
+  </>;
 }

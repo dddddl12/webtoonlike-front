@@ -4,11 +4,10 @@ import { Heading, Heading2 } from "@/components/ui/common";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shadcn/ui/table";
 import { ContractRangeItemSchema } from "@/resources/bidRounds/dtos/bidRound.dto";
 import z from "zod";
-import { BidRequestT } from "@/resources/bidRequests/dtos/bidRequest.dto";
+import { OfferProposalT } from "@/resources/offers/dtos/offerProposal.dto";
 
-export default function OfferDetails({ contractRange, message }: {
-  contractRange: BidRequestT["contractRange"];
-  message?: string;
+export default function OfferProposalDetails({ offerProposal }: {
+  offerProposal: OfferProposalT;
 }) {
   const t = useTranslations("contractRangeDataForm");
   const tCountries = useTranslations("countries");
@@ -16,6 +15,7 @@ export default function OfferDetails({ contractRange, message }: {
   const tMakeAnOffer = useTranslations("offerDetails");
   const tBusinessFields = useTranslations("businessFields");
 
+  const { contractRange, message } = offerProposal;
   const { webtoonRights, derivativeRights } = mapContractRange(contractRange);
   return <Col>
     <Heading>{tMakeAnOffer("offerDetails")}</Heading>
@@ -119,7 +119,7 @@ export default function OfferDetails({ contractRange, message }: {
   </Col>;
 }
 
-function mapContractRange(contractRange: BidRequestT["contractRange"]) {
+function mapContractRange(contractRange: OfferProposalT["contractRange"]) {
   const webtoonRights: Map<
     z.infer<typeof ContractRangeItemSchema.shape.country>, {
       contract: z.infer<typeof ContractRangeItemSchema.shape.contract>;

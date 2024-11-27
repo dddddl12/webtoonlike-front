@@ -7,12 +7,12 @@ import invoiceContentService from "@/resources/invoices/services/invoiceContent.
 export const previewInvoice = action
   .metadata({ actionName: "previewInvoice" })
   .bindArgsSchemas([
-    z.number() //bidRequestId
+    z.number() //offerProposalId
   ])
   .outputSchema(z.string())
-  .action(async ({ bindArgsParsedInputs: [bidRequestId] }) => {
+  .action(async ({ bindArgsParsedInputs: [offerProposalId] }) => {
     return invoiceContentService.previewOrCreateInvoice(
-      bidRequestId,
+      offerProposalId,
       false
     );
   });
@@ -20,12 +20,12 @@ export const previewInvoice = action
 export const createInvoice = action
   .metadata({ actionName: "createInvoice" })
   .bindArgsSchemas([
-    z.number() //bidRequestId
+    z.number() //offerProposalId
   ])
   .outputSchema(z.string())
-  .action(async ({ bindArgsParsedInputs: [bidRequestId] }) => {
+  .action(async ({ bindArgsParsedInputs: [offerProposalId] }) => {
     return invoiceContentService.previewOrCreateInvoice(
-      bidRequestId,
+      offerProposalId,
       true
     );
   });

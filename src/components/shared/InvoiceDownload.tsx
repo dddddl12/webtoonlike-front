@@ -14,13 +14,13 @@ import Spinner from "@/components/ui/Spinner";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { jsPDF } from "jspdf";
 import { Row } from "@/components/ui/common";
-import { InvoiceWithWebtoonT } from "@/resources/invoices/dtos/invoice.dto";
+import { InvoicedOfferT } from "@/resources/invoices/dtos/invoice.dto";
 import { downloadInvoiceContent } from "@/resources/invoices/controllers/invoiceContent.controller";
 
 export default function InvoiceDownload({
-  invoice
+  offer
 }: {
-  invoice: InvoiceWithWebtoonT;
+  offer: InvoicedOfferT;
 }) {
   const t = useTranslations("invoiceManagement");
   const tGeneral = useTranslations("general");
@@ -31,9 +31,9 @@ export default function InvoiceDownload({
     if (!invoiceDownloadOpen) {
       return;
     }
-    downloadInvoiceContent(invoice.id)
+    downloadInvoiceContent(offer.invoice.id)
       .then(res => setPreviewContent(res?.data));
-  }, [invoice.id, invoiceDownloadOpen]);
+  }, [offer.invoice.id, invoiceDownloadOpen]);
 
   return (
     <Dialog
@@ -66,15 +66,15 @@ export default function InvoiceDownload({
             </Button>
           </DialogClose>
           <DownloadButton previewContent={previewContent}
-            invoice={invoice}/>
+            offer={offer}/>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
 
-function DownloadButton({ previewContent, invoice }: {
-  invoice: InvoiceWithWebtoonT;
+function DownloadButton({ previewContent, offer }: {
+  offer: InvoicedOfferT;
   previewContent?: string;
 }) {
   const t = useTranslations("invoiceManagement");
@@ -99,7 +99,7 @@ function DownloadButton({ previewContent, invoice }: {
       doc.html(a, {
         callback: function(doc) {
           // Save the PDF
-          doc.save(`${invoice.webtoon.localized.title}_${invoice.creator.user.name}_${invoice.buyer.user.name}_invoice.pdf`);
+          doc.save(`${offer.webtoon.localized.title}_${offer.creator.user.name}_${offer.buyer.user.name}_invoice.pdf`);
         },
         width: 180,
         windowWidth: 700,

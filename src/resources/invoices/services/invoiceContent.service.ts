@@ -1,19 +1,17 @@
 import prisma from "@/utils/prisma";
 import z from "zod";
-import { BidRequestContractRangeItemSchema } from "@/resources/bidRequests/dtos/bidRequest.dto";
 import { BuyerCompanySchema } from "@/resources/buyers/buyer.dto";
 import { convertInvoiceToHtml } from "@/resources/invoices/helpers/invoiceContent.helper";
 import { InvoiceContent } from "@/resources/invoices/dtos/invoiceContent.dto";
+import OfferProposalHelper from "@/resources/offers/helpers/offerProposal.helper";
+import { getTokenInfo } from "@/resources/tokens/token.service";
 
 class InvoiceContentService {
-  async previewOrCreateInvoice(bidRequestId: number, storeToDb: boolean) {
+  async previewOrCreateInvoice(offerProposalId: number, storeToDb: boolean) {
     return prisma.$transaction(async (tx) => {
-      const record = await tx.bidRequest.findUniqueOrThrow({
-        where: { id: bidRequestId },
-        select: {
-        // 계약 조건
-          contractRange: true,
-
+      const record = await tx.offerProposal.findUniqueOrThrow({
+        where: { id: offerProposalId },
+        include: {
           // 바이어
           user: {
             include: {
@@ -25,22 +23,26 @@ class InvoiceContentService {
               }
             }
           },
-          bidRound: {
+          offer: {
             select: {
-            // 웹툰
-              webtoon: {
+              bidRound: {
                 select: {
-                  id: true,
-                  title: true,
-                  title_en: true,
-                  // 판매자
-                  user: {
-                    include: {
-                      creator: {
-                        select: {
-                          id: true,
-                          name: true,
-                          name_en: true
+                // 웹툰
+                  webtoon: {
+                    select: {
+                      id: true,
+                      title: true,
+                      title_en: true,
+                      // 판매자
+                      user: {
+                        include: {
+                          creator: {
+                            select: {
+                              id: true,
+                              name: true,
+                              name_en: true
+                            }
+                          }
                         }
                       }
                     }
@@ -48,19 +50,17 @@ class InvoiceContentService {
                 }
               }
             }
-          }
+          },
         }
       });
 
       // 레코드 분석
-      const contractRange = z.array(BidRequestContractRangeItemSchema)
-        .parse(record.contractRange);
-      const { webtoon } = record.bidRound;
+      const { webtoon } = record.offer.bidRound;
       const buyerUser = record.user;
       const buyerCompany = BuyerCompanySchema.parse(buyerUser.buyer?.company);
-      const creatorUser = record.bidRound.webtoon.user;
+      const creatorUser = record.offer.bidRound.webtoon.user;
       if (!buyerUser.buyer || !creatorUser.creator) {
-        throw new Error("bidRequest not found");
+        throw new Error("Offer not found");
       }
 
       // 컨텐츠 작성
@@ -95,18 +95,27 @@ class InvoiceContentService {
           title: webtoon.title,
           title_en: webtoon.title_en
         },
-        bidRequest: {
-          id: bidRequestId,
-          contractRange
-        },
+        offerProposal: OfferProposalHelper.mapToDTO(record),
         issuedAt: new Date()
       };
 
       const invoiceContentValidated = InvoiceContent.parse(invoiceContent);
       if (storeToDb) {
+        const { userId } = await getTokenInfo({
+          admin: true,
+        });
         await tx.invoice.create({
           data: {
-            bidRequestId,
+            offerProposal: {
+              connect: {
+                id: offerProposalId
+              }
+            },
+            user: {
+              connect: {
+                id: userId
+              }
+            },
             content: invoiceContentValidated
           }
         });

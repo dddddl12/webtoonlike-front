@@ -10,8 +10,8 @@ export async function convertInvoiceToHtml(content: InvoiceContentT) {
     getTranslations({ locale, namespace: "contractType" }),
   ]);
 
-  const { webtoon, bidRequest, buyer, creator, issuedAt } = content;
-  const { contractRange } = bidRequest;
+  const { webtoon, offerProposal, buyer, creator, issuedAt } = content;
+  const { contractRange } = offerProposal;
   const validUntil = new Date(issuedAt);
   validUntil.setFullYear(issuedAt.getFullYear() + 1);
 

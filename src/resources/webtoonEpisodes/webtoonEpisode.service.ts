@@ -5,45 +5,46 @@ import {
   WebtoonEpisodeFormT,
 } from "@/resources/webtoonEpisodes/webtoonEpisode.dto";
 import prisma from "@/utils/prisma";
-import { authorizeWebtoonAccess } from "@/resources/authorization";
+import authorizeWebtoonAccess from "@/resources/webtoons/webtoon.authorization";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 import { UserTypeT } from "@/resources/users/dtos/user.dto";
 import { AdminLevel } from "@/resources/tokens/token.types";
-import webtoonHelper from "@/resources/webtoons/helpers/webtoon.helper";
 import webtoonEpisodeHelper from "@/resources/webtoonEpisodes/webtoonEpisode.heloper";
 import { getLocale } from "next-intl/server";
 import { displayName } from "@/resources/displayName";
 
 class WebtoonEpisodeService {
   async get(webtoonId: number, episodeId: number): Promise<WebtoonEpisodeDetailsT> {
-    const webtoonWhere = await webtoonHelper.whereWithReadAccess(webtoonId);
     const { userId, metadata } = await getTokenInfo();
 
-    const record = await prisma.webtoonEpisode.findUniqueOrThrow({
-      where: {
-        id: episodeId,
-        webtoon: webtoonWhere
-      },
-      include: {
-        webtoon: {
-          select: {
-            id: true,
-            userId: true,
-            title: true,
-            title_en: true,
-            // 현재는 에피소드의 등록 건수 자체가 많지 않으므로 이렇게 처리
-            episodes: {
-              select: {
-                id: true,
-                episodeNo: true,
-              },
-              orderBy: {
-                episodeNo: "asc"
+    const record = await prisma.$transaction(async (tx) => {
+      await authorizeWebtoonAccess(tx, webtoonId);
+      return tx.webtoonEpisode.findUniqueOrThrow({
+        where: {
+          id: episodeId,
+          webtoonId
+        },
+        include: {
+          webtoon: {
+            select: {
+              id: true,
+              userId: true,
+              title: true,
+              title_en: true,
+              // 현재는 에피소드의 등록 건수 자체가 많지 않으므로 이렇게 처리
+              episodes: {
+                select: {
+                  id: true,
+                  episodeNo: true,
+                },
+                orderBy: {
+                  episodeNo: "asc"
+                }
               }
             }
           }
         }
-      }
+      });
     });
 
     const isEditable = metadata.type === UserTypeT.Creator
@@ -71,7 +72,7 @@ class WebtoonEpisodeService {
 
   async create(webtoonId: number, form: WebtoonEpisodeFormT) {
     const episodeRecord = await prisma.$transaction(async (tx) => {
-      await authorizeWebtoonAccess(tx, webtoonId);
+      await authorizeWebtoonAccess(tx, webtoonId, true);
       return tx.webtoonEpisode.create({
         data: {
           ...form,
@@ -98,7 +99,7 @@ class WebtoonEpisodeService {
       });
     }
     const episodeRecord = await prisma.$transaction(async (tx) => {
-      await authorizeWebtoonAccess(tx, webtoonId);
+      await authorizeWebtoonAccess(tx, webtoonId, true);
       return tx.webtoonEpisode.update({
         data: form,
         where: {

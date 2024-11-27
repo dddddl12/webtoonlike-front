@@ -256,11 +256,8 @@
         "genre": "장르",
         "ageRestriction": "이용 등급"
     },
-    "bidRequestStatus": {
-        "PENDING": "마감 대기",
-        "WAITING": "답변 대기",
-        "BIDDING": "노출 중",
-        "NEGOTIATING": "협상 중",
+    "offerProposalStatus": {
+        "PENDING": "답변 대기",
         "DECLINED": "협상 중단",
         "ACCEPTED": "계약 성사"
     },
@@ -454,11 +451,9 @@
             "message": "존재하지 않거나 접근할 수 없는 페이지입니다."
         },
         "serverActions": {
-            "changeBidRequestStatus": {
+            "changeOfferProposalStatus": {
                 "title": "오류 발생",
-                "alreadyAccepted": "이미 완료된 오퍼입니다.",
-                "alreadyRejected": "이미 걸렬된 오퍼입니다.",
-                "outdated": "최신 협상 내용이 아닙니다. 이후 메시지를 참고해주세요.",
+                "outdated": "최신 협상 내용이 아닙니다. 다시 확인해주세요.",
                 "abnormalAccess": "정상적인 접근이 아닙니다."
             }
         }

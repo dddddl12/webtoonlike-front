@@ -257,13 +257,10 @@
         "genre": "Genre",
         "ageRestriction": "Age Restriction"
     },
-    "bidRequestStatus": {
-        "PENDING": "Waiting for Closing",
-        "WAITING": "Waiting for Response",
-        "BIDDING": "Bidding",
-        "NEGOTIATING": "Negotiation",
+    "offerProposalStatus": {
+        "PENDING": "Pending",
         "DECLINED": "Declined",
-        "ACCEPTED": "Procedure Completed"
+        "ACCEPTED": "Accepted"
     },
     "bidRoundApprovalStatus": {
         "PENDING": "Pending Approval",
@@ -454,11 +451,9 @@
             "message": "This page is not found or not accessible to your account."
         },
         "serverActions": {
-            "changeBidRequestStatus": {
+            "changeOfferProposalStatus": {
                 "title": "Error occurred.",
-                "alreadyAccepted": "This offer has already been concluded.",
-                "alreadyRejected": "This offer has already been aborted.",
-                "outdated": "This is not the latest message. Please review the subsequent messages.",
+                "outdated": "You're not seeing the latest proposal.",
                 "abnormalAccess": "This action is not allowed."
             }
         }

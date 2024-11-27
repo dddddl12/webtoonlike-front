@@ -1,18 +1,19 @@
 import Spinner from "@/components/ui/Spinner";
-import { IssuanceInvoiceSubmit } from "./IssuanceInvoiceSubmit";
+import { IssueInvoice } from "./IssueInvoice";
 import useListData from "@/hooks/listData";
 import { Row } from "@/components/ui/common";
 import Paginator from "@/components/ui/Paginator";
 import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
-import { adminListUninvoicedBidRequests } from "@/resources/bidRequests/controllers/bidRequestWithMetadata.controller";
-import { BidRequestWithMetaDataT } from "@/resources/bidRequests/dtos/bidRequestWithMetadata.dto";
 import NoItems from "@/components/ui/NoItems";
+import { adminListUninvoicedOffers } from "@/resources/invoices/controllers/invoice.controller";
+import { UninvoicedOfferT } from "@/resources/invoices/dtos/invoice.dto";
+import { Link } from "@/i18n/routing";
 
-export default function IssuanceInvoice({ reload }: {
+export default function UninvoicedOffersList({ reload }: {
   reload: () => void;
 }) {
   const { listResponse, filters, setFilters } = useListData(
-    adminListUninvoicedBidRequests, {
+    adminListUninvoicedOffers, {
       page: 1
     });
 
@@ -33,8 +34,8 @@ export default function IssuanceInvoice({ reload }: {
           <div className="w-[25%] p-2 flex justify-center font-bold text-gray-shade">신청일</div>
           <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade">인보이스 발행</div>
         </div>
-        {listResponse.items.map((bidRequest, i) => (
-          <TableRow key={i} bidRequest={bidRequest} reload={reload} />
+        {listResponse.items.map((offer, i) => (
+          <TableRow key={i} offer={offer} reload={reload} />
         ))}
       </div>
       <Paginator
@@ -46,26 +47,29 @@ export default function IssuanceInvoice({ reload }: {
   );
 }
 
-function TableRow({ bidRequest,reload }: {
-  bidRequest: BidRequestWithMetaDataT;
+function TableRow({ offer,reload }: {
+  offer: UninvoicedOfferT;
   reload: () => void;
 }) {
+  const { offerProposal } = offer;
   return (
     <Row className="flex bg-white rounded-sm p-2 my-2">
       <div className="w-[30%] p-2 flex justify-start">
-        <WebtoonAvatar webtoon={bidRequest.webtoon}/>
+        <WebtoonAvatar webtoon={offer.webtoon}/>
       </div>
       <div className="w-[15%] p-2 flex justify-center">
-        <p className="clickable">{bidRequest.creator.user.name}</p>
+        <Link href={`/creators/${offer.creator.user.id}`} className="clickable">
+          {offer.creator.user.name}
+        </Link>
       </div>
       <div className="w-[15%] p-2 flex justify-center">
-        <p className="clickable">{bidRequest.buyer.user.name}</p>
+        {offer.buyer.user.name}
       </div>
       <div className="w-[25%] p-2 flex justify-center">
-        <p className=" cursor-pointer">{bidRequest.createdAt.toLocaleString("ko")}</p>
+        <p className=" cursor-pointer">{offerProposal.decidedAt?.toLocaleString("ko")}</p>
       </div>
       <div className="w-[15%] flex justify-center items-center">
-        <IssuanceInvoiceSubmit bidRequestId={bidRequest.id} reload={reload} />
+        <IssueInvoice offerProposalId={offerProposal.id} reload={reload} />
       </div>
     </Row>
   );

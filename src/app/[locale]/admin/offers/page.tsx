@@ -7,12 +7,12 @@ import Paginator from "@/components/ui/Paginator";
 import { Button } from "@/shadcn/ui/button";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { adminListAdminOffersBidRequests } from "@/resources/bidRequests/controllers/bidRequest.controller";
+import { adminListOffersByBidRoundId } from "@/resources/offers/controllers/offer.controller";
 import { adminListBidRoundsWithOffers } from "@/resources/bidRounds/controllers/bidRoundAdmin.controller";
 import { AdminPageBidRoundWithOffersT } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
-import { AdminOffersBidRequestT } from "@/resources/bidRequests/dtos/bidRequest.dto";
 import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
 import NoItems from "@/components/ui/NoItems";
+import { OfferWithActiveProposalT } from "@/resources/offers/dtos/offer.dto";
 
 // todo 디테일 누락
 export default function AdminOffersPage() {
@@ -83,17 +83,17 @@ function TableRow({ bidRound }:{
           </Button>
         </div>
       </Row>
-      {isExpanded && <BidRequestList bidRoundId={bidRound.id} />}
+      {isExpanded && <OfferList bidRoundId={bidRound.id} />}
     </>
   );
 }
 
-function BidRequestList({ bidRoundId }: {
+function OfferList({ bidRoundId }: {
   bidRoundId: number;
 }) {
-  const [items, setItems] = useState<AdminOffersBidRequestT[]>();
+  const [items, setItems] = useState<OfferWithActiveProposalT[]>();
   useEffect(() => {
-    adminListAdminOffersBidRequests(bidRoundId)
+    adminListOffersByBidRoundId(bidRoundId)
       .then(res => setItems(res?.data));
   }, [bidRoundId]);
 
@@ -110,27 +110,28 @@ function BidRequestList({ bidRoundId }: {
       <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade"></div>
     </Row>
     {items
-      .map((item) => <BidRequestListItem key={item.id} bidRequest={item} />)}
+      .map((item) => <OfferItem key={item.id} offer={item} />)}
   </Col>;
 }
 
-function BidRequestListItem({ bidRequest }: {
-  bidRequest: AdminOffersBidRequestT;
+function OfferItem({ offer }: {
+  offer: OfferWithActiveProposalT;
 }) {
+  const { activeOfferProposal } = offer;
   const tBusinessFields = useTranslations("businessFields");
   const tCountries = useTranslations("countries");
-  const tBidRequestStatus = useTranslations("bidRequestStatus");
+  const tOfferProposalStatus = useTranslations("offerProposalStatus");
   return (
     <Row className="w-full bg-white rounded-sm p-2 items-center">
-      <div className="w-[10%] p-2 flex justify-start">{bidRequest.buyer.user.name}</div>
+      <div className="w-[10%] p-2 flex justify-start">{offer.buyer.user.name}</div>
       <div className="w-[20%] p-2 flex justify-center">
-        {bidRequest.createdAt.toLocaleDateString("ko")}
+        {offer.createdAt.toLocaleDateString("ko")}
       </div>
       <div className="w-[15%] p-2 flex justify-center">
-        {tBidRequestStatus(bidRequest.status)}
+        {tOfferProposalStatus(activeOfferProposal.status)}
       </div>
       <div className="w-[40%] p-2 flex justify-center">
-        {bidRequest.contractRange.map((item) =>
+        {activeOfferProposal.contractRange.map((item) =>
           item.businessField === "WEBTOONS"
             ? `${tBusinessFields(item.businessField)}(${tCountries(item.country)})`
             : `2차(${tBusinessFields(item.businessField)})`

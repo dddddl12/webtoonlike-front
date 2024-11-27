@@ -16,15 +16,15 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import useSafeAction from "@/hooks/safeAction";
 import { createInvoice, previewInvoice } from "@/resources/invoices/controllers/invoiceContent.controller";
 
-export function IssuanceInvoiceSubmit({
-  bidRequestId, reload
+export function IssueInvoice({
+  offerProposalId, reload
 }: {
-  bidRequestId: number;
+  offerProposalId: number;
   reload: () => void;
 }) {
   const { toast } = useToast();
   const [checkInvoiceOpen, setCheckInvoiceOpen] = useState<boolean>(false);
-  const { execute } = useSafeAction(createInvoice.bind(null, bidRequestId), {
+  const { execute } = useSafeAction(createInvoice.bind(null, offerProposalId), {
     onSuccess: () => {
       toast({
         description: "인보이스가 발행되었습니다."
@@ -50,7 +50,7 @@ export function IssuanceInvoiceSubmit({
           <DialogDescription/>
         </VisuallyHidden>
         <Row className="flex-1 pt-5">
-          <Previewer bidRequestId={bidRequestId} />
+          <Previewer offerProposalId={offerProposalId} />
         </Row>
         <DialogFooter className="justify-end gap-2">
           <DialogClose asChild>
@@ -69,14 +69,14 @@ export function IssuanceInvoiceSubmit({
   );
 }
 
-function Previewer({ bidRequestId }: {
-  bidRequestId: number;
+function Previewer({ offerProposalId }: {
+  offerProposalId: number;
 }) {
   const [previewContent, setPreviewContent] = useState<string>();
   useEffect(() => {
-    previewInvoice(bidRequestId)
+    previewInvoice(offerProposalId)
       .then(res => setPreviewContent(res?.data));
-  }, [bidRequestId]);
+  }, [offerProposalId]);
 
   if (!previewContent) {
     return <Spinner/>;

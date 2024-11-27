@@ -1,46 +1,19 @@
-"use client";
-
-import { Heading } from "@/components/ui/common";
-import { Button } from "@/shadcn/ui/button";
-import { useTranslations } from "next-intl";
+import useSafeActionForm from "@/hooks/safeActionForm";
+import { FieldSet, Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
+import { Heading, Row } from "@/components/ui/common";
 import ContractRangeForm from "@/components/forms/ContractRangeForm";
 import { Textarea } from "@/shadcn/ui/textarea";
+import { Button } from "@/shadcn/ui/button";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
-import { BidRequestFormSchema } from "@/resources/bidRequests/dtos/bidRequest.dto";
-import { FieldSet, Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
-import { useRouter } from "@/i18n/routing";
-import { createBidRequest } from "@/resources/bidRequests/controllers/bidRequest.controller";
-import { Row } from "@/components/ui/common";
-import { useToast } from "@/shadcn/hooks/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
-import useSafeActionForm from "@/hooks/safeActionForm";
 
-
-export default function BidRequestForm({ bidRoundId }: {
-  bidRoundId: number;
-}) {
-
+export default function FormWrapper(safeActionFormReturn: ReturnType<typeof useSafeActionForm>) {
   const tMakeAnOffer = useTranslations("offerDetails");
   const tGeneral = useTranslations("general");
-  const { toast } = useToast();
-  const router = useRouter();
 
-  const { isFormSubmitting, form, onSubmit } = useSafeActionForm(
-    createBidRequest.bind(null, bidRoundId),
-    {
-      resolver: zodResolver(BidRequestFormSchema),
-      mode: "onChange",
-      actionProps: {
-        onSuccess: () => {
-          toast({
-            description: "오퍼를 보냈습니다."
-          });
-          router.replace("/offers");
-        }
-      }
-    });
+  const { isFormSubmitting, form, onSubmit } = safeActionFormReturn;
 
   // Create a ref for the Heading component
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -59,7 +32,7 @@ export default function BidRequestForm({ bidRoundId }: {
         <Heading ref={headingRef}>
           {tMakeAnOffer("makeOffer")}
         </Heading>
-        <ContractRangeForm form={form as never} formType="bidRequest"/>
+        <ContractRangeForm form={form as never} formType="offerProposal"/>
 
         <FieldSet>
           <legend>

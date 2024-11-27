@@ -5,21 +5,21 @@ import { useTranslations } from "next-intl";
 import Paginator from "@/components/ui/Paginator";
 import { ListResponse } from "@/resources/globalTypes";
 import useListData from "@/hooks/listData";
-import BidRequestListRow from "@/app/[locale]/offers/BidRequestListRow";
-import { BidRequestWithMetaDataT } from "@/resources/bidRequests/dtos/bidRequestWithMetadata.dto";
-import { listAllBidRequests } from "@/resources/bidRequests/controllers/bidRequestWithMetadata.controller";
+import OfferListRow from "@/app/[locale]/offers/OfferListRow";
 import NoItems from "@/components/ui/NoItems";
+import { listAllOffers } from "@/resources/offers/controllers/offer.controller";
+import { OfferWithBuyerAndWebtoonT } from "@/resources/offers/dtos/offer.dto";
 
-type BidRequestListResponse = ListResponse<BidRequestWithMetaDataT>;
+type OfferListResponse = ListResponse<OfferWithBuyerAndWebtoonT>;
 
-export default function BidRequestList({ initialBidRequestListResponse }: {
-  initialBidRequestListResponse: BidRequestListResponse;
+export default function OfferList({ initialOfferListResponse }: {
+  initialOfferListResponse: OfferListResponse;
 }) {
   const t = useTranslations("manageOffers");
   const { listResponse, filters, setFilters } = useListData(
-    listAllBidRequests,
+    listAllOffers,
     { page: 1 },
-    initialBidRequestListResponse
+    initialOfferListResponse
   );
 
   if (listResponse.items.length === 0) {
@@ -35,8 +35,8 @@ export default function BidRequestList({ initialBidRequestListResponse }: {
         <div className="w-[20%] p-2 flex justify-center font-bold">{t("status")}</div>
       </div>
 
-      {listResponse.items.map((bidRequest) => (
-        <BidRequestListRow key={bidRequest.id} bidRequest={bidRequest} />
+      {listResponse.items.map((offer) => (
+        <OfferListRow key={offer.id} offer={offer} />
       ))}
     </Col>
     {/*TODO window 통일*/}

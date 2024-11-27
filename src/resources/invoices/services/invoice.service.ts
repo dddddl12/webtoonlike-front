@@ -1,41 +1,74 @@
 import "server-only";
 import prisma from "@/utils/prisma";
+import { Prisma } from "@prisma/client";
 import { ListResponse } from "@/resources/globalTypes";
 import { getTokenInfo } from "@/resources/tokens/token.service";
-import { InvoiceWithWebtoonT } from "@/resources/invoices/dtos/invoice.dto";
-import bidRequestHelper from "@/resources/bidRequests/helpers/bidRequest.helper";
+import { InvoicedOfferT, UninvoicedOfferT } from "@/resources/invoices/dtos/invoice.dto";
+import offerHelper from "@/resources/offers/helpers/offer.helper";
 import { getLocale } from "next-intl/server";
 import webtoonPreviewHelper from "@/resources/webtoons/helpers/webtoonPreview.helper";
 import WebtoonPreviewHelper from "@/resources/webtoons/helpers/webtoonPreview.helper";
 
 class InvoiceService {
+  async list(options: {
+    page: number;
+    isAdmin: boolean;
+    mode: "uninvoiced";
+  }): Promise<ListResponse<UninvoicedOfferT>>;
+
+  async list(options: {
+    page: number;
+    isAdmin: boolean;
+    mode: "invoiced";
+  }): Promise<ListResponse<InvoicedOfferT>>;
+
   async list({
-    page = 1,
-    isAdmin = false,
+    page, isAdmin, mode
   }: {
-    page?: number;
-    isAdmin?: boolean;
-  } = {}): Promise<ListResponse<InvoiceWithWebtoonT>> {
+    page: number;
+    isAdmin: boolean;
+    mode: "uninvoiced" | "invoiced";
+  }): Promise<ListResponse<InvoicedOfferT|UninvoicedOfferT>> {
   // TODO join 최적화
   // https://www.prisma.io/blog/prisma-orm-now-lets-you-choose-the-best-join-strategy-preview
+  // where 절
+    const where: Prisma.OfferProposalWhereInput = {};
+    if (mode === "invoiced"){
+      where.invoice = {
+        isNot: null
+      };
+    } else {
+      where.invoice = {
+        is: null
+      };
+    }
     if (isAdmin) {
       await getTokenInfo({
         admin: true
       });
+    } else {
+      where.offer = await offerHelper.whereWithReadAccess();
     }
-    const bidRequestWhere = await bidRequestHelper.whereWithReadAccess();
-    const where = {
-      bidRequest: bidRequestWhere
-    };
+    // 쿼리
     const limit = 5;
     const [records, totalRecords] = await prisma.$transaction([
-      prisma.invoice.findMany({
+      prisma.offerProposal.findMany({
         where,
         skip: (page - 1) * limit,
         take: limit,
-        include: {
-          bidRequest: {
+        select: {
+          id: true,
+          decidedAt: true,
+          invoice: {
             select: {
+              id: true,
+              createdAt: true,
+              updatedAt: true
+            }
+          },
+          offer: {
+            select: {
+              id: true,
               user: {
                 select: {
                   id: true,
@@ -58,24 +91,25 @@ class InvoiceService {
                 }
               }
             }
-          },
+          }
         }
       }),
-      prisma.invoice.count({ where }),
+      prisma.offerProposal.count({ where }),
     ]);
     const locale = await getLocale();
     return {
       items: records.map(record => {
-        const { bidRequest } = record;
-        const { webtoon } = bidRequest.bidRound;
+        const { offer, invoice } = record;
+        const { webtoon } = offer.bidRound;
         const creatingUser = webtoon.user;
-        const buyingUser = record.bidRequest.user;
+        const buyingUser = offer.user;
 
         return {
-          id: record.id,
-          createdAt: record.createdAt,
-          updatedAt: record.updatedAt,
-          bidRequestId: record.bidRequestId,
+          invoice: invoice ?? undefined,
+          offerProposal: {
+            id: record.id,
+            decidedAt: record.decidedAt ?? undefined,
+          },
           webtoon: WebtoonPreviewHelper.mapToDTO(webtoon, locale),
           creator: {
             user: {

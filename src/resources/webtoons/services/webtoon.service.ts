@@ -4,7 +4,7 @@ import {
 } from "@/resources/webtoons/dtos/webtoon.dto";
 import prisma from "@/utils/prisma";
 import { getTokenInfo } from "@/resources/tokens/token.service";
-import { authorizeWebtoonAccess } from "@/resources/authorization";
+import authorizeWebtoonAccess from "@/resources/webtoons/webtoon.authorization";
 
 class WebtoonService {
   async create(form: WebtoonFormT) {
@@ -40,7 +40,7 @@ class WebtoonService {
     const { genreIds, ...rest } = form;
     await prisma.$transaction(async (tx) => {
       // 접근 권한 확인
-      await authorizeWebtoonAccess(tx, webtoonId);
+      await authorizeWebtoonAccess(tx, webtoonId, true);
       const { genreLinks } = await tx.webtoon.update({
         data: rest,
         where: { id: webtoonId },

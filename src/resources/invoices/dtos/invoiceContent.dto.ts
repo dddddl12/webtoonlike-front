@@ -1,5 +1,5 @@
 import z from "zod";
-import { BidRequestContractRangeItemSchema } from "@/resources/bidRequests/dtos/bidRequest.dto";
+import { OfferProposalSchema } from "@/resources/offers/dtos/offerProposal.dto";
 
 const InvoiceContentUser = z.object({
   id: z.number(),
@@ -29,11 +29,7 @@ export const InvoiceContent = z.object({
     title: z.string(),
     title_en: z.string(),
   }),
-  bidRequest: z.object({
-    id: z.number(),
-    contractRange: z.array(BidRequestContractRangeItemSchema)
-    //   TODO parsing 조건은 모두 이것으로 대체
-  }),
+  offerProposal: OfferProposalSchema,
   issuedAt: z.string().or( z.date() ).transform( arg => new Date( arg ) )
 });
 export type InvoiceContentT = z.infer<typeof InvoiceContent>;

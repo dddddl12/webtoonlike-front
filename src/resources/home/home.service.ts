@@ -66,7 +66,7 @@ const getBanners = async (tx: PrismaTransaction): Promise<HomeItemsT["banners"]>
               isNew: true,
               _count: {
                 select: {
-                  bidRequests: true
+                  offers: true
                 }
               }
             }
@@ -90,7 +90,7 @@ const getBanners = async (tx: PrismaTransaction): Promise<HomeItemsT["banners"]>
         ...mapToHomeWebtoonItems(webtoon, locale),
         thumbPath: record.bannerUrl,
         isNew: bidRound.isNew,
-        offers: bidRound._count.bidRequests,
+        offers: bidRound._count.offers,
         ageLimit: webtoon.ageLimit as AgeLimit,
       };
     });

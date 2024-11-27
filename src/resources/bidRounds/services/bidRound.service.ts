@@ -3,15 +3,14 @@ import {
   BidRoundFormT
 } from "@/resources/bidRounds/dtos/bidRound.dto";
 import prisma from "@/utils/prisma";
-import { authorizeWebtoonAccess } from "@/resources/authorization";
-import webtoonHelper from "@/resources/webtoons/helpers/webtoon.helper";
+import authorizeWebtoonAccess from "@/resources/webtoons/webtoon.authorization";
 import bidRoundHelper from "@/resources/bidRounds/helpers/bidRound.helper";
 
 class BidRoundService {
   async create(webtoonId: number, form: BidRoundFormT) {
     await prisma.$transaction(async (tx) => {
       // 웹툰 접근 권한 확인
-      await authorizeWebtoonAccess(tx, webtoonId);
+      await authorizeWebtoonAccess(tx, webtoonId, true);
       const existingRecord = await tx.bidRound.findFirst({
         where: {
           webtoonId,
@@ -39,7 +38,7 @@ class BidRoundService {
   async update(webtoonId: number, bidRoundId: number, form: BidRoundFormT) {
     await prisma.$transaction(async (tx) => {
       // 웹툰 접근 권한 확인
-      await authorizeWebtoonAccess(tx, webtoonId);
+      await authorizeWebtoonAccess(tx, webtoonId, true);
       await tx.bidRound.update({
         data: form,
         where: {
@@ -51,12 +50,14 @@ class BidRoundService {
   };
 
   async getByWebtoonId (webtoonId: number) {
-    const webtoonWhere = await webtoonHelper.whereWithReadAccess(webtoonId);
-    const record = await prisma.bidRound.findFirstOrThrow({
-      where: {
-        isActive: true,
-        webtoon: webtoonWhere
-      }
+    const record = await prisma.$transaction(async (tx) => {
+      await authorizeWebtoonAccess(tx, webtoonId);
+      return tx.bidRound.findFirstOrThrow({
+        where: {
+          isActive: true,
+          webtoonId
+        }
+      });
     });
     return bidRoundHelper.mapToDTO(record);
   };

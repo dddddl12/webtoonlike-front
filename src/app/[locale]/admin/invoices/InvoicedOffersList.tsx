@@ -1,16 +1,17 @@
 import Spinner from "@/components/ui/Spinner";
-import { adminListInvoices } from "@/resources/invoices/controllers/invoice.controller";
+import { adminListInvoicedOffers } from "@/resources/invoices/controllers/invoice.controller";
 import Paginator from "@/components/ui/Paginator";
 import useListData from "@/hooks/listData";
 import { Col } from "@/components/ui/common";
 import InvoiceDownload from "@/components/shared/InvoiceDownload";
-import { InvoiceWithWebtoonT } from "@/resources/invoices/dtos/invoice.dto";
+import { InvoicedOfferT } from "@/resources/invoices/dtos/invoice.dto";
 import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
 import NoItems from "@/components/ui/NoItems";
+import { Link } from "@/i18n/routing";
 
-export default function ManageInvoice() {
+export default function InvoicedOffersList() {
   const { listResponse, filters, setFilters } = useListData(
-    adminListInvoices, {
+    adminListInvoicedOffers, {
       page: 1,
     });
 
@@ -29,8 +30,8 @@ export default function ManageInvoice() {
         <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">인보이스 발급일</div>
         <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">인보이스 확인</div>
       </div>
-      {listResponse.items.map((invoice: InvoiceWithWebtoonT, i) => (
-        <TableRow key={i} invoice={invoice} />
+      {listResponse.items.map((offer: InvoicedOfferT, i) => (
+        <TableRow key={i} offer={offer} />
       ))}
     </Col>
     <Paginator
@@ -41,23 +42,27 @@ export default function ManageInvoice() {
   </>;
 }
 
-function TableRow({ invoice }: {
-  invoice: InvoiceWithWebtoonT;
+function TableRow({ offer }: {
+  offer: InvoicedOfferT;
 }) {
   return (
     <div className="flex bg-white rounded-sm p-2 my-2">
       <div className="w-[20%] p-2 flex justify-start">
-        <WebtoonAvatar webtoon={invoice.webtoon}/>
+        <WebtoonAvatar webtoon={offer.webtoon}/>
       </div>
       <div className="w-[20%] p-2 flex justify-center">
-        <p className="clickable">{invoice.creator.user.name}</p>
+        <Link href={`/creators/${offer.creator.user.id}`} className="clickable">
+          {offer.creator.user.name}
+        </Link>
       </div>
       <div className="w-[20%] p-2 flex justify-center">
-        <p className="clickable">{invoice.buyer.user.name}</p>
+        {offer.buyer.user.name}
       </div>
-      <div className="w-[20%] p-2 flex justify-center">{invoice.createdAt.toLocaleString("ko")}</div>
       <div className="w-[20%] p-2 flex justify-center">
-        <InvoiceDownload invoice={invoice} />
+        {offer.invoice.createdAt.toLocaleString("ko")}
+      </div>
+      <div className="w-[20%] p-2 flex justify-center">
+        <InvoiceDownload offer={offer} />
       </div>
     </div>
   );

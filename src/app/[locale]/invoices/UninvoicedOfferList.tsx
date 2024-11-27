@@ -5,36 +5,33 @@ import { useLocale, useTranslations } from "next-intl";
 import Paginator from "@/components/ui/Paginator";
 import useListData from "@/hooks/listData";
 import { ListResponse } from "@/resources/globalTypes";
-import { listInvoices } from "@/resources/invoices/controllers/invoice.controller";
 import { useState } from "react";
-import BidRequestDetailsForInvoice from "@/app/[locale]/invoices/BidRequestDetailsForInvoice";
-import InvoiceDownload from "@/components/shared/InvoiceDownload";
+import OfferDetailsForInvoice from "@/app/[locale]/invoices/OfferDetailsForInvoice";
 import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
-import { InvoiceWithWebtoonT } from "@/resources/invoices/dtos/invoice.dto";
 import NoItems from "@/components/ui/NoItems";
 import { Link } from "@/i18n/routing";
+import { listUninvoicedOffers } from "@/resources/invoices/controllers/invoice.controller";
+import { UninvoicedOfferT } from "@/resources/invoices/dtos/invoice.dto";
 
-type InvoiceListResponse = ListResponse<InvoiceWithWebtoonT>;
-
-export function ManageInvoiceList({ initialInvoiceListResponse }: {
-  initialInvoiceListResponse: InvoiceListResponse;
+export function UninvoicedOfferList({ initialUninvoicedListResponse }: {
+  initialUninvoicedListResponse: ListResponse<UninvoicedOfferT>;
 }) {
   const t = useTranslations("invoiceManagement");
   const { listResponse, filters, setFilters } = useListData(
-    listInvoices,
+    listUninvoicedOffers,
     { page: 1 },
-    initialInvoiceListResponse
+    initialUninvoicedListResponse
   );
 
   if (listResponse.items.length === 0) {
-    return <NoItems message={t("noInvoiceIssued")}/>;
+    return <NoItems message={t("noUnvoiced")}/>;
   }
 
   return <>
     <Col>
-      <TableHeader/>
-      {listResponse.items.map((invoice) => (
-        <TableRow key={invoice.id} invoice={invoice}/>
+      <TableHeader />
+      {listResponse.items.map((offer, i) => (
+        <TableRow key={i} offer={offer} />
       ))}
     </Col>
     <Paginator
@@ -54,13 +51,13 @@ function TableHeader() {
       <div className="w-[20%] p-2 flex justify-center font-bold">{t("authorName")}</div>
       <div className="w-[20%] p-2 flex justify-center font-bold">{t("buyerName")}</div>
       <div className="w-[20%] p-2 flex justify-center font-bold">협상 개요</div>
-      <div className="w-[20%] p-2 flex justify-center font-bold">{t("issueDate")}</div>
+      <div className="w-[20%] p-2 flex justify-center font-bold">신청 일자</div>
       <div className="w-[20%] p-2 flex justify-center font-bold">{t("downloadInvoice")}</div>
     </div>
   );
 }
 
-function TableRow({ invoice }: { invoice: InvoiceWithWebtoonT }) {
+function TableRow({ offer }: { offer: UninvoicedOfferT }) {
   const locale = useLocale();
   const [showDetails, setShowDetails] = useState(false);
   const tGeneral = useTranslations("general");
@@ -69,35 +66,35 @@ function TableRow({ invoice }: { invoice: InvoiceWithWebtoonT }) {
     <>
       <div className="flex p-2 mb-2 text-white rounded-md bg-gray-darker items-center">
         <div className="w-[20%] p-2 flex justify-start items-center">
-          <WebtoonAvatar webtoon={invoice.webtoon}/>
+          <WebtoonAvatar webtoon={offer.webtoon}/>
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          <Link href={`/creators/${invoice.creator.user.id}`} className="clickable">
-            {invoice.creator.user.name}
+          {/*todo isExposed*/}
+          <Link href={`/creators/${offer.creator.user.id}`} className="clickable">
+            {offer.creator.user.name}
           </Link>
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {invoice.buyer.user.name}
+          {offer.buyer.user.name}
         </div>
 
-        <div className="w-[20%] p-2 flex justify-center clickable"
-          onClick={() => setShowDetails(!showDetails)}>
+        <div className="w-[20%] p-2 flex justify-center clickable" onClick={() => setShowDetails(!showDetails)}>
           {showDetails ? tGeneral("collapse") : tGeneral("expand")}
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          {invoice.createdAt.toLocaleDateString(locale)}
+          {offer.offerProposal.decidedAt?.toLocaleDateString(locale)}
         </div>
 
         <div className="w-[20%] p-2 flex justify-center">
-          <InvoiceDownload invoice={invoice}/>
+          -
         </div>
       </div>
       {showDetails
-        && <BidRequestDetailsForInvoice
-          bidRequestId={invoice.bidRequestId}/>}
+        && <OfferDetailsForInvoice
+          offerProposalId={offer.offerProposal.id} />}
     </>
   );
 }

@@ -23,49 +23,6 @@ model Admin {
   @@map("admins")
 }
 
-model BidRequestMessage {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-  bidRequestId Int      @map("bid_request_id")
-  userId       Int      @map("user_id")
-  content      String   @map("content")
-
-  bidRequest BidRequest @relation(fields: [bidRequestId], references: [id], onDelete: Restrict)
-  user       User       @relation(fields: [userId], references: [id], onDelete: Restrict)
-
-  @@map("bid_request_messages")
-}
-
-enum BidRequestStatus {
-  PENDING  @map("pending")
-  ACCEPTED @map("accepted")
-  DECLINED @map("declined")
-
-  @@map("bid_request_status")
-}
-
-model BidRequest {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  // TODO buyer
-  userId        Int              @map("user_id")
-  bidRoundId    Int              @map("bid_round_id")
-  message       String?          @map("message")
-  contractRange Json             @map("contract_range")
-  status        BidRequestStatus @default(PENDING)
-  decidedAt     DateTime?        @map("decided_at")
-
-  user     User                @relation(fields: [userId], references: [id], onDelete: Restrict)
-  bidRound BidRound            @relation(fields: [bidRoundId], references: [id], onDelete: Restrict)
-  messages BidRequestMessage[]
-  invoice  Invoice?
-
-  @@map("bid_requests")
-}
-
 enum BidRoundApprovalStatus {
   PENDING     @map("pending")
   APPROVED    @map("approved")
@@ -101,8 +58,8 @@ model BidRound {
   adminNote     String?   @map("admin_note")
 
   // join용
-  webtoon     Webtoon      @relation(fields: [webtoonId], references: [id], onDelete: Cascade)
-  bidRequests BidRequest[]
+  webtoon Webtoon @relation(fields: [webtoonId], references: [id], onDelete: Cascade)
+  offers  Offer[]
 
   @@map("bid_rounds")
 }
@@ -154,13 +111,15 @@ model Genre {
 }
 
 model Invoice {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-  bidRequestId Int      @unique @map("request_id")
-  content      Json
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  content   Json
 
-  bidRequest BidRequest @relation(fields: [bidRequestId], references: [id], onDelete: Restrict)
+  offerProposalId Int           @unique @map("offer_id")
+  userId          Int           @unique @map("user_id")
+  user            User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  offerProposal   OfferProposal @relation(fields: [offerProposalId], references: [id], onDelete: Restrict)
 
   @@map("invoices")
 }
@@ -180,6 +139,54 @@ model Notification {
   @@map("notifications")
 }
 
+model Offer {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  bidRoundId Int      @map("bid_round_id")
+
+  bidRound       BidRound        @relation(fields: [bidRoundId], references: [id], onDelete: Restrict)
+  offerProposals OfferProposal[]
+  user           User            @relation(fields: [userId], references: [id])
+  userId         Int
+
+  @@map("offers")
+}
+
+enum OfferProposalStatus {
+  SUPERSEDED @map("superseded")
+  // 아래 셋 중 하나인 상태가 active proposal
+  PENDING    @map("pending")
+  ACCEPTED   @map("accepted")
+  DECLINED   @map("declined")
+
+  @@map("offer_proposal_status")
+}
+
+// 유저 입장에서는 status, invoice 등이 OfferProposal이 아닌 Offer와 연결된 것으로 인식될 수 있으나,
+// 정확히 어떤 조건을 두고 수락/거절하고 인보이스를 발행한 것인지 integrity를 보장하기 위해
+// OfferProposal에 해당 정보를 담았음
+model OfferProposal {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  message       String?             @map("message")
+  contractRange Json                @map("contract_range")
+  status        OfferProposalStatus
+  decidedAt     DateTime?           @map("decided_at")
+
+  offerId Int      @map("offer_id")
+  userId  Int      @map("user_id")
+  offer   Offer    @relation(fields: [offerId], references: [id], onDelete: Restrict)
+  user    User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  invoice Invoice?
+
+  @@index([status])
+  @@index([status, userId])
+  @@map("offer_proposals")
+}
+
 model User {
   id           Int      @id @default(autoincrement())
   createdAt    DateTime @default(now()) @map("created_at")
@@ -194,15 +201,16 @@ model User {
   addressLine1 String   @map("address_line_1")
   addressLine2 String   @map("address_line_2")
 
-  admin              Admin?
+  admin          Admin?
   // TODO id 대신 수발신 타입으로 구분
-  bidRequestMessages BidRequestMessage[]
-  bidRequests        BidRequest[]
-  buyer              Buyer?
-  creator            Creator?
-  notifications      Notification[]
-  webtoons           Webtoon[]
-  webtoonLikes       WebtoonLike[]
+  offerProposals OfferProposal[]
+  offers         Offer[]
+  buyer          Buyer?
+  creator        Creator?
+  notifications  Notification[]
+  webtoons       Webtoon[]
+  webtoonLikes   WebtoonLike[]
+  invoices       Invoice[]
 
   @@map("users")
 }

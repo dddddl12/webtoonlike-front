@@ -4,35 +4,69 @@ import { action } from "@/handlers/safeAction";
 import z from "zod";
 import { ListResponseSchema } from "@/resources/globalTypes";
 import invoiceService from "@/resources/invoices/services/invoice.service";
-import { InvoiceWithWebtoonSchema } from "@/resources/invoices/dtos/invoice.dto";
+import { InvoicedOfferSchema, UninvoicedOfferSchema } from "@/resources/invoices/dtos/invoice.dto";
 
-export const adminListInvoices = action
-  .metadata({ actionName: "adminListInvoices" })
+export const adminListUninvoicedOffers = action
+  .metadata({ actionName: "adminListUninvoicedOffers" })
   .schema(z.object({
     page: z.number().default(1),
   }))
-  .outputSchema(ListResponseSchema(InvoiceWithWebtoonSchema))
+  .outputSchema(ListResponseSchema(UninvoicedOfferSchema))
   .action(async ({
     parsedInput: filters
   }) => {
     return invoiceService.list({
       ...filters,
-      isAdmin: true
+      isAdmin: true,
+      mode: "uninvoiced"
     });
   });
 
-export const listInvoices = action
-  .metadata({ actionName: "listInvoices" })
+export const adminListInvoicedOffers = action
+  .metadata({ actionName: "adminListInvoicedOffers" })
   .schema(z.object({
     page: z.number().default(1),
   }))
-  .outputSchema(ListResponseSchema(InvoiceWithWebtoonSchema))
+  .outputSchema(ListResponseSchema(InvoicedOfferSchema))
   .action(async ({
     parsedInput: filters
   }) => {
     return invoiceService.list({
       ...filters,
-      isAdmin: false
+      isAdmin: true,
+      mode: "invoiced"
+    });
+  });
+
+export const listUninvoicedOffers = action
+  .metadata({ actionName: "listUninvoicedOffers" })
+  .schema(z.object({
+    page: z.number().default(1),
+  }))
+  .outputSchema(ListResponseSchema(UninvoicedOfferSchema))
+  .action(async ({
+    parsedInput: filters
+  }) => {
+    return invoiceService.list({
+      ...filters,
+      isAdmin: false,
+      mode: "uninvoiced"
+    });
+  });
+
+export const listInvoicedOffers = action
+  .metadata({ actionName: "listInvoicedOffers" })
+  .schema(z.object({
+    page: z.number().default(1),
+  }))
+  .outputSchema(ListResponseSchema(InvoicedOfferSchema))
+  .action(async ({
+    parsedInput: filters
+  }) => {
+    return invoiceService.list({
+      ...filters,
+      isAdmin: false,
+      mode: "invoiced"
     });
   });
 

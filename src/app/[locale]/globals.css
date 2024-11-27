@@ -111,7 +111,8 @@
 
 @layer utilities {
     .form-overlay {
-        @apply relative before:absolute before:bg-background/70 before:w-full before:h-full before:z-[10] before:pointer-events-auto before:inset-0 [&_*]:pointer-events-none;
+        /*todo focus*/
+        @apply relative before:absolute before:w-full before:h-full before:z-[10] before:pointer-events-auto before:inset-0 [&_*]:pointer-events-none [&_*]:opacity-80;
     }
     .clickable {
         @apply underline cursor-pointer text-mint hover:text-mint/70;

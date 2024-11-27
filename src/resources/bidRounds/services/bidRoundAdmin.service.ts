@@ -60,7 +60,7 @@ class BidRoundAdminService {
           ...bidRoundAdminHelper.query.include,
           _count: {
             select: {
-              bidRequests: true,
+              offers: true,
             }
           }
         }
@@ -69,7 +69,7 @@ class BidRoundAdminService {
     ]);
     const locale = await getLocale();
     const items: AdminPageBidRoundWithOffersT[] = records.map(r => ({
-      offerCount: r._count.bidRequests,
+      offerCount: r._count.offers,
       ...bidRoundAdminHelper.mapToDTO(r, locale)
     }));
     return {

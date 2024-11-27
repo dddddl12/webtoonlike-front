@@ -14,14 +14,14 @@ import { IconDelete } from "@/components/svgs/IconDelete";
 import { UseFormReturn, useWatch } from "react-hook-form";
 import { BidRoundFormT, ContractRangeItemSchema, ContractRangeItemT } from "@/resources/bidRounds/dtos/bidRound.dto";
 import { FormControl, FormField, FormItem } from "@/shadcn/ui/form";
-import { BidRequestFormT } from "@/resources/bidRequests/dtos/bidRequest.dto";
 import { Input } from "@/shadcn/ui/input";
+import { OfferProposalFormT } from "@/resources/offers/dtos/offerProposal.dto";
 
-type FormT = BidRoundFormT | BidRequestFormT;
+type FormT = BidRoundFormT | OfferProposalFormT;
 
 export default function ContractRangeForm({ form, formType }: {
   form: UseFormReturn<FormT>;
-  formType: "bidRound" | "bidRequest";
+  formType: "bidRound" | "offerProposal";
 }) {
   const t = useTranslations("contractRangeDataForm");
 
@@ -60,7 +60,7 @@ export default function ContractRangeForm({ form, formType }: {
             <TableHead className="text-center text-gray-text">
               {t("serviceRegion")}
             </TableHead>
-            {formType === "bidRequest"
+            {formType === "offerProposal"
               // 오퍼 폼일 때만 사용하는 컬럼
               && <TableHead className="text-center text-gray-text">
                 {t("contractCondition")}
@@ -78,9 +78,9 @@ export default function ContractRangeForm({ form, formType }: {
               <ExclusiveCell form={form} idx={idx} />
               <CountryCell form={form} idx={idx} />
 
-              {formType === "bidRequest"
+              {formType === "offerProposal"
               // 오퍼 폼일 때만 사용하는 컬럼
-              && <ContractConditionCell form={form as UseFormReturn<BidRequestFormT>} idx={idx} />}
+              && <ContractConditionCell form={form as UseFormReturn<OfferProposalFormT>} idx={idx} />}
 
               <DeleteCell form={form} idx={idx} />
             </TableRow>
@@ -267,9 +267,9 @@ function CountryCell({ form, idx }: {
   </TableCell>;
 }
 
-// BidRequestForm에만 사용
+// OfferProposalForm에만 사용
 function ContractConditionCell({ form, idx }: {
-  form: UseFormReturn<BidRequestFormT>;
+  form: UseFormReturn<OfferProposalFormT>;
   idx: number;
 }) {
   const t = useTranslations("contractRangeDataForm");

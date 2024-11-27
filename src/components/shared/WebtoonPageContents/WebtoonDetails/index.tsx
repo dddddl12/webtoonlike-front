@@ -11,16 +11,16 @@ import { useTranslations } from "next-intl";
 import EditLink from "@/components/ui/EditLink";
 import { clsx } from "clsx";
 import { WebtoonDetailsExtendedT } from "@/resources/webtoons/dtos/webtoonDetails.dto";
-import { BidRequestDetailsT } from "@/resources/bidRequests/dtos/bidRequest.dto";
+import { OfferDetailsT } from "@/resources/offers/dtos/offerProposal.dto";
 
 type WebtoonDetailsProps = {
   webtoon: WebtoonDetailsExtendedT;
   context: "WebtoonView";
 } | {
-  webtoon: BidRequestDetailsT["webtoon"];
+  webtoon: OfferDetailsT["webtoon"];
   context: "InvoiceView";
 };
-type Webtoon = WebtoonDetailsExtendedT | BidRequestDetailsT["webtoon"];
+type Webtoon = WebtoonDetailsExtendedT | OfferDetailsT["webtoon"];
 
 export default function WebtoonDetails({ webtoon, context }: WebtoonDetailsProps) {
   return (
