@@ -12,19 +12,19 @@ class InvoiceContentService {
       const record = await tx.offerProposal.findUniqueOrThrow({
         where: { id: offerProposalId },
         include: {
-          // 바이어
-          user: {
-            include: {
-              buyer: {
-                select: {
-                  id: true,
-                  company: true
-                }
-              }
-            }
-          },
           offer: {
             select: {
+              // 바이어
+              user: {
+                include: {
+                  buyer: {
+                    select: {
+                      id: true,
+                      company: true
+                    }
+                  }
+                }
+              },
               bidRound: {
                 select: {
                 // 웹툰
@@ -56,7 +56,7 @@ class InvoiceContentService {
 
       // 레코드 분석
       const { webtoon } = record.offer.bidRound;
-      const buyerUser = record.user;
+      const buyerUser = record.offer.user;
       const buyerCompany = BuyerCompanySchema.parse(buyerUser.buyer?.company);
       const creatorUser = record.offer.bidRound.webtoon.user;
       if (!buyerUser.buyer || !creatorUser.creator) {

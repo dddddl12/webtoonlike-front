@@ -20,11 +20,11 @@ export default function OfferDetailsForInvoice({ offerProposalId }: {
     return <Spinner/>;
   }
 
-  return <Col className="gap-10 bg-[#403F3F] p-5 rounded-[10px] mb-2">
+  return <Col className="gap-10 bg-[#403F3F] p-5 rounded-[10px] mb-2 [&_*]:border-foreground">
     <WebtoonDetails webtoon={offerProposal.webtoon} context="InvoiceView"/>
     <Row>
-      <Profile creatorOrBuyer={offerProposal.creator} />
-      <Profile creatorOrBuyer={offerProposal.buyer} />
+      <Profile className="flex-1" creatorOrBuyer={offerProposal.creator} />
+      <Profile className="flex-1" creatorOrBuyer={offerProposal.buyer} />
     </Row>
     <hr className="border-gray-dark"/>
     <OfferProposalDetails

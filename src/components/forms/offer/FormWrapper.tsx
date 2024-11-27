@@ -20,7 +20,11 @@ export default function FormWrapper(safeActionFormReturn: ReturnType<typeof useS
 
   // Scroll to the Heading component when rendered
   useEffect(() => {
-    headingRef.current?.scrollIntoView({ behavior: "smooth" });
+    headingRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    //   todo 재분석
+    });
   }, [headingRef]);
 
   const { formState: { isValid, isDirty } } = form;
@@ -46,7 +50,6 @@ export default function FormWrapper(safeActionFormReturn: ReturnType<typeof useS
                 <FormControl>
                   <Textarea
                     {...field}
-                    // className="placeholder:text-white border-none"
                     placeholder={tMakeAnOffer("inputAdditionalRequirements")}
                     maxLength={10000}
                   />

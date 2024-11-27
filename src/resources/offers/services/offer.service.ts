@@ -8,6 +8,7 @@ import {
 import { getLocale } from "next-intl/server";
 import offerHelper from "@/resources/offers/helpers/offer.helper";
 import { ListResponse } from "@/resources/globalTypes";
+import authorizeOfferAccess from "@/resources/offers/offer.authorization";
 
 
 class OfferService {
@@ -30,6 +31,20 @@ class OfferService {
   }
 
   // 오퍼 관리
+  async getOffer(offerId: number): Promise<OfferWithBuyerAndWebtoonT> {
+    const r = await prisma.$transaction(async (tx) => {
+      await authorizeOfferAccess(tx, offerId);
+      return tx.offer.findUniqueOrThrow({
+        ...offerHelper.withBuyerAndWebtoonQuery,
+        where: {
+          id: offerId
+        }
+      });
+    });
+    const locale = await getLocale();
+    return offerHelper.withBuyerAndWebtoonMapToDTO(r, locale);
+  }
+
   async listMyOffers(
     {
       page,

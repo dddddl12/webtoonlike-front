@@ -1,6 +1,6 @@
 import "server-only";
 import prisma from "@/utils/prisma";
-import { Prisma } from "@prisma/client";
+import { $Enums, Prisma } from "@prisma/client";
 import { ListResponse } from "@/resources/globalTypes";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 import { InvoicedOfferT, UninvoicedOfferT } from "@/resources/invoices/dtos/invoice.dto";
@@ -32,7 +32,9 @@ class InvoiceService {
   // TODO join 최적화
   // https://www.prisma.io/blog/prisma-orm-now-lets-you-choose-the-best-join-strategy-preview
   // where 절
-    const where: Prisma.OfferProposalWhereInput = {};
+    const where: Prisma.OfferProposalWhereInput = {
+      status: $Enums.OfferProposalStatus.ACCEPTED,
+    };
     if (mode === "invoiced"){
       where.invoice = {
         isNot: null

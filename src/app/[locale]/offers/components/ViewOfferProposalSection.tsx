@@ -25,7 +25,8 @@ export default function ViewOfferProposalSection({ offerProposalId }: {
   if (!offerProposal) {
     return <Spinner />;
   }
-  return <Col className="w-full my-10 [&_*]:border-foreground">
+  // todo invoice 쪽과 통일
+  return <Col className="w-full my-2 [&_*]:border-foreground bg-[#403F3F] p-5 rounded-[10px]">
     <Col>
       <Heading>{tMakeAnOffer("offerer")}</Heading>
       <Profile creatorOrBuyer={offerProposal.sender} />

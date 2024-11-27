@@ -6,7 +6,7 @@ import useSafeActionForm from "@/hooks/safeActionForm";
 import { OfferProposalFormSchema } from "@/resources/offers/dtos/offerProposal.dto";
 import { createOfferProposal } from "@/resources/offers/controllers/offerProposal.controller";
 import FormWrapper from "@/components/forms/offer/FormWrapper";
-import ReloadOfferContext from "@/app/[locale]/offers/ReloadOfferContext";
+import OfferDetailsContext from "@/app/[locale]/offers/OfferDetailsContext";
 import { useContext } from "react";
 
 export default function OfferProposalForm({ offerId, refOfferProposalId }: {
@@ -14,7 +14,7 @@ export default function OfferProposalForm({ offerId, refOfferProposalId }: {
   refOfferProposalId: number;
 }) {
   const { toast } = useToast();
-  const reload = useContext(ReloadOfferContext);
+  const { reloadProposals } = useContext(OfferDetailsContext);
   const safeActionFormReturn = useSafeActionForm(
     createOfferProposal.bind(null, offerId, refOfferProposalId),
     {
@@ -25,7 +25,14 @@ export default function OfferProposalForm({ offerId, refOfferProposalId }: {
           toast({
             description: "수정 제안을 보냈습니다."
           });
-          reload();
+          reloadProposals({
+            refocusToLast: true
+          });
+        },
+        onError: () => {
+          reloadProposals({
+            refocusToLast: false
+          });
         }
       }
     });

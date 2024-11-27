@@ -3,34 +3,32 @@ import { Col, Row } from "@/components/ui/common";
 import {
   listOfferProposals
 } from "@/resources/offers/controllers/offerProposal.controller";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useTokenInfo from "@/hooks/tokenInfo";
 import { Skeleton } from "@/shadcn/ui/skeleton";
-import useReload from "@/hooks/reload";
 import { clsx } from "clsx";
 import { OfferProposalListT } from "@/resources/offers/dtos/offerProposal.dto";
 import ViewOfferProposalSection from "@/app/[locale]/offers/components/ViewOfferProposalSection";
-import { OfferWithBuyerAndWebtoonT } from "@/resources/offers/dtos/offer.dto";
-import ReloadOfferContext from "@/app/[locale]/offers/ReloadOfferContext";
+import { ProposalsReloadReq } from "@/app/[locale]/offers/OfferDetailsContext";
 
 // TODO 페이지네이션 없음
-export default function OfferProposalList({ curOffer, setCurOffer }: {
-  curOffer: OfferWithBuyerAndWebtoonT;
-  setCurOffer: Dispatch<SetStateAction<OfferWithBuyerAndWebtoonT>>;
+export default function OfferProposalList({ offerId, reloadReq }: {
+  offerId: number;
+  reloadReq?: ProposalsReloadReq;
 }) {
-  const offerId = curOffer.id;
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  useEffect(() => {
-    headingRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
-  const { reload, reloadKey } = useReload();
+  const [reloadKey, setReloadKey] = useState(0);
   const [offerProposalsResponse, setOfferProposalsResponse] = useState<OfferProposalListT>();
 
   useEffect(() => {
     listOfferProposals(offerId)
-      .then(res => setOfferProposalsResponse(res?.data));
-  }, [offerId, reloadKey]);
+      .then((res) => {
+        setOfferProposalsResponse(res?.data);
+        if (reloadReq?.refocusToLast) {
+          // 접기 등 상태 재조정
+          setReloadKey(prev => prev + 1);
+        }
+      });
+  }, [offerId, reloadReq]);
 
   if (!offerProposalsResponse) {
     return <div>
@@ -41,27 +39,27 @@ export default function OfferProposalList({ curOffer, setCurOffer }: {
 
   const { proposals, invoice } = offerProposalsResponse;
 
-  return <ReloadOfferContext.Provider value={reload}>
-    <Col className="rounded-md p-4 bg-gray-darker" ref={headingRef}>
-      <Row className="border-b border-gray-text text-gray-text">
-        <div className="w-[20%] p-2 flex justify-center">No.</div>
-        <div className="w-[20%] p-2 flex justify-center">일자</div>
-        <div className="w-[20%] p-2 flex justify-center">보낸 사람</div>
-        <div className="w-[20%] p-2 flex justify-center">협의 내용</div>
-        <div className="w-[20%] p-2 flex justify-center">현황</div>
-      </Row>
+  return <Col className="rounded-md p-4 bg-gray-darker" key={reloadKey}>
+    <Row className="border-b border-gray-text text-gray-text">
+      <div className="w-[20%] p-2 flex justify-center">No.</div>
+      <div className="w-[20%] p-2 flex justify-center">일자</div>
+      <div className="w-[20%] p-2 flex justify-center">보낸 사람</div>
+      <div className="w-[20%] p-2 flex justify-center">협의 내용</div>
+      <div className="w-[20%] p-2 flex justify-center">현황</div>
+    </Row>
 
-      {proposals.map((proposal, index) => (
-        <ProposalRow
-          key={index}
-          seq={index}
-          user={proposal.user}
-          createdAt={proposal.createdAt}
-          statusLabel={index === 0 ? "제안" : "수정 요청"}
-          offerProposal={proposal}
-        />
-      ))}
-      {!!invoice
+    {proposals.map((proposal, index) => (
+      <ProposalRow
+        key={index}
+        seq={index}
+        user={proposal.user}
+        createdAt={proposal.createdAt}
+        statusLabel={index === 0 ? "제안" : "수정 요청"}
+        offerProposal={proposal}
+        defaultOpen={reloadReq?.refocusToLast && index === proposals.length - 1}
+      />
+    ))}
+    {!!invoice
     && <ProposalRow
       seq={proposals.length}
       user={{
@@ -71,11 +69,10 @@ export default function OfferProposalList({ curOffer, setCurOffer }: {
       createdAt={invoice.createdAt}
       statusLabel={"인보이스 발생"}>
     </ProposalRow>}
-    </Col>
-  </ReloadOfferContext.Provider>;
+  </Col>;
 }
 
-function ProposalRow({ seq, createdAt, user, statusLabel, offerProposal }: {
+function ProposalRow({ seq, createdAt, user, statusLabel, defaultOpen, offerProposal }: {
   seq: number;
   createdAt: Date;
   user: {
@@ -83,16 +80,26 @@ function ProposalRow({ seq, createdAt, user, statusLabel, offerProposal }: {
     name: string;
   };
   statusLabel: string;
+  defaultOpen?: boolean;
   offerProposal?: OfferProposalListT["proposals"][number];
 }) {
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(defaultOpen ?? false);
   const tGeneral = useTranslations("general");
   const locale = useLocale();
   const { tokenInfo } = useTokenInfo();
+
+  const lastProposalRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (defaultOpen) {
+      lastProposalRef.current?.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
+  }, [defaultOpen]);
   return <>
     <Row className={clsx({
       "bg-[#376C49] rounded-[10px]": showDetails
-    })}>
+    })} ref={lastProposalRef}>
       <div className="w-[20%] p-2 flex justify-center">{seq + 1}</div>
       <div className="w-[20%] p-2 flex justify-center">{createdAt.toLocaleString(locale)}</div>
       <div className="w-[20%] p-2 flex justify-center">
@@ -107,7 +114,7 @@ function ProposalRow({ seq, createdAt, user, statusLabel, offerProposal }: {
       </div>
       <div className="w-[20%] p-2 flex justify-center">{statusLabel}</div>
     </Row>
-    {showDetails && offerProposal && <Col className="mx-16">
+    {showDetails && offerProposal && <Col>
       <ViewOfferProposalSection offerProposalId={offerProposal.id}/>
     </Col>}
   </>;

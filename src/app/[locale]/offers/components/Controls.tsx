@@ -10,7 +10,7 @@ import { useTranslations } from "next-intl";
 import { useConfirm } from "@/hooks/alert";
 import { OfferProposalDetailsT, OfferProposalStatus } from "@/resources/offers/dtos/offerProposal.dto";
 import OfferProposalForm from "@/components/forms/offer/OfferProposalForm";
-import ReloadOfferContext from "@/app/[locale]/offers/ReloadOfferContext";
+import OfferDetailsContext from "@/app/[locale]/offers/OfferDetailsContext";
 
 export default function Controls({ offerProposal }: {
   offerProposal: OfferProposalDetailsT;
@@ -19,7 +19,7 @@ export default function Controls({ offerProposal }: {
   const t = useTranslations("offerControls");
   const boundChangeOfferProposalStatus = useMemo(() => changeOfferProposalStatus
     .bind(null, offerProposal.id), [offerProposal.id]);
-  const reload = useContext(ReloadOfferContext);
+  const { changeStatus, reloadProposals } = useContext(OfferDetailsContext);
   const { execute } = useSafeAction(boundChangeOfferProposalStatus, {
     onSuccess: ({ input }) => {
       if (!input) {
@@ -30,10 +30,16 @@ export default function Controls({ offerProposal }: {
           ? t("accept.toast")
           : t("decline.toast")
       });
-      reload();
+      changeStatus(input.changeTo);
+      // todo
+      reloadProposals({
+        refocusToLast: true
+      });
     },
     onError: () => {
-      // executeOnFailure();
+      reloadProposals({
+        refocusToLast: false
+      });
     }
   });
 
@@ -54,18 +60,6 @@ export default function Controls({ offerProposal }: {
       changeTo: OfferProposalStatus.Accepted
     })
   });
-
-  // 오퍼 실패 시 업데이트
-  // const boundGetSimpleBidRequest = useMemo(() => getOfferWithMetaDataSchema
-  //   .bind(null, bidRequestId), [bidRequestId]);
-  // const { execute: executeOnFailure } = useSafeAction(boundGetSimpleBidRequest, {
-  //   onSuccess: ({ data }) => {
-  //     if (!data) {
-  //       throw new Error("data is null");
-  //     }
-  //     setCurBidRequest(data);
-  //   }
-  // });
 
   const [showForm, setShowForm] = useState<boolean>(false);
 

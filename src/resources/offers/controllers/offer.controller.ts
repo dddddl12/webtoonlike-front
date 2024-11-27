@@ -21,6 +21,18 @@ export const adminListOffersByBidRoundId = action
     return offerService.listByBidRoundId(bidRoundId);
   });
 
+export const getOffer = action
+  .metadata({ actionName: "getOffer" })
+  .bindArgsSchemas([
+    z.number() // offerId
+  ])
+  .outputSchema(OfferWithBuyerAndWebtoonSchema)
+  .action(async ({
+    bindArgsParsedInputs: [offerId]
+  }) => {
+    return offerService.getOffer(offerId);
+  });
+
 export const listAllOffers = action
   .metadata({ actionName: "listAllOffers" })
   .schema(z.object({
