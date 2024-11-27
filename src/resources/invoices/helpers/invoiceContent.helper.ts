@@ -64,6 +64,7 @@ export async function convertInvoiceToHtml(content: InvoiceContentT) {
         .subtitle {
           font-size: 22px;
           font-weight: bold;
+          margin-top: 40px;
         }
         .box {
           border: 2px solid black;
@@ -81,24 +82,20 @@ export async function convertInvoiceToHtml(content: InvoiceContentT) {
       <h1 class="text-center">협의 내역서</h1>
       <p class="subtitle">구매자</p>
       <div class="box">
-        <p>회사명: ${buyer.name}</p>
-        <p>담당자명: ${buyer.user.name}</p>
-        <p>주소: ${buyer.user.addressLine1} ${buyer.user.addressLine2}</p>
-        <p>연락처: ${buyer.user.phone}</p>
-        <p>사업자번호: ${buyer.businessNumber}</p>
+        <p>회사명: ${buyer.name || "-"}</p>
+        <p>담당자명: ${buyer.user.name || "-"}</p>
+        <p>주소: ${[buyer.user.addressLine1, buyer.user.addressLine2].join(" ") || "-"}</p>
+        <p>연락처: ${buyer.user.phone || "-"}</p>
+        <p>사업자번호: ${buyer.businessNumber || "-"}</p>
       </div>
-
-      <div style="height: 40px"></div>
 
       <p class="subtitle">판매자</p>
       <div class="box">
-        <p>작가명: ${creator.name}</p>
-        <p>연락처: ${creator.user.phone}</p>
-        <p>주소: ${creator.user.addressLine1} ${creator.user.addressLine2}</p>
-        <p>작품명: ${webtoon?.title}</p>
+        <p>작가명: ${creator.name || "-"}</p>
+        <p>연락처: ${creator.user.phone || "-"}</p>
+        <p>주소: ${[creator.user.addressLine1, creator.user.addressLine2].join(" ") || "-"}</p>
+        <p>작품명: ${webtoon.title || "-"}</p>
       </div>
-
-      <div style="height: 40px"></div>
 
       <p class="subtitle">조건</p>
 
@@ -122,16 +119,16 @@ export async function convertInvoiceToHtml(content: InvoiceContentT) {
               `
       <div class="row">
         <div class="cell">
-          <p>${tCountries(item.country)}</p>
+          <p>${tCountries(item.country) || "-"}</p>
         </div>
         <div class="cell">
-          <p>${tBusinessFields(item.businessField)}</p>
+          <p>${tBusinessFields(item.businessField) || "-"}</p>
         </div>
         <div class="cell">
-          <p>${tContractType(item.contract)}</p>
+          <p>${tContractType(item.contract) || "-"}</p>
         </div>
         <div class="cell left-align">
-          <p>${item.message}</p>
+          <p>${item.message || "-"}</p>
         </div>
       </div>
       `
@@ -141,18 +138,14 @@ export async function convertInvoiceToHtml(content: InvoiceContentT) {
 
       <p class="text-center">협의 내역서 만료 기간: ${validUntil.toLocaleString(locale, {
         timeZone: "Asia/Seoul",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
+        dateStyle: "long",
       })}</p>
 
       <p class="bold subtitle text-center">위 협의 사항을 Kipstock이 보증합니다. </p>
 
       <p class="text-center">${issuedAt.toLocaleString(locale, {
         timeZone: "Asia/Seoul",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
+        dateStyle: "long",
       })}</p>
 
     </body>

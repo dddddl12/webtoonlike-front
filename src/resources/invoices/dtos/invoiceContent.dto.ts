@@ -29,8 +29,11 @@ export const InvoiceContent = z.object({
     title: z.string(),
     title_en: z.string(),
   }),
-  offerProposal: OfferProposalSchema,
-  // todo
-  issuedAt: z.date()
+  offerProposal: OfferProposalSchema.extend({
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+    decidedAt: z.coerce.date().optional(),
+  }),
+  issuedAt: z.coerce.date(),
 });
 export type InvoiceContentT = z.infer<typeof InvoiceContent>;
