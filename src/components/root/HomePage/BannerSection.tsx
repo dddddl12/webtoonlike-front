@@ -13,24 +13,34 @@ export default function BannerSection({ banners }: {
   banners: HomeItemsT["banners"];
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [firstVisibleIndex, setFirstVisibleIndex] = useState(0);
   const lastIndex = banners.length - 1;
+  const [visibleIndices, setVisibleIndices] = useState<number[]>([]);
 
   useEffect(() => {
-    let targetIndex = Math.max(activeIndex - 1, 0);
-    targetIndex = Math.min(targetIndex, lastIndex - 2);
-    setFirstVisibleIndex(targetIndex);
+    const firstVisibleIndex = Math.max(activeIndex - 1, 0);
+    const lastVisibleIndex = Math.min(activeIndex + 2, lastIndex);
+    const indices: number[] = [];
+    for (let i = firstVisibleIndex; i <= lastVisibleIndex; i++) {
+      indices.push(i);
+    }
+    setVisibleIndices(indices);
   }, [activeIndex, lastIndex]);
 
+  if (banners.length === 0) {
+    return <Row>
+      <p className="text-gray-shade mx-auto">등록된 웹툰이 없습니다.</p>
+    </Row>;
+  }
+
   return (
-    <Row className="h-[400px]">
+    <Row>
       {banners.map((webtoon, index) => {
         return (
           <Slide
             key={webtoon.id}
             webtoon={webtoon}
-            isVisible={firstVisibleIndex <= index && index < firstVisibleIndex + 3}
-            isFirstVisible={firstVisibleIndex === index}
+            isVisible={visibleIndices.includes(index)}
+            isFirstVisible={visibleIndices[0] === index}
             isActive={activeIndex === index}
             setAsActive={() => setActiveIndex(index)}
           />
@@ -53,11 +63,10 @@ function Slide({
   const t = useTranslations("homeMain");
   const ageRestrictionT = useTranslations("ageRestriction");
 
-  // TODO 0개일 때도 안전한지 확인
   return (
     <Col
       className={clsx(
-        "rounded-[8px] overflow-hidden h-full relative transition-all duration-150 ease-linear cursor-pointer", {
+        "rounded-[8px] overflow-hidden h-[400px] relative transition-all duration-150 ease-linear cursor-pointer ", {
           "flex-1": isActive,
           "w-[6.6%]": !isActive && isVisible,
           "ml-7": !isFirstVisible && isVisible,
