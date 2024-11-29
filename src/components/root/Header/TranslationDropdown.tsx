@@ -9,7 +9,7 @@ type Props = {
   defaultValue: string;
 };
 
-export function TranslationDropdown({ children, defaultValue }: Props) {
+export default function TranslationDropdown({ children, defaultValue }: Props) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -19,10 +19,10 @@ export function TranslationDropdown({ children, defaultValue }: Props) {
 
   return (
     <Select defaultValue={defaultValue} onValueChange={onSelectChange}>
-      <SelectTrigger className="bg-transparent text-white border-none w-30">
-        <SelectValue></SelectValue>
+      <SelectTrigger className="bg-transparent border-none w-30 dark">
+        <SelectValue/>
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="dark">
         <SelectGroup>
           {children}
         </SelectGroup>

@@ -1,3 +1,4 @@
+import "server-only";
 import prisma from "@/utils/prisma";
 import z from "zod";
 import { BuyerCompanySchema } from "@/resources/buyers/buyer.dto";

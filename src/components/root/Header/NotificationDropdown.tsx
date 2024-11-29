@@ -31,7 +31,7 @@ const items: {
     return { title, message, date, status };
   });
 
-export function NotificationDropdown() {
+export default function NotificationDropdown() {
 
 
   return (
@@ -88,7 +88,7 @@ function Icon({ status }: {status: "approved" | "rejected" | "offered"}) {
 
 function Approved() {
   return <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="1" y="1" width="34" height="34" rx="17" stroke="#0AADA2" stroke-width="2"/>
+    <rect x="1" y="1" width="34" height="34" rx="17" stroke="#0AADA2" strokeWidth="2"/>
     <path d="M14.7951 21.875L10.6251 17.705L9.20508 19.115L14.7951 24.705L26.7951 12.705L25.3851 11.295L14.7951 21.875Z"
       fill="#0AADA2"/>
   </svg>;
@@ -96,7 +96,7 @@ function Approved() {
 
 function Rejected() {
   return <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="1" y="1" width="34" height="34" rx="17" stroke="#E32D19" stroke-width="2"/>
+    <rect x="1" y="1" width="34" height="34" rx="17" stroke="#E32D19" strokeWidth="2"/>
     <path d="M25.5 13V17H12.33L15.91 13.41L14.5 12L8.5 18L14.5 24L15.91 22.59L12.33 19H27.5V13H25.5Z" fill="#E32D19"/>
   </svg>;
 
@@ -104,7 +104,7 @@ function Rejected() {
 
 function Offered() {
   return <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="1" y="1" width="34" height="34" rx="17" stroke="#B4B4B4" stroke-width="2"/>
+    <rect x="1" y="1" width="34" height="34" rx="17" stroke="#B4B4B4" strokeWidth="2"/>
     <path
       d="M10 12H8V26C8 27.1 8.9 28 10 28H24V26H10V12ZM26 8H14C12.9 8 12 8.9 12 10V22C12 23.1 12.9 24 14 24H26C27.1 24 28 23.1 28 22V10C28 8.9 27.1 8 26 8ZM26 22H14V10H26V22ZM16 15H24V17H16V15ZM16 18H20V20H16V18ZM16 12H24V14H16V12Z"
       fill="#B4B4B4"/>

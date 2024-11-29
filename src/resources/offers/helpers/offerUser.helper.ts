@@ -1,3 +1,4 @@
+import "server-only";
 import { Prisma } from "@prisma/client";
 import { OfferBaseUserT, OfferBuyerT, OfferCreatorT } from "@/resources/offers/dtos/offerUser.dto";
 import { displayName } from "@/resources/displayName";

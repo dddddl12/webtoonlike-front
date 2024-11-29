@@ -11,7 +11,7 @@ export type NavArrT = {
   isVisible: boolean;
 }[];
 
-export async function NavBar() {
+export default async function NavBar() {
   const t = await getTranslations("headerNav");
   const tokenInfo = await getTokenInfo()
     .catch(() => undefined);

@@ -1,3 +1,4 @@
+import "server-only";
 import { AdminLevel } from "@/resources/tokens/token.types";
 import { ForbiddenError } from "@/handlers/errors";
 import { getTokenInfo } from "@/resources/tokens/token.service";

@@ -84,9 +84,18 @@ export const getTokenInfo = async (allowedRoles?: {
 
 export async function updateTokenInfo(tx?: PrismaTransaction): Promise<{
   signUpFinished: boolean;
+  signedInToClerk: boolean;
 }> {
-  const prismaClient = tx || prisma;
-  const { userId: clerkUserId } = await getClerkAuth();
+  const prismaClient = tx ?? prisma;
+  const clerkUser = await auth();
+  const clerkUserId = clerkUser.userId;
+  if (!clerkUserId) {
+    return {
+      signUpFinished: false,
+      signedInToClerk: false
+    };
+  }
+
   const user = await prismaClient.user.findUnique({
     where: {
       sub: clerkUserId
@@ -117,7 +126,15 @@ export async function updateTokenInfo(tx?: PrismaTransaction): Promise<{
   if (!user
     || (user.userType == UserTypeT.Creator && !user.creator)
     || (user.userType == UserTypeT.Buyer && !user.buyer)) {
-    return { signUpFinished: false };
+    // clerk 로그인은 했으나, DB에 회원 정보가 없는 경우
+    await clerkClient().then(client =>
+      client.users.updateUser(clerkUserId, {
+        publicMetadata: {}
+      }));
+    return {
+      signUpFinished: false,
+      signedInToClerk: true
+    };
   }
   // 토큰 업데이트
   const clerkUserMetadata: TokenInfo["metadata"] = {
@@ -131,7 +148,10 @@ export async function updateTokenInfo(tx?: PrismaTransaction): Promise<{
       externalId: user.id.toString(),
       publicMetadata: clerkUserMetadata
     }));
-  return { signUpFinished: true };
+  return {
+    signUpFinished: true,
+    signedInToClerk: true
+  };
 }
 
 const getAdminLevel = (admin: {

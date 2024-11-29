@@ -5,7 +5,7 @@ import React from "react";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
 
-export function Account() {
+export default function Account() {
   const Tinquiry = useTranslations("headerNav");
 
   return <>

@@ -5,7 +5,7 @@ export default function TermsOfUseEn() {
       <br/>
       <p>Article 1 (Purpose)</p>
       <p>These Terms and Conditions regulate the rights of those who use the content distribution platform (hereinafter
-        “Members”) and various services (hereinafter “Platform”) provided by Kipstock (hereinafter
+        “Members”) and various services (hereinafter “Platform”) provided by Kenaz Co., Ltd. (hereinafter
         “Company”) to stipulate both company and members’ rights and responsibilities.</p>
       <br/>
       <p>Article 2 (Definitions)</p>
