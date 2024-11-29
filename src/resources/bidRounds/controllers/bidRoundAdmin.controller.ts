@@ -7,7 +7,9 @@ import { BidRoundApprovalStatus } from "@/resources/bidRounds/dtos/bidRound.dto"
 import { ListResponseSchema } from "@/resources/globalTypes";
 import {
   AdminPageBidRoundSchema,
-  AdminPageBidRoundWithOffersSchema, BidRoundAdminSettingsSchema, StrictBidRoundAdminSettingsSchema
+  AdminPageBidRoundWithOffersSchema,
+  BidRoundAdminSettingsSchema,
+  StrictBidRoundAdminSettingsRefinedSchema
 } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
 import bidRoundAdminService from "@/resources/bidRounds/services/bidRoundAdmin.service";
 
@@ -71,7 +73,7 @@ export const editBidRoundAdminSettings = action
   .bindArgsSchemas([
     z.number() // bidRoundId
   ])
-  .schema(StrictBidRoundAdminSettingsSchema)
+  .schema(StrictBidRoundAdminSettingsRefinedSchema)
   .action(async ({ bindArgsParsedInputs: [bidRoundId], parsedInput: settings }) => {
     return bidRoundAdminService.editBidRoundAdminSettings(bidRoundId, settings);
   });
