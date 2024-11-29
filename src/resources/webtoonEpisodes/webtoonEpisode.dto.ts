@@ -3,7 +3,8 @@ import { ResourceSchema } from "@/resources/globalTypes";
 
 const WebtoonEpisodeBaseSchema = z.object({
   episodeNo: z.number(),
-  englishUrl: z.string().url().optional(),
+  englishUrl: z.string().url().optional()
+    .or(z.string().max(0)), // empty 값인 경우 고려
   imagePaths: z.array(z.string()).min(1),
 });
 

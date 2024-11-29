@@ -33,6 +33,7 @@ import {
   getBidRoundAdminSettings
 } from "@/resources/bidRounds/controllers/bidRoundAdmin.controller";
 import useSafeActionForm from "@/hooks/safeActionForm";
+import z from "zod";
 
 export default function BidRoundAdminSettingsForm({
   bidRoundId, children, reload
@@ -68,7 +69,36 @@ function DialogContentWrapper({
   const { toast } = useToast();
   const { isFormSubmitting, form, onSubmit } = useSafeActionForm(
     editBidRoundAdminSettings.bind(null, bidRoundId), {
-      resolver: zodResolver(StrictBidRoundAdminSettingsSchema),
+      resolver: zodResolver(StrictBidRoundAdminSettingsSchema
+        .superRefine((val, ctx) => {
+          const { bidStartsAt, negoStartsAt, processEndsAt } = val;
+          if (bidStartsAt > negoStartsAt) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ["bidStartsAt"],
+              message: "게시 시작일은 선공개 종료일보다 이전이어야 합니다.",
+            });
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ["negoStartsAt"],
+              message: "게시 시작일은 선공개 종료일보다 이전이어야 합니다.",
+            });
+            return z.NEVER;
+          }
+          if (negoStartsAt > processEndsAt) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ["negoStartsAt"],
+              message: "선공개 종료일은 게시 종료일보다 이전이어야 합니다.",
+            });
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ["processEndsAt"],
+              message: "선공개 종료일은 게시 종료일보다 이전이어야 합니다.",
+            });
+            return z.NEVER;
+          }
+        })),
       mode: "onChange",
       actionProps: {
         onSuccess: () => {
@@ -106,7 +136,7 @@ function DialogContentWrapper({
       <DialogTitle/>
       <DialogDescription/>
     </VisuallyHidden>
-    <Form {...form}>
+    <Form {...form} schema={StrictBidRoundAdminSettingsSchema}>
       <form onSubmit={onSubmit} className={clsx("space-y-4 mt-4", {
         "form-overlay": isFormSubmitting || !isLoaded
       })}>
@@ -122,9 +152,9 @@ function DialogContentWrapper({
           control={form.control}
           name="processEndsAt"
           label="게시 종료일"/>
-        <FormItem className="flex gap-4 items-center">
+        <FormItem forcedIsInline={true}>
           <FormLabel className="w-[120px]">투고 상태(자동 설정)</FormLabel>
-          <Col className="flex-1 gap-1">
+          <Col className="flex-1">
             <Input
               className="flex-1"
               type="text"
@@ -137,9 +167,9 @@ function DialogContentWrapper({
           control={form.control}
           name="adminNote"
           render={({ field }) => (
-            <FormItem className="flex gap-4 items-center">
+            <FormItem forcedIsInline={true}>
               <FormLabel className="w-[120px]">관리자 메모</FormLabel>
-              <Col className="flex-1 gap-1">
+              <Col className="flex-1">
                 <FormControl>
                   <Input
                     {...field}
@@ -182,12 +212,12 @@ function CalendarFormField<TFieldValues extends FieldValues>({ control, name, la
     control={control}
     name={name}
     render={({ field }) => (
-      <FormItem className="flex gap-4 items-center">
+      <FormItem forcedIsInline={true}>
         <FormLabel className="w-[120px]">{label}</FormLabel>
         <FormControl>
           <Input {...field} type="hidden" />
         </FormControl>
-        <Col className="flex-1 gap-1">
+        <Col className="flex-1">
           <Popover>
             <PopoverTrigger asChild>
               <Button

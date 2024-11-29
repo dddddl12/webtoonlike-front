@@ -4,7 +4,7 @@ import PageLayout from "@/components/ui/PageLayout";
 import { getTranslations } from "next-intl/server";
 import MyWebtoonsNotOnSale from "@/app/[locale]/webtoons/components/ManageWebtoons/MyWebtoonsNotOnSale";
 import MyWebtoonsOnSale from "@/app/[locale]/webtoons/components/ManageWebtoons/MyWebtoonsOnSale";
-import { Heading } from "@/components/ui/common";
+import { Heading1 } from "@/components/ui/common";
 import { responseHandler } from "@/handlers/responseHandler";
 import {
   listMyWebtoonsNotOnSale,
@@ -24,15 +24,15 @@ export default async function ManageWebtoons() {
   return (
     <PageLayout>
       <Col>
-        <Heading>
+        <Heading1>
           {t("unregisteredSeries")}
-        </Heading>
+        </Heading1>
         <MyWebtoonsNotOnSale initialWebtoonListResponse={initialWebtoonListNotOnSaleResponse} />
       </Col>
       <Col className="mt-20">
-        <Heading>
+        <Heading1>
           {t("registeredSeries")}
-        </Heading>
+        </Heading1>
         <MyWebtoonsOnSale initialWebtoonListResponse={initialWebtoonListOnSaleResponse} />
       </Col>
     </PageLayout>

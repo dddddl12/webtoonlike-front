@@ -47,7 +47,7 @@ export default function CreatorProfileForm({ userAccountForm, setSignUpStage }: 
   const { formState: { isValid } } = form;
 
   return (
-    <Form {...form}>
+    <Form {...form} schema={UserAccountWithCreatorFormSchema}>
       <form
         onSubmit={onSubmit}
         className={clsx("flex flex-col gap-5", {

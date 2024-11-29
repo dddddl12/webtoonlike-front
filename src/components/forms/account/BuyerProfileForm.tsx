@@ -65,7 +65,7 @@ export default function BuyerProfileForm({ userAccountForm, setSignUpStage } : {
   const { formState: { isValid } } = form;
 
   return (
-    <Form {...form}>
+    <Form {...form} schema={UserAccountWithBuyerFormSchema}>
       <form
         onSubmit={onSubmit}
         className={clsx("flex flex-col gap-5", {

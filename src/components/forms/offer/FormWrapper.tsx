@@ -1,6 +1,6 @@
 import useSafeActionForm from "@/hooks/safeActionForm";
-import { FieldSet, Form, FormControl, FormField, FormItem } from "@/shadcn/ui/form";
-import { Heading, Row } from "@/components/ui/common";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
+import { Heading1, Row } from "@/components/ui/common";
 import ContractRangeForm from "@/components/forms/ContractRangeForm";
 import { Textarea } from "@/shadcn/ui/textarea";
 import { Button } from "@/shadcn/ui/button";
@@ -8,6 +8,7 @@ import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { clsx } from "clsx";
+import { OfferProposalFormSchema } from "@/resources/offers/dtos/offerProposal.dto";
 
 export default function FormWrapper(safeActionFormReturn: ReturnType<typeof useSafeActionForm>) {
   const tMakeAnOffer = useTranslations("offerDetails");
@@ -29,38 +30,36 @@ export default function FormWrapper(safeActionFormReturn: ReturnType<typeof useS
 
   const { formState: { isValid, isDirty } } = form;
   return (
-    <Form {...form}>
+    <Form {...form} schema={OfferProposalFormSchema}>
       <form onSubmit={onSubmit} className={clsx({
         "form-overlay": isFormSubmitting
       })}>
-        <Heading ref={headingRef}>
+        <Heading1 ref={headingRef}>
           {tMakeAnOffer("makeOffer")}
-        </Heading>
-        <ContractRangeForm form={form as never} formType="offerProposal"/>
+        </Heading1>
+        <ContractRangeForm form={form} formType="offerProposal"/>
 
-        <FieldSet>
-          <legend>
-            {tMakeAnOffer("toCreator")}
-          </legend>
-          <FormField
-            control={form.control}
-            name="message"
-            render={({ field }) => (
-              <FormItem className="mt-3">
-                <FormControl>
-                  <Textarea
-                    {...field}
-                    placeholder={tMakeAnOffer("inputAdditionalRequirements")}
-                    maxLength={10000}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <p className="text-[10pt] text-gray-shade mt-3">
-            {tMakeAnOffer("note")}
-          </p>
-        </FieldSet>
+        <FormField
+          control={form.control}
+          name="message"
+          render={({ field }) => (
+            <FormItem className="mt-8">
+              <FormLabel>
+                {tMakeAnOffer("toCreator")}
+              </FormLabel>
+              <FormControl>
+                <Textarea
+                  {...field}
+                  placeholder={tMakeAnOffer("inputAdditionalRequirements")}
+                  maxLength={10000}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <p className="text-sm text-muted-foreground mt-3">
+          {tMakeAnOffer("note")}
+        </p>
 
         <Row className="mt-12">
           <Button

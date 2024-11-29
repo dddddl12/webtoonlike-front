@@ -2,6 +2,7 @@
     "general": {
         "submit": "제출",
         "edit": "수정",
+        "add": "추가",
         "goBack": "이전",
         "goNext": "다음",
         "selectFile": "파일 선택",
@@ -9,7 +10,8 @@
         "close": "닫기",
         "cancel": "취소",
         "expand": "보기",
-        "collapse": "접기"
+        "collapse": "접기",
+        "optional": "(선택)"
     },
     "userType": {
         "CREATOR": "저작권자",
@@ -29,7 +31,6 @@
         "insertAddress1": "주소 입력",
         "insertAddress2": "상세주소 입력",
         "termsAndConditions": "Kipstock 이용약관",
-        "required": "(필수)",
         "doYouAgree": "이용약관에 동의하시겠습니까?",
         "completeToast": "회원 가입을 마쳤습니다."
     },
@@ -164,7 +165,7 @@
         "enterKoreanTitle": "한글 작품 제목을 입력해주세요",
         "enterEnglishTitle": "영어 작품 제목을 입력해주세요",
         "seriesImage": "작품 썸네일",
-        "authorOptional": "작가명 (선택)",
+        "authorOptional": "작가명",
         "enterAuthor": "한글 작가명을 입력해주세요",
         "enterAuthorEn": "영어 작가명을 입력해주세요",
         "seriesIntro": "작품 소개",
@@ -172,8 +173,8 @@
         "enterEnglishIntro": "작품 소개를 영어로 입력해주세요",
         "seriesKeywords": "작품 키워드",
         "pleaseEnterKeywords": "작품 키워드를 입력해주세요",
-        "seriesLink": "작품 url(선택)",
-        "pleaseEnterLink": "작품 url을 입력해주세요",
+        "seriesLink": "작품 URL",
+        "pleaseEnterLink": "작품 URL을 입력해주세요",
         "selectGenres": "작품 장르(최대 2개)",
         "targetGender": "타겟 성별",
         "filmRating": "이용 등급",
@@ -457,5 +458,8 @@
                 "abnormalAccess": "정상적인 접근이 아닙니다."
             }
         }
+    },
+    "validationErrors": {
+        "Invalid url": "올바른 URL을 입력해주세요."
     }
 }

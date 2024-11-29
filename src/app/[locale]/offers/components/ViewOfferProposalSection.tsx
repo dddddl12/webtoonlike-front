@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Col } from "@/components/ui/common";
-import { Heading } from "@/components/ui/common";
+import { Heading1 } from "@/components/ui/common";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/ui/Spinner";
 import OfferProposalDetails from "@/components/shared/OfferProposalDetails";
@@ -28,7 +28,7 @@ export default function ViewOfferProposalSection({ offerProposalId }: {
   // todo invoice 쪽과 통일
   return <Col className="w-full my-2 [&_*]:border-foreground bg-[#403F3F] p-5 rounded-[10px]">
     <Col>
-      <Heading>{tMakeAnOffer("offerer")}</Heading>
+      <Heading1>{tMakeAnOffer("offerer")}</Heading1>
       <Profile creatorOrBuyer={offerProposal.sender} />
     </Col>
     <hr className="my-10" />

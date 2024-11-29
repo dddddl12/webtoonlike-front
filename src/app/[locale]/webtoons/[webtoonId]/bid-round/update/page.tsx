@@ -1,4 +1,4 @@
-import { Heading } from "@/components/ui/common";
+import { Heading1 } from "@/components/ui/common";
 import BidRoundForm from "@/components/forms/BidRoundForm";
 import { getTranslations } from "next-intl/server";
 import PageLayout from "@/components/ui/PageLayout";
@@ -14,9 +14,9 @@ export default async function UpdateBidRoundPage({ params }: {
   const t = await getTranslations("seriesManagement");
   return (
     <PageLayout>
-      <Heading>
+      <Heading1>
         {t("reregisterOfContentTransactions")}
-      </Heading>
+      </Heading1>
       <BidRoundForm webtoonId={webtoonId} prev={bidRound} />
     </PageLayout>
   );

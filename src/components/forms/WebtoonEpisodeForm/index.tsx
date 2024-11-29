@@ -85,8 +85,8 @@ export default function WebtoonEpisodeForm({
   }, [episodeImages, form]);
 
   return (
-    <Form {...form}>
-      <form onSubmit={onSubmit} className={clsx("w-[600px] mx-auto", {
+    <Form {...form} schema={WebtoonEpisodeFormSchema}>
+      <form onSubmit={onSubmit} className={clsx("w-[600px] mx-auto space-y-8", {
         "form-overlay": isFormSubmitting
       })}>
         <FormHeader
@@ -188,7 +188,7 @@ function ImageListField({ imageList, className }: {
         </Button>
       </EpisodeImagePreview>
     </Row>
-    <ul className="list-disc p-5 text-gray-text text-sm">
+    <ul className="list-disc p-5 text-muted-foreground text-sm">
       <li>{t("noteDesc1")}</li>
       <li>{t("noteDesc2")}</li>
     </ul>
@@ -205,7 +205,7 @@ function ImageListCanvas({ imageList, dropzoneRootProps }: {
   if (episodeImages.length === 0) {
     return <div
       {...dropzoneRootProps}
-      className="flex flex-col gap-3 justify-center items-center bg-gray-darker text-gray-text rounded-sm cursor-pointer w-full h-[340px]"
+      className="flex flex-col gap-3 justify-center items-center bg-box text-muted-foreground rounded-sm cursor-pointer w-full h-[340px]"
     >
       <IconUpload/>
       <p>
@@ -217,7 +217,7 @@ function ImageListCanvas({ imageList, dropzoneRootProps }: {
     <Col
       {...dropzoneRootProps}
       onClick={undefined} // 아이템이 있는 경우 클릭 시에는 파일 선택 브라우저가 뜨면 안됨
-      className="bg-gray-darker rounded-l-md flex-1 px-5 py-2 overflow-hidden">
+      className="bg-box rounded-l-md flex-1 px-5 py-2 overflow-hidden">
       {episodeImages.map((image, cInx) => (
         <EpisodeImageItem
           key={cInx}

@@ -41,7 +41,7 @@ export default function WebtoonEpisodeEnglishUrlForm({ episode }:{
 
   // 완료 후 다시 재작성 가능해야 하므로 여기선 isFormSubmitting 대신 isSubmitting 사용
   const { formState: { isValid, isDirty, isSubmitting } } = form;
-  return <Form {...form}>
+  return <Form {...form} schema={WebtoonEpisodeEnglishUrlFormSchema}>
     <form onSubmit={onSubmit} className={clsx("w-full gap-5", {
       "form-overlay": isSubmitting
     })}>

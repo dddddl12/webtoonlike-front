@@ -12,21 +12,23 @@ export default function EpisodeImagePreview({ images, children }: {
     <DialogTrigger asChild>
       {children}
     </DialogTrigger>
-    <DialogContent className="max-h-[80%] overflow-y-auto">
+    <DialogContent className="max-w-2xl max-h-[80%] overflow-y-auto">
       <VisuallyHidden>
         <DialogTitle/>
         <DialogDescription/>
       </VisuallyHidden>
-      {images.map((image, i) => {
-        return <Image
-          key={i}
-          src={image.url}
-          alt={image.url}
-          width={400}
-          height={0}
-          style={{ objectFit: "cover" }}
-        />;
-      })}
+      <div>
+        {images.map((image, i) => {
+          return <Image
+            key={i}
+            src={image.url}
+            alt={image.url}
+            width={672}
+            height={0}
+            style={{ objectFit: "cover" }}
+          />;
+        })}
+      </div>
     </DialogContent>
   </Dialog>;
 

@@ -68,6 +68,7 @@ class OfferProposalService {
           status: changeTo === OfferProposalStatus.Accepted
             ? $Enums.OfferProposalStatus.ACCEPTED
             : $Enums.OfferProposalStatus.DECLINED,
+          decidedAt: new Date()
         },
         where: {
           id: offerProposalId,

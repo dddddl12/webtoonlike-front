@@ -2,6 +2,7 @@
     "general": {
         "submit": "Submit",
         "edit": "Edit",
+        "add": "Add",
         "goBack": "Previous",
         "goNext": "Next",
         "selectFile": "Select File",
@@ -9,7 +10,8 @@
         "close": "Close",
         "cancel": "Cancel",
         "expand": "See details",
-        "collapse": "Hide details"
+        "collapse": "Hide details",
+        "optional": "(optional)"
     },
     "userType": {
         "CREATOR": "Creator",
@@ -29,7 +31,6 @@
         "insertAddress1": "Address",
         "insertAddress2": "Address 2",
         "termsAndConditions": "Kipstock Terms and Conditions",
-        "required": "(required)",
         "doYouAgree": "Do you agree with Kipstock Terms and Conditions?",
         "completeToast": "Successfully signed up."
     },
@@ -164,7 +165,7 @@
         "seriesTitle": "Series Title",
         "enterKoreanTitle": "Please enter the Korean title of the series",
         "enterEnglishTitle": "Please enter the English title of the series",
-        "authorOptional": "Author Name (Optional)",
+        "authorOptional": "Author Name",
         "enterAuthor": "Please enter the Korean author's name.",
         "enterAuthorEn": "Please enter the English author's name.",
         "seriesImage": "Thumbnail of Series",
@@ -173,7 +174,7 @@
         "enterEnglishIntro": "Please enter the introduction of your series in English",
         "seriesKeywords": "Series Keywords",
         "pleaseEnterKeywords": "Please enter keywords of the series",
-        "seriesLink": "Series URL (Optional)",
+        "seriesLink": "Series URL",
         "pleaseEnterLink": "Please enter the URL of the series",
         "selectGenres": "Genres (up to 2)",
         "targetGender": "Target Gender",
@@ -457,5 +458,8 @@
                 "abnormalAccess": "This action is not allowed."
             }
         }
+    },
+    "validationErrors": {
+        "Invalid url": "Enter a valid URL."
     }
 }

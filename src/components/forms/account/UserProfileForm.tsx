@@ -31,7 +31,7 @@ export default function UserProfileForm({ userAccountForm, setUserAccountForm, s
   // 필수 필드 체크
   const { formState: { isValid } } = form;
 
-  return <Form {...form}>
+  return <Form {...form} schema={UserFormSchema}>
     <form
       onSubmit={form.handleSubmit((values) => {
         setUserAccountForm(prev => ({

@@ -9,22 +9,22 @@ import { IconExclamation } from "@/components/svgs/IconExclamation";
 import { Checkbox } from "@/shadcn/ui/checkbox";
 import { useTranslations } from "next-intl";
 import { BidRoundFormSchema, BidRoundFormT, BidRoundT } from "@/resources/bidRounds/dtos/bidRound.dto";
-import { UseFormReturn, useWatch } from "react-hook-form";
+import { ControllerRenderProps, FieldPath, FieldValues, UseFormReturn, useWatch } from "react-hook-form";
 import { useRouter } from "@/i18n/routing";
 import {
-  BooleanFormField,
-  FieldSet,
   Form,
-  FormControl,
+  FormControl, FormField,
   FormItem,
   FormLabel
 } from "@/shadcn/ui/form";
-import ContractRangeForm from "@/components/forms/ContractRangeForm";
+import ContractRangeForm, { FormT } from "@/components/forms/ContractRangeForm";
 import { NumericInput } from "@/shadcn/ui/input";
 import { createOrUpdateBidRound } from "@/resources/bidRounds/controllers/bidRound.controller";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
 import useSafeActionForm from "@/hooks/safeActionForm";
+import { RadioGroup, RadioGroupItem } from "@/shadcn/ui/radio-group";
+import { Label } from "@/shadcn/ui/label";
 
 export default function BidRoundForm({ webtoonId, prev }: {
   webtoonId: number;
@@ -77,39 +77,42 @@ export default function BidRoundForm({ webtoonId, prev }: {
   const { formState: { isValid, isDirty } } = form;
 
   return (
-    <Form {...form}>
+    <Form {...form} schema={BidRoundFormSchema}>
       <form onSubmit={onSubmit} className={clsx({
         "form-overlay": isFormSubmitting
       })}>
         {/* 기본 정보 */}
         <Heading2>
           {t("generalInformation")}
-          <IconExclamation className="fill-white ml-1"/>
+          <IconExclamation className="ml-1"/>
         </Heading2>
 
-        <IsNewFieldSet form={form}/>
+        <div className="space-y-6">
 
-        {isNew
-          ? (
-            <>
-              <EpisodeCountFieldSet form={form} />
-              <MonthlyCountFieldSet form={form}/>
-            </>
-          ) : <FinishedFieldSet form={form}/>}
+          <IsNewField form={form}/>
 
-        <OriginalityFieldSet form={form}/>
+          {isNew
+            ? (
+              <>
+                <EpisodeCountFieldSet form={form} />
+                <MonthlyCountFieldSet form={form}/>
+              </>
+            ) : <FinishedFieldSet form={form}/>}
+
+          <OriginalityField form={form}/>
+
+        </div>
 
         {/* 계약 상세 */}
-        <Heading2 className="mt-16">
+        <Heading2>
           {t("form.currentStatusOfCopyrightAgreement")}
-          <IconExclamation className="fill-white ml-1"/>
+          <IconExclamation className="ml-1"/>
         </Heading2>
 
-        <ContractRangeForm form={form as never} formType="bidRound"/>
-        {/*TODO never*/}
+        <ContractRangeForm form={form as UseFormReturn<FormT>} formType="bidRound"/>
 
         {/* 동의 박스 */}
-        <FormItem className="flex justify-center gap-2 items-center mt-16">
+        <FormItem className="justify-center mt-16" forcedIsInline={true}>
           <FormLabel>
             {t("form.agreement")}
           </FormLabel>
@@ -141,30 +144,33 @@ export default function BidRoundForm({ webtoonId, prev }: {
 }
 
 
-function IsNewFieldSet({ form }: {
+function IsNewField({ form }: {
   form: UseFormReturn<BidRoundFormT>;
 }) {
   const t = useTranslations("bidRoundDetails");
-  const items = [
-    {
-      value: true,
-      label: t("newWork"),
-    },
-    {
-      value: false,
-      label: t("oldWork"),
-    }
-  ];
   return (
-    <FieldSet>
-      <legend>{t("seriesType")}</legend>
-      <BooleanFormField
-        control={form.control}
-        name="isNew"
-        items={items}
-        className="mt-3"
-      />
-    </FieldSet>
+    <FormField
+      control={form.control}
+      name={"isNew"}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{t("seriesType")}</FormLabel>
+          <BooleanFormControl
+            field={field}
+            items={[
+              {
+                value: true,
+                label: t("newWork"),
+              },
+              {
+                value: false,
+                label: t("oldWork"),
+              }
+            ]}
+          />
+        </FormItem>
+      )}
+    />
   );
 }
 
@@ -176,11 +182,11 @@ function EpisodeCountFieldSet({ form }: {
   const { errors } = form.formState;
 
   return (
-    <FieldSet>
-      <legend>{t("serviceEpisodeInformation")}</legend>
+    <fieldset>
+      <Label>{t("serviceEpisodeInformation")}</Label>
       <Row className="gap-4">
 
-        <FormItem className="flex items-center mt-3">
+        <FormItem forcedIsInline={true}>
           <FormControl>
             <NumericInput
               register={form.register}
@@ -191,12 +197,12 @@ function EpisodeCountFieldSet({ form }: {
               placeholder="_"
             />
           </FormControl>
-          <FormLabel className="ml-2">
+          <FormLabel>
             {t("currentEpisode")}
           </FormLabel>
         </FormItem>
 
-        <FormItem className="flex items-center mt-3">
+        <FormItem forcedIsInline={true}>
           <FormControl>
             <NumericInput
               register={form.register}
@@ -207,7 +213,7 @@ function EpisodeCountFieldSet({ form }: {
               placeholder="_"
             />
           </FormControl>
-          <FormLabel className="ml-2">
+          <FormLabel>
             {t("expectingOrFinishedEpisode")}
           </FormLabel>
         </FormItem>
@@ -217,7 +223,7 @@ function EpisodeCountFieldSet({ form }: {
         && <div className="text-sm font-medium text-destructive">
           {errors.currentEpisodeNo.message}
         </div>}
-    </FieldSet>
+    </fieldset>
   );
 }
 
@@ -226,28 +232,26 @@ function MonthlyCountFieldSet({ form }: {
 }) {
   const t = useTranslations("bidRoundDetails");
   return (
-    <FieldSet>
-      <legend>{t("monthlyProductionAvailableRounds")}</legend>
-      <Row>
+    <fieldset>
+      <Label>{t("monthlyProductionAvailableRounds")}</Label>
 
-        <FormItem className="flex items-center mt-3">
-          <FormControl>
-            <NumericInput
-              register={form.register}
-              name="monthlyEpisodeCount"
-              className="w-fit p-1 text-right"
-              maxLength={4}
-              size={4}
-              placeholder="_"
-            />
-          </FormControl>
-          <FormLabel className="ml-2">
-            {t("episodesPossible")}
-          </FormLabel>
-        </FormItem>
+      <FormItem forcedIsInline={true}>
+        <FormControl>
+          <NumericInput
+            register={form.register}
+            name="monthlyEpisodeCount"
+            className="w-fit p-1 text-right"
+            maxLength={4}
+            size={4}
+            placeholder="_"
+          />
+        </FormControl>
+        <FormLabel>
+          {t("episodesPossible")}
+        </FormLabel>
+      </FormItem>
 
-      </Row>
-    </FieldSet>
+    </fieldset>
   );
 }
 
@@ -256,54 +260,84 @@ function FinishedFieldSet({ form }: {
 }) {
   const t = useTranslations("bidRoundDetails");
   return (
-    <FieldSet>
-      <legend>{t("serviceEpisodeInformation")}</legend>
-      <Row>
+    <fieldset>
+      <Label>{t("serviceEpisodeInformation")}</Label>
 
-        <FormItem className="flex items-center mt-3">
-          <FormControl>
-            <NumericInput
-              register={form.register}
-              name="totalEpisodeCount"
-              className="w-fit p-1 text-right"
-              maxLength={4}
-              size={4}
-              placeholder="_"
-            />
-          </FormControl>
-          <FormLabel className="ml-2">
-            {t("episodesCompleted")}
-          </FormLabel>
-        </FormItem>
+      <FormItem forcedIsInline={true}>
+        <FormControl>
+          <NumericInput
+            register={form.register}
+            name="totalEpisodeCount"
+            className="w-fit p-1 text-right"
+            maxLength={4}
+            size={4}
+            placeholder="_"
+          />
+        </FormControl>
+        <FormLabel>
+          {t("episodesCompleted")}
+        </FormLabel>
+      </FormItem>
 
-      </Row>
-    </FieldSet>
+    </fieldset>
   );
 }
 
-function OriginalityFieldSet({ form }: {
+function OriginalityField({ form }: {
   form: UseFormReturn<BidRoundFormT>;
 }) {
   const t = useTranslations("bidRoundDetails");
-  const items = [
-    {
-      value: true,
-      label: t("yes"),
-    },
-    {
-      value: false,
-      label: t("no"),
-    }
-  ];
-  return (
-    <FieldSet>
-      <legend>{t("serviceOnOtherPlatforms")}</legend>
-      <BooleanFormField
-        control={form.control}
-        name="isOriginal"
-        items={items}
-        className="mt-3"
-      />
-    </FieldSet>
-  );
+  return <FormField
+    control={form.control}
+    name={"isOriginal"}
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>{t("seriesType")}</FormLabel>
+        <BooleanFormControl
+          field={field}
+          items={[
+            {
+              value: true,
+              label: t("yes"),
+            },
+            {
+              value: false,
+              label: t("no"),
+            }
+          ]}
+        />
+      </FormItem>
+    )}
+  />;
+}
+
+function BooleanFormControl<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>>({ field, items }: {
+  field: ControllerRenderProps<TFieldValues, TName>;
+  items: {
+    value: boolean;
+    label: string;
+  }[];
+}) {
+  return <RadioGroup
+    {...field}
+    value={field.value?.toString() || ""}
+    className="flex flex-wrap gap-3"
+    onValueChange={(value) => {
+      field.onChange(JSON.parse(value));
+    }}
+    onChange={undefined}
+  >
+    {items.map((item, index) => (
+      <FormItem key={index} className="space-x-1 space-y-0 flex items-center">
+        <FormControl>
+          <RadioGroupItem
+            value={item.value.toString()}
+          />
+        </FormControl>
+        <FormLabel>
+          {item.label}
+        </FormLabel>
+      </FormItem>
+    ))}
+  </RadioGroup>;
 }

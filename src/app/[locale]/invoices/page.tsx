@@ -2,7 +2,7 @@ import React from "react";
 import { InvoicedOfferList } from "@/app/[locale]/invoices/InvoicedOfferList";
 import PageLayout from "@/components/ui/PageLayout";
 import { getTranslations } from "next-intl/server";
-import { Heading } from "@/components/ui/common";
+import { Heading1 } from "@/components/ui/common";
 import { listInvoicedOffers, listUninvoicedOffers } from "@/resources/invoices/controllers/invoice.controller";
 import { Col } from "@/components/ui/common";
 import { UninvoicedOfferList } from "@/app/[locale]/invoices/UninvoicedOfferList";
@@ -18,15 +18,15 @@ export default async function Invoice() {
     <PageLayout>
       <Col className="gap-20">
         <Col>
-          <Heading>
+          <Heading1>
             미발급 인보이스
-          </Heading>
+          </Heading1>
           <UninvoicedOfferList initialUninvoicedListResponse={initialUninvoicedListResponse}/>
         </Col>
         <Col>
-          <Heading>
+          <Heading1>
             {t("invoiceManagement")}
-          </Heading>
+          </Heading1>
           <InvoicedOfferList initialInvoicedListResponse={initialInvoicedListResponse}/>
         </Col>
       </Col>

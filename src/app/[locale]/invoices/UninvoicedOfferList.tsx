@@ -27,6 +27,8 @@ export function UninvoicedOfferList({ initialUninvoicedListResponse }: {
     return <NoItems message={t("noUnvoiced")}/>;
   }
 
+  // todo 오퍼 중 계약이 종료되면?
+
   return <>
     <Col>
       <TableHeader />
@@ -52,7 +54,9 @@ function TableHeader() {
       <div className="w-[20%] p-2 flex justify-center font-bold">{t("buyerName")}</div>
       <div className="w-[20%] p-2 flex justify-center font-bold">협상 개요</div>
       <div className="w-[20%] p-2 flex justify-center font-bold">신청 일자</div>
-      <div className="w-[20%] p-2 flex justify-center font-bold">{t("downloadInvoice")}</div>
+      <div className="w-[20%] p-2 flex justify-center font-bold">
+        {t("downloadInvoice")}
+      </div>
     </div>
   );
 }

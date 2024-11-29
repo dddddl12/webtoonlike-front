@@ -88,7 +88,7 @@ function DialogContentWrapper({ reload, prev }: {
         장르 정보를 입력해주세요.
       </DialogDescription>
     </DialogHeader>
-    <Form {...form}>
+    <Form {...form} schema={GenreFormSchema}>
       <form onSubmit={onSubmit} className={clsx("space-y-4", {
         "form-overlay": isFormSubmitting || isLoading
       })}>

@@ -1,6 +1,6 @@
 import React from "react";
 import PageLayout from "@/components/ui/PageLayout";
-import { Heading } from "@/components/ui/common";
+import { Heading1 } from "@/components/ui/common";
 import { getTranslations } from "next-intl/server";
 import WebtooonFeedList from "@/app/[locale]/webtoons/components/WebtoonFeed/WebtooonFeedList";
 import { listGenres } from "@/resources/genres/genre.controller";
@@ -16,9 +16,9 @@ export default async function WebtoonFeed() {
 
   return (
     <PageLayout>
-      <Heading className="text-[32px] font-bold">
+      <Heading1 className="text-[32px] font-bold">
         {TallSeries("allSeries")}
-      </Heading>
+      </Heading1>
       <WebtooonFeedList
         genres={genres}
         initialWebtoonListResponse={webtoonListResponse}

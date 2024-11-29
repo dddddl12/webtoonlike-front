@@ -8,8 +8,8 @@ import {
   ControllerProps,
   FieldPath, FieldPathValue,
   FieldValues,
-  FormProvider,
-  useFormContext, Control,
+  FormProvider, FormProviderProps,
+  useFormContext,
 } from "react-hook-form";
 
 import { cn } from "@/shadcn/lib/utils";
@@ -18,9 +18,36 @@ import { Row } from "@/components/ui/common";
 import { Button } from "@/shadcn/ui/button";
 import { Link } from "@/i18n/routing";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import { RadioGroup, RadioGroupItem } from "@/shadcn/ui/radio-group";
+import { useTranslations } from "next-intl";
+import z from "zod";
 
-const Form = FormProvider;
+
+type FormSchemaContextValue<
+  Schema = z.ZodObject<any>
+> = {
+  schema: Schema;
+};
+
+const FormSchemaContext = React.createContext<FormSchemaContextValue>(
+  {} as FormSchemaContextValue
+);
+
+export const Form = <
+  Schema extends z.ZodObject<any>,
+  TContext = any,
+  TTransformedValues extends FieldValues | undefined = undefined
+>({
+  schema, ...props
+}: FormProviderProps<z.infer<Schema>, TContext, TTransformedValues>
+  & FormSchemaContextValue<Schema>) => {
+  return <FormSchemaContext.Provider value={{ schema }}>
+    <FormProvider
+      {...props}
+    />
+  </FormSchemaContext.Provider>;
+};
+Form.displayName = "Form";
+
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
@@ -33,7 +60,7 @@ const FormFieldContext = React.createContext<FormFieldContextValue>(
   {} as FormFieldContextValue
 );
 
-const FormField = <
+export const FormField = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 >({
@@ -46,7 +73,7 @@ const FormField = <
   );
 };
 
-const useFormField = () => {
+export const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext);
   const itemContext = React.useContext(FormItemContext);
   const { getFieldState, formState } = useFormContext();
@@ -57,10 +84,11 @@ const useFormField = () => {
     throw new Error("useFormField should be used within <FormField>");
   }
 
-  const { id } = itemContext;
+  const { id, isInline } = itemContext;
 
   return {
     id,
+    isInline,
     name: fieldContext.name,
     formItemId: `${id}-form-item`,
     formDescriptionId: `${id}-form-item-description`,
@@ -71,52 +99,64 @@ const useFormField = () => {
 
 type FormItemContextValue = {
   id: string;
+  isInline: boolean;
 };
 
 const FormItemContext = React.createContext<FormItemContextValue>(
   {} as FormItemContextValue
 );
 
-const FormItem = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
+export const FormItem = ({
+  className, forcedIsInline, ...props }: React.ComponentProps<"div"> & {
+    forcedIsInline?: boolean;
+  }) => {
+  const { id: parentId } = React.useContext(FormItemContext);
+  const isInline = forcedIsInline ?? !!parentId;
   const id = React.useId();
 
   return (
-    <FormItemContext.Provider value={{ id }}>
-      <div ref={ref} className={cn(className)} {...props} />
+    <FormItemContext.Provider value={{ id, isInline }}>
+      <div
+        className={cn(className, {
+          "flex items-center gap-1.5": isInline,
+        })}
+        {...props}
+      />
     </FormItemContext.Provider>
   );
-});
+};
 FormItem.displayName = "FormItem";
 
-const FormLabel = React.forwardRef<
-  React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
->(({ className, ...props }, ref) => {
-  const { error, formItemId } = useFormField();
+export const FormLabel = ({
+  className, ref, children, ...props
+}: React.ComponentProps<typeof LabelPrimitive.Root>) => {
+  const { error, formItemId, name, isInline } = useFormField();
+  const { schema } = React.useContext(FormSchemaContext);
+  const markOptional: boolean = (!isInline && schema.shape[name]?.isOptional())
+    || false;
+
+  const t = useTranslations("general");
 
   return (
     <Label
       ref={ref}
+      variant={isInline ? "selectItem" : "mainField"}
       className={cn(error && "text-destructive", className)}
       htmlFor={formItemId}
       {...props}
-    />
+    >
+      {children}{markOptional
+      && <span className="text-mint ml-2 text-sm font-normal">{t("optional")}</span>}
+    </Label>
   );
-});
+};
 FormLabel.displayName = "FormLabel";
 
-const FormControl = React.forwardRef<
-  React.ElementRef<typeof Slot>,
-  React.ComponentPropsWithoutRef<typeof Slot>
->(({ ...props }, ref) => {
+export const FormControl = ({ ...props }: React.ComponentProps<typeof Slot>) => {
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
 
   return (
     <Slot
-      ref={ref}
       id={formItemId}
       aria-describedby={
         !error
@@ -127,10 +167,10 @@ const FormControl = React.forwardRef<
       {...props}
     />
   );
-});
+};
 FormControl.displayName = "FormControl";
 
-const FormDescription = React.forwardRef<
+export const FormDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => {
@@ -147,12 +187,22 @@ const FormDescription = React.forwardRef<
 });
 FormDescription.displayName = "FormDescription";
 
-const FormMessage = React.forwardRef<
+export const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
+  const t = useTranslations("validationErrors");
   const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message) : children;
+  let errorMessage = String(error?.message);
+
+  // 번역이 있다면 번역 문구 표시
+  if (errorMessage && t.has(errorMessage)) {
+    errorMessage = t(errorMessage);
+  }
+
+  const body = error
+    ? errorMessage
+    : children;
 
   if (!body) {
     return null;
@@ -162,7 +212,7 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-sm font-medium text-destructive", className)}
+      className={cn("mt-1.5 text-sm font-medium text-destructive", className)}
       {...props}
     >
       {body}
@@ -170,38 +220,6 @@ const FormMessage = React.forwardRef<
   );
 });
 FormMessage.displayName = "FormMessage";
-
-export {
-  useFormField,
-  Form,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormDescription,
-  FormMessage,
-  FormField,
-};
-
-
-// 여기서부터 커스텀
-interface FieldSetProps
-  extends React.FieldsetHTMLAttributes<HTMLFieldSetElement> {}
-
-export const FieldSet = React.forwardRef<HTMLFieldSetElement, FieldSetProps>(
-  ({ className, ...props }, ref) => {
-    return (
-      <fieldset
-        className={cn(
-          "w-full mt-6",
-          className
-        )}
-        ref={ref}
-        {...props}
-      />
-    );
-  }
-);
-FieldSet.displayName = "FieldSet";
 
 export function FormHeader({ title, goBackHref }: {
   title: string;
@@ -220,90 +238,3 @@ export function FormHeader({ title, goBackHref }: {
 export type FieldName<TFieldValues extends FieldValues, AllowedFieldType> = {
   [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K> extends AllowedFieldType | undefined ? K : never;
 }[FieldPath<TFieldValues>];
-
-export function BooleanFormField<TFieldValues extends FieldValues>({ control, name, items, className }: {
-  control: Control<TFieldValues>;
-  name: FieldName<TFieldValues, boolean>;
-  items: {
-    value: boolean;
-    label: string;
-  }[];
-  className?: string;
-}) {
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className={className}>
-          <FormControl>
-            <RadioGroup
-              {...field}
-              value={field.value?.toString() || ""}
-              className="flex flex-wrap gap-3"
-              onValueChange={(value) => {
-                field.onChange(JSON.parse(value));
-              }}
-              onChange={undefined}
-            >
-              {items.map((item, index) => (
-                <FormItem key={index} className="space-x-1 space-y-0 flex items-center">
-                  <FormControl>
-                    <RadioGroupItem
-                      className="border border-white"
-                      value={item.value.toString()}
-                    />
-                  </FormControl>
-                  <FormLabel>
-                    {item.label}
-                  </FormLabel>
-                </FormItem>
-              ))}
-            </RadioGroup>
-          </FormControl>
-        </FormItem>
-      )}
-    />
-  );
-}
-
-// export function NumberFormField<TFieldValues extends FieldValues>({ control, name }: {
-//   control: Control<TFieldValues>;
-//   name: FieldName<TFieldValues, number>;
-// }) {
-//   return (
-//     <FormField
-//       control={control}
-//       name={name}
-//       render={({ field }) => (
-//         <FormItem className={className}>
-//           <FormControl>
-//             <RadioGroup
-//               {...field}
-//               value={field.value?.toString() || ""}
-//               className="flex flex-wrap gap-3"
-//               onValueChange={(value) => {
-//                 field.onChange(JSON.parse(value));
-//               }}
-//               onChange={undefined}
-//             >
-//               {items.map((item, index) => (
-//                 <FormItem key={index} className="space-x-1 space-y-0 flex items-center">
-//                   <FormControl>
-//                     <RadioGroupItem
-//                       className="border border-white"
-//                       value={item.value.toString()}
-//                     />
-//                   </FormControl>
-//                   <FormLabel>
-//                     {item.label}
-//                   </FormLabel>
-//                 </FormItem>
-//               ))}
-//             </RadioGroup>
-//           </FormControl>
-//         </FormItem>
-//       )}
-//     />
-//   );
-// }

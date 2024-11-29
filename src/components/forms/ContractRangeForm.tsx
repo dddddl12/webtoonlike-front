@@ -17,7 +17,7 @@ import { FormControl, FormField, FormItem } from "@/shadcn/ui/form";
 import { Input } from "@/shadcn/ui/input";
 import { OfferProposalFormT } from "@/resources/offers/dtos/offerProposal.dto";
 
-type FormT = BidRoundFormT | OfferProposalFormT;
+export type FormT = BidRoundFormT | OfferProposalFormT;
 
 export default function ContractRangeForm({ form, formType }: {
   form: UseFormReturn<FormT>;
@@ -36,7 +36,7 @@ export default function ContractRangeForm({ form, formType }: {
         <Button variant="mint" onClick={(e) => {
           e.preventDefault();
           const newContractRange = form.getValues("contractRange") || [];
-          newContractRange.push({} as any); //todo
+          newContractRange.push({} as FormT["contractRange"][number]);
           form.setValue("contractRange", newContractRange, {
             shouldValidate: true
           });
@@ -45,27 +45,27 @@ export default function ContractRangeForm({ form, formType }: {
           <span>{t("addItem")}</span>
         </Button>
       </Row>
-      <Table className="mt-3">
+      <Table className="mt-3 table-fixed [&_th]:text-center [&_td]:text-center">
         <TableHeader>
           <TableRow className="bg-gray-dark">
-            <TableHead className="text-center text-gray-text">
+            <TableHead>
               {t("typeOfBusinessRight")}
             </TableHead>
-            <TableHead className="text-center text-gray-text">
+            <TableHead>
               {t("businessRightClassification")}
             </TableHead>
-            <TableHead className="text-center text-gray-text">
+            <TableHead>
               {t("exclusiveRights")}
             </TableHead>
-            <TableHead className="text-center text-gray-text">
+            <TableHead>
               {t("serviceRegion")}
             </TableHead>
             {formType === "offerProposal"
               // 오퍼 폼일 때만 사용하는 컬럼
-              && <TableHead className="text-center text-gray-text">
+              && <TableHead>
                 {t("contractCondition")}
               </TableHead>}
-            <TableHead className="text-center text-gray-text">
+            <TableHead className="w-[100px]">
               {t("delete")}
             </TableHead>
           </TableRow>
@@ -115,7 +115,7 @@ function BusinessRightCell({ form, row, idx }: {
     defaultValue = items[1].value;
   }
 
-  return <TableCell className="text-center w-[200px]">
+  return <TableCell>
     <Select
       defaultValue={defaultValue}
       onValueChange={(value) => {
@@ -130,7 +130,7 @@ function BusinessRightCell({ form, row, idx }: {
         }
       }}
     >
-      <SelectTrigger className="bg-gray-darker rounded-sm">
+      <SelectTrigger>
         {/* todo placeholder 명시적으로 드러나지 않음*/}
         <SelectValue placeholder={t("selectTypeOfBusinessRight")} />
       </SelectTrigger>
@@ -153,11 +153,11 @@ function BusinessFieldCell({ form, row, idx }: {
   const t = useTranslations("contractRangeDataForm");
   const tBusinessFields = useTranslations("businessFields");
   if (row.businessField === "WEBTOONS") {
-    return <TableCell className="text-center w-[200px]">
+    return <TableCell>
       -
     </TableCell>;
   }
-  return <TableCell className="text-center w-[200px]">
+  return <TableCell>
     <FormField
       control={form.control}
       name={`contractRange.${idx}.businessField`}
@@ -168,7 +168,7 @@ function BusinessFieldCell({ form, row, idx }: {
               defaultValue={field.value}
               onValueChange={field.onChange}
             >
-              <SelectTrigger className="bg-gray-darker rounded-sm">
+              <SelectTrigger>
                 <SelectValue
                   placeholder={t("selectBusinessRightClassifications")}
                 />
@@ -196,7 +196,7 @@ function ExclusiveCell({ form, idx }: {
 }) {
   const t = useTranslations("contractRangeDataForm");
   const tContractType = useTranslations("contractType");
-  return <TableCell className="text-center w-[200px]">
+  return <TableCell>
     <FormField
       control={form.control}
       name={`contractRange.${idx}.contract`}
@@ -207,7 +207,7 @@ function ExclusiveCell({ form, idx }: {
               defaultValue={field.value}
               onValueChange={field.onChange}
             >
-              <SelectTrigger className="bg-gray-darker rounded-sm">
+              <SelectTrigger>
                 <SelectValue
                   placeholder={t("exclusiveRights")}
                 />
@@ -235,7 +235,7 @@ function CountryCell({ form, idx }: {
   const t = useTranslations("contractRangeDataForm");
   const tCountry = useTranslations("countries");
 
-  return <TableCell className="text-center w-[200px]">
+  return <TableCell>
     <FormField
       control={form.control}
       name={`contractRange.${idx}.country`}
@@ -246,7 +246,7 @@ function CountryCell({ form, idx }: {
               defaultValue={field.value}
               onValueChange={field.onChange}
             >
-              <SelectTrigger className="bg-gray-darker rounded-sm">
+              <SelectTrigger>
                 <SelectValue
                   placeholder={t("serviceRegion")}
                 />
@@ -273,7 +273,7 @@ function ContractConditionCell({ form, idx }: {
   idx: number;
 }) {
   const t = useTranslations("contractRangeDataForm");
-  return <TableCell className="text-center w-[200px]">
+  return <TableCell>
     <FormField
       control={form.control}
       name={`contractRange.${idx}.message`}
@@ -297,9 +297,10 @@ function DeleteCell({ form, idx }: {
   form: UseFormReturn<FormT>;
   idx: number;
 }) {
-  return <TableCell className="text-center w-[50px]">
+  return <TableCell>
     <Button
-      className="bg-red text-white hover:bg-red/70"
+      variant="red"
+      size="icon"
       onClick={(e) => {
         e.preventDefault();
         const newContractRange = form.getValues("contractRange");
@@ -309,7 +310,7 @@ function DeleteCell({ form, idx }: {
         });
       }}
     >
-      <IconDelete className="fill-white" />
+      <IconDelete/>
     </Button>
   </TableCell>;
 }

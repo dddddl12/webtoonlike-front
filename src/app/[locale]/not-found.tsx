@@ -1,12 +1,12 @@
 import { Col } from "@/components/ui/common";
 import { Button } from "@/shadcn/ui/button";
-import { Heading } from "@/components/ui/common";
+import { Heading1 } from "@/components/ui/common";
 
 // TODO
 export default async function NotFound() {
   return (
     <Col>
-      <Heading>404 ERROR</Heading>
+      <Heading1>404 ERROR</Heading1>
       <p>원하시는 페이지를 찾을 수 없습니다.</p>
       <p>
         찾으려는 페이지의 주소가 잘못 입력되었거나,

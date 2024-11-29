@@ -7,20 +7,26 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/shadcn/lib/utils";
 
 const labelVariants = cva(
-  "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+  "leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70", {
+    variants: {
+      variant: {
+        mainField: "block font-semibold text-base mb-2",
+        selectItem: "text-sm"
+      }
+    },
+    defaultVariants: {
+      variant: "mainField",
+    }
+  }
 );
 
-const Label = React.forwardRef<
-  React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
-    VariantProps<typeof labelVariants>
->(({ className, ...props }, ref) => (
+const Label = ({ className, variant, ...props }: React.ComponentProps<typeof LabelPrimitive.Root> &
+    VariantProps<typeof labelVariants>) => (
   <LabelPrimitive.Root
-    ref={ref}
-    className={cn(labelVariants(), className)}
+    className={cn(labelVariants( { variant } ), className)}
     {...props}
   />
-));
+);
 Label.displayName = LabelPrimitive.Root.displayName;
 
 export { Label };

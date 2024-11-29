@@ -1,11 +1,11 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Input } from "@/shadcn/ui/input";
 import { Button } from "@/shadcn/ui/button";
 import { Textarea } from "@/shadcn/ui/textarea";
 import { Row } from "@/components/ui/common";
-import { Checkbox } from "@/shadcn/ui/checkbox";
+import { Checkbox, CheckboxGroup } from "@/shadcn/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/shadcn/ui/radio-group";
 import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { IconUpload } from "@/components/svgs/IconUpload";
@@ -17,7 +17,15 @@ import {
   WebtoonFormSchema,
   WebtoonFormT
 } from "@/resources/webtoons/dtos/webtoon.dto";
-import { FieldSet, Form, FormControl, FormField, FormHeader, FormItem, FormLabel } from "@/shadcn/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormHeader,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from "@/shadcn/ui/form";
 import { UseFormReturn } from "react-hook-form";
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
@@ -69,23 +77,25 @@ export function WebtoonForm({ selectableGenres, prev }: {
   const { formState: { isValid, isDirty } } = form;
 
   return (
-    <Form {...form}>
-      <form onSubmit={onSubmit} className={clsx("w-[600px] mx-auto", {
-        "form-overlay": isFormSubmitting
-      })}>
+    <Form {...form} schema={WebtoonFormSchema}>
+      <form onSubmit={onSubmit} className={clsx("w-[600px] mx-auto space-y-8",
+        "[&_fieldset]:flex [&_fieldset]:flex-col [&_fieldset]:gap-3",
+        {
+          "form-overlay": isFormSubmitting
+        })}>
         <FormHeader
           title={prev ? t("editSeries") : t("addSeries")}
           goBackHref={prev ? `/webtoons/${prev.id}` : "/webtoons"}
         />
         <TitleFieldSet form={form}/>
         <AuthorFieldSet form={form}/>
-        <ThumbnailFieldSet form={form} thumbnail={thumbnail} setThumbnail={setThumbnail}/>
+        <ThumbnailField form={form} thumbnail={thumbnail} setThumbnail={setThumbnail}/>
         <DescriptionFieldSet form={form}/>
-        <ExternalLinkFieldSet form={form}/>
-        <GenresFieldSet form={form} selectableGenres={selectableGenres}/>
-        <GenderFieldSet form={form}/>
-        <TargetAgeFieldSet form={form}/>
-        <AgeLimitFieldSet form={form}/>
+        <ExternalLinkField form={form}/>
+        <GenresField form={form} selectableGenres={selectableGenres}/>
+        <GenderField form={form}/>
+        <TargetAgeField form={form}/>
+        <AgeLimitField form={form}/>
 
         <Row className="justify-end mt-14">
           <Button
@@ -108,13 +118,15 @@ function TitleFieldSet({ form }: {
 }) {
   const t = useTranslations("addSeries");
 
-  return <FieldSet>
-    <legend>{t("seriesTitle")}</legend>
+  return <fieldset>
     <FormField
       control={form.control}
       name="title"
       render={({ field }) => (
-        <FormItem className="mt-3">
+        <FormItem>
+          <FormLabel>
+            {t("seriesTitle")}
+          </FormLabel>
           <FormControl>
             <Input
               {...field}
@@ -130,7 +142,7 @@ function TitleFieldSet({ form }: {
       control={form.control}
       name="title_en"
       render={({ field }) => (
-        <FormItem className="mt-3">
+        <FormItem>
           <FormControl>
             <Input
               {...field}
@@ -141,7 +153,7 @@ function TitleFieldSet({ form }: {
         </FormItem>
       )}
     />
-  </FieldSet>;
+  </fieldset>;
 }
 
 function AuthorFieldSet({ form }: {
@@ -149,13 +161,13 @@ function AuthorFieldSet({ form }: {
 }) {
   const t = useTranslations("addSeries");
 
-  return <FieldSet>
-    <legend>{t("authorOptional")}</legend>
+  return <fieldset>
     <FormField
       control={form.control}
       name="authorName"
       render={({ field }) => (
-        <FormItem className="mt-3">
+        <FormItem>
+          <FormLabel>{t("authorOptional")}</FormLabel>
           <FormControl>
             <Input
               {...field}
@@ -171,7 +183,7 @@ function AuthorFieldSet({ form }: {
       control={form.control}
       name="authorName_en"
       render={({ field }) => (
-        <FormItem className="mt-3">
+        <FormItem>
           <FormControl>
             <Input
               {...field}
@@ -182,59 +194,60 @@ function AuthorFieldSet({ form }: {
         </FormItem>
       )}
     />
-  </FieldSet>;
+  </fieldset>;
 }
 
-function ThumbnailFieldSet({ form, thumbnail, setThumbnail }: {
+function ThumbnailField({ form, thumbnail, setThumbnail }: {
   form: UseFormReturn<WebtoonFormT>;
   thumbnail: ImageObject;
   setThumbnail: Dispatch<SetStateAction<ImageObject>>;
 }) {
   const t = useTranslations("addSeries");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  return <FieldSet>
-    <legend>{t("seriesImage")}</legend>
-    <FormItem className="mt-3">
-      <FormControl>
-        <Input
-          type="file"
-          accept="image/jpeg, image/png"
-          className="hidden"
-          onChange={(event) => {
-            const imageData = new ImageObject(event.target.files?.[0]);
-            setThumbnail(imageData);
-            form.setValue("thumbPath", "filedAdded", {
-              shouldValidate: true
-            });
-            // 이 값은 실제 업로드 후 remote url로 대체되지만, {thumbPath: string} 조건의 validator를 통과하기 위함
+  return <FormItem>
+    <FormLabel>{t("seriesImage")}</FormLabel>
+    <FormControl>
+      <Input
+        type="file"
+        accept="image/jpeg, image/png"
+        className="hidden"
+        ref={fileInputRef}
+        onChange={(event) => {
+          const imageData = new ImageObject(event.target.files?.[0]);
+          setThumbnail(imageData);
+          form.setValue("thumbPath", "filedAdded", {
+            shouldValidate: true
+          });
+          // 이 값은 실제 업로드 후 remote url로 대체되지만, {thumbPath: string} 조건의 validator를 통과하기 위함
+        }}
+      />
+    </FormControl>
+    <div
+      className="flex flex-col justify-center items-center bg-box rounded-sm w-[178px] h-[270px] cursor-pointer relative"
+      onClick={() => fileInputRef.current?.click()}
+    >
+      {thumbnail.url ? (
+        <Image
+          draggable={false}
+          priority
+          src={thumbnail.url}
+          alt={"thumbnail"}
+          style={{
+            objectFit: "cover",
           }}
+          fill
         />
-      </FormControl>
-      <FormLabel
-        className="flex flex-col justify-center items-center bg-gray-darker rounded-sm w-[178px] h-[270px] mt-3 cursor-pointer relative"
-      >
-        {thumbnail.url ? (
-          <Image
-            draggable={false}
-            priority
-            src={thumbnail.url}
-            alt={"thumbnail"}
-            style={{
-              objectFit: "cover",
-            }}
-            fill
-          />
-        ) : (
-          <>
-            <IconUpload className="fill-gray-text"/>
-            <p className="mt-5 text-gray-text">
-              300 X 450
-            </p>
-          </>
-        )}
-      </FormLabel>
-    </FormItem>
-  </FieldSet>;
+      ) : (
+        <>
+          <IconUpload className="fill-muted-foreground"/>
+          <p className="mt-5 text-muted-foreground">
+            300 X 450
+          </p>
+        </>
+      )}
+    </div>
+  </FormItem>;
 }
 
 function DescriptionFieldSet({ form }: {
@@ -242,26 +255,24 @@ function DescriptionFieldSet({ form }: {
 }) {
   const t = useTranslations("addSeries");
 
-  return <FieldSet>
-    <legend>{t("seriesIntro")}</legend>
+  return <fieldset>
     <FormField
       control={form.control}
       name="description"
       render={({ field }) => (
-        <div className="relative">
-          <FormItem className="mt-3">
-            <FormControl>
-              <Textarea
-                {...field}
-                placeholder={t("enterKoreanIntro")}
-                maxLength={1000}
-              />
-            </FormControl>
-          </FormItem>
-          <span className="absolute right-2 bottom-1 text-xs text-gray-text ">
-            {field.value?.length || 0}/1,000
-          </span>
-        </div>
+        <FormItem>
+          <FormLabel>{t("seriesIntro")}</FormLabel>
+          <FormControl>
+            <Textarea
+              {...field}
+              placeholder={t("enterKoreanIntro")}
+              maxLength={1000}
+            />
+          </FormControl>
+          <div className="text-xs text-muted-foreground text-right mt-1">
+            ({(field.value?.length || 0).toLocaleString()}/{(1000).toLocaleString()})
+          </div>
+        </FormItem>
       )}
     />
 
@@ -269,65 +280,60 @@ function DescriptionFieldSet({ form }: {
       control={form.control}
       name="description_en"
       render={({ field }) => (
-        <div className="relative">
-          <FormItem className="mt-3">
-            <FormControl>
-              <Textarea
-                {...field}
-                onChange={field.onChange}
-                placeholder={t("enterEnglishIntro")}
-                maxLength={1000}
-              />
-            </FormControl>
-          </FormItem>
-          <span className="absolute right-2 bottom-1 text-xs text-gray-text ">
-            {field.value?.length || 0}/1,000
-          </span>
-        </div>
-      )}
-    />
-  </FieldSet>;
-}
-
-function ExternalLinkFieldSet({ form }: {
-  form: UseFormReturn<WebtoonFormT>;
-}) {
-  const t = useTranslations("addSeries");
-
-  return <FieldSet>
-    <legend>{t("seriesLink")}</legend>
-    {/*todo url 체커*/}
-    <FormField
-      control={form.control}
-      name="externalUrl"
-      render={({ field }) => (
-        <FormItem className="mt-3">
+        <FormItem>
           <FormControl>
-            <Input
+            <Textarea
               {...field}
-              type="text"
-              placeholder={t("pleaseEnterLink")}
+              onChange={field.onChange}
+              placeholder={t("enterEnglishIntro")}
+              maxLength={1000}
             />
           </FormControl>
+          <div className="text-xs text-muted-foreground text-right mt-1">
+            ({(field.value?.length || 0).toLocaleString()}/{(1000).toLocaleString()})
+          </div>
         </FormItem>
       )}
     />
-  </FieldSet>;
+  </fieldset>;
 }
 
-function GenresFieldSet({ form, selectableGenres }: {
+function ExternalLinkField({ form }: {
+  form: UseFormReturn<WebtoonFormT>;
+}) {
+  const t = useTranslations("addSeries");
+  return <FormField
+    control={form.control}
+    name="externalUrl"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>{t("seriesLink")}</FormLabel>
+        <FormControl>
+          <Input
+            {...field}
+            type="text"
+            placeholder={t("pleaseEnterLink")}
+          />
+        </FormControl>
+        <FormMessage/>
+      </FormItem>
+    )}
+  />;
+}
+
+function GenresField({ form, selectableGenres }: {
   form: UseFormReturn<WebtoonFormT>;
   selectableGenres: GenreT[];
 }) {
   const t = useTranslations("addSeries");
 
-  return <FieldSet>
-    <legend>{t("selectGenres")}</legend>
-    <FormField
-      control={form.control}
-      name="genreIds"
-      render={() => (
-        <FormItem className="flex flex-wrap gap-3 mt-3">
+  return <FormField
+    control={form.control}
+    name="genreIds"
+    render={() => (
+      <FormItem>
+        <FormLabel>{t("selectGenres")}</FormLabel>
+        <CheckboxGroup>
           {selectableGenres.map((genre) => (
             <FormField
               key={genre.id}
@@ -336,7 +342,7 @@ function GenresFieldSet({ form, selectableGenres }: {
               defaultValue={[]}
               render={({ field }) => {
                 return (
-                  <FormItem className="flex flex-row items-center gap-1.5">
+                  <FormItem>
                     <FormControl>
                       <Checkbox
                         checked={field.value?.includes(genre.id)}
@@ -364,65 +370,61 @@ function GenresFieldSet({ form, selectableGenres }: {
               }}
             />
           ))}
-        </FormItem>
-      )}
-    />
-  </FieldSet>;
+        </CheckboxGroup>
+      </FormItem>
+    )}
+  />;
 }
 
-function GenderFieldSet({ form }: {
+function GenderField({ form }: {
   form: UseFormReturn<WebtoonFormT>;
 }) {
   const t = useTranslations("addSeries");
   const tGender = useTranslations("targetGender");
 
-  return <FieldSet>
-    <legend>{t("targetGender")}</legend>
-    <FormField
-      control={form.control}
-      name="targetGender"
-      render={({ field }) => (
-        <FormItem className="mt-3">
-          <FormControl>
-            <RadioGroup
-              {...field}
-              className="flex flex-wrap gap-3"
-              onValueChange={field.onChange}
-            >
-              {Object.values(TargetGender).map((item, index) => (
-                <FormItem key={index} className="flex items-center gap-1.5">
-                  <FormControl>
-                    <RadioGroupItem
-                      className="border border-white"
-                      value={item}
-                    />
-                  </FormControl>
-                  <FormLabel>
-                    {tGender(item)}
-                  </FormLabel>
-                </FormItem>
-              ))}
-            </RadioGroup>
-          </FormControl>
-        </FormItem>
-      )}
-    />
-  </FieldSet>;
+  return <FormField
+    control={form.control}
+    name="targetGender"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>
+          {t("targetGender")}
+        </FormLabel>
+        <FormControl>
+          <RadioGroup
+            {...field}
+            onValueChange={field.onChange}
+          >
+            {Object.values(TargetGender).map((item, index) => (
+              <FormItem key={index} className="flex items-center gap-1.5">
+                <FormControl>
+                  <RadioGroupItem value={item} />
+                </FormControl>
+                <FormLabel>
+                  {tGender(item)}
+                </FormLabel>
+              </FormItem>
+            ))}
+          </RadioGroup>
+        </FormControl>
+      </FormItem>
+    )}
+  />;
 }
 
-function TargetAgeFieldSet({ form }: {
+function TargetAgeField({ form }: {
   form: UseFormReturn<WebtoonFormT>;
 }) {
   const t = useTranslations("addSeries");
   const tTargetAge = useTranslations("targetAge");
 
-  return <FieldSet>
-    <legend>{t("targetAge")}</legend>
-    <FormField
-      control={form.control}
-      name="targetAges"
-      render={() => (
-        <FormItem className="flex flex-wrap gap-3 mt-3">
+  return <FormField
+    control={form.control}
+    name="targetAges"
+    render={() => (
+      <FormItem>
+        <FormLabel>{t("targetAge")}</FormLabel>
+        <CheckboxGroup>
           {Object.values(TargetAge).map((item, index) => (
             <FormField
               key={index}
@@ -454,50 +456,43 @@ function TargetAgeFieldSet({ form }: {
               }}
             />
           ))}
-        </FormItem>
-      )}
-    />
-  </FieldSet>;
+        </CheckboxGroup>
+      </FormItem>
+    )}
+  />;
 }
 
 
-function AgeLimitFieldSet({ form }: {
+function AgeLimitField({ form }: {
   form: UseFormReturn<WebtoonFormT>;
 }) {
   const t = useTranslations("addSeries");
   const tAgeRestriction = useTranslations("ageRestriction");
 
-  return <FieldSet>
-    <legend>{t("filmRating")}</legend>
-
-    <FormField
-      control={form.control}
-      name="ageLimit"
-      render={({ field }) => (
-        <FormItem className="mt-3">
-          <FormControl>
-            <RadioGroup
-              {...field}
-              className="flex flex-wrap gap-3"
-              onValueChange={field.onChange}
-            >
-              {Object.values(AgeLimit).map((item, index) => (
-                <FormItem key={index} className="flex items-center gap-1.5">
-                  <FormControl>
-                    <RadioGroupItem
-                      className="border border-white"
-                      value={item}
-                    />
-                  </FormControl>
-                  <FormLabel>
-                    {tAgeRestriction(item)}
-                  </FormLabel>
-                </FormItem>
-              ))}
-            </RadioGroup>
-          </FormControl>
-        </FormItem>
-      )}
-    />
-  </FieldSet>;
+  return <FormField
+    control={form.control}
+    name="ageLimit"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>{t("filmRating")}</FormLabel>
+        <FormControl>
+          <RadioGroup
+            {...field}
+            onValueChange={field.onChange}
+          >
+            {Object.values(AgeLimit).map((item, index) => (
+              <FormItem key={index}>
+                <FormControl>
+                  <RadioGroupItem value={item}/>
+                </FormControl>
+                <FormLabel>
+                  {tAgeRestriction(item)}
+                </FormLabel>
+              </FormItem>
+            ))}
+          </RadioGroup>
+        </FormControl>
+      </FormItem>
+    )}
+  />;
 }

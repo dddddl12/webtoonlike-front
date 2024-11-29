@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Col } from "@/components/ui/common";
-import { Heading, Heading2 } from "@/components/ui/common";
+import { Heading1, Heading2 } from "@/components/ui/common";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shadcn/ui/table";
 import { ContractRangeItemSchema } from "@/resources/bidRounds/dtos/bidRound.dto";
 import z from "zod";
@@ -18,7 +18,7 @@ export default function OfferProposalDetails({ offerProposal }: {
   const { contractRange, message } = offerProposal;
   const { webtoonRights, derivativeRights } = mapContractRange(contractRange);
   return <Col>
-    <Heading>{tMakeAnOffer("offerDetails")}</Heading>
+    <Heading1>{tMakeAnOffer("offerDetails")}</Heading1>
     <Col className="gap-14">
       {/*웹툰 연재권*/}
       {webtoonRights.size > 0 && <div>

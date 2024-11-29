@@ -1,5 +1,5 @@
 import { Col } from "@/components/ui/common";
-import { Heading } from "@/components/ui/common";
+import { Heading1 } from "@/components/ui/common";
 import { getTranslations } from "next-intl/server";
 import PageLayout from "@/components/ui/PageLayout";
 import { getClerkUser, updateTokenInfo } from "@/resources/tokens/token.service";
@@ -16,9 +16,9 @@ export default async function SignUpComplete() {
     <PageLayout lightTheme={true}>
       <Col className="w-[400px] mx-auto">
         <Logo lightTheme={true} />
-        <Heading className="mt-10 font-bold text-[20pt]">
+        <Heading1 className="mt-10 font-bold text-[20pt]">
           {t("setupAccount")}
-        </Heading>
+        </Heading1>
         <SignUpCompleteForm
           signUpFinished={signUpFinished}
           clerkUserFullName={clerkUser.fullName}
