@@ -109,7 +109,7 @@ function StatusIndicator({ webtoon }: {
   } else {
     return <Link
       className="clickable"
-      href={`/webtoons/${webtoon.id}/bid-round/create`}
+      href={`/webtoons/${webtoon.id}/bid-round/update`}
     >
       {t("registerForSale")}
     </Link>;

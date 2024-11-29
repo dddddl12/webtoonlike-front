@@ -52,14 +52,17 @@ class BidRoundService {
   async getByWebtoonId (webtoonId: number) {
     const record = await prisma.$transaction(async (tx) => {
       await authorizeWebtoonAccess(tx, webtoonId);
-      return tx.bidRound.findFirstOrThrow({
+      return tx.bidRound.findFirst({
         where: {
           isActive: true,
           webtoonId
         }
       });
     });
-    return bidRoundHelper.mapToDTO(record);
+    // 신규 등록 시에는 조회가 불가능하므로 결과가 나오지 않으면 undefined 응답
+    return record
+      ? bidRoundHelper.mapToDTO(record)
+      : undefined;
   };
 }
 

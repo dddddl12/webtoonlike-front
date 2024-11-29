@@ -19,7 +19,7 @@ export async function Header() {
       className="sticky top-0 w-full flex flex-col bg-black z-[49] border-b border-gray-darker items-center px-10">
       <Row className="w-full h-[60px] justify-between">
         <Row>
-          <Link href="/public">
+          <Link href="/">
             <Logo/>
           </Link>
         </Row>

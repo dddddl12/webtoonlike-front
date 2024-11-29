@@ -10,8 +10,5 @@ export async function responseHandler<S extends Schema | undefined, BAS extends 
   if (result?.serverError){
     throw Error(JSON.stringify(result.serverError));
   }
-  if (!result?.data) {
-    throw Error("Unknown Error");
-  }
-  return result.data;
+  return result?.data as Data;
 }

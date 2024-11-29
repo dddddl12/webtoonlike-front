@@ -32,7 +32,7 @@ export const getBidRoundByWebtoonId = action
   .bindArgsSchemas([
     z.number() // webtoonId
   ])
-  .outputSchema(BidRoundSchema)
+  .outputSchema(BidRoundSchema.optional())
   .action(async ({ bindArgsParsedInputs: [webtoonId] }) => {
     return bidRoundService.getByWebtoonId(webtoonId);
   });

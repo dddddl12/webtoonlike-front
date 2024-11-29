@@ -19,9 +19,7 @@ export default function ActiveBidRound({ webtoon }: {
         <h1 className="text-2xl font-bold">{t("detailedInformation")}</h1>
         <EditLink
           className="ml-4"
-          href={!webtoon.activeBidRound
-            ? `/webtoons/${webtoon.id}/bid-round/create`
-            : `/webtoons/${webtoon.id}/bid-round/update`}
+          href={`/webtoons/${webtoon.id}/bid-round/update`}
           isVisible={webtoon.isEditable}
           isNew={!webtoon.activeBidRound}
         />
