@@ -1,6 +1,5 @@
 import z from "zod";
 import { ResourceSchema } from "@/resources/globalTypes";
-import { UserSchema } from "@/resources/users/dtos/user.dto";
 
 const CreatorBaseSchema = z.object({
   name: z.string().min(1),
@@ -33,9 +32,9 @@ export const AdminPageCreatorSchema = CreatorSchema.pick({
   name: true,
   isExposed: true,
 }).extend({
-  user: UserSchema.pick({
-    name: true,
-    createdAt: true
+  user: z.object({
+    name: z.string(),
+    createdAt: z.date()
   })
 });
 export type AdminPageCreatorT = z.infer<typeof AdminPageCreatorSchema>;

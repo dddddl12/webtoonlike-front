@@ -17,6 +17,13 @@
         "CREATOR": "저작권자",
         "BUYER": "바이어"
     },
+    "updateAccount": {
+        "updateToast": "회원 정보를 수정했습니다.",
+        "basicInfo": "기본 정보",
+        "address": "주소",
+        "creator": "저작권자 정보",
+        "buyer": "바이어 정보"
+    },
     "setupPage": {
         "setupAccount": "회원가입",
         "selectMembershipType": "사용자 유형을 골라주세요",
@@ -24,11 +31,17 @@
     },
     "setupForm": {
         "selectedUserType": "선택한 사용자 유형: {userType}",
+        "name": "이름",
         "insertName": "이름",
+        "phone": "휴대폰 번호",
         "insertPhone": "휴대폰 번호(숫자만 입력)",
+        "country": "국가",
         "insertCountry": "국가 선택",
+        "postalCode": "우편번호",
         "insertPostalCode": "우편번호 입력",
+        "address1": "주소",
         "insertAddress1": "주소 입력",
+        "address2": "상세주소",
         "insertAddress2": "상세주소 입력",
         "termsAndConditions": "Kipstock 이용약관",
         "doYouAgree": "이용약관에 동의하시겠습니까?",
@@ -36,11 +49,16 @@
     },
     "setupPageNextForCreators": {
         "profileDesc": "프로필 정보를 입력해 주세요.",
+        "profilePic": "프로필 사진",
         "uploadProfilePic": "프로필 사진 업로드(1:1)",
+        "whetherOrNotAffiliated": "에이전시 소속 여부",
         "affiliationWithAnotherAgencyQuestion": "에이전시 소속 여부 선택",
+        "workExperience": "신인/경력",
         "selectYourWorkExperience": "신인/경력 선택",
-        "username": "필명 입력",
-        "usernameInEnglish": "필명 입력(영문)",
+        "username": "필명",
+        "insertUsername": "필명 입력",
+        "usernameInEnglish": "필명(영문)",
+        "insertUsernameInEnglish": "필명 입력(영문)",
         "affiliation": "소속",
         "noAffiliation": "미소속",
         "rookie": "신인",
@@ -204,7 +222,10 @@
     "accountPage": {
         "editProfile": "프로필 수정",
         "withdrawal": "회원 탈퇴",
+        "withdrawalTitle": "회원 탈퇴",
         "withdrawalDesc": "정말 탈퇴하시겠습니까?",
+        "withdrawalConfirm": "탈퇴",
+        "withdrawalToast": "성공적으로 탈퇴했습니다.",
         "myLikes": {
             "myLikedWebtoons": "좋아요 표시한 웹툰",
             "noLikedWebtoons": "좋아요 표시한 웹툰이 없습니다."
@@ -212,8 +233,11 @@
     },
     "buyerInfoPage": {
         "headerDesc": "사업자 정보 및 재직 정보를 입력해 주세요",
+        "businessRegNo": "사업자등록번호",
         "businessRegPlaceholder": "사업자등록번호 입력",
+        "businessField": "업체 분야",
         "businessFieldPlaceholder": "업체 분야",
+        "businessType": "직종",
         "businessTypePlaceholder": "직종",
         "businessTypeItems": {
             "creator": "제작사",
@@ -224,14 +248,22 @@
             "management": "매니지먼트",
             "etc": "기타."
         },
+        "businessReg": "사업자등록증",
         "uploadBusinessReg": "사업자등록증 업로드",
         "selectFile": "파일 선택",
+        "companyName": "회사명",
         "insertCompanyName": "회사명 입력",
+        "companyLogo": "회사 대표이미지",
         "insertCompanyLogo": "회사 대표이미지 첨부 (1:1)",
+        "businessUnit": "부서명",
         "insertBusinessUnit": "부서명 입력",
+        "businessPosition": "직위",
         "insertBusinessPosition": "직위 입력",
+        "inChargeOf": "담당업무",
         "insertInChargeOf": "담당업무 입력",
+        "employmentCert": "재직증명서 또는 명함",
         "attachEmploymentCert": "재직증명서, 명함 중 택 1 첨부",
+        "purposeLabel": "가입 목적",
         "purposePlaceholder": "가입 목적",
         "purpose": {
             "privateContract": "독점",
@@ -421,9 +453,6 @@
     },
     "errors": {
         "backToHome": "홈으로 돌아가기",
-        "invalidFields": {
-            "duplicateValue": "해당값이 이미 존재합니다."
-        },
         "UnexpectedError": {
             "title": "오류 발생",
             "message": "알 수 없는 오류가 발생했습니다. 문제가 지속되면 운영자에게 연락주세요."
@@ -460,6 +489,7 @@
         }
     },
     "validationErrors": {
-        "Invalid url": "올바른 URL을 입력해주세요."
+        "Invalid url": "올바른 URL을 입력해주세요.",
+        "duplicateValue": "해당값이 이미 존재합니다."
     }
 }

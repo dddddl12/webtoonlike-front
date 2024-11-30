@@ -5,20 +5,20 @@ import PageLayout from "@/components/ui/PageLayout";
 import { getClerkUser } from "@/resources/tokens/token.service";
 import LightThemeProvider from "@/providers/LightThemeProvider";
 import Logo from "@/components/ui/Logo";
-import SignUpCompleteFormSelector from "@/components/root/SignUpComplete/SignUpCompleteFormSelector";
+import SignUpCompleteForm from "@/components/forms/account/SignUpCompleteForm";
 
 export default async function SignUpComplete() {
   const t = await getTranslations("setupPage");
   const clerkUser = await getClerkUser();
 
   return <LightThemeProvider>
-    <PageLayout lightTheme={true}>
+    <PageLayout>
       <Col className="w-[400px] mx-auto">
         <Logo lightTheme={true} />
-        <Heading1 className="mt-10 font-bold text-[20pt]">
+        <Heading1>
           {t("setupAccount")}
         </Heading1>
-        <SignUpCompleteFormSelector
+        <SignUpCompleteForm
           clerkUserFullName={clerkUser.fullName}
         />
       </Col>

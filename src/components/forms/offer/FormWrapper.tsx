@@ -1,18 +1,16 @@
 import useSafeActionForm from "@/hooks/safeActionForm";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
-import { Heading1, Row } from "@/components/ui/common";
+import { Heading1 } from "@/components/ui/common";
 import ContractRangeForm from "@/components/forms/ContractRangeForm";
 import { Textarea } from "@/shadcn/ui/textarea";
-import { Button } from "@/shadcn/ui/button";
-import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { clsx } from "clsx";
 import { OfferProposalFormSchema } from "@/resources/offers/dtos/offerProposal.dto";
+import SubmitButton from "@/components/ui/form/SubmitButton";
 
 export default function FormWrapper(safeActionFormReturn: ReturnType<typeof useSafeActionForm>) {
   const tMakeAnOffer = useTranslations("offerDetails");
-  const tGeneral = useTranslations("general");
 
   const { isFormSubmitting, form, onSubmit } = safeActionFormReturn;
 
@@ -61,17 +59,9 @@ export default function FormWrapper(safeActionFormReturn: ReturnType<typeof useS
           {tMakeAnOffer("note")}
         </p>
 
-        <Row className="mt-12">
-          <Button
-            className="ml-auto rounded-full"
-            variant="secondary"
-            disabled={!isValid || !isDirty}
-          >
-            {tGeneral("submit")}
-            <IconRightBrackets />
-          </Button>
-
-        </Row>
+        <SubmitButton
+          disabled={!isValid || !isDirty}
+          isNew={true}/>
       </form>
     </Form>
   );

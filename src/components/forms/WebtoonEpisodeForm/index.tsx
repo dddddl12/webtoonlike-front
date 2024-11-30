@@ -15,9 +15,8 @@ import EpisodeImageItem from "@/components/forms/WebtoonEpisodeForm/EpisodeImage
 import { IconUpArrow } from "@/components/svgs/IconUpArrow";
 import { IconDownArrow } from "@/components/svgs/IconDownArrow";
 import { IconUpload } from "@/components/svgs/IconUpload";
-import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { useRouter } from "@/i18n/routing";
-import { Form, FormControl, FormHeader, FormItem, FormLabel } from "@/shadcn/ui/form";
+import { Form, FormControl, FormItem, FormLabel } from "@/shadcn/ui/form";
 import EpisodeImagePreview from "@/components/forms/WebtoonEpisodeForm/EpisodeImagePreview";
 import { DropzoneRootProps, useDropzone } from "react-dropzone";
 import { createOrUpdateEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.controller";
@@ -25,6 +24,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
 import { ImageList, useEpisodeImageList } from "@/components/forms/WebtoonEpisodeForm/hook";
 import useSafeActionForm from "@/hooks/safeActionForm";
+import { FormHeader } from "@/components/ui/form/FormHeader";
+import SubmitButton from "@/components/ui/form/SubmitButton";
 
 const MAX_THUMBNAIL_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -53,12 +54,16 @@ export default function WebtoonEpisodeForm({
             toast({
               description: "성공적으로 업데이트되었습니다."
             });
-            router.replace(`/webtoons/${webtoonId}/episodes/${prev.id}`);
+            router.replace(`/webtoons/${webtoonId}/episodes/${prev.id}`, {
+              scroll: true
+            });
           } else {
             toast({
               description: "성공적으로 생성되었습니다."
             });
-            router.replace(`/webtoons/${webtoonId}`);
+            router.replace(`/webtoons/${webtoonId}`, {
+              scroll: true
+            });
           }
         }
       },
@@ -110,17 +115,9 @@ export default function WebtoonEpisodeForm({
         </FormItem>
 
         <ImageListField imageList={imageList} className="mt-8" />
-        <Row className="justify-end mt-8">
-          <Button
-            type="submit"
-            disabled={!isValid || !isDirty}
-            className="rounded-full"
-            variant="mint"
-          >
-            {t("register")}
-            <IconRightBrackets />
-          </Button>
-        </Row>
+        <SubmitButton
+          disabled={!isValid || !isDirty}
+          isNew={!prev}/>
       </form>
     </Form>
   );

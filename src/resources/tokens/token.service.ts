@@ -87,8 +87,7 @@ export async function updateTokenInfo(tx?: PrismaTransaction): Promise<{
   signedInToClerk: boolean;
 }> {
   const prismaClient = tx ?? prisma;
-  const clerkUser = await auth();
-  const clerkUserId = clerkUser.userId;
+  const { userId: clerkUserId } = await auth();
   if (!clerkUserId) {
     return {
       signUpFinished: false,
@@ -127,13 +126,19 @@ export async function updateTokenInfo(tx?: PrismaTransaction): Promise<{
     || (user.userType == UserTypeT.Creator && !user.creator)
     || (user.userType == UserTypeT.Buyer && !user.buyer)) {
     // clerk 로그인은 했으나, DB에 회원 정보가 없는 경우
-    await clerkClient().then(client =>
-      client.users.updateUser(clerkUserId, {
-        publicMetadata: {}
-      }));
+    const user = await clerkClient()
+      .then(client =>
+        client.users.updateUser(clerkUserId, {
+          publicMetadata: {}
+        }))
+      .catch(() => {
+        // 회원 탈퇴 직후 세션이 남아있는 이슈 있으므로 예외 처리
+        // 이때 발생하는 에러 클래스가 일단 Error여서 더 구체화할 수가 없음
+        return undefined;
+      });
     return {
       signUpFinished: false,
-      signedInToClerk: true
+      signedInToClerk: !!user
     };
   }
   // 토큰 업데이트
@@ -180,5 +185,4 @@ export const getClerkUserMap = async (clerkUserIds: string[]): Promise<Map<strin
   });
   return map;
 //   TODO 계정 탈퇴 시 남겨야 할 유저 정보
-//   TODO 웹훅 검토
 };

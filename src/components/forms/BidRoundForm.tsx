@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { Heading2 } from "@/components/ui/common";
 import { Row } from "@/components/ui/common";
-import { Button } from "@/shadcn/ui/button";
-import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { IconExclamation } from "@/components/svgs/IconExclamation";
 import { Checkbox } from "@/shadcn/ui/checkbox";
 import { useTranslations } from "next-intl";
@@ -25,6 +23,7 @@ import { clsx } from "clsx";
 import useSafeActionForm from "@/hooks/safeActionForm";
 import { RadioGroup, RadioGroupItem } from "@/shadcn/ui/radio-group";
 import { Label } from "@/shadcn/ui/label";
+import SubmitButton from "@/components/ui/form/SubmitButton";
 
 export default function BidRoundForm({ webtoonId, prev }: {
   webtoonId: number;
@@ -60,9 +59,13 @@ export default function BidRoundForm({ webtoonId, prev }: {
       actionProps: {
         onSuccess: () => {
           if (prev) {
-            router.replace(`/webtoons/${webtoonId}`);
+            router.replace(`/webtoons/${webtoonId}`, {
+              scroll: true
+            });
           } else {
-            router.replace("/webtoons");
+            router.replace("/webtoons", {
+              scroll: true
+            });
           }
         }
       }
@@ -127,17 +130,9 @@ export default function BidRoundForm({ webtoonId, prev }: {
         </FormItem>
 
         {/* 등록 버튼 */}
-        <Row className="justify-end mt-20">
-          <Button
-            disabled={!isValid || !isAgreed || !isDirty}
-            className="rounded-full"
-            variant="mint"
-          >
-            {t("form.register")}
-            <IconRightBrackets />
-          </Button>
-        </Row>
-
+        <SubmitButton
+          disabled={!isValid || !isAgreed || !isDirty}
+          isNew={!prev}/>
       </form>
     </Form>
   );

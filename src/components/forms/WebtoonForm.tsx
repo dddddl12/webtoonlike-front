@@ -2,12 +2,9 @@
 
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Input } from "@/shadcn/ui/input";
-import { Button } from "@/shadcn/ui/button";
 import { Textarea } from "@/shadcn/ui/textarea";
-import { Row } from "@/components/ui/common";
 import { Checkbox, CheckboxGroup } from "@/shadcn/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/shadcn/ui/radio-group";
-import { IconRightBrackets } from "@/components/svgs/IconRightBrackets";
 import { IconUpload } from "@/components/svgs/IconUpload";
 import { useTranslations } from "next-intl";
 import {
@@ -21,7 +18,6 @@ import {
   Form,
   FormControl,
   FormField,
-  FormHeader,
   FormItem,
   FormLabel,
   FormMessage
@@ -37,13 +33,14 @@ import { GenreT } from "@/resources/genres/genre.dto";
 import { WebtoonDetailsT } from "@/resources/webtoons/dtos/webtoonDetails.dto";
 import { clsx } from "clsx";
 import useSafeActionForm from "@/hooks/safeActionForm";
+import { FormHeader } from "@/components/ui/form/FormHeader";
+import SubmitButton from "@/components/ui/form/SubmitButton";
 
 export function WebtoonForm({ selectableGenres, prev }: {
   selectableGenres: GenreT[];
   prev?: WebtoonDetailsT;
 }) {
   const t = useTranslations("addSeries");
-  const tGeneral = useTranslations("general");
   const router = useRouter();
 
   const [thumbnail, setThumbnail] = useState(
@@ -60,9 +57,13 @@ export function WebtoonForm({ selectableGenres, prev }: {
       actionProps: {
         onSuccess: () => {
           if (prev) {
-            router.replace(`/webtoons/${prev.id}`);
+            router.replace(`/webtoons/${prev.id}`, {
+              scroll: true
+            });
           } else {
-            router.replace("/webtoons");
+            router.replace("/webtoons", {
+              scroll: true
+            });
           }
         }
       },
@@ -96,18 +97,8 @@ export function WebtoonForm({ selectableGenres, prev }: {
         <GenderField form={form}/>
         <TargetAgeField form={form}/>
         <AgeLimitField form={form}/>
-
-        <Row className="justify-end mt-14">
-          <Button
-            disabled={!isValid || !isDirty}
-            variant="mint"
-          >
-            {prev
-              ? `${tGeneral("edit")}`
-              : `${tGeneral("submit")}`}
-            <IconRightBrackets />
-          </Button>
-        </Row>
+        <SubmitButton disabled={!isValid || !isDirty}
+          isNew={!prev}/>
       </form>
     </Form>
   );

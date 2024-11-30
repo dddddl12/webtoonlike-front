@@ -1,16 +1,12 @@
-import { Dispatch, SetStateAction } from "react";
 import { UserTypeT } from "@/resources/users/dtos/user.dto";
-import { SignUpStage, UserAccountFormT } from "@/resources/users/dtos/userAccount.dto";
 import { useTranslations } from "next-intl";
 import { Col, Row } from "@/components/ui/common";
 import { IconSignupCreator } from "@/components/svgs/IconSignupCreatori";
 import { Button } from "@/shadcn/ui/button";
 import { IconSignupBuyer } from "@/components/svgs/IconSignupBuyer";
 
-// todo setUserAccountForm context로 변경
-export default function UserTypeSelectorForm({ setUserAccountForm, setSignUpStage }: {
-  setUserAccountForm: Dispatch<SetStateAction<Partial<UserAccountFormT>>>;
-  setSignUpStage: Dispatch<SetStateAction<SignUpStage>>;
+export default function UserTypeSelector({ onSelect }: {
+  onSelect: (userType: UserTypeT) => void;
 }) {
   const t = useTranslations("setupPage");
 
@@ -20,25 +16,22 @@ export default function UserTypeSelectorForm({ setUserAccountForm, setSignUpStag
     <Row className="justify-evenly">
       <RoleColumn
         userType={UserTypeT.Creator}
-        setUserAccountForm={setUserAccountForm}
-        setSignUpStage={setSignUpStage}
+        onSelect={onSelect}
       />
 
       <div className="border h-full" />
 
       <RoleColumn
         userType={UserTypeT.Buyer}
-        setUserAccountForm={setUserAccountForm}
-        setSignUpStage={setSignUpStage}
+        onSelect={onSelect}
       />
     </Row>
   </>;
 }
 
-function RoleColumn({ userType, setUserAccountForm, setSignUpStage }: {
+function RoleColumn({ userType, onSelect }: {
   userType: UserTypeT;
-  setUserAccountForm: Dispatch<SetStateAction<Partial<UserAccountFormT>>>;
-  setSignUpStage: Dispatch<SetStateAction<SignUpStage>>;
+  onSelect: (userType: UserTypeT) => void;
 }) {
   const t = useTranslations("setupPage");
   const tUserType = useTranslations("userType");
@@ -54,11 +47,7 @@ function RoleColumn({ userType, setUserAccountForm, setSignUpStage }: {
 
     <Button
       onClick={() => {
-        setUserAccountForm(prev => ({
-          ...prev,
-          userType,
-        }));
-        setSignUpStage(prev => prev + 1);
+        onSelect(userType);
       }}
       className="w-[160px] bg-black-texts text-white hover:bg-mint"
     >

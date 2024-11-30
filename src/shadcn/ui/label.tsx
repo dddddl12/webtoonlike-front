@@ -10,7 +10,7 @@ const labelVariants = cva(
   "leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70", {
     variants: {
       variant: {
-        mainField: "block font-semibold text-base mb-2",
+        mainField: "block font-medium text-base mb-2",
         selectItem: "text-sm"
       }
     },

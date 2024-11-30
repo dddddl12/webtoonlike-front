@@ -3,15 +3,18 @@ import AccountBasicInfoSection from "@/app/[locale]/account/AccountBasicInfoSect
 import LikedWebtoonList from "@/app/[locale]/account/LikedWebtoonList";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 import { UserTypeT } from "@/resources/users/dtos/user.dto";
+import { ClerkLoaded } from "@clerk/nextjs";
 
 export default async function AccountPage() {
   const { metadata } = await getTokenInfo();
 
   return (
     <PageLayout className="space-y-20">
-      <AccountBasicInfoSection/>
-      {metadata.type === UserTypeT.Buyer
+      <ClerkLoaded>
+        <AccountBasicInfoSection/>
+        {metadata.type === UserTypeT.Buyer
       && <LikedWebtoonList />}
+      </ClerkLoaded>
     </PageLayout>
   );
 }

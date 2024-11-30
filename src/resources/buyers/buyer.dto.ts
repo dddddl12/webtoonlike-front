@@ -40,7 +40,6 @@ export const BuyerCompanySchema = z.object({
   // TODO
   // businessNumber: z.string().min(10).max(10),
   businessNumber: z.string(),
-  // TODO Form에서는 immutable하게 수정
   /** 사업자등록증 파일 경로 */
   businessCertPath: z.string().optional(),
   /** 명함 파일 경로 */

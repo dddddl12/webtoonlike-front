@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
@@ -14,11 +12,8 @@ import {
 
 import { cn } from "@/shadcn/lib/utils";
 import { Label } from "@/shadcn/ui/label";
-import { Row } from "@/components/ui/common";
-import { Button } from "@/shadcn/ui/button";
-import { Link } from "@/i18n/routing";
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 import z from "zod";
 
 
@@ -132,8 +127,18 @@ export const FormLabel = ({
 }: React.ComponentProps<typeof LabelPrimitive.Root>) => {
   const { error, formItemId, name, isInline } = useFormField();
   const { schema } = React.useContext(FormSchemaContext);
-  const markOptional: boolean = (!isInline && schema.shape[name]?.isOptional())
-    || false;
+
+  // 대상 스키마 구하기
+  const markOptional = useMemo(() => {
+    const targetSchema = (name?.split(/[,[\].]+?/).filter(Boolean) || [])
+      .reduce(
+        (targetSchema, key) => {
+          return targetSchema.shape[key];
+        },
+        schema,
+      );
+    return (!isInline && targetSchema.isOptional()) || false;
+  }, [isInline, name, schema]);
 
   const t = useTranslations("general");
 
@@ -220,20 +225,6 @@ export const FormMessage = React.forwardRef<
   );
 });
 FormMessage.displayName = "FormMessage";
-
-export function FormHeader({ title, goBackHref }: {
-  title: string;
-  goBackHref: string;
-}) {
-  return <Row className="items-center mb-14">
-    <Button variant='ghost' asChild>
-      <Link href={goBackHref}>
-        <ArrowLeftIcon width={32} height={32} />
-      </Link>
-    </Button>
-    <h2 className="font-bold text-2xl ml-2">{title}</h2>
-  </Row>;
-}
 
 export type FieldName<TFieldValues extends FieldValues, AllowedFieldType> = {
   [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K> extends AllowedFieldType | undefined ? K : never;

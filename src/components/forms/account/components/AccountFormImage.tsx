@@ -1,19 +1,16 @@
 import Image from "next/image";
-import { Col } from "@/components/ui/common";
-import { FormControl, FormItem, FormLabel } from "@/shadcn/ui/form";
+import { FormControl } from "@/shadcn/ui/form";
 import { Input } from "@/shadcn/ui/input";
 import { ImageObject } from "@/utils/media";
-import { Dispatch, SetStateAction } from "react";
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
-export default function AccountFormImageField({ image, setImage, placeholder }: {
-  image: ImageObject;
-  setImage: Dispatch<SetStateAction<ImageObject>>;
-  placeholder: string;
-}){
+export default function useAccountFormImage(prevPath?: string){
+  const [image, setImage] = useState(new ImageObject(prevPath));
   const tGeneral = useTranslations("general");
-  return <Col className="gap-5">
-    {image.url && <div className="w-[200px] h-[200px] overflow-hidden relative rounded-sm mx-auto">
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const element = (placeholder: string) => <>
+    {image.url && <div className="w-[200px] h-[200px] overflow-hidden relative rounded-sm mx-auto mb-5">
       <Image
         draggable={false}
         priority
@@ -24,8 +21,7 @@ export default function AccountFormImageField({ image, setImage, placeholder }: 
         fill
       />
     </div>}
-
-    <FormItem>
+    <div>
       <FormControl>
         <Input
           type="file"
@@ -35,17 +31,20 @@ export default function AccountFormImageField({ image, setImage, placeholder }: 
             const imageData = new ImageObject(event.target.files?.[0]);
             setImage(imageData);
           }}
+          ref={fileInputRef}
         />
       </FormControl>
-      <FormLabel className="flex h-10 w-full cursor-pointer">
+      <div className="flex h-10 w-full cursor-pointer"
+        onClick={() => fileInputRef.current?.click()}>
         <div
           className="flex-1 border border-input rounded-l-md bg-background px-3 py-2 ring-offset-background text-muted-foreground text-base md:text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
           {image?.displayUrl || placeholder}
         </div>
-        <div className="flex border-y border-r border-input rounded-r-md bg-mint text-white items-center px-3">
+        <div className="flex border-y border-r border-input rounded-r-md bg-mint text-white items-center px-3 text-sm">
           {tGeneral("selectFile")}
         </div>
-      </FormLabel>
-    </FormItem>
-  </Col>;
+      </div>
+    </div>
+  </>;
+  return { element, image };
 }

@@ -21,7 +21,9 @@ export default function OfferForm({ bidRoundId }: {
           toast({
             description: "오퍼를 보냈습니다."
           });
-          router.replace("/offers");
+          router.replace("/offers", {
+            scroll: true
+          });
         }
       }
     });

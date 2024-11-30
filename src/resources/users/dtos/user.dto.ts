@@ -1,5 +1,7 @@
 import z from "zod";
 import { CountrySchema, ResourceSchema } from "@/resources/globalTypes";
+import { CreatorFormSchema } from "@/resources/creators/creator.dto";
+import { BuyerFormSchema } from "@/resources/buyers/buyer.dto";
 
 export enum UserTypeT {
   Creator = "CREATOR",
@@ -7,23 +9,35 @@ export enum UserTypeT {
 }
 
 const UserBaseSchema = z.object({
-  // phone: z.string().regex(/^01[0-9]{9}$/),
   name: z.string().min(1).max(255),
-  phone: z.string(),
+  phone: z.string().min(1),
   userType: z.nativeEnum(UserTypeT),
   country: CountrySchema.exclude(["ALL"]),
-  // postcode: z.string().regex(/^[0-9]{5}$/),
-  postcode: z.string(),
-  addressLine1: z.string(),
-  addressLine2: z.string(),
+  postcode: z.string().min(1),
+  addressLine1: z.string().min(1),
+  addressLine2: z.string().min(1),
 });
 
-export const UserFormSchema = UserBaseSchema.extend({
-  agreed: z.boolean().refine((agreed) => agreed, {
-    message: "The user must agree to the terms of service."
-  }),
-});
+export const UserFormSchema = UserBaseSchema;
 export type UserFormT = z.infer<typeof UserFormSchema>;
+
+export const UserAccountWithCreatorFormSchema = UserFormSchema.extend({
+  userType: z.literal(UserTypeT.Creator),
+  creator: CreatorFormSchema
+});
+export type UserAccountWithCreatorFormT = z.infer<typeof UserAccountWithCreatorFormSchema>;
+
+export const UserAccountWithBuyerFormSchema = UserFormSchema.extend({
+  userType: z.literal(UserTypeT.Buyer),
+  buyer: BuyerFormSchema
+});
+export type UserAccountWithBuyerFormT = z.infer<typeof UserAccountWithBuyerFormSchema>;
+
+export const UserAccountFormSchema = z.discriminatedUnion("userType", [
+  UserAccountWithCreatorFormSchema,
+  UserAccountWithBuyerFormSchema
+]);
+export type UserAccountFormT = z.infer<typeof UserAccountFormSchema>;
 
 export const UserSchema = UserBaseSchema
   .merge(ResourceSchema)
@@ -32,8 +46,3 @@ export const UserSchema = UserBaseSchema
     sub: z.string(),
   });
 
-export const SimpleUserProfileSchema = z.object({
-  name: z.string(),
-  thumbPath: z.string().optional()
-});
-export type SimpleUserProfileT = z.infer<typeof SimpleUserProfileSchema>;
