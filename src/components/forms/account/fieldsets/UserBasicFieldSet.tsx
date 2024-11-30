@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
 import { Input } from "@/shadcn/ui/input";
 import { AccountFormType } from "@/components/forms/account/accountFormTypes";
 
@@ -22,6 +22,7 @@ export default function UserBasicFieldSet({ form }: {
               placeholder={t("insertName")}
             />
           </FormControl>
+          <FormMessage/>
         </FormItem>
       )}
     />
@@ -40,6 +41,7 @@ export default function UserBasicFieldSet({ form }: {
               placeholder={t("insertPhone")}
             />
           </FormControl>
+          <FormMessage/>
         </FormItem>
       )}
     />

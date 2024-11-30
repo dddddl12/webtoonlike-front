@@ -1,5 +1,5 @@
 import useSafeActionForm from "@/hooks/safeActionForm";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
 import { Heading1 } from "@/components/ui/common";
 import ContractRangeForm from "@/components/forms/ContractRangeForm";
 import { Textarea } from "@/shadcn/ui/textarea";
@@ -52,6 +52,7 @@ export default function FormWrapper(safeActionFormReturn: ReturnType<typeof useS
                   maxLength={10000}
                 />
               </FormControl>
+              <FormMessage/>
             </FormItem>
           )}
         />

@@ -13,7 +13,7 @@ import {
   Form,
   FormControl, FormField,
   FormItem,
-  FormLabel
+  FormLabel, FormMessage
 } from "@/shadcn/ui/form";
 import ContractRangeForm, { FormT } from "@/components/forms/ContractRangeForm";
 import { NumericInput } from "@/shadcn/ui/input";
@@ -163,6 +163,7 @@ function IsNewField({ form }: {
               }
             ]}
           />
+          <FormMessage/>
         </FormItem>
       )}
     />
@@ -301,6 +302,7 @@ function OriginalityField({ form }: {
             }
           ]}
         />
+        <FormMessage/>
       </FormItem>
     )}
   />;

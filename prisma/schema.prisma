@@ -67,14 +67,23 @@ model BidRound {
 // TODO prisma-json-types-generator
 // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#typed-json
 model Buyer {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  userId    Int      @unique @map("user_id")
-  company   Json
-  purpose   String?
+  id                      Int      @id @default(autoincrement())
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+  name                    String
+  businessField           String[] @map("business_field")
+  businessType            String[] @map("business_type")
+  department              String
+  position                String
+  role                    String
+  businessNumber          String   @map("business_number")
+  thumbPath               String?  @map("thumb_path")
+  businessCertificatePath String?  @map("business_certificate_path")
+  businessCardPath        String?  @map("business_card_path")
+  purpose                 String
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @unique @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("buyers")
 }

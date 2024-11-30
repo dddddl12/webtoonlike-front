@@ -43,11 +43,11 @@ function IsNewIndicator({ isNew }: {
       <Row className="gap-4">
         <Row className="gap-2">
           <RadioGroupItem value="true" className="border-white" />
-          <Label>{t("newWork")}</Label>
+          <Label variant="selectItem">{t("newWork")}</Label>
         </Row>
         <Row className="gap-2">
           <RadioGroupItem value="false" className="border-white" />
-          <Label>{t("oldWork")}</Label>
+          <Label variant="selectItem">{t("oldWork")}</Label>
         </Row>
       </Row>
     </RadioGroup>
@@ -67,11 +67,11 @@ function IsOriginalIndicator({ isOriginal }: {
       <Row className="gap-4">
         <Row className="gap-2">
           <RadioGroupItem value="true" className="border-white"/>
-          <Label>{t("yes")}</Label>
+          <Label variant="selectItem">{t("yes")}</Label>
         </Row>
         <Row className="gap-2">
           <RadioGroupItem value="false" className="border-white"/>
-          <Label>{t("no")}</Label>
+          <Label variant="selectItem">{t("no")}</Label>
         </Row>
       </Row>
     </RadioGroup>

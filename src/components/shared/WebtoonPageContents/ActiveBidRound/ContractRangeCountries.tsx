@@ -23,12 +23,12 @@ export default function ContractRangeCountries({ bidRound }: {
       <RadioGroup disabled value="EXCLUSIVE" className="flex gap-5">
         {ContractRangeItemSchema.shape.contract
           .options.map((value) => {
-            return <Row key={value} className="flex gap-1">
+            return <Row key={value} className="flex gap-2">
               <RadioGroupItem
                 className="border-mint"
                 value={value}
               />
-              <Label>
+              <Label variant="selectItem">
                 {tContractType(value)}
               </Label>
             </Row>;

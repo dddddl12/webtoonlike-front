@@ -55,7 +55,7 @@ const getTitle = (creatorOrBuyer: OfferCreatorT | OfferBuyerT) => {
       return [affiliatedDisplay, creator.localized.name].join(" / ");
     case UserTypeT.Buyer:
       const buyer = creatorOrBuyer as OfferBuyerT;
-      return [buyer.name, buyer.dept, buyer.position]
+      return [buyer.name, buyer.department, buyer.position]
         .filter(el => Boolean(el)).join(" / ");
   }
 };

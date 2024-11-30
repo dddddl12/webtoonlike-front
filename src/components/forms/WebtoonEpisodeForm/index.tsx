@@ -16,7 +16,7 @@ import { IconUpArrow } from "@/components/svgs/IconUpArrow";
 import { IconDownArrow } from "@/components/svgs/IconDownArrow";
 import { IconUpload } from "@/components/svgs/IconUpload";
 import { useRouter } from "@/i18n/routing";
-import { Form, FormControl, FormItem, FormLabel } from "@/shadcn/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
 import EpisodeImagePreview from "@/components/forms/WebtoonEpisodeForm/EpisodeImagePreview";
 import { DropzoneRootProps, useDropzone } from "react-dropzone";
 import { createOrUpdateEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.controller";
@@ -28,7 +28,7 @@ import { FormHeader } from "@/components/ui/form/FormHeader";
 import SubmitButton from "@/components/ui/form/SubmitButton";
 
 const MAX_THUMBNAIL_SIZE = 5 * 1024 * 1024; // 5MB
-
+// todo 클래스로 변경
 export default function WebtoonEpisodeForm({
   webtoonId,
   prev
@@ -101,18 +101,22 @@ export default function WebtoonEpisodeForm({
             : `/webtoons/${webtoonId}`}
         />
 
-        <FormItem>
-          <FormLabel>
-            {t("episodeNumber")}
-          </FormLabel>
-          <FormControl>
-            <NumericInput
-              register={form.register}
-              name="episodeNo"
-              placeholder={t("episodeNumberPlaceholder")}
-            />
-          </FormControl>
-        </FormItem>
+        <FormField
+          control={form.control}
+          name="episodeNo"
+          render={({ field }) => (<FormItem>
+            <FormLabel>
+              {t("episodeNumber")}
+            </FormLabel>
+            <FormControl>
+              <NumericInput
+                register={form.register}
+                name={field.name}
+                placeholder={t("episodeNumberPlaceholder")}
+              />
+            </FormControl>
+            <FormMessage/>
+          </FormItem>)}/>
 
         <ImageListField imageList={imageList} className="mt-8" />
         <SubmitButton
@@ -185,6 +189,7 @@ function ImageListField({ imageList, className }: {
         </Button>
       </EpisodeImagePreview>
     </Row>
+    <FormMessage/>
     <ul className="list-disc p-5 text-muted-foreground text-sm">
       <li>{t("noteDesc1")}</li>
       <li>{t("noteDesc2")}</li>

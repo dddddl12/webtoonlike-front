@@ -240,13 +240,13 @@
         "businessType": "직종",
         "businessTypePlaceholder": "직종",
         "businessTypeItems": {
-            "creator": "제작사",
-            "investor": "투자사",
-            "agent": "에이전트",
-            "platform": "플랫폼사",
-            "ott": "OTT",
-            "management": "매니지먼트",
-            "etc": "기타."
+            "CREATOR": "제작사",
+            "INVESTOR": "투자사",
+            "AGENT": "에이전트",
+            "PLATFORM": "플랫폼사",
+            "OTT": "OTT",
+            "MANAGEMENT": "매니지먼트",
+            "OTHER": "기타."
         },
         "businessReg": "사업자등록증",
         "uploadBusinessReg": "사업자등록증 업로드",
@@ -266,11 +266,11 @@
         "purposeLabel": "가입 목적",
         "purposePlaceholder": "가입 목적",
         "purpose": {
-            "privateContract": "독점",
-            "publicContract": "비독점",
-            "publish": "콘텐츠 유통",
-            "secondaryProperty": "2차 판권",
-            "investment": "투자"
+            "EXCLUSIVE_CONTRACT": "독점",
+            "NON_EXCLUSIVE_CONTRACT": "비독점",
+            "PUBLICATION": "콘텐츠 유통",
+            "DERIVATIVE_WORK": "2차 판권",
+            "INVESTMENT": "투자"
         }
     },
     "invoiceManagement": {
@@ -490,6 +490,11 @@
     },
     "validationErrors": {
         "Invalid url": "올바른 URL을 입력해주세요.",
-        "duplicateValue": "해당값이 이미 존재합니다."
+        "duplicateValue": "해당값이 이미 존재합니다.",
+        "invalidBusinessNoFormat": "올바른 사업자등록번호 형식이 아닙니다.",
+        "invalidPhoneFormat": "숫자, 공백, +, - 기호만 입력 가능합니다.",
+        "Required": "필수 필드입니다.",
+        "required": "필수 필드입니다.",
+        "mustPositiveNumber": "1 이상의 값을 입력해주세요."
     }
 }

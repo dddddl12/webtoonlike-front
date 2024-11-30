@@ -235,19 +235,19 @@
     "buyerInfoPage": {
         "headerDesc": "Enter business information and employment information",
         "businessRegNo": "Business Number",
-        "businessRegPlaceholder": "Business Number",
+        "businessRegPlaceholder": "Business Number (000-00-00000)",
         "businessField": "Business Field",
         "businessFieldPlaceholder": "Business Field",
         "businessType": "Business Type",
         "businessTypePlaceholder": "Business Type",
         "businessTypeItems": {
-            "creator": "Creator",
-            "investor": "Investor",
-            "agent": "Agent",
-            "platform": "Platform",
-            "ott": "OTT",
-            "management": "Management",
-            "etc": "Etc."
+            "CREATOR": "Creator",
+            "INVESTOR": "Investor",
+            "AGENT": "Agent",
+            "PLATFORM": "Platform",
+            "OTT": "OTT",
+            "MANAGEMENT": "Management",
+            "OTHER": "Other."
         },
         "businessReg": "Business Registration",
         "uploadBusinessReg": "Upload Business Registration",
@@ -267,11 +267,11 @@
         "purposeLabel": "Sign up for",
         "purposePlaceholder": "Sign up for",
         "purpose": {
-            "privateContract": "Private Contract",
-            "publicContract": "Public Contract",
-            "publish": "Publish",
-            "secondaryProperty": "Secondary Property",
-            "investment": "Investment"
+            "EXCLUSIVE_CONTRACT": "Private Contract",
+            "NON_EXCLUSIVE_CONTRACT": "Public Contract",
+            "PUBLICATION": "Publication",
+            "DERIVATIVE_WORK": "Secondary Work",
+            "INVESTMENT": "Investment"
         }
     },
     "invoiceManagement": {
@@ -490,6 +490,11 @@
     },
     "validationErrors": {
         "Invalid url": "Enter a valid URL.",
-        "duplicateValue": "This value already exists."
+        "duplicateValue": "This value already exists.",
+        "invalidBusinessNoFormat": "Invalid format.",
+        "invalidPhoneFormat": "Only numbers, spaces, + and - are allowed.",
+        "Required": "This field is required.",
+        "required": "This field is required.",
+        "mustPositiveNumber": "Must be no smaller than 1."
     }
 }

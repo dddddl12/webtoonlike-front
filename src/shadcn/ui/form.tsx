@@ -146,7 +146,7 @@ export const FormLabel = ({
     <Label
       ref={ref}
       variant={isInline ? "selectItem" : "mainField"}
-      className={cn(error && "text-destructive", className)}
+      className={cn(error && !isInline && "text-destructive", className)}
       htmlFor={formItemId}
       {...props}
     >

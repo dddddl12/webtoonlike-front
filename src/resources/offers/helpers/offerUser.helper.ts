@@ -3,7 +3,6 @@ import { Prisma } from "@prisma/client";
 import { OfferBaseUserT, OfferBuyerT, OfferCreatorT } from "@/resources/offers/dtos/offerUser.dto";
 import { displayName } from "@/resources/displayName";
 import { UnexpectedServerError } from "@/handlers/errors";
-import { BuyerCompanySchema } from "@/resources/buyers/buyer.dto";
 import { UserTypeT } from "@/resources/users/dtos/user.dto";
 
 type QueryOptions = {
@@ -78,10 +77,11 @@ class OfferUserHelper {
   buyerQuery = Prisma.validator<Prisma.UserDefaultArgs>()({
     select: {
       ...this.baseUserQuery.select,
-      // TODO 전반적으로 buyer 정보가 한 컬럼에 몰려있는 건 위험이 있음
       buyer: {
         select: {
-          company: true,
+          name: true,
+          department: true,
+          position: true,
         }
       },
     }
@@ -96,11 +96,10 @@ class OfferUserHelper {
     if (!buyer) {
       throw new UnexpectedServerError("Buyer not found");
     }
-    const company = BuyerCompanySchema.parse(buyer.company);
     return {
-      name: company.name,
-      dept: company.dept,
-      position: company.position,
+      name: buyer.name,
+      department: buyer.department,
+      position: buyer.position,
       user: this.baseUserMapToDTO(r, thumbPath, options)
     };
   };

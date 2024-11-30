@@ -9,13 +9,14 @@ export enum UserTypeT {
 }
 
 const UserBaseSchema = z.object({
-  name: z.string().min(1).max(255),
-  phone: z.string().min(1),
+  name: z.string().min(1, "required").max(255),
+  phone: z.string().min(1, "required")
+    .regex(/^[+\-\d\s]+$/, "invalidPhoneFormat"),
   userType: z.nativeEnum(UserTypeT),
   country: CountrySchema.exclude(["ALL"]),
-  postcode: z.string().min(1),
-  addressLine1: z.string().min(1),
-  addressLine2: z.string().min(1),
+  postcode: z.string().min(1, "required"),
+  addressLine1: z.string().min(1, "required"),
+  addressLine2: z.string().min(1, "required"),
 });
 
 export const UserFormSchema = UserBaseSchema;

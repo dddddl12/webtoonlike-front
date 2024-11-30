@@ -1,7 +1,7 @@
 import { Input } from "@/shadcn/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/shadcn/ui/select";
 import { useTranslations } from "next-intl";
-import { FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
 import { UseFormReturn } from "react-hook-form";
 import { UserAccountWithCreatorFormT } from "@/resources/users/dtos/user.dto";
 import { FileDirectoryT } from "@/resources/files/files.type";
@@ -53,6 +53,7 @@ export default function useCreatorFieldSet(form: UseFormReturn<UserAccountWithCr
                 </SelectContent>
               </Select>
             </FormControl>
+            <FormMessage/>
           </FormItem>
         )}
       />
@@ -79,6 +80,7 @@ export default function useCreatorFieldSet(form: UseFormReturn<UserAccountWithCr
                 </SelectContent>
               </Select>
             </FormControl>
+            <FormMessage/>
           </FormItem>
         )}
       />
@@ -96,6 +98,7 @@ export default function useCreatorFieldSet(form: UseFormReturn<UserAccountWithCr
                 placeholder={t("insertUsername")}
               />
             </FormControl>
+            <FormMessage/>
           </FormItem>
         )}
       />
@@ -113,6 +116,7 @@ export default function useCreatorFieldSet(form: UseFormReturn<UserAccountWithCr
                 placeholder={t("insertUsernameInEnglish")}
               />
             </FormControl>
+            <FormMessage/>
           </FormItem>
         )}
       />

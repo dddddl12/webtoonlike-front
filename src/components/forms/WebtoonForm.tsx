@@ -125,6 +125,7 @@ function TitleFieldSet({ form }: {
               placeholder={t("enterKoreanTitle")}
             />
           </FormControl>
+          <FormMessage/>
         </FormItem>
       )}
     />
@@ -141,6 +142,7 @@ function TitleFieldSet({ form }: {
               placeholder={t("enterEnglishTitle")}
             />
           </FormControl>
+          <FormMessage/>
         </FormItem>
       )}
     />
@@ -166,6 +168,7 @@ function AuthorFieldSet({ form }: {
               placeholder={t("enterAuthor")}
             />
           </FormControl>
+          <FormMessage/>
         </FormItem>
       )}
     />
@@ -182,6 +185,7 @@ function AuthorFieldSet({ form }: {
               placeholder={t("enterAuthorEn")}
             />
           </FormControl>
+          <FormMessage/>
         </FormItem>
       )}
     />
@@ -238,6 +242,7 @@ function ThumbnailField({ form, thumbnail, setThumbnail }: {
         </>
       )}
     </div>
+    <FormMessage/>
   </FormItem>;
 }
 
@@ -263,6 +268,7 @@ function DescriptionFieldSet({ form }: {
           <div className="text-xs text-muted-foreground text-right mt-1">
             ({(field.value?.length || 0).toLocaleString()}/{(1000).toLocaleString()})
           </div>
+          <FormMessage/>
         </FormItem>
       )}
     />
@@ -283,6 +289,7 @@ function DescriptionFieldSet({ form }: {
           <div className="text-xs text-muted-foreground text-right mt-1">
             ({(field.value?.length || 0).toLocaleString()}/{(1000).toLocaleString()})
           </div>
+          <FormMessage/>
         </FormItem>
       )}
     />
@@ -362,6 +369,7 @@ function GenresField({ form, selectableGenres }: {
             />
           ))}
         </CheckboxGroup>
+        <FormMessage/>
       </FormItem>
     )}
   />;
@@ -398,6 +406,7 @@ function GenderField({ form }: {
             ))}
           </RadioGroup>
         </FormControl>
+        <FormMessage/>
       </FormItem>
     )}
   />;
@@ -448,6 +457,7 @@ function TargetAgeField({ form }: {
             />
           ))}
         </CheckboxGroup>
+        <FormMessage/>
       </FormItem>
     )}
   />;
@@ -483,6 +493,7 @@ function AgeLimitField({ form }: {
             ))}
           </RadioGroup>
         </FormControl>
+        <FormMessage/>
       </FormItem>
     )}
   />;

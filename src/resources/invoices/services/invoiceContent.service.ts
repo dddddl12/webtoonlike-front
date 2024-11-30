@@ -1,7 +1,6 @@
 import "server-only";
 import prisma from "@/utils/prisma";
 import z from "zod";
-import { BuyerCompanySchema } from "@/resources/buyers/buyer.dto";
 import { convertInvoiceToHtml } from "@/resources/invoices/helpers/invoiceContent.helper";
 import { InvoiceContent } from "@/resources/invoices/dtos/invoiceContent.dto";
 import OfferProposalHelper from "@/resources/offers/helpers/offerProposal.helper";
@@ -21,7 +20,8 @@ class InvoiceContentService {
                   buyer: {
                     select: {
                       id: true,
-                      company: true
+                      name: true,
+                      businessNumber: true
                     }
                   }
                 }
@@ -58,7 +58,6 @@ class InvoiceContentService {
       // 레코드 분석
       const { webtoon } = record.offer.bidRound;
       const buyerUser = record.offer.user;
-      const buyerCompany = BuyerCompanySchema.parse(buyerUser.buyer?.company);
       const creatorUser = record.offer.bidRound.webtoon.user;
       if (!buyerUser.buyer || !creatorUser.creator) {
         throw new Error("Offer not found");
@@ -69,13 +68,13 @@ class InvoiceContentService {
         templateVersion: InvoiceContent.shape.templateVersion.value,
         buyer: {
           id: buyerUser.buyer.id,
-          name: buyerCompany.name,
-          businessNumber: buyerCompany.businessNumber,
+          name: buyerUser.buyer.name,
+          businessNumber: buyerUser.buyer.businessNumber,
           user: {
             id: buyerUser.id,
             name: buyerUser.name,
-            addressLine1: buyerUser.addressLine1 || "", //todo db 컬럼 required로 변경
-            addressLine2: buyerUser.addressLine2 || "",
+            addressLine1: buyerUser.addressLine1,
+            addressLine2: buyerUser.addressLine2,
             phone: buyerUser.phone
           }
         },
@@ -86,8 +85,8 @@ class InvoiceContentService {
           user: {
             id: creatorUser.id,
             name: creatorUser.name,
-            addressLine1: creatorUser.addressLine1 || "", //todo db 컬럼 required로 변경
-            addressLine2: creatorUser.addressLine2 || "",
+            addressLine1: creatorUser.addressLine1,
+            addressLine2: creatorUser.addressLine2,
             phone: creatorUser.phone
           }
         },

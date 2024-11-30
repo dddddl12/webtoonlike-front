@@ -7,8 +7,7 @@ import {
   notAuthorizedErrorWithMessage,
   updateTokenInfo
 } from "@/resources/tokens/token.service";
-import { UnexpectedServerError } from "@/handlers/errors";
-import { BuyerCompanySchema, BuyerFormT } from "@/resources/buyers/buyer.dto";
+import { BuyerFormT } from "@/resources/buyers/buyer.dto";
 import { clerkClient } from "@clerk/nextjs/server";
 
 class UserService {
@@ -43,13 +42,13 @@ class UserService {
       // 저작권자 생성
       if (formData.userType === UserTypeT.Creator) {
         const { creator } = formData;
-        // todo
-        if (!creator) {
-          throw new UnexpectedServerError("Creator data is missing.");
-        }
         const insert = {
           ...creator,
-          userId
+          user: {
+            connect: {
+              id: userId
+            }
+          }
         };
 
         await tx.creator.upsert({
@@ -63,12 +62,13 @@ class UserService {
         // 바이어 생성
       } else if (formData.userType === UserTypeT.Buyer) {
         const { buyer } = formData;
-        if (!buyer) {
-          throw new UnexpectedServerError("Buyer data is missing.");
-        }
         const insert = {
           ...buyer,
-          userId
+          user: {
+            connect: {
+              id: userId
+            }
+          }
         };
         await tx.buyer.upsert({
           create: insert,
@@ -121,8 +121,17 @@ class UserService {
         ...user,
         userType: UserTypeT.Buyer,
         buyer: {
-          company: BuyerCompanySchema.parse(buyerRecord.company),
-          purpose: buyerRecord.purpose as BuyerFormT["purpose"] ?? undefined,
+          name: buyerRecord.name,
+          thumbPath: buyerRecord.thumbPath ?? undefined,
+          businessField: buyerRecord.businessField as BuyerFormT["businessField"],
+          businessType: buyerRecord.businessType as BuyerFormT["businessType"],
+          department: buyerRecord.department,
+          position: buyerRecord.position,
+          role: buyerRecord.role,
+          businessNumber: buyerRecord.businessNumber,
+          businessCertificatePath: buyerRecord.businessCertificatePath ?? undefined,
+          businessCardPath: buyerRecord.businessCardPath ?? undefined,
+          purpose: buyerRecord.purpose as BuyerFormT["purpose"],
         }
       };
     }

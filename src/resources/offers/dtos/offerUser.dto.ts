@@ -1,7 +1,7 @@
 import { UserSchema } from "@/resources/users/dtos/user.dto";
 import z from "zod";
 import { CreatorSchema } from "@/resources/creators/creator.dto";
-import { BuyerCompanySchema } from "@/resources/buyers/buyer.dto";
+import { BuyerSchema } from "@/resources/buyers/buyer.dto";
 
 export const OfferBaseUserSchema = UserSchema.pick({
   id: true,
@@ -26,9 +26,9 @@ export const OfferCreatorSchema = CreatorSchema.pick({
 });
 export type OfferCreatorT = z.infer<typeof OfferCreatorSchema>;
 
-export const OfferBuyerSchema = BuyerCompanySchema.pick({
+export const OfferBuyerSchema = BuyerSchema.pick({
   name: true,
-  dept: true,
+  department: true,
   position: true,
 }).extend({
   user: OfferBaseUserSchema,

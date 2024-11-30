@@ -1,7 +1,6 @@
 import { UserFormSchema } from "@/resources/users/dtos/user.dto";
 import { useTranslations } from "next-intl";
-import { FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
-import { Row } from "@/components/ui/common";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
 import { Input } from "@/shadcn/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shadcn/ui/select";
 import { AccountFormType } from "@/components/forms/account/accountFormTypes";
@@ -13,7 +12,7 @@ export default function UserAddressFieldSet({ form }: {
   const tCountries = useTranslations("countries");
 
   return <fieldset>
-    <Row className="justify-between gap-2">
+    <div className="flex flex-row justify-between gap-2">
       <FormField
         control={form.control}
         name="country"
@@ -37,6 +36,7 @@ export default function UserAddressFieldSet({ form }: {
                 </SelectContent>
               </Select>
             </FormControl>
+            <FormMessage/>
           </FormItem>
         )}
       />
@@ -55,10 +55,11 @@ export default function UserAddressFieldSet({ form }: {
                 placeholder={t("insertPostalCode")}
               />
             </FormControl>
+            <FormMessage/>
           </FormItem>
         )}
       />
-    </Row>
+    </div>
 
     <FormField
       control={form.control}
@@ -74,6 +75,7 @@ export default function UserAddressFieldSet({ form }: {
               placeholder={t("insertAddress1")}
             />
           </FormControl>
+          <FormMessage/>
         </FormItem>
       )}
     />
@@ -92,6 +94,7 @@ export default function UserAddressFieldSet({ form }: {
               placeholder={t("insertAddress2")}
             />
           </FormControl>
+          <FormMessage/>
         </FormItem>
       )}
     />
