@@ -1,7 +1,7 @@
 "use server";
 
 import { AdminPageCreatorSchema, PublicCreatorSchema } from "@/resources/creators/creator.dto";
-import { ListResponseSchema } from "@/resources/globalTypes";
+import { ListResponseSchema, PaginationSchema } from "@/resources/globalTypes";
 import z from "zod";
 import { action } from "@/handlers/safeAction";
 import creatorService from "@/resources/creators/creator.service";
@@ -20,9 +20,7 @@ export const getCreatorByUserId = action
 
 export const listCreators = action
   .metadata({ actionName: "listCreators" })
-  .schema(z.object({
-    page: z.number()
-  }))
+  .schema(PaginationSchema)
   .outputSchema(ListResponseSchema(AdminPageCreatorSchema))
   .action(async ({ parsedInput }) => {
     return creatorService.list(parsedInput);

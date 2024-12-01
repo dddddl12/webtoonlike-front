@@ -2,15 +2,13 @@
 
 import { action } from "@/handlers/safeAction";
 import z from "zod";
-import { ListResponseSchema } from "@/resources/globalTypes";
+import { ListResponseSchema, PaginationSchema } from "@/resources/globalTypes";
 import invoiceService from "@/resources/invoices/services/invoice.service";
 import { InvoicedOfferSchema, UninvoicedOfferSchema } from "@/resources/invoices/dtos/invoice.dto";
 
 export const adminListUninvoicedOffers = action
   .metadata({ actionName: "adminListUninvoicedOffers" })
-  .schema(z.object({
-    page: z.number().default(1),
-  }))
+  .schema(PaginationSchema)
   .outputSchema(ListResponseSchema(UninvoicedOfferSchema))
   .action(async ({
     parsedInput: filters
@@ -24,9 +22,7 @@ export const adminListUninvoicedOffers = action
 
 export const adminListInvoicedOffers = action
   .metadata({ actionName: "adminListInvoicedOffers" })
-  .schema(z.object({
-    page: z.number().default(1),
-  }))
+  .schema(PaginationSchema)
   .outputSchema(ListResponseSchema(InvoicedOfferSchema))
   .action(async ({
     parsedInput: filters
@@ -40,9 +36,7 @@ export const adminListInvoicedOffers = action
 
 export const listUninvoicedOffers = action
   .metadata({ actionName: "listUninvoicedOffers" })
-  .schema(z.object({
-    page: z.number().default(1),
-  }))
+  .schema(PaginationSchema)
   .outputSchema(ListResponseSchema(UninvoicedOfferSchema))
   .action(async ({
     parsedInput: filters
@@ -56,9 +50,7 @@ export const listUninvoicedOffers = action
 
 export const listInvoicedOffers = action
   .metadata({ actionName: "listInvoicedOffers" })
-  .schema(z.object({
-    page: z.number().default(1),
-  }))
+  .schema(PaginationSchema)
   .outputSchema(ListResponseSchema(InvoicedOfferSchema))
   .action(async ({
     parsedInput: filters

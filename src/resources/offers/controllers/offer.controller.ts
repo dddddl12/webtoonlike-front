@@ -6,7 +6,7 @@ import {
 import z from "zod";
 import { action } from "@/handlers/safeAction";
 import offerService from "@/resources/offers/services/offer.service";
-import { ListResponseSchema } from "@/resources/globalTypes";
+import { ListResponseSchema, PaginationSchema } from "@/resources/globalTypes";
 
 // /admin/offers
 export const adminListOffersByBidRoundId = action
@@ -35,9 +35,7 @@ export const getOffer = action
 
 export const listAllOffers = action
   .metadata({ actionName: "listAllOffers" })
-  .schema(z.object({
-    page: z.number().default(1),
-  }))
+  .schema(PaginationSchema)
   .outputSchema(ListResponseSchema(OfferWithBuyerAndWebtoonSchema))
   .action(async ({
     parsedInput: { page }

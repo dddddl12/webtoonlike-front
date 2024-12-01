@@ -3,15 +3,13 @@
 // /admin/users
 import { action } from "@/handlers/safeAction";
 import z from "zod";
-import { ListResponseSchema } from "@/resources/globalTypes";
+import { ListResponseSchema, PaginationSchema } from "@/resources/globalTypes";
 import { AdminPageAccountSchema, NonAdminUserSearchSchema } from "@/resources/users/dtos/userAdmin.dto";
 import userAdminService from "@/resources/users/services/userAdmin.service";
 
 export const listUsers = action
   .metadata({ actionName: "listUsers" })
-  .schema(z.object({
-    page: z.number()
-  }))
+  .schema(PaginationSchema)
   .outputSchema(ListResponseSchema(AdminPageAccountSchema))
   .action(async ({ parsedInput }) => {
     return userAdminService.list(parsedInput);

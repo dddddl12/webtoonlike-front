@@ -4,7 +4,7 @@
 import { action } from "@/handlers/safeAction";
 import z from "zod";
 import { BidRoundApprovalStatus } from "@/resources/bidRounds/dtos/bidRound.dto";
-import { ListResponseSchema } from "@/resources/globalTypes";
+import { ListResponseSchema, PaginationSchema } from "@/resources/globalTypes";
 import {
   AdminPageBidRoundSchema,
   AdminPageBidRoundWithOffersSchema,
@@ -13,8 +13,7 @@ import {
 } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
 import bidRoundAdminService from "@/resources/bidRounds/services/bidRoundAdmin.service";
 
-const AdminPageBidRoundFilterSchema = z.object({
-  page: z.number().default(1),
+const AdminPageBidRoundFilterSchema = PaginationSchema.extend({
   approvalStatus: z.nativeEnum(BidRoundApprovalStatus)
 });
 export type AdminPageBidRoundFilterT = z.infer<typeof AdminPageBidRoundFilterSchema>;
@@ -28,9 +27,7 @@ export const adminListBidRoundsWithWebtoon = action
 
 export const adminListBidRoundsWithOffers = action
   .metadata({ actionName: "adminListBidRoundsWithOffers" })
-  .schema(z.object({
-    page: z.number().default(1),
-  }))
+  .schema(PaginationSchema)
   .outputSchema(ListResponseSchema(AdminPageBidRoundWithOffersSchema))
   .action(async ({ parsedInput }) => {
     return bidRoundAdminService.adminListBidRoundsWithOffers(parsedInput);

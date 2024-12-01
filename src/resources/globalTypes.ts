@@ -11,6 +11,10 @@ export const ListResponseSchema = (itemSchema: z.ZodTypeAny) => z.object({
   totalPages: z.number(),
 });
 
+export const PaginationSchema = z.object({
+  page: z.number().default(1),
+});
+
 export const ResourceSchema = z.object({
   id: z.number(),
   createdAt: z.date(),

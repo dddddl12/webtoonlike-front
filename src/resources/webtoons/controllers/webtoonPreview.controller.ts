@@ -11,13 +11,12 @@ import {
   MyWebtoonOnSaleSchema,
   WebtoonPreviewSchema
 } from "@/resources/webtoons/dtos/webtoonPreview.dto";
-import { ListResponseSchema } from "@/resources/globalTypes";
+import { ListResponseSchema, PaginationSchema } from "@/resources/globalTypes";
 import webtoonPreviewService from "@/resources/webtoons/services/webtoonPreview.service";
 
-const WebtoonFilterSchema = z.object({
+const WebtoonFilterSchema = PaginationSchema.extend({
   genreIds: z.array(z.number()).default([]),
-  ageLimits: z.array(z.nativeEnum(AgeLimit)).default([]),
-  page: z.number().default(1)
+  ageLimits: z.array(z.nativeEnum(AgeLimit)).default([])
 });
 export type WebtoonFilterT = z.infer<typeof WebtoonFilterSchema>;
 export const listWebtoons = action
@@ -33,9 +32,7 @@ export const listWebtoonsByUserId = action
   .bindArgsSchemas([
     z.number()
   ])
-  .schema(z.object({
-    page: z.number().default(1)
-  }))
+  .schema(PaginationSchema)
   .outputSchema(ListResponseSchema(WebtoonPreviewSchema))
   .action(async ({
     bindArgsParsedInputs: [userId],
@@ -51,9 +48,7 @@ export const listWebtoonsByUserId = action
 // /account
 export const listLikedWebtoons = action
   .metadata({ actionName: "listLikedWebtoons" })
-  .schema(z.object({
-    page: z.number().default(1)
-  }))
+  .schema(PaginationSchema)
   .outputSchema(ListResponseSchema(WebtoonPreviewSchema))
   .action(async ({ parsedInput }) => {
     return webtoonPreviewService.listLikedWebtoons(parsedInput);
@@ -63,9 +58,7 @@ export const listLikedWebtoons = action
 // /webtoons (미등록 작품)
 export const listMyWebtoonsNotOnSale = action
   .metadata({ actionName: "listMyWebtoonsNotOnSale" })
-  .schema(z.object({
-    page: z.number().default(1)
-  }))
+  .schema(PaginationSchema)
   .outputSchema(ListResponseSchema(MyWebtoonNotOnSaleSchema))
   .action(async ({ parsedInput }) => {
     return webtoonPreviewService.listMyWebtoonsNotOnSale(parsedInput);
@@ -75,9 +68,7 @@ export const listMyWebtoonsNotOnSale = action
 // /webtoons (판매 등록 작품)
 export const listMyWebtoonsOnSale = action
   .metadata({ actionName: "listMyWebtoonsOnSale" })
-  .schema(z.object({
-    page: z.number().default(1)
-  }))
+  .schema(PaginationSchema)
   .outputSchema(ListResponseSchema(MyWebtoonOnSaleSchema))
   .action(async ({ parsedInput }) => {
     return webtoonPreviewService.listMyWebtoonsOnSale(parsedInput);

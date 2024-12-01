@@ -2,15 +2,13 @@
 
 import { action } from "@/handlers/safeAction";
 import z from "zod";
-import { ListResponse, ListResponseSchema } from "@/resources/globalTypes";
+import { ListResponse, ListResponseSchema, PaginationSchema } from "@/resources/globalTypes";
 import { AdminEntrySchema, AdminEntryT } from "@/resources/admins/admin.dto";
 import adminService from "@/resources/admins/admin.service";
 
 export const listAdmins = action
   .metadata({ actionName: "listAdmins" })
-  .schema(z.object({
-    page: z.number().default(1),
-  }))
+  .schema(PaginationSchema)
   // todo 정적 분석을 하지 않음
   .outputSchema(
     ListResponseSchema(AdminEntrySchema)
