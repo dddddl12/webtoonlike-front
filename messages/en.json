@@ -270,7 +270,7 @@
             "EXCLUSIVE_CONTRACT": "Private Contract",
             "NON_EXCLUSIVE_CONTRACT": "Public Contract",
             "PUBLICATION": "Publication",
-            "DERIVATIVE_WORK": "Secondary Work",
+            "DERIVATIVE_WORKS": "Secondary Work",
             "INVESTMENT": "Investment"
         }
     },

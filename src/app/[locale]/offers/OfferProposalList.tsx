@@ -3,13 +3,14 @@ import { Col, Row } from "@/components/ui/common";
 import {
   listOfferProposals
 } from "@/resources/offers/controllers/offerProposal.controller";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useTokenInfo from "@/hooks/tokenInfo";
 import { Skeleton } from "@/shadcn/ui/skeleton";
 import { clsx } from "clsx";
 import { OfferProposalListT } from "@/resources/offers/dtos/offerProposal.dto";
 import ViewOfferProposalSection from "@/app/[locale]/offers/components/ViewOfferProposalSection";
 import { ProposalsReloadReq } from "@/app/[locale]/offers/OfferDetailsContext";
+import useSafeAction from "@/hooks/safeAction";
 
 // TODO 페이지네이션 없음
 export default function OfferProposalList({ offerId, reloadReq }: {
@@ -19,16 +20,20 @@ export default function OfferProposalList({ offerId, reloadReq }: {
   const [reloadKey, setReloadKey] = useState(0);
   const [offerProposalsResponse, setOfferProposalsResponse] = useState<OfferProposalListT>();
 
+  const boundSetOfferProposalsResponse = useMemo(() => listOfferProposals.bind(null, offerId), [offerId]);
+  const { execute } = useSafeAction(boundSetOfferProposalsResponse, {
+    onSuccess: ({ data }) => {
+      setOfferProposalsResponse(data);
+      if (reloadReq?.refocusToLast) {
+        // 접기 등 상태 재조정
+        setReloadKey(prev => prev + 1);
+      }
+    }
+  });
+
   useEffect(() => {
-    listOfferProposals(offerId)
-      .then((res) => {
-        setOfferProposalsResponse(res?.data);
-        if (reloadReq?.refocusToLast) {
-          // 접기 등 상태 재조정
-          setReloadKey(prev => prev + 1);
-        }
-      });
-  }, [offerId, reloadReq]);
+    execute();
+  }, [execute]);
 
   if (!offerProposalsResponse) {
     return <div>

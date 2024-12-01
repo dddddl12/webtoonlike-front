@@ -16,7 +16,7 @@ export const BuyerPurposeSchema = z.enum([
   "EXCLUSIVE_CONTRACT",
   "NON_EXCLUSIVE_CONTRACT",
   "PUBLICATION",
-  "DERIVATIVE_WORK",
+  "DERIVATIVE_WORKS",
   "INVESTMENT"
 ]);
 

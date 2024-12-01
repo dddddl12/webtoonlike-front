@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { ko, enUS } from "date-fns/locale";
 import {
@@ -33,6 +33,7 @@ import {
   getBidRoundAdminSettings
 } from "@/resources/bidRounds/controllers/bidRoundAdmin.controller";
 import useSafeActionForm from "@/hooks/safeActionForm";
+import useSafeAction from "@/hooks/safeAction";
 
 export default function BidRoundAdminSettingsForm({
   bidRoundId, children, reload
@@ -84,13 +85,16 @@ function DialogContentWrapper({
   // getBidRoundAdminSettings vs. StrictBidRoundAdminSettingsSchema 타입 불일치로 인해
   // defaultValues 사용 불가 (이상하게 async 호출 시 partial 조건이 빠져있음)
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const boundGetBidRoundAdminSettings = useMemo(() => getBidRoundAdminSettings.bind(null, bidRoundId), [bidRoundId]);
+  const { execute } = useSafeAction(boundGetBidRoundAdminSettings, {
+    onSuccess: ({ data }) => {
+      form.reset(data);
+      setIsLoaded(true);
+    }
+  });
   useEffect(() => {
-    getBidRoundAdminSettings(bidRoundId)
-      .then(res => {
-        form.reset(res?.data);
-        setIsLoaded(true);
-      });
-  }, [bidRoundId, form]);
+    execute();
+  }, [execute]);
 
   const { watch } = form;
 

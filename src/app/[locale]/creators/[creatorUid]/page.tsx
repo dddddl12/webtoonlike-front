@@ -4,7 +4,7 @@ import { getCreatorByUserId } from "@/resources/creators/creator.controller";
 import PageLayout from "@/components/ui/PageLayout";
 import CreatorWebtoonList from "@/app/[locale]/creators/[creatorUid]/CreatorWebtoonList";
 import { buildImgUrl } from "@/utils/media";
-import { responseHandler } from "@/handlers/responseHandler";
+import { serverResponseHandler } from "@/handlers/serverResponseHandler";
 import { listWebtoonsByUserId } from "@/resources/webtoons/controllers/webtoonPreview.controller";
 import { getLikeCountByUserId } from "@/resources/webtoonLikes/webtoonLike.controller";
 import LikeBadge from "@/components/ui/LikeBadge";
@@ -16,9 +16,9 @@ export default async function CreatorPage({
 }) {
   const creatorUid = await params.then(p => Number(p.creatorUid));
   const [creator, likeCountResponse, initialWebtoonListResponse] = await Promise.all([
-    getCreatorByUserId(creatorUid).then(responseHandler),
-    getLikeCountByUserId(creatorUid).then(responseHandler),
-    listWebtoonsByUserId(creatorUid, {}).then(responseHandler)
+    getCreatorByUserId(creatorUid).then(serverResponseHandler),
+    getLikeCountByUserId(creatorUid).then(serverResponseHandler),
+    listWebtoonsByUserId(creatorUid, {}).then(serverResponseHandler)
   ]);
 
   return <PageLayout>

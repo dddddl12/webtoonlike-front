@@ -4,13 +4,13 @@ import { Heading1 } from "@/components/ui/common";
 import { getTranslations } from "next-intl/server";
 import WebtooonFeedList from "@/app/[locale]/webtoons/components/WebtoonFeed/WebtooonFeedList";
 import { listGenres } from "@/resources/genres/genre.controller";
-import { responseHandler } from "@/handlers/responseHandler";
+import { serverResponseHandler } from "@/handlers/serverResponseHandler";
 import { listWebtoons } from "@/resources/webtoons/controllers/webtoonPreview.controller";
 
 export default async function WebtoonFeed() {
   const [ genres, webtoonListResponse ] = await Promise.all([
-    listGenres().then(responseHandler),
-    listWebtoons({}).then(responseHandler)
+    listGenres().then(serverResponseHandler),
+    listWebtoons({}).then(serverResponseHandler)
   ]);
   const TallSeries = await getTranslations("allSeries");
 

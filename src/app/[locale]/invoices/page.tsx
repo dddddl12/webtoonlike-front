@@ -6,13 +6,13 @@ import { Heading1 } from "@/components/ui/common";
 import { listInvoicedOffers, listUninvoicedOffers } from "@/resources/invoices/controllers/invoice.controller";
 import { Col } from "@/components/ui/common";
 import { UninvoicedOfferList } from "@/app/[locale]/invoices/UninvoicedOfferList";
-import { responseHandler } from "@/handlers/responseHandler";
+import { serverResponseHandler } from "@/handlers/serverResponseHandler";
 
 export default async function Invoice() {
   const t = await getTranslations("invoiceManagement");
   const [initialUninvoicedListResponse, initialInvoicedListResponse] = await Promise.all([
-    listUninvoicedOffers({}).then(responseHandler),
-    listInvoicedOffers({}).then(responseHandler)
+    listUninvoicedOffers({}).then(serverResponseHandler),
+    listInvoicedOffers({}).then(serverResponseHandler)
   ]);
   return (
     <PageLayout>

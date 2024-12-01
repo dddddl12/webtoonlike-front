@@ -1,6 +1,6 @@
 import PageLayout from "@/components/ui/PageLayout";
 import { Col } from "@/components/ui/common";
-import { responseHandler } from "@/handlers/responseHandler";
+import { serverResponseHandler } from "@/handlers/serverResponseHandler";
 import { getUser } from "@/resources/users/controllers/user.controller";
 import AccountUpdateForm from "@/components/forms/account/AccountUpdateForm";
 import AccountProfile from "@/app/[locale]/account/components/AccountProfile";
@@ -8,7 +8,7 @@ import { ClerkLoaded } from "@clerk/nextjs";
 
 export default async function UpdateAccount () {
   const userForm = await getUser()
-    .then(responseHandler);
+    .then(serverResponseHandler);
   return (
     <PageLayout>
       <ClerkLoaded>

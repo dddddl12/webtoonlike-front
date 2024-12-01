@@ -5,7 +5,7 @@ import useListData from "@/hooks/listData";
 import { Col, Row } from "@/components/ui/common";
 import Paginator from "@/components/ui/Paginator";
 import { Button } from "@/shadcn/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { adminListOffersByBidRoundId } from "@/resources/offers/controllers/offer.controller";
 import { adminListBidRoundsWithOffers } from "@/resources/bidRounds/controllers/bidRoundAdmin.controller";
@@ -13,6 +13,7 @@ import { AdminPageBidRoundWithOffersT } from "@/resources/bidRounds/dtos/bidRoun
 import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
 import NoItems from "@/components/ui/NoItems";
 import { OfferWithActiveProposalT } from "@/resources/offers/dtos/offer.dto";
+import useSafeAction from "@/hooks/safeAction";
 
 // todo 디테일 누락
 export default function AdminOffersPage() {
@@ -92,10 +93,13 @@ function OfferList({ bidRoundId }: {
   bidRoundId: number;
 }) {
   const [items, setItems] = useState<OfferWithActiveProposalT[]>();
+  const boundAdminListOffersByBidRoundId = useMemo(() => adminListOffersByBidRoundId.bind(null, bidRoundId), [bidRoundId]);
+  const { execute } = useSafeAction(boundAdminListOffersByBidRoundId, {
+    onSuccess: ({ data }) => setItems(data)
+  });
   useEffect(() => {
-    adminListOffersByBidRoundId(bidRoundId)
-      .then(res => setItems(res?.data));
-  }, [bidRoundId]);
+    execute();
+  }, [execute]);
 
   if (!items) {
     return <Spinner />;

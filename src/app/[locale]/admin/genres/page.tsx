@@ -10,6 +10,7 @@ import DeleteGenre from "@/app/[locale]/admin/genres/DeleteGenre";
 import useReload from "@/hooks/reload";
 import GenreForm from "@/components/forms/admin/GenreForm";
 import { GenreT } from "@/resources/genres/genre.dto";
+import useSafeAction from "@/hooks/safeAction";
 
 // BadRequestError
 export default function ManageGenresPage() {
@@ -26,11 +27,12 @@ function ManageGenresContent() {
   const { reload, reloadKey } = useReload();
   const [genres, setGenres] = useState<GenreT[]>();
 
+  const { execute } = useSafeAction(listGenres, {
+    onSuccess: ({ data }) => setGenres(data)
+  });
   useEffect(() => {
-    listGenres().then(
-      (res) => setGenres(res?.data)
-    );
-  }, [reloadKey]);
+    execute();
+  }, [reloadKey, execute]);
 
   return <div>
     <Row>

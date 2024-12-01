@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Col } from "@/components/ui/common";
 import { Heading1 } from "@/components/ui/common";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Spinner from "@/components/ui/Spinner";
 import OfferProposalDetails from "@/components/shared/OfferProposalDetails";
 import Profile from "@/components/shared/Profile";
@@ -9,6 +9,7 @@ import { getOfferProposalDetails } from "@/resources/offers/controllers/offerPro
 import { OfferProposalDetailsT, OfferProposalStatus } from "@/resources/offers/dtos/offerProposal.dto";
 import Controls from "@/app/[locale]/offers/components/Controls";
 import useTokenInfo from "@/hooks/tokenInfo";
+import useSafeAction from "@/hooks/safeAction";
 
 export default function ViewOfferProposalSection({ offerProposalId }: {
   offerProposalId: number;
@@ -16,10 +17,14 @@ export default function ViewOfferProposalSection({ offerProposalId }: {
   const { tokenInfo } = useTokenInfo();
   const [offerProposal, setOfferProposal] = useState<OfferProposalDetailsT>();
 
+  const boundGetOfferProposalDetails = useMemo(() => getOfferProposalDetails.bind(null, offerProposalId), [offerProposalId]);
+  const { execute } = useSafeAction(boundGetOfferProposalDetails, {
+    onSuccess: ({ data }) => setOfferProposal(data)
+  });
+
   useEffect(() => {
-    getOfferProposalDetails(offerProposalId)
-      .then(res => setOfferProposal(res?.data));
-  }, [offerProposalId]);
+    execute();
+  }, [execute]);
 
   const tMakeAnOffer = useTranslations("offerDetails");
   if (!offerProposal) {

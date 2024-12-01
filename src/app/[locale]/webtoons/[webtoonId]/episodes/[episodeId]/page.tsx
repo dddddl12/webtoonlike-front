@@ -9,7 +9,7 @@ import { Link } from "@/i18n/routing";
 import { getEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.controller";
 import Image from "next/image";
 import NavButton from "@/app/[locale]/webtoons/[webtoonId]/episodes/[episodeId]/EpisodeNavButton";
-import { responseHandler } from "@/handlers/responseHandler";
+import { serverResponseHandler } from "@/handlers/serverResponseHandler";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 import { AdminLevel } from "@/resources/tokens/token.types";
 import EditLink from "@/components/ui/EditLink";
@@ -24,7 +24,7 @@ export default async function WebtoonEpisodeDetail(
       episodeId: Number(episodeId)
     }));
   const episode = await getEpisode(webtoonId, episodeId)
-    .then(responseHandler);
+    .then(serverResponseHandler);
   const { webtoon } = episode;
 
   const t = await getTranslations("episodePage");

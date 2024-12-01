@@ -1,7 +1,7 @@
 import { getEpisode } from "@/resources/webtoonEpisodes/webtoonEpisode.controller";
 import WebtoonEpisodeForm from "@/components/forms/WebtoonEpisodeForm";
 import PageLayout from "@/components/ui/PageLayout";
-import { responseHandler } from "@/handlers/responseHandler";
+import { serverResponseHandler } from "@/handlers/serverResponseHandler";
 
 export default async function UpdateWebtoonEpisode(
   { params }:
@@ -14,7 +14,7 @@ export default async function UpdateWebtoonEpisode(
       episodeId: Number(episodeId)
     }));
   const episode = await getEpisode(webtoonId, episodeId)
-    .then(responseHandler);
+    .then(serverResponseHandler);
 
   return (
     <PageLayout>

@@ -3,7 +3,7 @@ import { Row } from "@/components/ui/common";
 import { Button } from "@/shadcn/ui/button";
 import { Link } from "@/i18n/routing";
 import AccountBasicInfoSectionDeleteButton from "@/app/[locale]/account/AccountBasicInfoSectionDeleteButton";
-import { responseHandler } from "@/handlers/responseHandler";
+import { serverResponseHandler } from "@/handlers/serverResponseHandler";
 import { getMyLikeCount } from "@/resources/webtoonLikes/webtoonLike.controller";
 import { getTokenInfo } from "@/resources/tokens/token.service";
 import { UserTypeT } from "@/resources/users/dtos/user.dto";
@@ -14,7 +14,7 @@ export default async function AccountBasicInfoSection() {
   const TeditProfile = await getTranslations("accountPage");
   const { metadata } = await getTokenInfo();
   const likeCountResponse = metadata.type === UserTypeT.Creator
-    ? await getMyLikeCount().then(responseHandler)
+    ? await getMyLikeCount().then(serverResponseHandler)
     : undefined;
   return <AccountProfile>
     <Row className="w-full justify-between mt-6">

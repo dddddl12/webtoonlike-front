@@ -269,7 +269,7 @@
             "EXCLUSIVE_CONTRACT": "독점",
             "NON_EXCLUSIVE_CONTRACT": "비독점",
             "PUBLICATION": "콘텐츠 유통",
-            "DERIVATIVE_WORK": "2차 판권",
+            "DERIVATIVE_WORKS": "2차 판권",
             "INVESTMENT": "투자"
         }
     },

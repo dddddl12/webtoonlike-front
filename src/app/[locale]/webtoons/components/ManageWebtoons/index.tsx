@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server";
 import MyWebtoonsNotOnSale from "@/app/[locale]/webtoons/components/ManageWebtoons/MyWebtoonsNotOnSale";
 import MyWebtoonsOnSale from "@/app/[locale]/webtoons/components/ManageWebtoons/MyWebtoonsOnSale";
 import { Heading1 } from "@/components/ui/common";
-import { responseHandler } from "@/handlers/responseHandler";
+import { serverResponseHandler } from "@/handlers/serverResponseHandler";
 import {
   listMyWebtoonsNotOnSale,
   listMyWebtoonsOnSale
@@ -16,8 +16,8 @@ export default async function ManageWebtoons() {
     initialWebtoonListNotOnSaleResponse,
     initialWebtoonListOnSaleResponse
   ] = await Promise.all([
-    listMyWebtoonsNotOnSale({}).then(responseHandler),
-    listMyWebtoonsOnSale({}).then(responseHandler)
+    listMyWebtoonsNotOnSale({}).then(serverResponseHandler),
+    listMyWebtoonsOnSale({}).then(serverResponseHandler)
   ]);
 
   const t = await getTranslations("manageContents");

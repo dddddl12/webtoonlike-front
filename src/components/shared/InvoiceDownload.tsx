@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Dialog,
@@ -16,6 +16,7 @@ import { jsPDF } from "jspdf";
 import { Row } from "@/components/ui/common";
 import { InvoicedOfferT } from "@/resources/invoices/dtos/invoice.dto";
 import { downloadInvoiceContent } from "@/resources/invoices/controllers/invoiceContent.controller";
+import useSafeAction from "@/hooks/safeAction";
 
 export default function InvoiceDownload({
   offer
@@ -27,13 +28,16 @@ export default function InvoiceDownload({
   const [invoiceDownloadOpen, setInvoiceDownloadOpen] = useState(false);
   const [previewContent, setPreviewContent] = useState<string>();
 
+  const boundDownloadInvoiceContent = useMemo(() => downloadInvoiceContent.bind(null, offer.invoice.id), [offer.invoice.id]);
+  const { execute } = useSafeAction(boundDownloadInvoiceContent, {
+    onSuccess: ({ data }) => setPreviewContent(data)
+  });
   useEffect(() => {
     if (!invoiceDownloadOpen) {
       return;
     }
-    downloadInvoiceContent(offer.invoice.id)
-      .then(res => setPreviewContent(res?.data));
-  }, [offer.invoice.id, invoiceDownloadOpen]);
+    execute();
+  }, [execute, invoiceDownloadOpen]);
 
   return (
     <Dialog
