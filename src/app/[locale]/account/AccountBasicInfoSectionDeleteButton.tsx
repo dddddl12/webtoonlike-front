@@ -6,20 +6,15 @@ import { deleteUser } from "@/resources/users/controllers/user.controller";
 import { ClerkLoaded, useAuth } from "@clerk/nextjs";
 import { useToast } from "@/shadcn/hooks/use-toast";
 import { useRouter } from "@/i18n/routing";
+import useSafeAction from "@/hooks/safeAction";
 
 export default function AccountBasicInfoSectionDeleteButton() {
   const TeditProfile = useTranslations("accountPage");
   const auth = useAuth();
   const { toast } = useToast();
   const router = useRouter();
-
-  const confirm = useConfirm({
-    title: TeditProfile("withdrawalTitle"),
-    message: TeditProfile("withdrawalDesc"),
-    confirmText: TeditProfile("withdrawalConfirm"),
-    onConfirm: async () => {
-      await deleteUser();
-      //todo 실패 핸들링
+  const { execute } = useSafeAction(deleteUser, {
+    onSuccess: async () => {
       toast({
         description: TeditProfile("withdrawalToast"),
       });
@@ -28,6 +23,13 @@ export default function AccountBasicInfoSectionDeleteButton() {
         scroll: true
       });
     }
+  });
+
+  const confirm = useConfirm({
+    title: TeditProfile("withdrawalTitle"),
+    message: TeditProfile("withdrawalDesc"),
+    confirmText: TeditProfile("withdrawalConfirm"),
+    onConfirm: execute
   });
 
   return <ClerkLoaded>

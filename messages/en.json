@@ -485,6 +485,10 @@
                 "title": "Error occurred.",
                 "outdated": "You're not seeing the latest proposal.",
                 "abnormalAccess": "This action is not allowed."
+            },
+            "deleteUser": {
+                "title": "Failed to delete the account",
+                "message": "You have webtoons or offers registered with this account. If you want to proceed, please contact us."
             }
         }
     },

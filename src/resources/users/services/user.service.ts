@@ -9,6 +9,9 @@ import {
 } from "@/resources/tokens/token.service";
 import { BuyerFormT } from "@/resources/buyers/buyer.dto";
 import { clerkClient } from "@clerk/nextjs/server";
+import { Prisma } from "@prisma/client";
+import { ForbiddenError } from "@/handlers/errors";
+import { getTranslations } from "next-intl/server";
 
 class UserService {
 
@@ -150,6 +153,15 @@ class UserService {
       await clerkClient().then(client => {
         client.users.deleteUser(sub);
       });
+    }).catch(async (e) => {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2003") {
+        const t = await getTranslations("errors.serverActions.deleteUser");
+        throw new ForbiddenError({
+          title: t("title"),
+          message: t("message")
+        });
+      }
+      throw e;
     });
   }
 }
