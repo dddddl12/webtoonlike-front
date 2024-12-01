@@ -16,9 +16,9 @@ import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import z from "zod";
 
-
+type AcceptedSchema = z.ZodObject<any> | z.ZodEffects<z.ZodObject<any>>;
 type FormSchemaContextValue<
-  Schema = z.ZodObject<any>
+  Schema = AcceptedSchema
 > = {
   schema: Schema;
 };
@@ -28,7 +28,7 @@ const FormSchemaContext = React.createContext<FormSchemaContextValue>(
 );
 
 export const Form = <
-  Schema extends z.ZodObject<any>,
+  Schema extends AcceptedSchema,
   TContext = any,
   TTransformedValues extends FieldValues | undefined = undefined
 >({
@@ -130,14 +130,21 @@ export const FormLabel = ({
 
   // 대상 스키마 구하기
   const markOptional = useMemo(() => {
-    const targetSchema = (name?.split(/[,[\].]+?/).filter(Boolean) || [])
+    let zodObject: z.ZodObject<any>;
+    if (schema instanceof z.ZodEffects) {
+      zodObject = schema.sourceType();
+    } else {
+      zodObject = schema;
+    }
+
+    const targetZodObject = (name?.split(/[,[\].]+?/).filter(Boolean) || [])
       .reduce(
-        (targetSchema, key) => {
-          return targetSchema.shape[key];
+        (targetZodObject, key) => {
+          return targetZodObject.shape[key];
         },
-        schema,
+        zodObject
       );
-    return (!isInline && targetSchema.isOptional()) || false;
+    return (!isInline && targetZodObject.isOptional()) || false;
   }, [isInline, name, schema]);
 
   const t = useTranslations("general");

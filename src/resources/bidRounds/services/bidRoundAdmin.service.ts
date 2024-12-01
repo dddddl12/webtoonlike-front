@@ -6,8 +6,7 @@ import { BidRoundApprovalStatus } from "@/resources/bidRounds/dtos/bidRound.dto"
 import { AdminPageBidRoundFilterT } from "@/resources/bidRounds/controllers/bidRoundAdmin.controller";
 import {
   AdminPageBidRoundT,
-  AdminPageBidRoundWithOffersT,
-  StrictBidRoundAdminSettingsT
+  AdminPageBidRoundWithOffersT, StrictBidRoundAdminSettingsT,
 } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
 import bidRoundAdminHelper from "@/resources/bidRounds/helpers/bidRoundAdmin.helper";
 import { ListResponse } from "@/resources/globalTypes";

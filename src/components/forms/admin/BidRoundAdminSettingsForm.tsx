@@ -26,7 +26,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Col } from "@/components/ui/common";
 import { getBidRoundStatus } from "@/resources/bidRounds/bidRoundStatus";
 import {
-  StrictBidRoundAdminSettingsRefinedSchema,
   StrictBidRoundAdminSettingsSchema
 } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
 import {
@@ -69,7 +68,7 @@ function DialogContentWrapper({
   const { toast } = useToast();
   const { isFormSubmitting, form, onSubmit } = useSafeActionForm(
     editBidRoundAdminSettings.bind(null, bidRoundId), {
-      resolver: zodResolver(StrictBidRoundAdminSettingsRefinedSchema),
+      resolver: zodResolver(StrictBidRoundAdminSettingsSchema),
       mode: "onChange",
       actionProps: {
         onSuccess: () => {

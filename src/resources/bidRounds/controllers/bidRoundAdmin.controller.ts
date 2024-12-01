@@ -9,7 +9,7 @@ import {
   AdminPageBidRoundSchema,
   AdminPageBidRoundWithOffersSchema,
   BidRoundAdminSettingsSchema,
-  StrictBidRoundAdminSettingsRefinedSchema
+  StrictBidRoundAdminSettingsSchema
 } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
 import bidRoundAdminService from "@/resources/bidRounds/services/bidRoundAdmin.service";
 
@@ -73,7 +73,7 @@ export const editBidRoundAdminSettings = action
   .bindArgsSchemas([
     z.number() // bidRoundId
   ])
-  .schema(StrictBidRoundAdminSettingsRefinedSchema)
+  .schema(StrictBidRoundAdminSettingsSchema)
   .action(async ({ bindArgsParsedInputs: [bidRoundId], parsedInput: settings }) => {
     return bidRoundAdminService.editBidRoundAdminSettings(bidRoundId, settings);
   });

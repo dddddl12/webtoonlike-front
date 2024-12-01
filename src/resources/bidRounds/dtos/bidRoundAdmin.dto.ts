@@ -10,15 +10,13 @@ export const BidRoundAdminSettingsSchema = z.object({
   processEndsAt: z.date().optional(),
   adminNote: z.string().optional(),
 });
+
 export const StrictBidRoundAdminSettingsSchema = BidRoundAdminSettingsSchema
   .required({
     bidStartsAt: true,
     negoStartsAt: true,
     processEndsAt: true,
-  });
-export type StrictBidRoundAdminSettingsT = z.infer<typeof StrictBidRoundAdminSettingsSchema>;
-
-export const StrictBidRoundAdminSettingsRefinedSchema = StrictBidRoundAdminSettingsSchema
+  })
   .superRefine((val, ctx) => {
     const { bidStartsAt, negoStartsAt, processEndsAt } = val;
     if (bidStartsAt > negoStartsAt) {
@@ -48,6 +46,7 @@ export const StrictBidRoundAdminSettingsRefinedSchema = StrictBidRoundAdminSetti
       return z.NEVER;
     }
   });
+export type StrictBidRoundAdminSettingsT = z.infer<typeof StrictBidRoundAdminSettingsSchema>;
 
 export const AdminPageBidRoundSchema = BidRoundSchema.pick({
   id: true,
