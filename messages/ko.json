@@ -175,7 +175,9 @@
         "register": "등록하기",
         "removeImageTitle": "이미지 제거",
         "removeImageDescription": "해당 이미지를 제거하시겠습니까?",
-        "removeConfirm": "제거"
+        "removeConfirm": "제거",
+        "noConsecutiveImagesWarning": "연속되지 않은 항목들은 이동할 수 없습니다. 연속되는 항목들만 선택해 주세요.",
+        "cannotIncludeLargeFiles": "5MB가 넘는 파일은 포함할 없습니다."
     },
     "addSeries": {
         "addSeries": "작품 추가하기",

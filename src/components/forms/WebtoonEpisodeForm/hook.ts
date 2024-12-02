@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useToast } from "@/shadcn/hooks/use-toast";
 
 import { ImageObject } from "@/utils/media";
+import { useTranslations } from "next-intl";
 
 export class EpisodeImageObject extends ImageObject {
   private _selected: boolean;
@@ -47,6 +48,7 @@ export function useEpisodeImageList(paths?: string[]) {
     ]);
 
   const { toast } = useToast();
+  const t = useTranslations("episodeForm");
   const reorder = (isUp: boolean) => {
     try {
       const newEpisodeImages = reorderImages(episodeImages, isUp);
@@ -56,7 +58,7 @@ export function useEpisodeImageList(paths?: string[]) {
         throw e;
       }
       toast({
-        description: e.message
+        description: t("noConsecutiveImagesWarning")
       });
     }
   };
@@ -97,7 +99,7 @@ const getSelectedImagesIndices = (images: EpisodeImageObject[]) => {
       acc.firstIndex = index;
     }
     if (acc.lastIndex >= 0 && index > acc.lastIndex + 1 ){
-      throw new ReorderImagesError("연속되지 않은 항목들은 이동할 수 없습니다. 연속되는 항목들만 선택해 주세요");
+      throw new ReorderImagesError();
     }
     acc.lastIndex = index;
     return acc;

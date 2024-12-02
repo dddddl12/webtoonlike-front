@@ -176,7 +176,9 @@
         "register": "Register",
         "removeImageTitle": "Remove Image",
         "removeImageDescription": "Are you sure you want to remove this image?",
-        "removeConfirm": "Remove"
+        "removeConfirm": "Remove",
+        "noConsecutiveImagesWarning": "You can only move images that are selected consecutively.",
+        "cannotIncludeLargeFiles": "Files larger than 5MB cannot be included."
     },
     "addSeries": {
         "addSeries": "Add Series",

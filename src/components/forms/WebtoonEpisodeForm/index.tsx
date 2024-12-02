@@ -28,7 +28,6 @@ import { FormHeader } from "@/components/ui/form/FormHeader";
 import SubmitButton from "@/components/ui/form/SubmitButton";
 
 const MAX_THUMBNAIL_SIZE = 5 * 1024 * 1024; // 5MB
-// todo 클래스로 변경
 export default function WebtoonEpisodeForm({
   webtoonId,
   prev
@@ -133,6 +132,7 @@ function ImageListField({ imageList, className }: {
 }) {
 
   const { add } = imageList;
+  const t = useTranslations("episodeForm");
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: useCallback((acceptedFiles: File[]) => {
       let hasFileExceedingMaxSize = false;
@@ -148,15 +148,13 @@ function ImageListField({ imageList, className }: {
         );
       if (hasFileExceedingMaxSize) {
         toast({
-          description: "5MB가 넘는 파일은 포함할 없습니다.",
+          description: t("cannotIncludeLargeFiles"),
         });
       }
       add(filesFiltered);
-    }, [add])
+    }, [add, t])
   });
   const dropzoneRootProps = getRootProps();
-
-  const t = useTranslations("episodeForm");
 
   return <FormItem className={className}>
     <FormLabel>
