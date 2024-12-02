@@ -10,7 +10,7 @@ export default function DeleteAdmin({ reload, adminId }: {
   adminId: number;
 }) {
   const { toast } = useToast();
-  const { execute } = useSafeAction(deleteAdmin.bind(null,adminId), {
+  const { execute } = useSafeAction(deleteAdmin.bind(null, adminId), {
     onSuccess: () => {
       toast({
         description: "관리자 권한이 삭제되었습니다."

@@ -16,7 +16,7 @@ export const createOrUpdateWebtoon = action
     parsedInput: formData,
     bindArgsParsedInputs: [webtoonId]
   }) => {
-    if (webtoonId){
+    if (webtoonId !== undefined){
       await webtoonService.update(webtoonId, formData);
     } else {
       await webtoonService.create(formData);

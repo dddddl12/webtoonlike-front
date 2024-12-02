@@ -79,7 +79,6 @@ function TableRow({ offer }: { offer: InvoicedOfferT }) {
         </ListCell>
 
         <ListCell>
-          {/*todo isExposed*/}
           <Link href={`/creators/${offer.creator.user.id}`} className="clickable">
             {offer.creator.user.name}
           </Link>

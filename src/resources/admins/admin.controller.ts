@@ -9,7 +9,6 @@ import adminService from "@/resources/admins/admin.service";
 export const listAdmins = action
   .metadata({ actionName: "listAdmins" })
   .schema(PaginationSchema)
-  // todo 정적 분석을 하지 않음
   .outputSchema(
     ListResponseSchema(AdminEntrySchema)
   )

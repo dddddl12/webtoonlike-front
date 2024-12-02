@@ -6,6 +6,8 @@ import { ActionErrorT } from "@/handlers/errors";
 import { FormEvent, useState } from "react";
 import { ValidationErrors } from "next-safe-action";
 import { useHookFormActionErrorMapper } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { showAlert } from "@/hooks/alert";
+import { useTranslations } from "next-intl";
 
 /**
  * 기본적으로 @next-safe-action/adapter-react-hook-form 의 아이디어를 착안했으나,
@@ -64,6 +66,7 @@ export default function useSafeActionForm<
     ...formProps,
     errors: hookFormValidationErrors,
   });
+  const t = useTranslations("errors");
 
   const onSubmit = async (e?: FormEvent<HTMLFormElement|HTMLButtonElement>) => {
     e?.preventDefault();
@@ -71,7 +74,18 @@ export default function useSafeActionForm<
     (document.activeElement as HTMLElement | null)?.blur();
     setIsFormSubmitting(true);
     if (beforeSubmission) {
-      await beforeSubmission();
+      await beforeSubmission().catch(
+        (e) => {
+          setIsFormSubmitting(false);
+          showAlert({
+            type: "alert",
+            props: {
+              title: t("UnexpectedError.title"),
+              message: t("UnexpectedError.message"),
+            }
+          });
+          throw e;
+        });
     }
     await form.handleSubmit(async (formData) => {
       return actionReturn.executeAsync(formData);

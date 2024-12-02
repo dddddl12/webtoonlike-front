@@ -34,7 +34,6 @@ export const createOrUpdateEpisode = action
     parsedInput: formData,
     bindArgsParsedInputs: [webtoonId, episodeId],
   }) => {
-    // todo 0번 고려
     if (episodeId !== undefined) {
       await webtoonEpisodeService.update(webtoonId, episodeId, formData);
     } else {

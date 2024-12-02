@@ -18,7 +18,6 @@ class BidRoundService {
         },
       });
       if (existingRecord) {
-      // TODO 재등록 조건
         throw Error("already exists bid round for webtoonId: " + webtoonId);
       }
       await tx.bidRound.create({
