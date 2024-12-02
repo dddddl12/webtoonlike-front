@@ -11,7 +11,7 @@ import useSafeAction from "@/hooks/safeAction";
 export default function GenreWrapper({
   genres, firstGenreItems
 }: HomeItemsT["genreSets"]) {
-  const [genreId, setGenreId] = useState<number>(genres[0].id);
+  const [genreId, setGenreId] = useState<number>(genres[0]?.id);
   const [webtoons, setWebtoons] = useState<HomeWebtoonItem[]>(firstGenreItems ?? []);
 
   const isInitialRender = useRef(true);
