@@ -17,9 +17,9 @@ export default function NavigationLink({
     <Link
       aria-current={isActive ? "page" : undefined}
       className={clsx(
-        "w-[100px] h-full text-[18px] flex items-center justify-center font-bold",
-        isActive ? "text-red border-red border-b-[4px]"
-          : "text-white hover:text-red"
+        "min-w-[100px] h-full text-lg flex items-center justify-center font-bold border-b-4",
+        isActive ? "text-red border-red"
+          : "text-white hover:text-red border-transparent"
       )}
       href={href}
       {...rest}

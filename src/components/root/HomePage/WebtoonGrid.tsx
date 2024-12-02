@@ -54,10 +54,10 @@ function WebtoonItem({ webtoon }: {
       </LinkWithAccessCheck>
       <Col>
         <span
-          className="text-[18px] font-bold">
+          className="text-lg font-bold">
           {webtoon.localized.title}
         </span>
-        <span className="text-[14px]">
+        <span className="text-sm">
           {webtoon.localized.authorOrCreatorName}
         </span>
       </Col>

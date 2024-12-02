@@ -59,8 +59,6 @@ export default async function NavBar() {
       isVisible: adminLevel >= AdminLevel.Admin
     }
   ].filter((item) => item.isVisible);
-  // TODO 해당사항 없을 때 마스킹 처리
-    // TODO: 메뉴 확정 후 더 우아하게 수정
 
   return (
     <Row className="w-full max-w-screen-xl h-[60px]">
