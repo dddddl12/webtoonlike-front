@@ -2,7 +2,7 @@
 
 import Spinner from "@/components/ui/Spinner";
 import useListData from "@/hooks/listData";
-import { Col, Row } from "@/components/ui/common";
+import { Heading2 } from "@/components/ui/common";
 import Paginator from "@/components/ui/Paginator";
 import { Button } from "@/shadcn/ui/button";
 import { useEffect, useMemo, useState } from "react";
@@ -14,14 +14,15 @@ import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
 import NoItems from "@/components/ui/NoItems";
 import { OfferWithActiveProposalT } from "@/resources/offers/dtos/offer.dto";
 import useSafeAction from "@/hooks/safeAction";
+import { ListCell, ListRow, ListTable } from "@/components/ui/ListTable";
 
 // todo 디테일 누락
 export default function AdminOffersPage() {
   return (
-    <Col>
-      <p className="font-bold text-[18pt]">오퍼 관리</p>
+    <>
+      <Heading2>오퍼 관리</Heading2>
       <AdminOffers />
-    </Col>
+    </>
   );
 }
 
@@ -39,17 +40,31 @@ function AdminOffers() {
   }
 
   return <>
-    <div className="flex flex-col">
-      <div className="flex">
-        <div className="w-[30%] p-2 flex justify-start font-bold text-gray-shade">작품명</div>
-        <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade">작가명</div>
-        <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">제안 오퍼</div>
-        <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">게시 종료일</div>
-        <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade"></div>
-      </div>
+    <ListTable columns={[
+      {
+        label: "작품명",
+        width: 30,
+      },
+      {
+        label: "작가명",
+        width: 15,
+      },
+      {
+        label: "제안 오퍼",
+        width: 20,
+      },
+      {
+        label: "게시 종료일",
+        width: 20,
+      },
+      {
+        label: "",
+        width: 15,
+      }
+    ]}>
       {listResponse.items
         .map((item, i) => <TableRow key={i} bidRound={item} />)}
-    </div>
+    </ListTable>
     <Paginator
       currentPage={filters.page}
       totalPages={listResponse.totalPages}
@@ -64,26 +79,26 @@ function TableRow({ bidRound }:{
   const [isExpanded, setIsExpanded] = useState(false);
   return (
     <>
-      <Row className="w-full bg-white rounded-sm p-2 my-2 items-center">
-        <div className="w-[30%] p-2 flex gap-2">
+      <ListRow>
+        <ListCell>
           <WebtoonAvatar webtoon={bidRound.webtoon}/>
-        </div>
-        <div className="w-[15%] p-2 flex justify-center">
+        </ListCell>
+        <ListCell>
           {bidRound.creator.user.name}
-        </div>
-        <div className="w-[20%] p-2 flex justify-center">
+        </ListCell>
+        <ListCell>
           {`${bidRound.offerCount}개`}
-        </div>
-        <div className="w-[20%] p-2 flex justify-center">
+        </ListCell>
+        <ListCell>
           {/*TODO negotiation 기준이 맞나? */}
           {bidRound.adminSettings.negoStartsAt?.toLocaleDateString("ko") ?? "-"}
-        </div>
-        <div className="w-[15%] p-2 flex justify-center">
-          <Button variant="default" onClick={() => setIsExpanded(!isExpanded)}>
+        </ListCell>
+        <ListCell>
+          <Button onClick={() => setIsExpanded(!isExpanded)}>
             내역 보기
           </Button>
-        </div>
-      </Row>
+        </ListCell>
+      </ListRow>
       {isExpanded && <OfferList bidRoundId={bidRound.id} />}
     </>
   );
@@ -105,17 +120,31 @@ function OfferList({ bidRoundId }: {
     return <Spinner />;
   }
 
-  return <Col className="w-full bg-white rounded-sm p-2 items-center">
-    <Row className="w-full">
-      <div className="w-[10%] p-2 flex justify-start font-bold text-gray-shade">바이어명</div>
-      <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">오퍼 발송일</div>
-      <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade">현재 상태</div>
-      <div className="w-[40%] p-2 flex justify-center font-bold text-gray-shade">희망 판권</div>
-      <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade"></div>
-    </Row>
+  return <ListTable columns={[
+    {
+      label: "바이어명",
+      width: 20,
+    },
+    {
+      label: "오퍼 발송일",
+      width: 20,
+    },
+    {
+      label: "현재 상태",
+      width: 15,
+    },
+    {
+      label: "희망 판권",
+      width: 40,
+    },
+    {
+      label: "",
+      width: 15,
+    }
+  ]}>
     {items
       .map((item) => <OfferItem key={item.id} offer={item} />)}
-  </Col>;
+  </ListTable>;
 }
 
 function OfferItem({ offer }: {
@@ -126,29 +155,28 @@ function OfferItem({ offer }: {
   const tCountries = useTranslations("countries");
   const tOfferProposalStatus = useTranslations("offerProposalStatus");
   return (
-    <Row className="w-full bg-white rounded-sm p-2 items-center">
-      <div className="w-[10%] p-2 flex justify-start">{offer.buyer.user.name}</div>
-      <div className="w-[20%] p-2 flex justify-center">
+    <ListRow>
+      <ListCell>
+        {offer.buyer.user.name}
+      </ListCell>
+      <ListCell>
         {offer.createdAt.toLocaleDateString("ko")}
-      </div>
-      <div className="w-[15%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {tOfferProposalStatus(activeOfferProposal.status)}
-      </div>
-      <div className="w-[40%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {activeOfferProposal.contractRange.map((item) =>
           item.businessField === "WEBTOONS"
             ? `${tBusinessFields(item.businessField)}(${tCountries(item.country)})`
             : `2차(${tBusinessFields(item.businessField)})`
         ).join(", ")}
-      </div>
-      <div className="w-[15%] p-2 flex justify-center">
-        {/*TODO 추가 페이지*/}
-        {/*<Button variant="outline" asChild>*/}
-        {/*  <Link href={`/offers/${item.roundId}/condition/${item.id}`}>*/}
-        {/*    협상 보기*/}
-        {/*  </Link>*/}
-        {/*</Button>*/}
-      </div>
-    </Row>
+      </ListCell>
+      <ListCell>
+        <Button variant="outline">
+          협상 보기
+        </Button>
+      </ListCell>
+    </ListRow>
   );
 }

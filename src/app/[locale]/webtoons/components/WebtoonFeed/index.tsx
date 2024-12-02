@@ -16,7 +16,7 @@ export default async function WebtoonFeed() {
 
   return (
     <PageLayout>
-      <Heading1 className="text-[32px] font-bold">
+      <Heading1>
         {TallSeries("allSeries")}
       </Heading1>
       <WebtooonFeedList

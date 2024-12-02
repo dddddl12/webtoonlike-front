@@ -43,7 +43,7 @@ export default function FormWrapper(safeActionFormReturn: ReturnType<typeof useS
           render={({ field }) => (
             <FormItem className="mt-8">
               <FormLabel>
-                {tMakeAnOffer("toCreator")}
+                {tMakeAnOffer("additionalMessage")}
               </FormLabel>
               <FormControl>
                 <Textarea

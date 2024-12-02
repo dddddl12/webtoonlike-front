@@ -11,7 +11,7 @@ export default async function LikedWebtoonList() {
     .then(serverResponseHandler);
   return (
     <Col>
-      <Heading2 className="text-white text-2xl font-bold">
+      <Heading2>
         {t("myLikedWebtoons")}
       </Heading2>
       <LikedWebtoonListGrid initialMyLikesListResponse={initialMyLikesListResponse}/>

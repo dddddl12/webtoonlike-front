@@ -1,4 +1,4 @@
-import { Col, Row } from "@/components/ui/common";
+import { Col, HR, Row } from "@/components/ui/common";
 import OfferProposalDetails from "@/components/shared/OfferProposalDetails";
 import { useEffect, useMemo, useState } from "react";
 import Spinner from "@/components/ui/Spinner";
@@ -24,14 +24,15 @@ export default function OfferDetailsForInvoice({ offerProposalId }: {
     return <Spinner/>;
   }
 
-  return <Col className="gap-10 bg-[#403F3F] p-5 rounded-[10px] mb-2 [&_*]:border-foreground">
+  return <Col className="bg-box p-5 rounded-[10px]">
     <WebtoonDetails webtoon={offerProposal.webtoon} context="InvoiceView"/>
-    <Row>
+    <Row className="mt-10">
       <Profile className="flex-1" creatorOrBuyer={offerProposal.creator} />
       <Profile className="flex-1" creatorOrBuyer={offerProposal.buyer} />
     </Row>
-    <hr className="border-gray-dark"/>
+    <HR />
     <OfferProposalDetails
+      forInvoice={true}
       offerProposal={offerProposal} />
   </Col>;
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { Col } from "@/components/ui/common";
 import { useLocale, useTranslations } from "next-intl";
 import Paginator from "@/components/ui/Paginator";
 import useListData from "@/hooks/listData";
@@ -11,6 +10,7 @@ import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
 import { MyWebtoonOnSaleT } from "@/resources/webtoons/dtos/webtoonPreview.dto";
 import { listMyWebtoonsOnSale } from "@/resources/webtoons/controllers/webtoonPreview.controller";
 import NoItems from "@/components/ui/NoItems";
+import { ListCell, ListRow, ListTable } from "@/components/ui/ListTable";
 
 export default function MyWebtoonsOnSale({ initialWebtoonListResponse }: {
   initialWebtoonListResponse: ListResponse<MyWebtoonOnSaleT>;
@@ -23,39 +23,32 @@ export default function MyWebtoonsOnSale({ initialWebtoonListResponse }: {
     return <NoItems message={t("noSeriesBeingSold")} />;
   }
 
-  return (<>
-    <Col>
-      <TableHeader />
+  return <>
+    <ListTable columns={[
+      {
+        label: t("seriesName"),
+        width: 2
+      },
+      {
+        label: t("registrationDate"),
+        width: 2
+      },
+      {
+        label: t("status"),
+        width: 1
+      }
+    ]}>
       {listResponse.items?.map((webtoon) => (
         <TableRow key={webtoon.id} webtoon={webtoon} />
       ))}
-    </Col>
+    </ListTable>
     <Paginator
       currentPage={filters.page}
       totalPages={listResponse.totalPages}
       setFilters={setFilters}
       pageWindowLen={2}
     />
-  </>
-  );
-}
-
-
-function TableHeader() {
-  const t = useTranslations("manageContents");
-  return (
-    <div className="flex p-2 text-white">
-      <div className="w-[40%] p-2 flex justify-start font-bold">
-        {t("seriesName")}
-      </div>
-      <div className="w-[40%] p-2 flex justify-center font-bold">
-        {t("registrationDate")}
-      </div>
-      <div className="w-[20%] p-2 flex justify-center font-bold">
-        {t("status")}
-      </div>
-    </div>
-  );
+  </>;
 }
 
 function TableRow({ webtoon }: {
@@ -63,19 +56,19 @@ function TableRow({ webtoon }: {
 }) {
   const locale = useLocale();
   return (
-    <div className="flex p-2 mb-2 text-white rounded-md bg-gray-darker items-center">
-      <div className="w-[40%] p-2 flex justify-start items-center">
+    <ListRow>
+      <ListCell>
         <WebtoonAvatar webtoon={webtoon}/>
-      </div>
+      </ListCell>
 
-      <div className="w-[40%] p-2 flex justify-center">
+      <ListCell>
         {webtoon.bidRoundApprovedAt?.toLocaleString(locale)}
-      </div>
+      </ListCell>
 
-      <div className="w-[20%] p-2 flex justify-center">
+      <ListCell>
         <BidRoundStatusBadge status={webtoon.bidRoundStatus} />
-      </div>
-    </div>
+      </ListCell>
+    </ListRow>
   );
 }
 

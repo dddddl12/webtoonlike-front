@@ -50,6 +50,10 @@ class BidRoundAdminService {
     });
     const limit = 5;
     const where = bidRoundHelper.offerableBidRoundWhere();
+    where.offers = {
+      some: {}
+    };
+    // BidRoundWhereInput
     const [records, totalRecords] = await prisma.$transaction([
       prisma.bidRound.findMany({
         take: limit,

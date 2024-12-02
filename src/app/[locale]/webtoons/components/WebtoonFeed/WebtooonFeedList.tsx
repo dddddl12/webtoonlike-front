@@ -1,6 +1,6 @@
 "use client";
 
-import { Col, Row } from "@/components/ui/common";
+import { Row } from "@/components/ui/common";
 import { useTranslations } from "next-intl";
 import { ListResponse } from "@/resources/globalTypes";
 import useListData from "@/hooks/listData";
@@ -37,8 +37,8 @@ export default function WebtooonFeedList({
   const Tage = useTranslations("ageRestriction");
 
   return (
-    <Col className="gap-10 mt-10">
-      <Row className="gap-4">
+    <>
+      <Row className="gap-4 mb-9">
         <FilterSelector
           filterTitle={TallSeries("genre")}
           filterKey="genreIds"
@@ -68,7 +68,7 @@ export default function WebtooonFeedList({
         setFilters={setFilters}
         noItemsMessage="관련 웹툰 없음" //TODO
       />
-    </Col>
+    </>
   );
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Col, Row } from "@/components/ui/common";
+import { Row } from "@/components/ui/common";
 import { IconCross } from "@/components/svgs/IconCross";
 import { useLocale, useTranslations } from "next-intl";
 import Paginator from "@/components/ui/Paginator";
@@ -13,6 +13,7 @@ import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
 import { MyWebtoonNotOnSaleT } from "@/resources/webtoons/dtos/webtoonPreview.dto";
 import { listMyWebtoonsNotOnSale } from "@/resources/webtoons/controllers/webtoonPreview.controller";
 import NoItems from "@/components/ui/NoItems";
+import { ListCell, ListRow, ListTable } from "@/components/ui/ListTable";
 
 export default function MyWebtoonsNotOnSale({ initialWebtoonListResponse }: {
   initialWebtoonListResponse: ListResponse<MyWebtoonNotOnSaleT>;
@@ -24,7 +25,7 @@ export default function MyWebtoonsNotOnSale({ initialWebtoonListResponse }: {
   if (listResponse.items.length === 0) {
     return <NoItems message={t("registerWebtoon")}>
       <Link
-        className="flex flex-row min-w-[120px] h-10 px-4 py-2 rounded-sm clickable"
+        className="flex clickable ml-4"
         href={"/webtoons/create"}
       >
         <IconCross/>
@@ -37,30 +38,31 @@ export default function MyWebtoonsNotOnSale({ initialWebtoonListResponse }: {
     <Row className="justify-end">
       {/*todo*/}
       <Link
-        className="flex justify-end flex-row min-w-[120px] h-10 px-4 py-2 clickable"
+        className="flex clickable"
         href="/webtoons/create"
       >
         <IconCross/>
         {t("addSeries")}
       </Link>
     </Row>
-    <Col>
-      <div className="flex p-2 text-white">
-        <div className="w-[40%] p-2 flex justify-start font-bold">
-          {t("seriesName")}
-        </div>
-        <div className="w-[40%] p-2 flex justify-center font-bold">
-          {t("registrationDate")}
-        </div>
-        <div className="w-[20%] p-2 flex justify-center font-bold">
-          {t("status")}
-        </div>
-      </div>
-
+    <ListTable columns={[
+      {
+        label: t("seriesName"),
+        width: 2
+      },
+      {
+        label: t("registrationDate"),
+        width: 2
+      },
+      {
+        label: t("status"),
+        width: 1
+      }
+    ]}>
       {listResponse.items?.map((webtoon) => (
         <TableRow key={webtoon.id} webtoon={webtoon} />
       ))}
-    </Col>
+    </ListTable>
 
     <Paginator
       currentPage={filters.page}
@@ -77,19 +79,19 @@ function TableRow({ webtoon }: {
   const locale = useLocale();
 
   return (
-    <div className="flex p-2 mb-2 text-white rounded-md bg-gray-darker items-center">
-      <div className="w-[40%] p-2 flex justify-start items-center">
+    <ListRow>
+      <ListCell>
         <WebtoonAvatar webtoon={webtoon}/>
-      </div>
+      </ListCell>
 
-      <div className="w-[40%] p-2 flex justify-center">
+      <ListCell>
         {webtoon.createdAt.toLocaleString(locale)}
-      </div>
+      </ListCell>
 
-      <div className="w-[20%] p-2 flex justify-center">
+      <ListCell>
         <StatusIndicator webtoon={webtoon} />
-      </div>
-    </div>
+      </ListCell>
+    </ListRow>
   );
 }
 

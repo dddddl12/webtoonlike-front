@@ -25,22 +25,22 @@ export default function Profile({ creatorOrBuyer, className }: {
         />
       </Col>
       <Col className="flex-1">
-        <Row className="text-2xl font-bold">
+        <div className="text-2xl font-bold">
           {user.userType === UserTypeT.Creator
             ? `${user.name} (판매자)`
             : `${user.name} (구매자)`}
-        </Row>
-        <Row className="text-[18px] my-7 font-semibold">
+        </div>
+        <div className="mt-5 font-semibold">
           {getTitle(creatorOrBuyer)}
-        </Row>
-        {!!user.contactInfo && <>
-          <Row className="text-[18px] font-semibold">
+        </div>
+        {!!user.contactInfo && <div className="mt-5">
+          <div className="font-semibold">
             연락처: {user.contactInfo.phone}
-          </Row>
-          <Row className="text-[18px] font-semibold">
+          </div>
+          <div className="font-semibold">
             이메일: {user.contactInfo.email}
-          </Row>
-        </>}
+          </div>
+        </div>}
       </Col>
     </Row>
   </Col>;

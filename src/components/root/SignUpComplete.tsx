@@ -1,4 +1,3 @@
-import { Col } from "@/components/ui/common";
 import { Heading1 } from "@/components/ui/common";
 import { getTranslations } from "next-intl/server";
 import PageLayout from "@/components/ui/PageLayout";
@@ -13,7 +12,7 @@ export default async function SignUpComplete() {
 
   return <LightThemeProvider>
     <PageLayout>
-      <Col className="w-[400px] mx-auto">
+      <div className="w-[400px] mx-auto">
         <Logo lightTheme={true} />
         <Heading1>
           {t("setupAccount")}
@@ -21,7 +20,7 @@ export default async function SignUpComplete() {
         <SignUpCompleteForm
           clerkUserFullName={clerkUser.fullName}
         />
-      </Col>
+      </div>
     </PageLayout>
   </LightThemeProvider>;
 }

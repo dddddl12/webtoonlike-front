@@ -11,9 +11,9 @@ export default function UserTypeSelector({ onSelect }: {
   const t = useTranslations("setupPage");
 
   return <>
-    <span className="mb-10">{t("selectMembershipType")}</span>
+    <p>{t("selectMembershipType")}</p>
 
-    <Row className="justify-evenly">
+    <Row className="justify-evenly mt-10">
       <RoleColumn
         userType={UserTypeT.Creator}
         onSelect={onSelect}

@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import useListData from "@/hooks/listData";
 import { listUsers } from "@/resources/users/controllers/userAdmin.controller";
 import { AdminPageAccountT } from "@/resources/users/dtos/userAdmin.dto";
+import { ListCell, ListRow, ListTable } from "@/components/ui/ListTable";
 
 
 export default function Accounts() {
@@ -20,14 +21,22 @@ export default function Accounts() {
   }
   return (
     <Col>
-      <div className="flex flex-col">
-        <div className="flex p-2">
-          <div className="w-[50%] p-2 font-bold text-gray-shade">이름</div>
-          <div className="w-[30%] p-2 font-bold text-gray-shade flex justify-center">가입일</div>
-          <div className="w-[20%] p-2 font-bold text-gray-shade flex justify-center">유저 종류</div>
-        </div>
+      <ListTable columns={[
+        {
+          label: "이름",
+          width: 3,
+        },
+        {
+          label: "가입일",
+          width: 3,
+        },
+        {
+          label: "유저 종류",
+          width: 2,
+        }
+      ]}>
         {listResponse.items.map((user) => <TableRow key={user.id} user={user} />)}
-      </div>
+      </ListTable>
       <Paginator
         currentPage={filters.page}
         totalPages={listResponse.totalPages}
@@ -43,14 +52,16 @@ function TableRow({ user }:{
 }) {
   const t = useTranslations("userType");
   return (
-    <div key={user.id} className="flex bg-white rounded-sm p-2 my-2">
-      <div className="w-[50%] p-2">{user.name}</div>
-      <div className="w-[30%] p-2 flex justify-center">
+    <ListRow>
+      <ListCell>
+        {user.name}
+      </ListCell>
+      <ListCell>
         {user.createdAt.toLocaleString("ko")}
-      </div>
-      <div className="w-[20%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {t(user.userType)}
-      </div>
-    </div>
+      </ListCell>
+    </ListRow>
   );
 }

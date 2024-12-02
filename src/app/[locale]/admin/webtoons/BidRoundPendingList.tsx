@@ -10,6 +10,7 @@ import { AdminPageBidRoundT } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto
 import { adminListBidRoundsWithWebtoon } from "@/resources/bidRounds/controllers/bidRoundAdmin.controller";
 import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
 import NoItems from "@/components/ui/NoItems";
+import { ListCell, ListRow, ListTable } from "@/components/ui/ListTable";
 
 export default function BidRoundPendingList({
   onDetailClick,
@@ -33,16 +34,33 @@ export default function BidRoundPendingList({
 
   return (
     <Col>
-      <div className="flex p-2">
-        <div className="w-[30%] p-2 font-bold text-gray-shade">작품명</div>
-        <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">이름</div>
-        <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">신청 날짜</div>
-        <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">상태</div>
-        <div className="w-[10%] p-2 flex justify-end font-bold text-gray-shade"></div>
-      </div>
-      {listResponse.items.map((bidRound) => (
-        <TableRow key={bidRound.id} bidRound={bidRound} onDetailClick={onDetailClick} />
-      ))}
+      <ListTable columns={[
+        {
+          label: "작품명",
+          width: 3
+        },
+        {
+          label: "이름",
+          width: 2
+        },
+        {
+          label: "신청 날짜",
+          width: 3
+        },
+        {
+          label: "상태",
+          width: 2
+        },
+        {
+          label: "",
+          width: 1
+        }
+      ]}>
+        {listResponse.items.map((bidRound) => (
+          <TableRow key={bidRound.id} bidRound={bidRound}
+            onDetailClick={onDetailClick} />
+        ))}
+      </ListTable>
       <Paginator
         currentPage={filters.page}
         totalPages={listResponse.totalPages}
@@ -58,23 +76,25 @@ function TableRow({ bidRound, onDetailClick }: {
 }) {
   const t = useTranslations("bidRoundStatus");
   return (
-    <div key={bidRound.id} className="flex bg-white rounded-sm p-2 my-2">
-      <div className="w-[30%] p-2 flex justify-start">
+    <ListRow>
+      <ListCell>
         <WebtoonAvatar webtoon={bidRound.webtoon}/>
-      </div>
-      <div className="w-[20%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {bidRound.creator.user.name}
-      </div>
-      <div className="w-[20%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {bidRound.createdAt.toLocaleString("ko")}
-      </div>
-      <div className="w-[20%] p-2 flex justify-center">{t(bidRound.status)}</div>
-      <div className="w-[10%] flex justify-center items-center">
-        <Button className="w-[30px] h-[30px] p-0 bg-mint"
+      </ListCell>
+      <ListCell>
+        {t(bidRound.status)}
+      </ListCell>
+      <ListCell>
+        <Button variant="mint" size="smallIcon"
           onClick={() => { onDetailClick(bidRound); }}>
           <Pencil1Icon />
         </Button>
-      </div>
-    </div>
+      </ListCell>
+    </ListRow>
   );
 }

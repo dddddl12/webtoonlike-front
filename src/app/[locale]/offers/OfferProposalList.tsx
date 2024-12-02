@@ -1,16 +1,15 @@
 import { useLocale, useTranslations } from "next-intl";
-import { Col, Row } from "@/components/ui/common";
 import {
   listOfferProposals
 } from "@/resources/offers/controllers/offerProposal.controller";
 import { useEffect, useMemo, useRef, useState } from "react";
 import useTokenInfo from "@/hooks/tokenInfo";
 import { Skeleton } from "@/shadcn/ui/skeleton";
-import { clsx } from "clsx";
 import { OfferProposalListT } from "@/resources/offers/dtos/offerProposal.dto";
 import ViewOfferProposalSection from "@/app/[locale]/offers/components/ViewOfferProposalSection";
 import { ProposalsReloadReq } from "@/app/[locale]/offers/OfferDetailsContext";
 import useSafeAction from "@/hooks/safeAction";
+import { ListCell, ListRow, ListTable, useListExpansionSwitch } from "@/components/ui/ListTable";
 
 // TODO 페이지네이션 없음
 export default function OfferProposalList({ offerId, reloadReq }: {
@@ -35,6 +34,8 @@ export default function OfferProposalList({ offerId, reloadReq }: {
     execute();
   }, [execute]);
 
+  const t = useTranslations("proposalList");
+
   if (!offerProposalsResponse) {
     return <div>
       <Skeleton className="w-full h-[40px] my-[20px]" />
@@ -44,22 +45,36 @@ export default function OfferProposalList({ offerId, reloadReq }: {
 
   const { proposals, invoice } = offerProposalsResponse;
 
-  return <Col className="rounded-md p-4 bg-gray-darker" key={reloadKey}>
-    <Row className="border-b border-gray-text text-gray-text">
-      <div className="w-[20%] p-2 flex justify-center">No.</div>
-      <div className="w-[20%] p-2 flex justify-center">일자</div>
-      <div className="w-[20%] p-2 flex justify-center">보낸 사람</div>
-      <div className="w-[20%] p-2 flex justify-center">협의 내용</div>
-      <div className="w-[20%] p-2 flex justify-center">현황</div>
-    </Row>
-
+  return <ListTable key={reloadKey} columns={[
+    {
+      label: "No.",
+      width: 1
+    },
+    {
+      label: t("date"),
+      width: 3
+    },
+    {
+      label: t("sender.label"),
+      width: 3
+    },
+    {
+      label: t("proposal"),
+      width: 1.5
+    },
+    {
+      label: t("status.label"),
+      width: 1.5
+    }
+  ]}>
     {proposals.map((proposal, index) => (
       <ProposalRow
         key={index}
         seq={index}
         user={proposal.user}
         createdAt={proposal.createdAt}
-        statusLabel={index === 0 ? "제안" : "수정 요청"}
+        statusLabel={index === 0
+          ? t("status.proposed") : t("status.adjustmentRequested")}
         offerProposal={proposal}
         defaultOpen={reloadReq?.refocusToLast && index === proposals.length - 1}
       />
@@ -69,12 +84,12 @@ export default function OfferProposalList({ offerId, reloadReq }: {
       seq={proposals.length}
       user={{
         id: -1,
-        name: "관리자"
+        name: t("sender.admin")
       }}
       createdAt={invoice.createdAt}
-      statusLabel={"인보이스 발생"}>
+      statusLabel={t("status.invoiced")}>
     </ProposalRow>}
-  </Col>;
+  </ListTable>;
 }
 
 function ProposalRow({ seq, createdAt, user, statusLabel, defaultOpen, offerProposal }: {
@@ -88,8 +103,6 @@ function ProposalRow({ seq, createdAt, user, statusLabel, defaultOpen, offerProp
   defaultOpen?: boolean;
   offerProposal?: OfferProposalListT["proposals"][number];
 }) {
-  const [showDetails, setShowDetails] = useState(defaultOpen ?? false);
-  const tGeneral = useTranslations("general");
   const locale = useLocale();
   const { tokenInfo } = useTokenInfo();
 
@@ -101,26 +114,27 @@ function ProposalRow({ seq, createdAt, user, statusLabel, defaultOpen, offerProp
       });
     }
   }, [defaultOpen]);
+
+  const t = useTranslations("proposalList");
+  const { switchButton, ListRowExpanded } = useListExpansionSwitch();
   return <>
-    <Row className={clsx({
-      "bg-[#376C49] rounded-[10px]": showDetails
-    })} ref={lastProposalRef}>
-      <div className="w-[20%] p-2 flex justify-center">{seq + 1}</div>
-      <div className="w-[20%] p-2 flex justify-center">{createdAt.toLocaleString(locale)}</div>
-      <div className="w-[20%] p-2 flex justify-center">
-        {tokenInfo?.userId === user.id ? "나" : user.name}
-      </div>
-      <div className="w-[20%] p-2 flex justify-center">
-        {offerProposal
-          && <div className="clickable"
-            onClick={() => setShowDetails(prev => !prev)}>
-            {showDetails ? tGeneral("collapse") : tGeneral("expand")}
-          </div>}
-      </div>
-      <div className="w-[20%] p-2 flex justify-center">{statusLabel}</div>
-    </Row>
-    {showDetails && offerProposal && <Col>
+    <ListRow ref={lastProposalRef}>
+      <ListCell>
+        {seq + 1}
+      </ListCell>
+      <ListCell>
+        {createdAt.toLocaleString(locale)}
+      </ListCell>
+      <ListCell>
+        {tokenInfo?.userId === user.id ? t("sender.me") : user.name}
+      </ListCell>
+      <ListCell>
+        {offerProposal && switchButton}
+      </ListCell>
+      <ListCell>{statusLabel}</ListCell>
+    </ListRow>
+    {offerProposal && <ListRowExpanded>
       <ViewOfferProposalSection offerProposalId={offerProposal.id}/>
-    </Col>}
+    </ListRowExpanded>}
   </>;
 }

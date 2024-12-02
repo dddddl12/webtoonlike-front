@@ -28,6 +28,7 @@
         "prefer-const": [
             "warn"
         ],
+        "jsx-quotes": ["warn", "prefer-double"],
         "react/react-in-jsx-scope": [
             "off"
         ],
@@ -36,6 +37,7 @@
             "warn",
             "before"
         ],
+        "comma-spacing": ["warn", { "before": false, "after": true }],
         "@typescript-eslint/no-unused-vars": [
             "warn"
         ],

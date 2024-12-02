@@ -6,42 +6,44 @@ import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
 import { OfferWithBuyerAndWebtoonT } from "@/resources/offers/dtos/offer.dto";
 import { OfferProposalStatus } from "@/resources/offers/dtos/offerProposal.dto";
 import OfferDetailsContext, { ProposalsReloadReq } from "@/app/[locale]/offers/OfferDetailsContext";
+import { ListCell, ListRow, useListExpansionSwitch } from "@/components/ui/ListTable";
 
 // TODO 아코디언 적용
 export default function OfferListRow({ offer }:{
   offer: OfferWithBuyerAndWebtoonT;
 }) {
   const locale = useLocale();
-  const [showProposals, setShowProposals] = useState<boolean>(false);
   const [status, setStatus] = useState<OfferProposalStatus>(
     offer.activeOfferProposal.status);
   const { reloadProposals, reloadReq } = useReloadProposals();
   const { webtoon } = offer;
+  const { switchButton, ListRowExpanded } = useListExpansionSwitch();
   return (
     <OfferDetailsContext.Provider value={{
       changeStatus: setStatus,
       reloadProposals
     }}>
-      <div className="flex p-2 mt-4 text-white rounded-md bg-black-texts items-center">
-        <div className="w-[40%] p-2 flex justify-start items-center">
+      <ListRow>
+        <ListCell>
           <WebtoonAvatar webtoon={webtoon}/>
-        </div>
+        </ListCell>
 
-        <div className="w-[20%] p-2 flex justify-center">
+        <ListCell>
           {offer.createdAt.toLocaleString(locale)}
-        </div>
+        </ListCell>
 
-        <div className="w-[20%] p-2 flex justify-center">
-          <span className="clickable"
-            onClick={() => setShowProposals(prev => !prev)}>협상 내역 보기</span>
-        </div>
+        <ListCell>
+          {switchButton}
+        </ListCell>
 
-        <div className="w-[20%] p-2 flex justify-center">
+        <ListCell>
           <OfferProposalStatusBadge status={status}/>
-        </div>
-      </div>
-      {showProposals
-        && <OfferProposalList offerId={offer.id} reloadReq={reloadReq}/>}
+        </ListCell>
+      </ListRow>
+
+      <ListRowExpanded>
+        <OfferProposalList offerId={offer.id} reloadReq={reloadReq}/>
+      </ListRowExpanded>
     </OfferDetailsContext.Provider>
   );
 }

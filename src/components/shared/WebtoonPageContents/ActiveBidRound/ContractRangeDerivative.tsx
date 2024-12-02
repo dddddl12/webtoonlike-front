@@ -15,13 +15,13 @@ export default function ContractRangeDerivative({ bidRound }: {
     <h2 className="text-lg font-bold">
       {t("secondaryCopyrightSalesStatus")}
     </h2>
-    <Table className="text-white mt-5">
+    <Table className="mt-5">
       <TableHeader>
         <TableRow>
-          <TableHead className="text-white w-[50%] text-center text-base border">
+          <TableHead className="w-[50%] text-center border">
             {t("secondaryCopyright")}
           </TableHead>
-          <TableHead className="text-white w-[50%] text-center text-base border">
+          <TableHead className="w-[50%] text-center border">
             {t("serviceCountry")}
           </TableHead>
         </TableRow>

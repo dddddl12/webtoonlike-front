@@ -7,6 +7,6 @@ export default function Logo({ lightTheme }: {
     src={lightTheme ? "/img/logos/KIPstock_logo_light.png" : "/img/logos/KIPstock_logo_dark.png"}
     alt="logo"
     width={150}
-    height={17}
+    height={26}
   />;
 }

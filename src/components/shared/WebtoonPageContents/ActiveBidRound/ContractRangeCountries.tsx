@@ -35,13 +35,13 @@ export default function ContractRangeCountries({ bidRound }: {
           })}
       </RadioGroup>
     </Row>
-    <Table className="text-white mt-5">
+    <Table className="mt-5">
       <TableHeader>
         <TableRow>
-          <TableHead className="text-white w-[50%] text-center text-base border">
+          <TableHead className="w-[50%] text-center border">
             {t("serviceCountry")}
           </TableHead>
-          <TableHead className="text-white w-[50%] text-center text-base border">
+          <TableHead className="w-[50%] text-center border">
             {t("exclusiveOrNon")}
           </TableHead>
         </TableRow>

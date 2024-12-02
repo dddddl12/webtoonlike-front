@@ -2,12 +2,12 @@ import Spinner from "@/components/ui/Spinner";
 import { adminListInvoicedOffers } from "@/resources/invoices/controllers/invoice.controller";
 import Paginator from "@/components/ui/Paginator";
 import useListData from "@/hooks/listData";
-import { Col } from "@/components/ui/common";
 import InvoiceDownload from "@/components/shared/InvoiceDownload";
 import { InvoicedOfferT } from "@/resources/invoices/dtos/invoice.dto";
 import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
 import NoItems from "@/components/ui/NoItems";
 import { Link } from "@/i18n/routing";
+import { ListCell, ListRow, ListTable } from "@/components/ui/ListTable";
 
 export default function InvoicedOffersList() {
   const { listResponse, filters, setFilters } = useListData(
@@ -22,18 +22,32 @@ export default function InvoicedOffersList() {
     return <NoItems message="현재까지 발행한 인보이스 기록이 없습니다."/>;
   }
   return <>
-    <Col>
-      <div className="flex p-2">
-        <div className="w-[20%] p-2 font-bold text-gray-shade">작품명</div>
-        <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">작가명</div>
-        <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">바이어명</div>
-        <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">인보이스 발급일</div>
-        <div className="w-[20%] p-2 flex justify-center font-bold text-gray-shade">인보이스 확인</div>
-      </div>
+    <ListTable columns={[
+      {
+        label: "작품명",
+        width: 1,
+      },
+      {
+        label: "작가명",
+        width: 1,
+      },
+      {
+        label: "바이어명",
+        width: 1,
+      },
+      {
+        label: "발급일",
+        width: 1,
+      },
+      {
+        label: "확인",
+        width: 1,
+      }
+    ]}>
       {listResponse.items.map((offer: InvoicedOfferT, i) => (
         <TableRow key={i} offer={offer} />
       ))}
-    </Col>
+    </ListTable>
     <Paginator
       currentPage={filters.page}
       totalPages={listResponse.totalPages}
@@ -46,24 +60,24 @@ function TableRow({ offer }: {
   offer: InvoicedOfferT;
 }) {
   return (
-    <div className="flex bg-white rounded-sm p-2 my-2">
-      <div className="w-[20%] p-2 flex justify-start">
+    <ListRow>
+      <ListCell>
         <WebtoonAvatar webtoon={offer.webtoon}/>
-      </div>
-      <div className="w-[20%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         <Link href={`/creators/${offer.creator.user.id}`} className="clickable">
           {offer.creator.user.name}
         </Link>
-      </div>
-      <div className="w-[20%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {offer.buyer.user.name}
-      </div>
-      <div className="w-[20%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {offer.invoice.createdAt.toLocaleString("ko")}
-      </div>
-      <div className="w-[20%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         <InvoiceDownload offer={offer} />
-      </div>
-    </div>
+      </ListCell>
+    </ListRow>
   );
 }

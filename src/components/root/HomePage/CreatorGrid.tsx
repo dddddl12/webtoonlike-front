@@ -37,7 +37,7 @@ export function CreatorItem({ creator }: {
       href={`/creators/${creator.id}`}
       creatorUid={creator.id}
     >
-      <Col className="text-white bg-black-texts w-full h-[320px] rounded-md items-center justify-center transition ease-in-out delay-50 hover:bg-mint duration-300">
+      <Col className="bg-muted w-full h-[320px] rounded-md items-center justify-center transition ease-in-out delay-50 hover:bg-mint duration-300">
         <Avatar className="w-[100px] h-[100px]">
           <AvatarImage src={buildImgUrl(creator.thumbPath, {
             size: "sm",

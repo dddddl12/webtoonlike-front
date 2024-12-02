@@ -1,4 +1,4 @@
-import { Col, Row } from "@/components/ui/common";
+import { Col, Heading2, Row } from "@/components/ui/common";
 
 export default function DashboardPage() {
 
@@ -10,8 +10,8 @@ export default function DashboardPage() {
   ];
 
   return (
-    <>
-      <h1 className="font-bold text-[18pt]">대시보드</h1>
+    <div>
+      <Heading2>대시보드</Heading2>
       <Row className="w-full justify-between">
         {userStats.map((item) => (
           <Col
@@ -19,10 +19,10 @@ export default function DashboardPage() {
             className="w-[23%] p-5 rounded-md border border-gray"
           >
             <p>{item.title}</p>
-            <p className="text-[40pt]">{item.content}</p>
+            <p className="text-6xl mt-2">{item.content}</p>
           </Col>
         ))}
       </Row>
-    </>
+    </div>
   );
 }

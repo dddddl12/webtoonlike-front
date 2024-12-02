@@ -1,6 +1,5 @@
 "use client";
 
-import { Col } from "@/components/ui/common";
 import { useTranslations } from "next-intl";
 import Paginator from "@/components/ui/Paginator";
 import { ListResponse } from "@/resources/globalTypes";
@@ -9,6 +8,7 @@ import OfferListRow from "@/app/[locale]/offers/OfferListRow";
 import NoItems from "@/components/ui/NoItems";
 import { listAllOffers } from "@/resources/offers/controllers/offer.controller";
 import { OfferWithBuyerAndWebtoonT } from "@/resources/offers/dtos/offer.dto";
+import { ListTable } from "@/components/ui/ListTable";
 
 type OfferListResponse = ListResponse<OfferWithBuyerAndWebtoonT>;
 
@@ -27,18 +27,28 @@ export default function OfferList({ initialOfferListResponse }: {
   }
 
   return <>
-    <Col>
-      <div className="flex p-2">
-        <div className="w-[40%] p-2 flex justify-start font-bold">{t("seriesName")}</div>
-        <div className="w-[20%] p-2 flex justify-center font-bold">오퍼 제출 날짜</div>
-        <div className="w-[20%] p-2 flex justify-center font-bold">협상 내역 보기</div>
-        <div className="w-[20%] p-2 flex justify-center font-bold">{t("status")}</div>
-      </div>
-
+    <ListTable columns={[
+      {
+        label: t("seriesName"),
+        width: 2,
+      },
+      {
+        label: t("offerSubmittedAt"),
+        width: 2,
+      },
+      {
+        label: t("negotiation"),
+        width: 1,
+      },
+      {
+        label: t("status"),
+        width: 1,
+      }
+    ]}>
       {listResponse.items.map((offer) => (
         <OfferListRow key={offer.id} offer={offer} />
       ))}
-    </Col>
+    </ListTable>
     {/*TODO window 통일*/}
     <Paginator
       currentPage={filters.page}

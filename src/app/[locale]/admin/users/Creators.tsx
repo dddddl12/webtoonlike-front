@@ -1,7 +1,6 @@
 "use client";
 
 import { changeExposed, listCreators } from "@/resources/creators/creator.controller";
-import { Col } from "@/components/ui/common";
 import Paginator from "@/components/ui/Paginator";
 import useListData from "@/hooks/listData";
 import Spinner from "@/components/ui/Spinner";
@@ -11,6 +10,7 @@ import { useState } from "react";
 import useSafeAction from "@/hooks/safeAction";
 import NoItems from "@/components/ui/NoItems";
 import { AdminPageCreatorT } from "@/resources/creators/creator.dto";
+import { ListCell, ListRow, ListTable } from "@/components/ui/ListTable";
 
 
 export default function Creators() {
@@ -27,15 +27,26 @@ export default function Creators() {
   }
 
   return <>
-    <Col>
-      <div className="flex p-2">
-        <div className="w-[25%] p-2 font-bold text-gray-shade">이름</div>
-        <div className="w-[25%] p-2 font-bold text-gray-shade flex justify-center">필명</div>
-        <div className="w-[25%] p-2 font-bold text-gray-shade flex justify-center">가입일</div>
-        <div className="w-[25%] p-2 font-bold text-gray-shade flex justify-center">노출 여부</div>
-      </div>
+    <ListTable columns={[
+      {
+        label: "이름",
+        width: 1,
+      },
+      {
+        label: "필명",
+        width: 1,
+      },
+      {
+        label: "가입일",
+        width: 1,
+      },
+      {
+        label: "노출 여부",
+        width: 1,
+      }
+    ]}>
       {listResponse.items.map((creator) => <TableRow key={creator.id} creator={creator} />)}
-    </Col>
+    </ListTable>
     <Paginator
       currentPage={filters.page}
       totalPages={listResponse.totalPages}
@@ -63,11 +74,17 @@ function TableRow({ creator }:{ creator: AdminPageCreatorT }) {
   });
 
   return (
-    <div key={creator.id} className="flex bg-white rounded-sm p-2 my-2">
-      <div className="w-[25%] p-2">{creator.user.name}</div>
-      <div className="w-[25%] p-2 flex justify-center">{creator.name}</div>
-      <div className="w-[25%] p-2 flex justify-center">{creator.user.createdAt.toLocaleString("ko")}</div>
-      <div className="w-[25%] p-2 flex justify-center">
+    <ListRow>
+      <ListCell>
+        {creator.user.name}
+      </ListCell>
+      <ListCell>
+        {creator.name}
+      </ListCell>
+      <ListCell>
+        {creator.user.createdAt.toLocaleString("ko")}
+      </ListCell>
+      <ListCell>
         <Switch
           defaultChecked={creator.isExposed}
           checked={isExposed}
@@ -77,7 +94,7 @@ function TableRow({ creator }:{ creator: AdminPageCreatorT }) {
             execute({ isExposed: newIsExposed });
           }}
         />
-      </div>
-    </div>
+      </ListCell>
+    </ListRow>
   );
 }

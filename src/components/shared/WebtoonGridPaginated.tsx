@@ -28,7 +28,7 @@ export default function WebtoonGridPaginated({ listResponse, filters, setFilters
     return <NoItems message={noItemsMessage} />;
   }
   return <>
-    <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4'>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-7">
       {listResponse.items.map((item) =>
         <WebtoonPreview
           key={item.id}
@@ -48,22 +48,23 @@ function WebtoonPreview({ webtoon }: {
   webtoon: WebtoonPreviewT;
 }) {
   return (
-    <Link className='mx-2 my-4' href={`/webtoons/${webtoon.id}`}>
-      <div className='relative aspect-[3/4] w-full overflow-hidden rounded-md'>
+    <Link href={`/webtoons/${webtoon.id}`}>
+      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-md">
         <Image
           src={buildImgUrl(webtoon.thumbPath, { size: "sm" })}
           alt={webtoon.thumbPath}
           fill
+          className="rounded-md"
           style={{ objectFit: "cover" }}
           priority={true}
         />
       </div>
 
-      <p className='mt-5 text-[16pt] font-bold'>
+      <p className="mt-4 font-bold">
         {webtoon.localized.title}
       </p>
 
-      <p className='text-[12pt] text-gray-text line-clamp-2'>
+      <p className="text-sm text-muted-foreground line-clamp-2">
         {webtoon.localized.description}
       </p>
 

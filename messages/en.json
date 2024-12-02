@@ -112,10 +112,11 @@
     },
     "offerDetails": {
         "makeOffer": "Make an Offer",
-        "toCreator": "To Creator",
+        "additionalMessage": "Additional Message",
         "inputAdditionalRequirements": "Please enter additional requirements",
         "note": "*If you provide an alternative contact method, such as a phone number or social media account, it may limit your access to Webtoons.",
-        "offerDetails": "Offer Details",
+        "offerProposalDetails": "Proposal Details",
+        "agreedTerms": "Agreed Terms",
         "offerer": "Offerer",
         "thereIsNoMessageWrittenByTheBuyer": "There is no message written by the buyer."
     },
@@ -275,6 +276,7 @@
         }
     },
     "invoiceManagement": {
+        "uninvoicedOffers": "Uninvoiced Offers",
         "invoiceManagement": "Invoice Management",
         "noInvoiceIssued": "No invoices issued",
         "noUnvoiced": "No offers pending invoices",
@@ -346,7 +348,9 @@
         "biddingStartAt": "Bidding Start Date",
         "offerStartAt": "Offer Start Date",
         "checkOffer": "Check Offer",
-        "status": "Status"
+        "status": "Status",
+        "offerSubmittedAt": "Offered at",
+        "negotiation": "Negotiation"
     },
     "seriesManagement": {
         "registerOfContentTransactions": "Registrations of Content Transactions",

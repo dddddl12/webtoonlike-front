@@ -37,8 +37,8 @@ export default function BidRoundDetail({
         </Button>
       </Row>
 
-      <Col>
-        <Row className="justify-between items-start">
+      <Col className="mt-10">
+        <Row className="items-start">
           <div className="min-w-[150px] min-h-[150px] overflow-hidden relative rounded-sm mr-[30px]">
             <Image
               src={buildImgUrl(webtoon.thumbPath, { size: "md" })}
@@ -48,18 +48,16 @@ export default function BidRoundDetail({
             />
           </div>
           <Col className="max-w-[80%]">
-            <Link
-              className="text-[16pt] clickable"
+            <p className="text-xl">제목: <Link
+              className="clickable"
               href={`/webtoons/${webtoon.id}`}
-            >
-              제목: {webtoon.localized.title}
-            </Link>
-            <p className="text-[12pt]">작가: {creator.user.name}</p>
-            <p className="text-[12pt]">줄거리: {webtoon.localized.description}</p>
+            >{webtoon.localized.title}</Link></p>
+            <p>작가: {creator.user.name}</p>
+            <p>설명: {webtoon.localized.description}</p>
           </Col>
         </Row>
       </Col>
-      <Row className="gap-5 justify-center">
+      <Row className="gap-5 justify-center mt-10">
         <Button variant="mint" onClick={handleApprove}>
           승인
         </Button>

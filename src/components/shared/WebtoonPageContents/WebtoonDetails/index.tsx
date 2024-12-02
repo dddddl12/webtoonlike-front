@@ -25,15 +25,15 @@ type Webtoon = WebtoonDetailsExtendedT | OfferDetailsT["webtoon"];
 export default function WebtoonDetails({ webtoon, context }: WebtoonDetailsProps) {
   return (
     <Row className="items-center md:items-start md:flex-row md:justify-start gap-12">
-      <Image
-        src={buildImgUrl(webtoon.thumbPath, { size: "md" })}
-        alt={webtoon.thumbPath}
-        width={300}
-        height={450}
-        // style={{ objectFit: "cover" }}
-        priority={true}
-        className="rounded-sm"
-      />
+      <div className="w-[300px] h-[450px] overflow-hidden relative rounded-sm">
+        <Image
+          src={buildImgUrl(webtoon.thumbPath, { size: "md" })}
+          alt={webtoon.thumbPath}
+          fill
+          style={{ objectFit: "cover" }}
+          priority={true}
+        />
+      </div>
 
       <Col className="flex-1 my-auto">
 
@@ -48,14 +48,14 @@ export default function WebtoonDetails({ webtoon, context }: WebtoonDetailsProps
             }}/>}
 
         <Row className="mt-7 justify-between">
-          <p className="text-2xl">
+          <p className="text-2xl font-bold">
             {webtoon.localized.title}
           </p>
 
           {/*웹툰 상세보기에서만 노출*/}
           {context === "WebtoonView"
-          && <EditLink isVisible={webtoon.isEditable}
-            href={`/webtoons/${webtoon.id}/update`}/>}
+            && <EditLink isVisible={webtoon.isEditable}
+              href={`/webtoons/${webtoon.id}/update`}/>}
 
         </Row>
         <ExtraInfoRow webtoon={webtoon} className="mt-4"/>
@@ -77,9 +77,9 @@ export default function WebtoonDetails({ webtoon, context }: WebtoonDetailsProps
         {context === "WebtoonView"
           && <WebtoonDetailsButtons
             webtoon={webtoon}
-            className="mt-7" />}
+            className="mt-7"/>}
 
-        <Genres webtoon={webtoon} className="mt-12" />
+        <Genres webtoon={webtoon} className="mt-12"/>
       </Col>
     </Row>
   );

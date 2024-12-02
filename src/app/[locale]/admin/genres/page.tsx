@@ -1,7 +1,7 @@
 "use client";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import Spinner from "@/components/ui/Spinner";
-import { Col, Row } from "@/components/ui/common";
+import { Heading2, Row } from "@/components/ui/common";
 import { useEffect, useState } from "react";
 import { listGenres } from "@/resources/genres/genre.controller";
 import { Badge } from "@/shadcn/ui/badge";
@@ -15,11 +15,10 @@ import useSafeAction from "@/hooks/safeAction";
 // BadRequestError
 export default function ManageGenresPage() {
   return (
-    <Col className="gap-10">
-      {/*todo pt 제거*/}
-      <p className='font-bold text-[18pt]'>장르 관리</p>
+    <>
+      <Heading2>장르 관리</Heading2>
       <ManageGenresContent />
-    </Col>
+    </>
   );
 }
 

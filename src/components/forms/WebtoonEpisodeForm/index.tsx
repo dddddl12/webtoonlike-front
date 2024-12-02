@@ -239,7 +239,7 @@ function ImageListCanvas({ imageList, dropzoneRootProps }: {
       >
         <IconUpArrow className="fill-white" />
       </button>
-      <hr className="border-black" />
+      <hr className="border-transparent" />
       <button
         onClick={(e) => {
           e.preventDefault();

@@ -36,7 +36,7 @@ export default async function CreatorPage({
       />
       {/*todo 그림 사이즈 고정*/}
       <Col className="sm:items-start gap-5">
-        <p className="font-bold text-[26pt]">
+        <p className="font-bold text-4xl">
           {creator.localized.name}
         </p>
         <LikeBadge likeCount={likeCountResponse.likeCount }/>

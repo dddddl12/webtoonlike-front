@@ -7,6 +7,7 @@ import ActiveBidRound from "@/components/shared/WebtoonPageContents/ActiveBidRou
 import { WebtoonDetailsExtendedT } from "@/resources/webtoons/dtos/webtoonDetails.dto";
 import OpenOfferFormContext from "@/components/shared/WebtoonPageContents/OpenOfferFormContext";
 import OfferForm from "@/components/forms/offer/OfferForm";
+import { HR } from "@/components/ui/common";
 
 export default function WebtoonPageContents({ webtoon }: {
   webtoon: WebtoonDetailsExtendedT;
@@ -24,13 +25,13 @@ export default function WebtoonPageContents({ webtoon }: {
         />
       </OpenOfferFormContext.Provider>
 
-      <hr className="border-gray-shade my-10"/>
+      <HR />
 
       <ActiveBidRound webtoon={webtoon}/>
 
       {offerForm && webtoon.activeBidRound?.id
         && <>
-          <hr className="border-gray-shade my-10"/>
+          <HR />
           <OfferForm bidRoundId={webtoon.activeBidRound?.id}/>
         </>}
 

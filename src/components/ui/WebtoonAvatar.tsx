@@ -10,7 +10,7 @@ export default function WebtoonAvatar({
   webtoon: WebtoonPreviewT;
 }) {
   const { id, thumbPath, localized: { title } } = webtoon;
-  return <Row>
+  return <Row className="w-full">
     <div className="w-16 h-16 overflow-hidden relative rounded-sm">
       <Image
         src={buildImgUrl(thumbPath, { size: "xxs" } )}

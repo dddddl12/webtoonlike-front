@@ -1,7 +1,7 @@
 "use client";
 
 import Spinner from "@/components/ui/Spinner";
-import { Col, Row } from "@/components/ui/common";
+import { Heading2 } from "@/components/ui/common";
 import useListData from "@/hooks/listData";
 import { listAdmins } from "@/resources/admins/admin.controller";
 import { useTranslations } from "next-intl";
@@ -10,20 +10,19 @@ import DeleteAdmin from "@/app/[locale]/admin/admins/DeleteAdmin";
 import AddAdmin from "@/app/[locale]/admin/admins/AddAdmin";
 import useReload from "@/hooks/reload";
 import { AdminEntryT } from "@/resources/admins/admin.dto";
+import { ListCell, ListRow, ListTable } from "@/components/ui/ListTable";
 
 export default function ManageAdminsPage() {
   const { reload, reloadKey } = useReload();
 
   return (
-    <Col className="gap-10">
-      <Row className="justify-between">
-        <p className="font-bold text-[18pt]">관리자 목록</p>
+    <>
+      <Heading2 className="flex justify-between">
+        <span>관리자 목록</span>
         <AddAdmin reload={reload}/>
-      </Row>
-      <div className="flex flex-col">
-        <ManageAdminsContent key={reloadKey} reload={reload}/>
-      </div>
-    </Col>
+      </Heading2>
+      <ManageAdminsContent key={reloadKey} reload={reload}/>
+    </>
   );
 }
 
@@ -39,16 +38,32 @@ function ManageAdminsContent({ reload }: {
     return <Spinner />;
   }
 
-  return <div className="flex flex-col">
-    <div className="flex p-2">
-      <div className="w-2/12 p-2 font-bold text-gray-shade flex justify-center">이름</div>
-      <div className="w-3/12 p-2 font-bold text-gray-shade flex justify-center">이메일</div>
-      <div className="w-2/12 p-2 font-bold text-gray-shade flex justify-center">유저타입</div>
-      <div className="w-2/12 p-2 font-bold text-gray-shade flex justify-center">관리자타입</div>
-      <div className="w-2/12 p-2 font-bold text-gray-shade flex justify-center">생성일</div>
-      <div className="w-1/12 p-2 font-bold text-gray-shade flex justify-center"></div>
-    </div>
-
+  return <ListTable columns={[
+    {
+      label: "이름",
+      width: 2
+    },
+    {
+      label: "이메일",
+      width: 3
+    },
+    {
+      label: "유저타입",
+      width: 2
+    },
+    {
+      label: "관리자타입",
+      width: 2
+    },
+    {
+      label: "생성일",
+      width: 2
+    },
+    {
+      label: "",
+      width: 1
+    }
+  ]}>
     {listResponse.items
       .map((admin) => <TableRow
         key={admin.id}
@@ -60,7 +75,7 @@ function ManageAdminsContent({ reload }: {
       totalPages={listResponse.totalPages}
       setFilters={setFilters}
     />
-  </div>;
+  </ListTable>;
 }
 
 function TableRow({ admin, reload }:{
@@ -69,25 +84,29 @@ function TableRow({ admin, reload }:{
 }) {
   const tUserType = useTranslations("userType");
   return (
-    <div key={admin.id} className="flex bg-white rounded-sm p-2 my-2 items-center">
-      <div className="w-2/12 p-2 justify-center overflow-ellipsis overflow-hidden">
-        {admin.user.name}
-      </div>
-      <div className="w-3/12 p-2 justify-center overflow-ellipsis overflow-hidden">
-        {admin.user.email}
-      </div>
-      <div className="w-2/12 p-2 flex justify-center">
+    <ListRow>
+      <ListCell>
+        <div className="w-full overflow-ellipsis overflow-hidden">
+          {admin.user.name}
+        </div>
+      </ListCell>
+      <ListCell>
+        <div className="w-full overflow-ellipsis overflow-hidden">
+          {admin.user.email}
+        </div>
+      </ListCell>
+      <ListCell>
         {tUserType(admin.user.userType)}
-      </div>
-      <div className="w-2/12 p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {admin.isSuper ? "수퍼관리자" : "일반관리자"}
-      </div>
-      <div className="w-2/12 p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {admin.createdAt.toLocaleString("ko") ?? "-"}
-      </div>
-      <div className="w-1/12 p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {admin.isDeletable && <DeleteAdmin adminId={admin.id} reload={reload} />}
-      </div>
-    </div>
+      </ListCell>
+    </ListRow>
   );
 }

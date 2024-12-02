@@ -1,15 +1,28 @@
 import * as React from "react";
 
 import { cn } from "@/shadcn/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
+
+const tableVariants = cva("w-full caption-bottom text-sm", {
+  variants: {
+    variant: {
+      default: "",
+      outline: "[&_td]:border [&_th]:border table-fixed [&_*]:text-center [&_*]:border-foreground"
+    }
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+});
 
 const Table = React.forwardRef<
   HTMLTableElement,
-  React.HTMLAttributes<HTMLTableElement>
->(({ className, ...props }, ref) => (
+  React.HTMLAttributes<HTMLTableElement> & VariantProps<typeof tableVariants>
+>(({ className, variant, ...props }, ref) => (
   <div className="relative w-full overflow-auto">
     <table
       ref={ref}
-      className={cn("w-full caption-bottom text-sm", className)}
+      className={tableVariants({ variant, className })}
       {...props}
     />
   </div>

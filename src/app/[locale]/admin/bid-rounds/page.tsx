@@ -1,7 +1,7 @@
 "use client";
 
 import Spinner from "@/components/ui/Spinner";
-import { Col } from "@/components/ui/common";
+import { Heading2 } from "@/components/ui/common";
 import { BidRoundApprovalStatus } from "@/resources/bidRounds/dtos/bidRound.dto";
 import useListData from "@/hooks/listData";
 import Paginator from "@/components/ui/Paginator";
@@ -13,10 +13,11 @@ import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
 import { adminListBidRoundsWithWebtoon } from "@/resources/bidRounds/controllers/bidRoundAdmin.controller";
 import { AdminPageBidRoundT } from "@/resources/bidRounds/dtos/bidRoundAdmin.dto";
 import NoItems from "@/components/ui/NoItems";
+import { ListCell, ListRow, ListTable } from "@/components/ui/ListTable";
 
 export default function BidRoundPage() {
   const { reload, reloadKey } = useReload();
-  return <Col className="gap-20" key={reloadKey}>
+  return <div key={reloadKey}>
     <ListSection
       title="대기 작품 관리"
       noItemsMessage="현재 대기 중 작품이 없습니다"
@@ -29,7 +30,7 @@ export default function BidRoundPage() {
       approvalStatus={BidRoundApprovalStatus.Approved}
       reload={reload}
     />
-  </Col>;
+  </div>;
 }
 
 function ListSection({ title, noItemsMessage, approvalStatus, reload }: {
@@ -38,11 +39,11 @@ function ListSection({ title, noItemsMessage, approvalStatus, reload }: {
   approvalStatus: BidRoundApprovalStatus;
   reload: () => void;
 }) {
-  return <Col>
-    <p className="font-bold text-[18pt]">{title}</p>
+  return <>
+    <Heading2>{title}</Heading2>
     <ListSectionContent noItemsMessage={noItemsMessage} approvalStatus={approvalStatus}
       reload={reload}/>
-  </Col>;
+  </>;
 }
 
 function ListSectionContent({ noItemsMessage, approvalStatus, reload }: {
@@ -65,17 +66,34 @@ function ListSectionContent({ noItemsMessage, approvalStatus, reload }: {
   }
 
   return <>
-    <div className="flex flex-col">
-      <div className="flex ">
-        <div className="w-[30%] p-2 flex justify-start font-bold text-gray-shade">작품명</div>
-        <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade">노출 시작일</div>
-        <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade">게시 종료일</div>
-        <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade">게시 종료일</div>
-        <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade">상태</div>
-        <div></div>
-      </div>
+    <ListTable columns={[
+      {
+        label: "작품명",
+        width: 2
+      },
+      {
+        label: "노출 시작일",
+        width: 1
+      },
+      {
+        label: "선공개 종료일",
+        width: 1
+      },
+      {
+        label: "게시 종료일",
+        width: 1
+      },
+      {
+        label: "상태",
+        width: 1
+      },
+      {
+        label: "",
+        width: 1
+      }
+    ]}>
       {listResponse.items.map((item) => <TableRow key={item.id} bidRound={item} reload={reload} />)}
-    </div>
+    </ListTable>
     <Paginator
       currentPage={filters.page}
       totalPages={listResponse.totalPages}
@@ -90,26 +108,26 @@ function TableRow({ bidRound, reload }: {
 }) {
   const t = useTranslations("bidRoundStatus");
   return (
-    <div key={bidRound.id} className="flex bg-white rounded-sm p-2 my-2 items-center">
-      <div className="w-[30%] p-2 flex justify-start">
+    <ListRow>
+      <ListCell>
         <WebtoonAvatar webtoon={bidRound.webtoon}/>
-      </div>
-      <div className="w-[15%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {bidRound.adminSettings.bidStartsAt?.toLocaleDateString("ko") ?? "-"}
-      </div>
-      <div className="w-[15%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {bidRound.adminSettings.negoStartsAt?.toLocaleDateString("ko") ?? "-"}
-      </div>
-      <div className="w-[15%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {bidRound.adminSettings.processEndsAt?.toLocaleDateString("ko") ?? "-"}
-      </div>
-      <div className="w-[15%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {t(bidRound.status)}
-      </div>
+      </ListCell>
       <BidRoundAdminSettingsForm bidRoundId={bidRound.id}
         reload={reload}>
         <Button>수정</Button>
       </BidRoundAdminSettingsForm>
-    </div>
+    </ListRow>
   );
 }

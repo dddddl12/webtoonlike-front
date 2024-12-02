@@ -1,6 +1,5 @@
 import { useTranslations } from "next-intl";
-import { Col } from "@/components/ui/common";
-import { Heading1 } from "@/components/ui/common";
+import { Col, Heading2, HR } from "@/components/ui/common";
 import { useEffect, useMemo, useState } from "react";
 import Spinner from "@/components/ui/Spinner";
 import OfferProposalDetails from "@/components/shared/OfferProposalDetails";
@@ -30,13 +29,10 @@ export default function ViewOfferProposalSection({ offerProposalId }: {
   if (!offerProposal) {
     return <Spinner />;
   }
-  // todo invoice 쪽과 통일
-  return <Col className="w-full my-2 [&_*]:border-foreground bg-[#403F3F] p-5 rounded-[10px]">
-    <Col>
-      <Heading1>{tMakeAnOffer("offerer")}</Heading1>
-      <Profile creatorOrBuyer={offerProposal.sender} />
-    </Col>
-    <hr className="my-10" />
+  return <Col className="bg-box p-5 rounded-[10px]">
+    <Heading2>{tMakeAnOffer("offerer")}</Heading2>
+    <Profile creatorOrBuyer={offerProposal.sender}/>
+    <HR />
     <OfferProposalDetails
       offerProposal={offerProposal}
     />
@@ -44,6 +40,6 @@ export default function ViewOfferProposalSection({ offerProposalId }: {
       // 수신자만 반응 가능
       && tokenInfo
       && offerProposal.sender.user.userType !== tokenInfo.metadata.type
-    && <Controls offerProposal={offerProposal}/>}
+      && <Controls offerProposal={offerProposal}/>}
   </Col>;
 }

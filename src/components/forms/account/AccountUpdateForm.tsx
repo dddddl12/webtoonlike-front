@@ -30,6 +30,8 @@ export default function AccountUpdateForm({ prev }: {
   }
 }
 
+// todo 사진만 바꾸어도 isDirty 확보
+
 function CreatorForm({ formData }: {
   formData: UserAccountWithCreatorFormT;
 }) {

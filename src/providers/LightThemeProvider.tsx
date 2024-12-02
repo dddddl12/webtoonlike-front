@@ -11,5 +11,5 @@ export default function LightThemeProvider({ children }: {
       document.body.classList.remove("light");
     };
   }, []);
-  return <>{children}</>;
+  return children;
 }

@@ -16,7 +16,7 @@ export default function SectionHeading({ title, path }: {
     </h1>
     {path && <LinkWithAccessCheck
       href={path}
-      className="flex flex-row items-center justify-end text-[14pt] font-normal text-right cursor-pointer">
+      className="flex items-center text-lg cursor-pointer">
       {t("seeMorePopularSeries")}
       <IconRightArrow className="ml-2"/>
     </LinkWithAccessCheck>}

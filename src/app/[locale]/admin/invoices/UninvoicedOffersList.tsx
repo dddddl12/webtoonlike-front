@@ -1,13 +1,13 @@
 import Spinner from "@/components/ui/Spinner";
 import { IssueInvoice } from "./IssueInvoice";
 import useListData from "@/hooks/listData";
-import { Row } from "@/components/ui/common";
 import Paginator from "@/components/ui/Paginator";
 import WebtoonAvatar from "@/components/ui/WebtoonAvatar";
 import NoItems from "@/components/ui/NoItems";
 import { adminListUninvoicedOffers } from "@/resources/invoices/controllers/invoice.controller";
 import { UninvoicedOfferT } from "@/resources/invoices/dtos/invoice.dto";
 import { Link } from "@/i18n/routing";
+import { ListCell, ListRow, ListTable } from "@/components/ui/ListTable";
 
 export default function UninvoicedOffersList({ reload }: {
   reload: () => void;
@@ -26,18 +26,32 @@ export default function UninvoicedOffersList({ reload }: {
 
   return (
     <>
-      <div className="flex flex-col">
-        <div className="flex p-2">
-          <div className="w-[30%] p-2 font-bold text-gray-shade">작품명</div>
-          <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade">작가명</div>
-          <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade">바이어명</div>
-          <div className="w-[25%] p-2 flex justify-center font-bold text-gray-shade">신청일</div>
-          <div className="w-[15%] p-2 flex justify-center font-bold text-gray-shade">인보이스 발행</div>
-        </div>
+      <ListTable columns={[
+        {
+          label: "작품명",
+          width: 1,
+        },
+        {
+          label: "작가명",
+          width: 1,
+        },
+        {
+          label: "바이어명",
+          width: 1,
+        },
+        {
+          label: "신청일",
+          width: 1,
+        },
+        {
+          label: "발행",
+          width: 1,
+        }
+      ]}>
         {listResponse.items.map((offer, i) => (
           <TableRow key={i} offer={offer} reload={reload} />
         ))}
-      </div>
+      </ListTable>
       <Paginator
         currentPage={filters.page}
         totalPages={listResponse.totalPages}
@@ -47,30 +61,30 @@ export default function UninvoicedOffersList({ reload }: {
   );
 }
 
-function TableRow({ offer,reload }: {
+function TableRow({ offer, reload }: {
   offer: UninvoicedOfferT;
   reload: () => void;
 }) {
   const { offerProposal } = offer;
   return (
-    <Row className="flex bg-white rounded-sm p-2 my-2">
-      <div className="w-[30%] p-2 flex justify-start">
+    <ListRow>
+      <ListCell>
         <WebtoonAvatar webtoon={offer.webtoon}/>
-      </div>
-      <div className="w-[15%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         <Link href={`/creators/${offer.creator.user.id}`} className="clickable">
           {offer.creator.user.name}
         </Link>
-      </div>
-      <div className="w-[15%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         {offer.buyer.user.name}
-      </div>
-      <div className="w-[25%] p-2 flex justify-center">
+      </ListCell>
+      <ListCell>
         <p className=" cursor-pointer">{offerProposal.decidedAt?.toLocaleString("ko")}</p>
-      </div>
-      <div className="w-[15%] flex justify-center items-center">
+      </ListCell>
+      <ListCell>
         <IssueInvoice offerProposalId={offerProposal.id} reload={reload} />
-      </div>
-    </Row>
+      </ListCell>
+    </ListRow>
   );
 }

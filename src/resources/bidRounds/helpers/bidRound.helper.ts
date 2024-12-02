@@ -9,7 +9,7 @@ import {
 import { getBidRoundStatus } from "@/resources/bidRounds/bidRoundStatus";
 
 class BidRoundHelper {
-  offerableBidRoundWhere = () => {
+  offerableBidRoundWhere = (): Prisma.BidRoundWhereInput => {
     const now = new Date();
     return Prisma.validator<Prisma.BidRoundWhereInput>()({
       isActive: true,

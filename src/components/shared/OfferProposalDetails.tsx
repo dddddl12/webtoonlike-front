@@ -1,122 +1,122 @@
 import { useTranslations } from "next-intl";
-import { Col } from "@/components/ui/common";
-import { Heading1, Heading2 } from "@/components/ui/common";
+import { Heading2, Heading3 } from "@/components/ui/common";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shadcn/ui/table";
 import { ContractRangeItemSchema } from "@/resources/bidRounds/dtos/bidRound.dto";
 import z from "zod";
 import { OfferProposalT } from "@/resources/offers/dtos/offerProposal.dto";
+import { clsx } from "clsx";
 
-export default function OfferProposalDetails({ offerProposal }: {
+export default function OfferProposalDetails({ offerProposal, forInvoice }: {
   offerProposal: OfferProposalT;
+  forInvoice?: boolean;
 }) {
   const t = useTranslations("contractRangeDataForm");
   const tCountries = useTranslations("countries");
   const tContractType = useTranslations("contractType");
-  const tMakeAnOffer = useTranslations("offerDetails");
+  const tOfferDetails = useTranslations("offerDetails");
   const tBusinessFields = useTranslations("businessFields");
 
   const { contractRange, message } = offerProposal;
   const { webtoonRights, derivativeRights } = mapContractRange(contractRange);
-  return <Col>
-    <Heading1>{tMakeAnOffer("offerDetails")}</Heading1>
-    <Col className="gap-14">
-      {/*웹툰 연재권*/}
-      {webtoonRights.size > 0 && <div>
-        <Heading2>{t("webtoonSerialRights")}</Heading2>
-        <Table className="mt-5 [&_td]:border [&_th]:border">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[33%] text-center text-base border border-white">
-                {t("serviceRegion")}
-              </TableHead>
-              <TableHead className="w-[33%] text-center text-base border border-white">
-                {t("exclusiveRights")}
-              </TableHead>
-              <TableHead className="w-[33%] text-center text-base border border-white">
-                {t("contractCondition")}
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {ContractRangeItemSchema.shape.country.options
-              .map((code, index) => {
-                const itemData = webtoonRights.get(code);
-                if (!itemData) {
-                  return null;
-                }
-                return <TableRow key={index}>
-                  <TableCell className="text-center border border-white">
-                    {tCountries(code, { plural: "true" })}
-                  </TableCell>
-                  <TableCell className="text-center border border-white">
-                    {tContractType(itemData.contract)}
-                  </TableCell>
-                  <TableCell className="text-center border border-white">
-                    {itemData.message}
-                  </TableCell>
-                </TableRow>;
+  return <div>
+    <Heading2>{forInvoice
+      ? tOfferDetails("agreedTerms")
+      : tOfferDetails("offerProposalDetails")}</Heading2>
+    {/*웹툰 연재권*/}
+    {webtoonRights.size > 0 && <>
+      <Heading3>{t("webtoonSerialRights")}</Heading3>
+      <Table variant="outline">
+        <TableHeader>
+          <TableRow>
+            <TableHead>
+              {t("serviceRegion")}
+            </TableHead>
+            <TableHead>
+              {t("exclusiveRights")}
+            </TableHead>
+            <TableHead>
+              {t("contractCondition")}
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {ContractRangeItemSchema.shape.country.options
+            .map((code, index) => {
+              const itemData = webtoonRights.get(code);
+              if (!itemData) {
+                return null;
               }
-              )}
-          </TableBody>
-        </Table>
-      </div>}
+              return <TableRow key={index}>
+                <TableCell>
+                  {tCountries(code, { plural: "true" })}
+                </TableCell>
+                <TableCell>
+                  {tContractType(itemData.contract)}
+                </TableCell>
+                <TableCell>
+                  {itemData.message}
+                </TableCell>
+              </TableRow>;
+            }
+            )}
+        </TableBody>
+      </Table>
+    </>}
 
-      {/*2차 사업권*/}
-      {/*todo variant 도입*/}
-      {derivativeRights.size > 0 && <div>
-        <Heading2>{t("secondBusinessRight")}</Heading2>
-        <Table className="mt-5 [&_td]:border [&_th]:border">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[33%] text-center">
-                {t("businessRightClassification")}
-              </TableHead>
-              <TableHead className="w-[33%] text-center">
-                {t("countryOfDistribution")}
-              </TableHead>
-              <TableHead className="w-[33%] text-center">
-                {t("contractCondition")}
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {ContractRangeItemSchema.shape.businessField.options
-              .map((code, index) => {
-                const itemData = derivativeRights.get(code);
-                if (!itemData) {
-                  return null;
-                }
-                return <TableRow key={index}>
-                  <TableCell className="text-center">
+    {/*2차 사업권*/}
+    {derivativeRights.size > 0 && <>
+      <Heading3>{t("secondBusinessRight")}</Heading3>
+      <Table variant="outline">
+        <TableHeader>
+          <TableRow>
+            <TableHead>
+              {t("businessRightClassification")}
+            </TableHead>
+            <TableHead>
+              {t("countryOfDistribution")}
+            </TableHead>
+            <TableHead>
+              {t("contractCondition")}
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {ContractRangeItemSchema.shape.businessField.options
+            .map((code, index) => {
+              const itemData = derivativeRights.get(code);
+              if (!itemData){
+                return null;
+              }
+              return itemData.map(item => {
+                const { country, message } = item;
+                return <TableRow key={`${index}__${country}`}>
+                  <TableCell>
                     {tBusinessFields(code, { plural: "true" })}
                   </TableCell>
-                  <TableCell className="text-center">
-                    {itemData.map(el => tCountries(el.country))
-                      .join(", ")}
+                  <TableCell>
+                    {tCountries(country)}
                   </TableCell>
-                  <TableCell className="text-center">
-                    {itemData.map(el => el.message)
-                      .join("\n")}
+                  <TableCell>
+                    {message}
                   </TableCell>
                 </TableRow>;
-              }
-              )}
-          </TableBody>
-        </Table>
-      </div>}
+              });
+            })}
+        </TableBody>
+      </Table>
+    </>}
 
-      {/*  추가 메시지*/}
-      <div>
-        <Heading2>{tMakeAnOffer("toCreator")}</Heading2>
-        <div className="min-h-[100px] rounded-sm bg-gray-darker p-2">
-          {message || tMakeAnOffer("thereIsNoMessageWrittenByTheBuyer")}
-        </div>
-        <p className="text-[10pt] text-gray-shade mt-3">
-          {tMakeAnOffer("note")}
-        </p>
-      </div>
-    </Col>
-  </Col>;
+    {/*  추가 메시지*/}
+    <Heading3>{tOfferDetails("additionalMessage")}</Heading3>
+    <div className={clsx("min-h-[100px] rounded-sm bg-muted text-sm p-2", {
+      "text-muted-foreground": !message
+    })}>
+      {message || tOfferDetails("thereIsNoMessageWrittenByTheBuyer")}
+    </div>
+    <p className="text-sm text-muted-foreground mt-3">
+      {tOfferDetails("note")}
+    </p>
+  </div>;
 }
 
 function mapContractRange(contractRange: OfferProposalT["contractRange"]) {
@@ -130,7 +130,6 @@ function mapContractRange(contractRange: OfferProposalT["contractRange"]) {
       country: z.infer<typeof ContractRangeItemSchema.shape.country>;
       message?: string;
     }[]> = new Map();
-  // TODO 국가 한꺼번에 묶을 수 없음
   contractRange.forEach((item) => {
     if (item.businessField === "WEBTOONS") {
       webtoonRights.set(item.country, {
