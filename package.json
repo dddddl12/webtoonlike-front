@@ -48,7 +48,7 @@
     "next-safe-action": "^7.9.9",
     "pg": "^8.13.0",
     "postcss": "^8.4.47",
-    "prisma": "^6.0.0",
+    "prisma": "^6.0.1",
     "react": "19.0.0-rc.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "19.0.0-rc.1",
