@@ -108,7 +108,8 @@ function UserInfoForm() {
 
   const form = useForm<UserFormT>({
     resolver: zodResolver(UserFormSchema),
-    defaultValues: userAccount
+    defaultValues: userAccount,
+    mode: "onChange",
   });
   const [isAgreed, setIsAgreed] = useState(false);
   const { formState: { isValid }, handleSubmit } = form;
