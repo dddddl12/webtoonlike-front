@@ -17,7 +17,6 @@ export async function HomePage() {
   return (
     <PageLayout className="flex flex-col gap-20">
       <section className="w-full">
-        <SectionHeading title={t("contentNearingDeadline")}/>
         <BannerSection banners={banners}/>
       </section>
       <section className="w-full">
