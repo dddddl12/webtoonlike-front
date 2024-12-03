@@ -1,4 +1,3 @@
-import { RESOURCE_HOST } from "@/config";
 import { generatePreSignedUrl } from "@/resources/files/files.controller";
 import { fileTypeFromBlob } from "file-type";
 import { FileDirectoryT } from "@/resources/files/files.type";
@@ -20,11 +19,11 @@ export function buildImgUrl(
   option?: { fallback?: FallbackT; size?: ImageSizeT },
 ): string {
   if (path) {
-    let url = new URL(path, RESOURCE_HOST).toString();
+    const url = new URL(path, process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN);
     if (option?.size) {
-      url = `${url}?w=${getResizeW(option.size)}`;
+      url.searchParams.append("w", getResizeW(option.size).toString());
     }
-    return url;
+    return url.toString();
   }
   switch (option?.fallback) {
     case "user":
